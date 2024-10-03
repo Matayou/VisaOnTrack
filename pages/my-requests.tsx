@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
-export default function Dashboard() {
+export default function MyRequests() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
@@ -24,12 +24,13 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>Dashboard - VisaOnTrack</title>
-        <meta name="description" content="VisaOnTrack user dashboard" />
+        <title>My Requests - VisaOnTrack</title>
+        <meta name="description" content="View and manage your visa requests on VisaOnTrack" />
       </Head>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-        <p>Welcome to your VisaOnTrack dashboard, {session.user.firstName} {session.user.lastName}.</p>
+        <h1 className="text-3xl font-bold mb-4">My Requests</h1>
+        <p>View and manage your visa requests here, {session.user.firstName} {session.user.lastName}.</p>
+        {/* Add list of user's visa requests here */}
       </div>
     </>
   )

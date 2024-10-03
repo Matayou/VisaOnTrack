@@ -1,57 +1,47 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Typography } from "@/components/ui/typography"
+import { useRouter } from 'next/router'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Typography } from '@/components/ui/typography'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { PasswordInput } from '@/components/ui/PasswordInput'
+
+type UserType = 'VISA_SEEKER' | 'SERVICE_PROVIDER'
 
 export default function Register() {
-  const [name, setName] = useState('')
+  const [userType, setUserType] = useState<UserType | null>(null)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState('VISA_SEEKER')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [success, setSuccess] = useState('')
+  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setErrorMessage('')
-    setSuccess('')
     setIsLoading(true)
-
-    if (password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters long')
-      setIsLoading(false)
-      return
-    }
+    setError('')
 
     try {
-      const res = await fetch('/api/register', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ firstName, lastName, email, password, userType }),
       })
 
-      const data = await res.json()
-
-      if (res.status === 201) {
-        setSuccess('Registration successful! Redirecting to login...')
-        setTimeout(() => {
-          router.push('/signin')
-        }, 2000)
+      if (response.ok) {
+        router.push('/signin?registered=true')
       } else {
-        setErrorMessage(data.message || 'An error occurred during registration')
+        const data = await response.json()
+        setError(data.message || 'An error occurred during registration')
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setErrorMessage('An error occurred during registration')
+    } catch (err) {
+      setError('An error occurred during registration')
     } finally {
       setIsLoading(false)
     }
@@ -60,82 +50,87 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>VisaOnTrack - Register</title>
+        <title>Register - VisaOnTrack</title>
         <meta name="description" content="Register for VisaOnTrack" />
       </Head>
 
       <div className="min-h-screen bg-background flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <Typography variant="h2" className="text-center">Create an account</Typography>
-            <Typography variant="p" className="text-center text-muted-foreground">
-              Enter your information to get started
-            </Typography>
+            <Typography variant="h2" className="text-center">Join VisaOnTrack</Typography>
+            {!userType && (
+              <Typography variant="p" className="text-center text-muted-foreground">
+                Choose how you want to use VisaOnTrack
+              </Typography>
+            )}
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-medium">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {!userType ? (
+              <div className="space-y-4">
+                <Button
+                  onClick={() => setUserType('VISA_SEEKER')}
                   className="w-full"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  variant="outline"
+                >
+                  I'm a visa seeker
+                </Button>
+                <Button
+                  onClick={() => setUserType('SERVICE_PROVIDER')}
                   className="w-full"
-                />
+                  variant="outline"
+                >
+                  I'm a service provider
+                </Button>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-                <Input
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <PasswordInput
                   id="password"
-                  type="password"
+                  label="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={8}
-                  className="w-full"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="role" className="text-sm font-medium">Role</Label>
-                <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="VISA_SEEKER">Visa Seeker</SelectItem>
-                    <SelectItem value="PROVIDER">Provider</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {errorMessage && (
-                <Alert variant="destructive">
-                  <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>{errorMessage}</AlertDescription>
-                </Alert>
-              )}
-              {success && (
-                <Alert>
-                  <AlertTitle>Success</AlertTitle>
-                  <AlertDescription>{success}</AlertDescription>
-                </Alert>
-              )}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? 'Registering...' : 'Register'}
-              </Button>
-            </form>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? 'Registering...' : 'Register'}
+                </Button>
+              </form>
+            )}
           </CardContent>
           <CardFooter className="flex justify-center">
             <Typography variant="p" className="text-sm text-muted-foreground">

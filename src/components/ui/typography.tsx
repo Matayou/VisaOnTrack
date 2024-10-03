@@ -2,31 +2,30 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 interface TypographyProps {
-  variant: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'blockquote' | 'list-item'
+  variant: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'blockquote' | 'ul' | 'ol'
   children: React.ReactNode
   className?: string
 }
 
+const variantClasses = {
+  h1: 'scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
+  h2: 'scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0',
+  h3: 'scroll-m-20 text-2xl font-semibold tracking-tight',
+  h4: 'scroll-m-20 text-xl font-semibold tracking-tight',
+  h5: 'scroll-m-20 text-lg font-semibold tracking-tight',
+  h6: 'scroll-m-20 text-base font-semibold tracking-tight',
+  p: 'leading-7 [&:not(:first-child)]:mt-6',
+  blockquote: 'mt-6 border-l-2 pl-6 italic',
+  ul: 'my-6 ml-6 list-disc [&>li]:mt-2',
+  ol: 'my-6 ml-6 list-decimal [&>li]:mt-2',
+}
+
 export function Typography({ variant, children, className }: TypographyProps) {
-  const baseStyles = 'text-foreground'
+  const Component = variant.startsWith('h') ? variant : variant === 'p' ? 'p' : variant === 'blockquote' ? 'blockquote' : 'ul'
   
-  const variantStyles = {
-    h1: 'font-heading text-4xl font-bold md:text-5xl',
-    h2: 'font-heading text-3xl font-semibold md:text-4xl',
-    h3: 'font-heading text-2xl font-semibold md:text-3xl',
-    h4: 'font-heading text-xl font-semibold md:text-2xl',
-    h5: 'font-heading text-lg font-medium md:text-xl',
-    h6: 'font-heading text-base font-medium md:text-lg',
-    p: 'text-base leading-7',
-    blockquote: 'mt-6 border-l-2 pl-6 italic',
-    'list-item': 'mt-2',
-  }
-
-  const Component = variant === 'list-item' ? 'li' : variant
-
-  return (
-    <Component className={cn(baseStyles, variantStyles[variant], className)}>
-      {children}
-    </Component>
+  return React.createElement(
+    Component,
+    { className: cn(variantClasses[variant], className) },
+    children
   )
 }

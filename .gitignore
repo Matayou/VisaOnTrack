@@ -1,37 +1,40 @@
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Existing .gitignore content (if any)
 
-# testing
-/coverage
+# Ignore development-only files
+pages/api/create-test-user.ts
 
-# next.js
-/.next/
-/out/
+# Node modules
+node_modules/
 
-# production
-/build
+# Next.js build output
+.next/
 
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
+# Environment variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# vercel
-.vercel
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build files
+/build
+/dist
+
+# Temporary files
+*.tmp
+*.temp

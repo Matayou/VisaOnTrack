@@ -6,6 +6,7 @@ const nextConfig = {
     ];
     return config;
   },
+  // Remove the pageExtensions and distDir configurations
 };
 
 export default nextConfig;

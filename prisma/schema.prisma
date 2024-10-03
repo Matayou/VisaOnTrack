@@ -12,44 +12,29 @@ datasource db {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?
+  firstName     String
+  lastName      String
   email         String    @unique
   emailVerified DateTime?
-  image         String?
   password      String
   role          Role      @default(VISA_SEEKER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  provider      Provider?
-  visaSeeker    VisaSeeker?
+  PasswordResetToken PasswordResetToken[]
 }
 
-model Provider {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
-  companyName   String?
-  description   String?
-  subscriptionTier SubscriptionTier @default(FREE)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model VisaSeeker {
+model PasswordResetToken {
   id        String   @id @default(cuid())
-  userId    String   @unique
+  token     String   @unique
+  expires   DateTime
+  userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 enum Role {
   ADMIN
   PROVIDER
   VISA_SEEKER
-}
-
-enum SubscriptionTier {
-  FREE
-  PRO
+  SERVICE_PROVIDER
 }

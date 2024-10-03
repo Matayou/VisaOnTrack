@@ -1,15 +1,11 @@
-import NextAuth, { User } from "next-auth"
+import NextAuth, { NextAuthOptions, User, Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 import bcrypt from 'bcrypt'
+import { JWT } from "next-auth/jwt"
 
-// Extend the User type to include the role property
-type UserWithRole = User & {
-  role: string;
-};
-
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -52,14 +48,14 @@ export default NextAuth({
     strategy: 'jwt'
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) {
-        token.role = (user as UserWithRole).role
+        token.role = user.role
       }
       return token
     },
-    async session({ session, token }) {
-      if (session.user) {
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (session?.user) {
         session.user.role = token.role as string
       }
       return session
@@ -67,7 +63,8 @@ export default NextAuth({
   },
   pages: {
     signIn: '/signin',
-    // Add other custom pages if needed
   },
   secret: process.env.NEXTAUTH_SECRET,
-})
+}
+
+export default NextAuth(authOptions)

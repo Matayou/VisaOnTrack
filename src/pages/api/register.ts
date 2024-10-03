@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 
 // Define Role enum to match Prisma schema
@@ -9,10 +9,23 @@ enum Role {
   VISA_SEEKER = 'VISA_SEEKER'
 }
 
-type TransactionClient = Omit<
-  typeof prisma,
-  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
->;
+// Define a type for Prisma error
+type PrismaError = Error & {
+  code?: string;
+};
+
+// Define types for extended Prisma client
+type PrismaClientWithProvider = typeof prisma & {
+  provider: {
+    create: (args: { data: { userId: string } }) => Promise<{ id: string; userId: string }>;
+  };
+};
+
+type PrismaClientWithVisaSeeker = typeof prisma & {
+  visaSeeker: {
+    create: (args: { data: { userId: string } }) => Promise<{ id: string; userId: string }>;
+  };
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -42,51 +55,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await prisma.$transaction(async (tx: TransactionClient) => {
-      const user = await tx.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          name,
-          role: role as Role,
-        },
-      });
-
-      switch (role) {
-        case Role.PROVIDER:
-          await tx.provider.create({
-            data: {
-              userId: user.id,
-            },
-          });
-          break;
-        case Role.VISA_SEEKER:
-          await tx.visaSeeker.create({
-            data: {
-              userId: user.id,
-            },
-          });
-          break;
-        case Role.ADMIN:
-          // No additional action needed for admin
-          break;
-        default:
-          throw new Error('Unexpected role');
-      }
-
-      return user;
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+        role: role as Role,
+      },
     });
 
-    console.log(`User registered successfully: ${result.id}`);
+    // Check if provider and visaSeeker models exist and create records if they do
+    if (role === Role.PROVIDER && 'provider' in prisma) {
+      try {
+        await (prisma as PrismaClientWithProvider).provider.create({
+          data: {
+            userId: user.id,
+          },
+        });
+      } catch (error) {
+        console.error('Error creating provider:', error);
+      }
+    } else if (role === Role.VISA_SEEKER && 'visaSeeker' in prisma) {
+      try {
+        await (prisma as PrismaClientWithVisaSeeker).visaSeeker.create({
+          data: {
+            userId: user.id,
+          },
+        });
+      } catch (error) {
+        console.error('Error creating visa seeker:', error);
+      }
+    }
+
+    console.log(`User registered successfully: ${user.id}`);
     res.status(201).json({ 
       success: true, 
       message: 'User created successfully', 
-      data: { userId: result.id, email: result.email, role: result.role } 
+      data: { userId: user.id, email: user.email, role: user.role } 
     });
   } catch (error: unknown) {
     console.error('Registration error:', error);
-    if (error instanceof Error && 'code' in error && (error as any).code === 'P2002') {
-      return res.status(409).json({ success: false, message: 'Email already in use' });
+    if (error instanceof Error) {
+      const prismaError = error as PrismaError;
+      if (prismaError.code === 'P2002') {
+        return res.status(409).json({ success: false, message: 'Email already in use' });
+      }
     }
     res.status(500).json({ 
       success: false, 

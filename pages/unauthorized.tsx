@@ -17,7 +17,7 @@ export default function Unauthorized() {
               <div className="divide-y divide-gray-200">
                 <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                   <h2 className="text-3xl font-extrabold text-gray-900">Unauthorized Access</h2>
-                  <p>Sorry, you don't have permission to access this page.</p>
+                  <p>Sorry, you don&apos;t have permission to access this page.</p>
                 </div>
                 <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                   <Link href="/" className="text-red-600 hover:text-red-700">

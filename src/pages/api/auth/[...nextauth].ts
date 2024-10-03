@@ -1,10 +1,14 @@
 import { NextApiHandler } from 'next';
-import NextAuth, { AuthOptions, User, Session } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+import NextAuth, { AuthOptions, User } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
+
+// Define a custom session user type
+interface SessionUser extends User {
+  role: string;
+}
 
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options);
 export default authHandler;
@@ -43,15 +47,15 @@ const options: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" as const },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User & { role?: string } }) {
+    async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT & { role?: string } }) {
+    async session({ session, token }) {
       if (session?.user) {
-        (session.user as any).role = token.role;
+        (session.user as SessionUser).role = token.role as string;
       }
       return session;
     },

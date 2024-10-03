@@ -17,7 +17,7 @@ export default function Custom404() {
               <div className="divide-y divide-gray-200">
                 <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                   <h2 className="text-3xl font-extrabold text-gray-900">404 - Page Not Found</h2>
-                  <p>Oops! The page you're looking for doesn't exist.</p>
+                  <p>Oops! The page you&apos;re looking for doesn&apos;t exist.</p>
                 </div>
                 <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                   <Link href="/" className="text-cyan-600 hover:text-cyan-700">

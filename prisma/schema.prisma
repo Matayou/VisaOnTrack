@@ -11,15 +11,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  firstName     String
-  lastName      String
-  email         String    @unique
-  emailVerified DateTime?
-  password      String
-  role          Role      @default(VISA_SEEKER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                 String               @id @default(cuid())
+  firstName          String
+  lastName           String
+  email              String               @unique
+  emailVerified      DateTime?
+  password           String
+  role               Role                 @default(VISA_SEEKER)
+  verificationToken  String?              @unique
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
   PasswordResetToken PasswordResetToken[]
 }
 

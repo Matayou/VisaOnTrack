@@ -52,14 +52,14 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
       {success && (
-        <Alert variant="default">
+        <Alert variant="default" className="bg-green-50 text-green-800 border-green-300">
           <AlertDescription>{success}</AlertDescription>
         </Alert>
       )}
@@ -71,9 +71,14 @@ export function ForgotPasswordForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
-      <Button type="submit" className="w-full" disabled={isLoading || cooldown > 0}>
+      <Button 
+        type="submit" 
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300" 
+        disabled={isLoading || cooldown > 0}
+      >
         {cooldown > 0 ? `Try again in ${cooldown}s` : (isLoading ? 'Sending...' : 'Reset Password')}
       </Button>
     </form>

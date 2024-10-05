@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,8 @@ export function SignInForm() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -30,9 +32,13 @@ export function SignInForm() {
       })
 
       if (result?.error) {
-        setError('Invalid email or password')
+        if (result.error === 'Email not verified') {
+          router.push(`/verify-email?email=${encodeURIComponent(email)}`)
+        } else {
+          setError('Invalid email or password')
+        }
       } else {
-        router.push('/dashboard')
+        router.push(callbackUrl)
       }
     } catch (err) {
       setError('An error occurred during sign in')
@@ -42,7 +48,7 @@ export function SignInForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
@@ -58,25 +64,27 @@ export function SignInForm() {
           required
         />
       </div>
-      <PasswordInput
-        id="password"
-        label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
+      <div className="space-y-2">
+        <PasswordInput
+          id="password"
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? 'Signing In...' : 'Sign In'}
       </Button>
       <div className="text-center mt-4">
-        <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+        <Link href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-800 transition duration-300">
           Forgot your password?
         </Link>
       </div>
       <div className="text-center">
         <p className="text-sm text-gray-600">
           Don't have an account?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
+          <Link href="/register" className="text-indigo-600 hover:text-indigo-800 transition duration-300">
             Sign up
           </Link>
         </p>

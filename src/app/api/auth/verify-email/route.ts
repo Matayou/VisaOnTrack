@@ -1,44 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
-export async function POST(req: NextRequest) {
-  const { token } = await req.json()
-
-  if (!token) {
-    return NextResponse.json({ message: 'Verification token is required' }, { status: 400 })
-  }
-
+export async function GET(req: Request) {
   try {
-    const user = await prisma.user.findFirst({
-      where: { verificationToken: token }
+    const { searchParams } = new URL(req.url)
+    const token = searchParams.get('token')
+
+    if (!token) {
+      return NextResponse.json({ message: 'Invalid token' }, { status: 400 })
+    }
+
+    const verificationToken = await prisma.verificationToken.findUnique({
+      where: { token },
+    })
+
+    if (!verificationToken) {
+      return NextResponse.json({ message: 'Invalid or expired token' }, { status: 400 })
+    }
+
+    if (verificationToken.expires < new Date()) {
+      await prisma.verificationToken.delete({ where: { id: verificationToken.id } })
+      return NextResponse.json({ message: 'Token has expired' }, { status: 400 })
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: verificationToken.identifier },
     })
 
     if (!user) {
-      return NextResponse.json({ message: 'Invalid verification token' }, { status: 400 })
+      return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
 
-    if (user.emailVerified) {
-      return NextResponse.json({ message: 'Email already verified' }, { status: 400 })
-    }
-
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: user.id },
-      data: {
-        emailVerified: new Date(),
-        verificationToken: null
-      }
+      data: { emailVerified: new Date() },
     })
 
-    return NextResponse.json({ 
-      message: 'Email verified successfully',
-      user: {
-        id: updatedUser.id,
-        email: updatedUser.email,
-        emailVerified: updatedUser.emailVerified
-      }
-    }, { status: 200 })
+    await prisma.verificationToken.delete({ where: { id: verificationToken.id } })
+
+    return NextResponse.json({ message: 'Email verified successfully' })
   } catch (error) {
     console.error('Email verification error:', error)
-    return NextResponse.json({ message: 'An error occurred during email verification' }, { status: 500 })
+    return NextResponse.json({ message: 'An error occurred while verifying your email' }, { status: 500 })
   }
 }

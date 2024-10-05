@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { signIn } from 'next-auth/react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,6 +15,7 @@ export function ServiceProviderRegistrationForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
@@ -23,6 +23,7 @@ export function ServiceProviderRegistrationForm() {
     e.preventDefault()
     setIsLoading(true)
     setError('')
+    setSuccess('')
 
     try {
       const response = await fetch('/api/auth/register-provider', {
@@ -34,17 +35,8 @@ export function ServiceProviderRegistrationForm() {
       const data = await response.json()
       
       if (response.ok) {
-        const signInResult = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
-        })
-
-        if (signInResult?.error) {
-          setError('Registration successful, but there was an error signing in. Please try signing in manually.')
-        } else {
-          router.push(`/verify-email?email=${encodeURIComponent(email)}`)
-        }
+        setSuccess(data.message)
+        setTimeout(() => router.push('/signin'), 5000)
       } else {
         setError(data.message || 'An error occurred during registration')
       }
@@ -56,10 +48,15 @@ export function ServiceProviderRegistrationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      {success && (
+        <Alert variant="default" className="bg-green-50 text-green-800 border-green-300">
+          <AlertDescription>{success}</AlertDescription>
         </Alert>
       )}
       <div className="space-y-2">
@@ -92,20 +89,22 @@ export function ServiceProviderRegistrationForm() {
           required
         />
       </div>
-      <PasswordInput
-        id="password"
-        label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
+      <div className="space-y-2">
+        <PasswordInput
+          id="password"
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? 'Registering...' : 'Register'}
       </Button>
       <div className="text-center mt-4">
         <p className="text-sm text-gray-600">
           Already have an account?{' '}
-          <Link href="/signin" className="text-blue-600 hover:underline">
+          <Link href="/signin" className="text-indigo-600 hover:text-indigo-800 transition duration-300">
             Sign in
           </Link>
         </p>

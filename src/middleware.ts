@@ -10,12 +10,16 @@ export async function middleware(request: NextRequest) {
   }
 
   if (token) {
-    if (request.nextUrl.pathname === '/signin' || request.nextUrl.pathname === '/register') {
+    if (!token.emailVerified && !request.nextUrl.pathname.startsWith('/verify-email')) {
+      return NextResponse.redirect(new URL('/verify-email', request.url))
+    }
+
+    if (token.role === 'provider' && request.nextUrl.pathname === '/dashboard/my-requests') {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
-    if (!token.emailVerified && !request.nextUrl.pathname.startsWith('/verify-email')) {
-      return NextResponse.redirect(new URL('/verify-email', request.url))
+    if (token.role === 'seeker' && request.nextUrl.pathname === '/dashboard/browse-requests') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }
 
@@ -23,11 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/dashboard/:path*',
-    '/signin',
-    '/register',
-    '/verify-email',
-    '/api/auth/:path*'
-  ],
+  matcher: ['/dashboard/:path*', '/verify-email'],
 }

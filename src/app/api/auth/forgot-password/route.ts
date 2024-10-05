@@ -1,41 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { v4 as uuidv4 } from 'uuid'
 import { sendPasswordResetEmail } from '@/lib/email'
 
-export async function POST(req: NextRequest) {
-  const { email } = await req.json()
-
-  if (!email) {
-    return NextResponse.json({ message: 'Email is required' }, { status: 400 })
-  }
-
+export async function POST(req: Request) {
   try {
+    const { email } = await req.json()
+
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     })
 
-    if (!user) {
-      // We don't want to reveal if the email exists or not for security reasons
-      return NextResponse.json({ message: 'If an account exists for this email, a password reset link has been sent.' }, { status: 200 })
+    if (user) {
+      const resetToken = `${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`
+      const resetTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken,
+          resetTokenExpiry,
+        },
+      })
+
+      await sendPasswordResetEmail(email, resetToken)
     }
 
-    const token = uuidv4()
-    const expires = new Date(Date.now() + 3600000) // 1 hour from now
-
-    await prisma.passwordResetToken.create({
-      data: {
-        token,
-        expires,
-        userId: user.id
-      }
-    })
-
-    await sendPasswordResetEmail(user.email, token)
-
-    return NextResponse.json({ message: 'If an account exists for this email, a password reset link has been sent.' }, { status: 200 })
+    // Always return a success message to prevent email enumeration
+    return NextResponse.json({ message: 'If an account with that email exists, we have sent a password reset link' })
   } catch (error) {
-    console.error('Forgot password error:', error)
+    console.error('Password reset error:', error)
     return NextResponse.json({ message: 'An error occurred while processing your request' }, { status: 500 })
   }
 }

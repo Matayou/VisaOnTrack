@@ -7,15 +7,11 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_SERVER_USER,
     pass: process.env.EMAIL_SERVER_PASSWORD,
   },
-  secure: false, // Use TLS
-  tls: {
-    ciphers: 'SSLv3',
-    rejectUnauthorized: false
-  }
+  secure: process.env.EMAIL_SERVER_PORT === '465',
 })
 
 export async function sendVerificationEmail(to: string, token: string) {
-  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`
+  const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${token}`
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
@@ -29,25 +25,34 @@ export async function sendVerificationEmail(to: string, token: string) {
 }
 
 export async function sendPasswordResetEmail(to: string, token: string) {
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`
+  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`
 
-  console.log('Sending password reset email to:', to)
-  console.log('Reset URL:', resetUrl)
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: 'Reset your password for VisaOnTrack',
+    html: `
+      <p>You requested a password reset. Click the link below to reset your password:</p>
+      <p><a href="${resetUrl}">${resetUrl}</a></p>
+      <p>If you didn't request this, please ignore this email.</p>
+    `,
+  })
+}
 
-  try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to,
-      subject: 'Reset your password for VisaOnTrack',
-      html: `
-        <p>You requested a password reset. Click the link below to reset your password:</p>
-        <p><a href="${resetUrl}">${resetUrl}</a></p>
-        <p>If you didn't request this, you can safely ignore this email.</p>
-      `,
-    })
-
-    console.log('Email sent successfully:', info.response)
-  } catch (error) {
-    console.error('Error sending email:', error)
-  }
+export async function sendWelcomeEmail(to: string, name: string) {
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: 'Welcome to VisaOnTrack',
+    html: `
+      <h1>Welcome to VisaOnTrack, ${name}!</h1>
+      <p>We're excited to have you on board. Here are some next steps:</p>
+      <ul>
+        <li>Complete your profile</li>
+        <li>Explore available visa services</li>
+        <li>Start your visa application process</li>
+      </ul>
+      <p>If you have any questions, feel free to reach out to our support team.</p>
+    `,
+  })
 }

@@ -1,11 +1,12 @@
 import React from 'react'
-import { Inter } from 'next/font/google'
+import { Inter, Poppins } from 'next/font/google'
 import { Providers } from '@/components/Providers'
-import { Layout } from '@/components/Layout'
+import { HeaderNavigation } from '@/components/HeaderNavigation'
 import Footer from '@/components/Footer'
-import '@/styles/globals.css'
+import '@/app/globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const poppins = Poppins({ weight: ['400', '600', '700'], subsets: ['latin'], variable: '--font-poppins' })
 
 export const metadata = {
   title: 'VisaOnTrack',
@@ -18,15 +19,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} flex flex-col min-h-screen bg-white`}>
+    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
+      <body className="flex flex-col min-h-screen bg-gray-50 font-sans">
         <Providers>
-          <Layout>
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </Layout>
+          <HeaderNavigation />
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
         </Providers>
       </body>
     </html>

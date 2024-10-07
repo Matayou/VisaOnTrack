@@ -11,29 +11,24 @@ export async function POST(req: Request) {
     })
 
     if (!user) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 })
+      return NextResponse.json({ message: 'No user found with this email' }, { status: 404 })
     }
 
     if (user.emailVerified) {
-      return NextResponse.json({ message: 'Email already verified' }, { status: 400 })
+      return NextResponse.json({ message: 'Email is already verified' }, { status: 400 })
     }
 
-    // Delete any existing verification tokens for this user
-    await prisma.verificationToken.deleteMany({
-      where: { identifier: email },
-    })
+    // Generate new verification token
+    const verificationToken = `${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`
 
-    // Create a new verification token
-    const verificationToken = await prisma.verificationToken.create({
-      data: {
-        identifier: email,
-        token: `${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
-      },
+    // Update user with new verification token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { verificationToken },
     })
 
     // Send verification email
-    await sendVerificationEmail(email, verificationToken.token)
+    await sendVerificationEmail(email, verificationToken)
 
     return NextResponse.json({ message: 'Verification email sent successfully' })
   } catch (error) {

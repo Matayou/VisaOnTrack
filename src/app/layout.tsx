@@ -23,9 +23,9 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen bg-gray-50 font-sans">
         <Providers>
           <HeaderNavigation />
-          <div className="flex-grow">
+          <main className="flex-grow container mx-auto px-4 py-8">
             {children}
-          </div>
+          </main>
           <Footer />
         </Providers>
       </body>

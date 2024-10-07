@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import bcrypt from 'bcrypt'
 import prisma from '@/lib/prisma'
-import { sendVerificationEmail, sendWelcomeEmail } from '@/lib/email'
+import bcrypt from 'bcrypt'
+import { sendVerificationEmail } from '@/lib/email'
 
 export async function POST(req: Request) {
   try {
@@ -29,16 +29,13 @@ export async function POST(req: Request) {
         lastName,
         email,
         password: hashedPassword,
-        role: 'seeker',
+        role: 'SEEKER', // Default role, can be changed later if needed
         verificationToken,
       },
     })
 
     // Send verification email
     await sendVerificationEmail(email, verificationToken)
-
-    // Send welcome email
-    await sendWelcomeEmail(email, firstName)
 
     return NextResponse.json({ message: 'User created successfully. Please check your email to verify your account.' }, { status: 201 })
   } catch (error) {

@@ -33,15 +33,39 @@ export function SignInForm() {
 
       if (result?.error) {
         if (result.error === 'Email not verified') {
-          router.push(`/verify-email?email=${encodeURIComponent(email)}`)
+          setError('Your email is not verified. Please check your inbox for a verification email or request a new one.')
         } else {
-          setError('Invalid email or password')
+          setError(result.error || 'An error occurred during sign in')
         }
       } else {
         router.push(callbackUrl)
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Sign in error:', error)
       setError('An error occurred during sign in')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleResendVerification = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      if (response.ok) {
+        setError('A new verification email has been sent. Please check your inbox.')
+      } else {
+        const data = await response.json()
+        setError(data.message || 'Failed to resend verification email')
+      }
+    } catch (error) {
+      console.error('Resend verification error:', error)
+      setError('An error occurred while resending the verification email')
     } finally {
       setIsLoading(false)
     }
@@ -52,6 +76,11 @@ export function SignInForm() {
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
+          {error.includes('not verified') && (
+            <Button onClick={handleResendVerification} variant="link" className="mt-2 p-0">
+              Resend verification email
+            </Button>
+          )}
         </Alert>
       )}
       <div className="space-y-2">
@@ -83,7 +112,7 @@ export function SignInForm() {
       </div>
       <div className="text-center">
         <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/register" className="text-indigo-600 hover:text-indigo-800 transition duration-300">
             Sign up
           </Link>

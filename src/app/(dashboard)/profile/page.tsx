@@ -1,7 +1,7 @@
 import React from 'react'
 import { getServerSession } from "next-auth/next"
 import { redirect } from 'next/navigation'
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 
 export default async function ProfilePage() {

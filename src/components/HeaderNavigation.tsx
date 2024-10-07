@@ -1,12 +1,17 @@
 'use client';
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from "@/components/ui/button"
 
 export function HeaderNavigation() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+
+  useEffect(() => {
+    console.log('Session status:', status)
+    console.log('Session data:', session)
+  }, [session, status])
 
   return (
     <header className="bg-white shadow-sm">
@@ -15,24 +20,34 @@ export function HeaderNavigation() {
           VisaOnTrack
         </Link>
         <div className="space-x-4">
-          {session ? (
+          {status === 'loading' ? (
+            <span>Loading...</span>
+          ) : session ? (
             <>
-              <Button asChild variant="ghost">
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-              {session.user.role === 'provider' && (
+              {session.user.emailVerified ? (
+                <>
+                  <Button asChild variant="ghost">
+                    <Link href="/dashboard">Dashboard</Link>
+                  </Button>
+                  {session.user.role === 'provider' && (
+                    <Button asChild variant="ghost">
+                      <Link href="/dashboard/browse-requests">Browse Requests</Link>
+                    </Button>
+                  )}
+                  {session.user.role === 'seeker' && (
+                    <Button asChild variant="ghost">
+                      <Link href="/dashboard/my-requests">My Requests</Link>
+                    </Button>
+                  )}
+                  <Button asChild variant="ghost">
+                    <Link href="/profile">Profile</Link>
+                  </Button>
+                </>
+              ) : (
                 <Button asChild variant="ghost">
-                  <Link href="/browse-requests">Browse Requests</Link>
+                  <Link href="/verify-email">Verify Email</Link>
                 </Button>
               )}
-              {session.user.role === 'seeker' && (
-                <Button asChild variant="ghost">
-                  <Link href="/my-requests">My Requests</Link>
-                </Button>
-              )}
-              <Button asChild variant="ghost">
-                <Link href="/profile">Profile</Link>
-              </Button>
               <Button onClick={() => signOut()} variant="outline">
                 Sign Out
               </Button>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -40,11 +41,16 @@ export function VisaSeekerRegistrationForm() {
       } else {
         setError(data.message || 'An error occurred during registration')
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Registration error:', error)
       setError('An error occurred during registration')
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleSocialSignUp = (provider: string) => {
+    signIn(provider, { callbackUrl: '/dashboard' })
   }
 
   return (
@@ -101,6 +107,25 @@ export function VisaSeekerRegistrationForm() {
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? 'Registering...' : 'Register'}
       </Button>
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">Or sign up with</span>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        <Button type="button" variant="outline" onClick={() => handleSocialSignUp('google')}>
+          Google
+        </Button>
+        <Button type="button" variant="outline" onClick={() => handleSocialSignUp('facebook')}>
+          Facebook
+        </Button>
+        <Button type="button" variant="outline" onClick={() => handleSocialSignUp('microsoft')}>
+          Microsoft
+        </Button>
+      </div>
       <div className="text-center mt-4">
         <p className="text-sm text-gray-600">
           Already have an account?{' '}

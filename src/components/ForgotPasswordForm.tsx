@@ -44,7 +44,8 @@ export function ForgotPasswordForm() {
       } else {
         setError(data.message || 'An error occurred while processing your request')
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Forgot password error:', error)
       setError('An error occurred while processing your request')
     } finally {
       setIsLoading(false)

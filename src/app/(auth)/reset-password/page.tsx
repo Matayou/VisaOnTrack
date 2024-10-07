@@ -1,55 +1,54 @@
 'use client';
 
-import React, { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { PasswordInput } from "@/components/ui/PasswordInput"
+import React, { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function ResetPasswordPage() {
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
+      setError('Passwords do not match');
+      return;
     }
 
-    setIsLoading(true)
-    setError('')
-    setSuccess('')
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
 
     try {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password }),
-      })
+      });
       
-      const data = await response.json()
+      const data = await response.json();
       
       if (response.ok) {
-        setSuccess('Password reset successfully. Redirecting to login...')
-        setTimeout(() => router.push('/signin'), 3000)
+        setSuccess('Password reset successfully. Redirecting to login...');
+        setTimeout(() => router.push('/signin'), 3000);
       } else {
-        setError(data.message || 'An error occurred while resetting your password')
+        setError(data.message || 'An error occurred while resetting your password');
       }
-    } catch (err) {
-      setError('An error occurred while resetting your password')
+    } catch (error) {
+      setError('An error occurred while resetting your password');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -72,19 +71,21 @@ export default function ResetPasswordPage() {
                 <AlertDescription>{success}</AlertDescription>
               </Alert>
             )}
-            <div className="space-y-2">
-              <PasswordInput
+            <div>
+              <Label htmlFor="password">New Password</Label>
+              <Input
                 id="password"
-                label="New Password"
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <div className="space-y-2">
-              <PasswordInput
+            <div>
+              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Input
                 id="confirmPassword"
-                label="Confirm New Password"
+                type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
@@ -101,5 +102,5 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

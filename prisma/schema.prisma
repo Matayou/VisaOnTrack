@@ -17,7 +17,7 @@ model User {
   email              String               @unique
   emailVerified      DateTime?
   password           String
-  role               Role                 @default(VISA_SEEKER)
+  role               Role                 @default(SEEKER)
   verificationToken  String?              @unique
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
@@ -36,6 +36,5 @@ model PasswordResetToken {
 enum Role {
   ADMIN
   PROVIDER
-  VISA_SEEKER
-  SERVICE_PROVIDER
+  SEEKER
 }

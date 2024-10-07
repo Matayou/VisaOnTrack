@@ -1,58 +1,55 @@
-import nodemailer from 'nodemailer'
-
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVER_HOST,
-  port: parseInt(process.env.EMAIL_SERVER_PORT || '587'),
-  auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
-  },
-  secure: process.env.EMAIL_SERVER_PORT === '465',
-})
+// Mock email service for development
+const sendEmail = async (to: string, subject: string, html: string) => {
+  console.log('Sending email:');
+  console.log('To:', to);
+  console.log('Subject:', subject);
+  console.log('Content:', html);
+};
 
 export async function sendVerificationEmail(to: string, token: string) {
-  const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${token}`
+  const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${token}`;
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+  await sendEmail(
     to,
-    subject: 'Verify your email for VisaOnTrack',
-    html: `
+    'Verify your email for VisaOnTrack',
+    `
+      <h1>Welcome to VisaOnTrack!</h1>
       <p>Please click the link below to verify your email address:</p>
-      <p><a href="${verificationUrl}">${verificationUrl}</a></p>
-    `,
-  })
+      <a href="${verificationUrl}">${verificationUrl}</a>
+      <p>If you didn't request this email, you can safely ignore it.</p>
+    `
+  );
 }
 
-export async function sendPasswordResetEmail(to: string, token: string) {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`
-
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+export async function sendWelcomeEmail(to: string, firstName: string) {
+  await sendEmail(
     to,
-    subject: 'Reset your password for VisaOnTrack',
-    html: `
-      <p>You requested a password reset. Click the link below to reset your password:</p>
-      <p><a href="${resetUrl}">${resetUrl}</a></p>
-      <p>If you didn't request this, please ignore this email.</p>
-    `,
-  })
-}
-
-export async function sendWelcomeEmail(to: string, name: string) {
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
-    to,
-    subject: 'Welcome to VisaOnTrack',
-    html: `
-      <h1>Welcome to VisaOnTrack, ${name}!</h1>
+    'Welcome to VisaOnTrack',
+    `
+      <h1>Welcome to VisaOnTrack, ${firstName}!</h1>
       <p>We're excited to have you on board. Here are some next steps:</p>
       <ul>
         <li>Complete your profile</li>
         <li>Explore available visa services</li>
-        <li>Start your visa application process</li>
+        <li>Connect with service providers</li>
       </ul>
       <p>If you have any questions, feel free to reach out to our support team.</p>
-    `,
-  })
+    `
+  );
+}
+
+export async function sendPasswordResetEmail(to: string, token: string) {
+  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
+
+  await sendEmail(
+    to,
+    'Reset your password for VisaOnTrack',
+    `
+      <h1>Reset Your Password</h1>
+      <p>You requested a password reset for your VisaOnTrack account. Click the link below to set a new password:</p>
+      <a href="${resetUrl}">${resetUrl}</a>
+      <p>If you didn't request this email, you can safely ignore it.</p>
+      <p>This link will expire in 1 hour.</p>
+    `
+  );
 }

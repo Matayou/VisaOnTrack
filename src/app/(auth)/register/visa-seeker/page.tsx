@@ -1,5 +1,7 @@
 import React from 'react'
+import Link from 'next/link'
 import { VisaSeekerRegistrationForm } from '@/components/VisaSeekerRegistrationForm'
+import { Button } from "@/components/ui/button"
 
 export default function VisaSeekerRegistrationPage() {
   return (
@@ -16,6 +18,11 @@ export default function VisaSeekerRegistrationPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <VisaSeekerRegistrationForm />
+          <div className="mt-6 text-center">
+            <Button asChild variant="link">
+              <Link href="/register">Back to account type selection</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

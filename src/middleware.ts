@@ -5,16 +5,26 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request })
 
-  console.log('Middleware - Token:', token)
+  // Paths that should not be accessible if the user is logged in
+  const authRoutes = ['/signin', '/register', '/forgot-password', '/reset-password']
 
+  // If the user is logged in and trying to access an auth route, redirect to dashboard
+  if (token && authRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // If the user is not logged in, allow access to auth routes
+  if (!token && authRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
+    return NextResponse.next()
+  }
+
+  // If the user is not logged in and trying to access a protected route, redirect to signin
   if (!token) {
-    console.log('Middleware - No token, redirecting to signin')
     return NextResponse.redirect(new URL('/signin', request.url))
   }
 
   // Check if the user is a service provider and trying to access protected routes
   if (token.role === 'PROVIDER' && isProtectedRoute(request.nextUrl.pathname)) {
-    console.log('Middleware - Service provider accessing protected route')
     // Fetch profile data
     const profileResponse = await fetch(`${request.nextUrl.origin}/api/user/profile?userId=${token.sub}`, {
       headers: {
@@ -24,7 +34,6 @@ export async function middleware(request: NextRequest) {
     
     if (profileResponse.ok) {
       const profileData = await profileResponse.json()
-      console.log('Middleware - Profile data:', profileData)
       
       // Check if profile is complete
       const isProfileComplete = profileData.about && 
@@ -56,5 +65,13 @@ function isProtectedRoute(pathname: string): boolean {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/browse-requests/:path*', '/profile'],
+  matcher: [
+    '/dashboard/:path*', 
+    '/browse-requests/:path*', 
+    '/profile',
+    '/signin',
+    '/register/:path*',
+    '/forgot-password',
+    '/reset-password',
+  ],
 }

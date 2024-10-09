@@ -7,24 +7,21 @@ import { signIn } from 'next-auth/react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { PasswordInput } from "@/components/ui/PasswordInput"
+import { useToast } from "@/components/ui/use-toast"
 
 export function VisaSeekerRegistrationForm() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
-    setError('')
-    setSuccess('')
 
     try {
       const response = await fetch('/api/auth/register-visa-seeker', {
@@ -36,14 +33,25 @@ export function VisaSeekerRegistrationForm() {
       const data = await response.json()
       
       if (response.ok) {
-        setSuccess(data.message)
+        toast({
+          title: "Success",
+          description: data.message,
+        })
         setTimeout(() => router.push('/signin'), 5000)
       } else {
-        setError(data.message || 'An error occurred during registration')
+        toast({
+          title: "Error",
+          description: data.message || 'An error occurred during registration',
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error('Registration error:', error)
-      setError('An error occurred during registration')
+      toast({
+        title: "Error",
+        description: 'An error occurred during registration',
+        variant: "destructive",
+      })
     } finally {
       setIsLoading(false)
     }
@@ -55,16 +63,6 @@ export function VisaSeekerRegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-      {success && (
-        <Alert variant="default" className="bg-green-50 text-green-800 border-green-300">
-          <AlertDescription>{success}</AlertDescription>
-        </Alert>
-      )}
       <div className="space-y-2">
         <Label htmlFor="firstName">First Name</Label>
         <Input

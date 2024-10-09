@@ -5,28 +5,29 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
       return;
     }
 
     setIsLoading(true);
-    setError('');
-    setSuccess('');
 
     try {
       const response = await fetch('/api/auth/reset-password', {
@@ -38,13 +39,24 @@ export default function ResetPasswordPage() {
       const data = await response.json();
       
       if (response.ok) {
-        setSuccess('Password reset successfully. Redirecting to login...');
+        toast({
+          title: "Success",
+          description: "Password reset successfully. Redirecting to login...",
+        });
         setTimeout(() => router.push('/signin'), 3000);
       } else {
-        setError(data.message || 'An error occurred while resetting your password');
+        toast({
+          title: "Error",
+          description: data.message || 'An error occurred while resetting your password',
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      setError('An error occurred while resetting your password');
+      toast({
+        title: "Error",
+        description: 'An error occurred while resetting your password',
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -61,16 +73,6 @@ export default function ResetPasswordPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            {success && (
-              <Alert variant="default" className="bg-green-50 text-green-800 border-green-300">
-                <AlertDescription>{success}</AlertDescription>
-              </Alert>
-            )}
             <div>
               <Label htmlFor="password">New Password</Label>
               <Input

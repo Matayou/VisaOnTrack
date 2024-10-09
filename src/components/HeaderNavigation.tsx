@@ -26,15 +26,17 @@ export function HeaderNavigation() {
             <>
               {session.user.emailVerified ? (
                 <>
-                  <Button asChild variant="ghost">
-                    <Link href="/dashboard">Dashboard</Link>
-                  </Button>
-                  {session.user.role === 'provider' && (
-                    <Button asChild variant="ghost">
-                      <Link href="/dashboard/browse-requests">Browse Requests</Link>
-                    </Button>
+                  {session.user.role === 'PROVIDER' && (
+                    <>
+                      <Button asChild variant="ghost">
+                        <Link href="/dashboard">Dashboard</Link>
+                      </Button>
+                      <Button asChild variant="ghost">
+                        <Link href="/dashboard/browse-requests">Browse Requests</Link>
+                      </Button>
+                    </>
                   )}
-                  {session.user.role === 'seeker' && (
+                  {session.user.role === 'SEEKER' && (
                     <Button asChild variant="ghost">
                       <Link href="/dashboard/my-requests">My Requests</Link>
                     </Button>

@@ -3,40 +3,58 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
+  const token = await getToken({ req: request })
 
-  // Allow access to the verification endpoint and verify-email page
-  if (request.nextUrl.pathname.startsWith('/api/auth/verify-email') || 
-      request.nextUrl.pathname === '/verify-email') {
-    return NextResponse.next()
-  }
+  console.log('Middleware - Token:', token)
 
-  // Redirect logged-in users from the landing page to the dashboard
-  if (token && request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
-
-  if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {
+  if (!token) {
+    console.log('Middleware - No token, redirecting to signin')
     return NextResponse.redirect(new URL('/signin', request.url))
   }
 
-  if (token) {
-    if (!token.emailVerified && !request.nextUrl.pathname.startsWith('/verify-email')) {
-      return NextResponse.redirect(new URL('/verify-email', request.url))
-    }
+  // Check if the user is a service provider and trying to access protected routes
+  if (token.role === 'PROVIDER' && isProtectedRoute(request.nextUrl.pathname)) {
+    console.log('Middleware - Service provider accessing protected route')
+    // Fetch profile data
+    const profileResponse = await fetch(`${request.nextUrl.origin}/api/user/profile?userId=${token.sub}`, {
+      headers: {
+        'Cookie': request.headers.get('cookie') || '',
+      },
+    })
+    
+    if (profileResponse.ok) {
+      const profileData = await profileResponse.json()
+      console.log('Middleware - Profile data:', profileData)
+      
+      // Check if profile is complete
+      const isProfileComplete = profileData.about && 
+                                profileData.about.trim() !== '' &&
+                                profileData.areaOfExpertise &&
+                                profileData.areaOfExpertise.length > 0 && 
+                                profileData.location &&
+                                profileData.location.trim() !== ''
 
-    if (token.role === 'provider' && request.nextUrl.pathname === '/dashboard/my-requests') {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
+      console.log('Middleware - Is profile complete:', isProfileComplete)
 
-    if (token.role === 'seeker' && request.nextUrl.pathname === '/dashboard/browse-requests') {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      if (!isProfileComplete) {
+        console.log('Middleware - Profile incomplete, redirecting to profile page')
+        return NextResponse.redirect(new URL('/profile', request.url))
+      }
+    } else {
+      console.log('Middleware - Error fetching profile data, redirecting to profile page')
+      return NextResponse.redirect(new URL('/profile', request.url))
     }
   }
 
+  console.log('Middleware - Allowing access to:', request.nextUrl.pathname)
   return NextResponse.next()
 }
 
+function isProtectedRoute(pathname: string): boolean {
+  const protectedRoutes = ['/dashboard', '/browse-requests']
+  return protectedRoutes.some(route => pathname.startsWith(route))
+}
+
 export const config = {
-  matcher: ['/', '/dashboard/:path*', '/verify-email', '/api/auth/verify-email'],
+  matcher: ['/dashboard/:path*', '/browse-requests/:path*', '/profile'],
 }

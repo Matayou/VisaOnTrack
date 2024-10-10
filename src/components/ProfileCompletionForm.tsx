@@ -61,65 +61,75 @@ export function ProfileCompletionForm() {
     }
   };
 
+  const renderStep = () => {
+    switch (step) {
+      case 'dob':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+            <input
+              type="date"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+        );
+      case 'nationality':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Nationality</label>
+            <input
+              type="text"
+              name="nationality"
+              value={formData.nationality}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+        );
+      case 'visaType':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Current Thai Visa Type</label>
+            <input
+              type="text"
+              name="thaiVisaType"
+              value={formData.thaiVisaType}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+        );
+      case 'visaExpiry':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Visa Expiry Date</label>
+            <input
+              type="date"
+              name="visaExpiryDate"
+              value={formData.visaExpiryDate}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+        );
+    }
+  };
+
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-      <h2 className="text-2xl font-bold mb-4">Complete Your Profile</h2>
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h3 className="text-xl font-semibold text-gray-800 mb-4">Step {['dob', 'nationality', 'visaType', 'visaExpiry'].indexOf(step) + 1} of 4</h3>
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      {step === 'dob' && (
-        <div>
-          <label className="block mb-2">Date of Birth</label>
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-      )}
-      {step === 'nationality' && (
-        <div>
-          <label className="block mb-2">Nationality</label>
-          <input
-            type="text"
-            name="nationality"
-            value={formData.nationality}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-      )}
-      {step === 'visaType' && (
-        <div>
-          <label className="block mb-2">Current Thai Visa Type</label>
-          <input
-            type="text"
-            name="thaiVisaType"
-            value={formData.thaiVisaType}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-      )}
-      {step === 'visaExpiry' && (
-        <div>
-          <label className="block mb-2">Visa Expiry Date</label>
-          <input
-            type="date"
-            name="visaExpiryDate"
-            value={formData.visaExpiryDate}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-      )}
+      {renderStep()}
       <button
         onClick={handleNext}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       >
         {step === 'visaExpiry' ? 'Submit' : 'Next'}
       </button>

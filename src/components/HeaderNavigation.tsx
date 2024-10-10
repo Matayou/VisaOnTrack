@@ -9,7 +9,7 @@ export function HeaderNavigation() {
   const { data: session, status } = useSession()
 
   return (
-    <header className="bg-white shadow-sm w-full">
+    <header className="bg-white shadow-sm w-full sticky top-0 z-10">
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold text-indigo-600 font-poppins">
           VisaOnTrack

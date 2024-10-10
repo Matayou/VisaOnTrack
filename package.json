@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
@@ -32,7 +33,10 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^14.2.1",
     "@types/bcrypt": "^5.0.2",
+    "@types/jest": "^29.5.12",
     "@types/node": "20.16.10",
     "@types/nodemailer": "^6.4.16",
     "@types/react": "18.3.11",
@@ -41,6 +45,8 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.47",
     "prisma": "^5.20.0",
     "tailwindcss": "^3.4.13",

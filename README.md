@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Visa On Track
+
+This is a Next.js project for visa tracking and management.
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev`: Runs the app in development mode.
+- `npm run build`: Builds the app for production.
+- `npm start`: Runs the built app in production mode.
+- `npm run lint`: Runs the linter to check for code style issues.
+- `npm test`: Runs the Jest test suite.
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app`: Contains the Next.js app router pages and layouts.
+- `src/components`: Reusable React components.
+- `src/lib`: Utility functions and shared logic.
+- `prisma`: Database schema and migrations.
+- `__tests__`: Jest test files.
+- `public`: Static assets.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Technologies Used
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js
+- React
+- TypeScript
+- Prisma
+- Tailwind CSS
+- NextAuth.js
+- Jest and React Testing Library
 
-## Deploy on Vercel
+## Testing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To run the tests, use the following command:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm test
+```
+
+This will run all tests in the `__tests__` directory.
+
+## Configuration Files
+
+- `next.config.mjs`: Next.js configuration
+- `jest.config.js`: Jest configuration
+- `jest.setup.js`: Jest setup file
+- `tsconfig.json`: TypeScript configuration
+- `.eslintrc.json`: ESLint configuration
+
+For more details on the project architecture and decisions, please refer to the documentation in the `docs` folder.

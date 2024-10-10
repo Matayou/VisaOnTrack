@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
 import prisma from '@/lib/prisma'
 import { sendVerificationEmail, sendWelcomeEmail } from '@/lib/email'
+import { Role } from '@prisma/client'
 
 export async function POST(req: Request) {
   try {
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
         lastName,
         email,
         password: hashedPassword,
-        role: 'seeker',
+        role: Role.SEEKER,
         verificationToken,
       },
     })

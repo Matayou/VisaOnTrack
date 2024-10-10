@@ -1,79 +1,85 @@
-import { NextAuthOptions, User } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import prisma from "@/lib/prisma"
-import bcrypt from "bcrypt"
+import { NextAuthOptions, User } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "./prisma";
+import { compare } from "bcrypt";
+
+interface CustomUser extends User {
+  role: string;
+  profileCompleted: boolean;
+}
 
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Sign in",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" }
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "example@example.com",
+        },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Please enter both email and password')
+      async authorize(credentials): Promise<User | null> {
+        if (!credentials?.email || !credentials.password) {
+          return null;
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        })
+          where: {
+            email: credentials.email,
+          },
+        });
 
         if (!user) {
-          throw new Error('No user found with this email')
+          return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+        const isPasswordValid = await compare(
+          credentials.password,
+          user.password
+        );
 
         if (!isPasswordValid) {
-          throw new Error('Invalid password')
-        }
-
-        if (!user.emailVerified) {
-          throw new Error('Email not verified')
+          return null;
         }
 
         return {
           id: user.id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: `${user.firstName} ${user.lastName}`,
           role: user.role,
-          emailVerified: user.emailVerified,
-        } as User
-      }
-    })
+          profileCompleted: user.profileCompleted,
+        } as CustomUser;
+      },
+    }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.email = user.email
-        token.firstName = user.firstName
-        token.lastName = user.lastName
-        token.role = user.role
-        token.emailVerified = user.emailVerified
-      }
-      return token
+    session: ({ session, token }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          role: token.role,
+          profileCompleted: token.profileCompleted,
+        },
+      };
     },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string
-        session.user.email = token.email as string
-        session.user.firstName = token.firstName as string
-        session.user.lastName = token.lastName as string
-        session.user.role = token.role as string
-        session.user.emailVerified = token.emailVerified as Date | null
+    jwt: ({ token, user }) => {
+      if (user) {
+        const u = user as CustomUser;
+        return {
+          ...token,
+          id: u.id,
+          role: u.role,
+          profileCompleted: u.profileCompleted,
+        };
       }
-      return session
-    }
+      return token;
+    },
   },
-  pages: {
-    signIn: '/signin',
-    error: '/auth/error',
-  },
-  session: {
-    strategy: 'jwt',
-  },
-}
+};

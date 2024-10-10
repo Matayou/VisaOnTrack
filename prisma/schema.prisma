@@ -23,6 +23,11 @@ model User {
   updatedAt          DateTime             @updatedAt
   PasswordResetToken PasswordResetToken[]
   serviceProviderProfile ServiceProviderProfile?
+  dateOfBirth        DateTime?
+  nationality        String?
+  thaiVisaType       String?
+  visaExpiryDate     DateTime?
+  profileCompleted   Boolean              @default(false)
 }
 
 model PasswordResetToken {

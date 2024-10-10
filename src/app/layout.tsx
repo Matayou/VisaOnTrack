@@ -20,17 +20,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
         <Providers>
-          <div className="flex flex-col min-h-screen">
-            <HeaderNavigation />
-            <main className="flex-grow">
-              <div className="container mx-auto px-4">
-                {children}
-              </div>
-            </main>
-            <Footer />
-          </div>
+          <HeaderNavigation />
+          <main className="flex-grow container mx-auto px-4">
+            {children}
+          </main>
+          <Footer />
           <Toaster />
         </Providers>
       </body>

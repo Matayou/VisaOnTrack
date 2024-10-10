@@ -14,8 +14,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const userRole = session?.user?.role || 'guest'
 
   return (
-    <div className="flex">
-      <aside className="w-64 bg-gray-100 min-h-screen p-4">
+    <div className="flex flex-col md:flex-row">
+      <aside className="w-full md:w-64 bg-gray-100 p-4">
         <nav className="space-y-2">
           <Link
             href="/dashboard"
@@ -37,29 +37,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               Browse Requests
             </Link>
           )}
-          {userRole === 'SEEKER' && (
-            <Link
-              href="/dashboard/my-requests"
-              aria-label="View My Requests"
-              className={`block p-2 rounded ${
-                isActive('/dashboard/my-requests') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              My Requests
-            </Link>
-          )}
           <Link
-            href="/profile"
-            aria-label="Go to Profile"
+            href="/account"
+            aria-label="Go to Account"
             className={`block p-2 rounded ${
-              isActive('/profile') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
+              isActive('/account') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Profile
+            Account
           </Link>
         </nav>
       </aside>
-      <main className="flex-1 p-8">{children}</main>
+      <main className="flex-1 p-4">
+        {children}
+      </main>
     </div>
   )
 }

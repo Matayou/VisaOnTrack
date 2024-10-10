@@ -1,23 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare global {
-  // eslint-disable-next-line no-var
-  var prisma: any
-}
+import { PrismaClient } from '@prisma/client'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let prisma: any
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-if (typeof window === 'undefined') {
-  if (process.env.NODE_ENV === 'production') {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    prisma = new (require('@prisma/client') as any).PrismaClient()
-  } else {
-    if (!global.prisma) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      global.prisma = new (require('@prisma/client') as any).PrismaClient()
-    }
-    prisma = global.prisma
-  }
-}
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    log: ['query'],
+  })
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 export default prisma

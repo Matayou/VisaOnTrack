@@ -1,75 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
-export default function VerifyEmailPage() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [message, setMessage] = useState('');
-  const router = useRouter();
+const VerifyEmailContent = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  const email = searchParams.get('email');
+  const [verificationStatus, setVerificationStatus] = useState<{ success: boolean; error?: string } | null>(null);
 
-  const verifyEmail = async () => {
-    if (!token) {
-      setStatus('error');
-      setMessage('No verification token provided.');
-      return;
-    }
+  useEffect(() => {
+    const verifyEmail = async () => {
+      try {
+        const response = await fetch('/api/auth/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
 
-    setStatus('loading');
-    try {
-      const response = await fetch(`/api/auth/verify-email?token=${token}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        setStatus('success');
-        setMessage(data.message);
-        setTimeout(() => router.push('/signin'), 3000);
-      } else {
-        setStatus('error');
-        setMessage(data.message);
+        if (response.ok) {
+          setVerificationStatus({ success: true });
+        } else {
+          const error = await response.text();
+          setVerificationStatus({ success: false, error });
+        }
+      } catch (error) {
+        setVerificationStatus({ success: false, error: 'An unexpected error occurred' });
       }
-    } catch (error) {
-      setStatus('error');
-      setMessage('An error occurred while verifying your email.');
-    }
-  };
+    };
 
-  const resendVerificationEmail = async () => {
-    if (!email) {
-      setStatus('error');
-      setMessage('No email provided for resending verification.');
-      return;
+    if (token) {
+      verifyEmail();
+    } else {
+      setVerificationStatus({ success: false, error: 'No verification token provided' });
     }
+  }, [token]);
 
-    setStatus('loading');
-    try {
-      const response = await fetch('/api/auth/resend-verification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const data = await response.json();
-
-      if (response.ok) {
-        setStatus('success');
-        setMessage(data.message);
-      } else {
-        setStatus('error');
-        setMessage(data.message);
-      }
-    } catch (error) {
-      setStatus('error');
-      setMessage('An error occurred while resending the verification email.');
-    }
-  };
+  if (!verificationStatus) {
+    return <div>Verifying email...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Email Verification
@@ -78,27 +50,26 @@ export default function VerifyEmailPage() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {status === 'idle' && token && (
-            <Button onClick={verifyEmail} className="w-full">
-              Verify Email
-            </Button>
+          {verificationStatus.success ? (
+            <p className="text-green-600 text-center">Your email has been verified successfully!</p>
+          ) : (
+            <p className="text-red-600 text-center">{verificationStatus.error || 'Failed to verify email.'}</p>
           )}
-          {status === 'loading' && <p>Processing...</p>}
-          {(status === 'success' || status === 'error') && (
-            <Alert variant={status === 'success' ? 'default' : 'destructive'}>
-              <AlertDescription>{message}</AlertDescription>
-            </Alert>
-          )}
-          {!token && email && (
-            <Button onClick={resendVerificationEmail} className="w-full mt-4">
-              Resend Verification Email
-            </Button>
-          )}
-          <Button onClick={() => router.push('/signin')} className="w-full mt-4">
-            Go to Sign In
-          </Button>
+          <div className="mt-6">
+            <Link href="/signin" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Go to Sign In
+            </Link>
+          </div>
         </div>
       </div>
     </div>
+  );
+};
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

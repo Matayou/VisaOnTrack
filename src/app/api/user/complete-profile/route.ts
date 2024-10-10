@@ -23,6 +23,9 @@ export async function POST(req: Request) {
       },
     });
 
+    // Update the session
+    session.user.profileCompleted = true;
+
     return NextResponse.json({ 
       message: 'Profile updated successfully', 
       user: {
@@ -33,6 +36,9 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error('Error updating profile:', error);
-    return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
   }
 }

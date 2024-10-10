@@ -2,6 +2,7 @@ import { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "./prisma";
 import { compare } from "bcrypt";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 interface CustomUser extends User {
   role: string;
@@ -9,6 +10,7 @@ interface CustomUser extends User {
 }
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
   },
@@ -58,28 +60,19 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: ({ session, token }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          role: token.role,
-          profileCompleted: token.profileCompleted,
-        },
-      };
-    },
-    jwt: ({ token, user }) => {
+    async jwt({ token, user }) {
       if (user) {
-        const u = user as CustomUser;
-        return {
-          ...token,
-          id: u.id,
-          role: u.role,
-          profileCompleted: u.profileCompleted,
-        };
+        token.role = (user as CustomUser).role;
+        token.profileCompleted = (user as CustomUser).profileCompleted;
       }
       return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as CustomUser).role = token.role as string;
+        (session.user as CustomUser).profileCompleted = token.profileCompleted as boolean;
+      }
+      return session;
     },
   },
 };

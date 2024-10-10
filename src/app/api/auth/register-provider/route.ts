@@ -1,20 +1,34 @@
 import { NextResponse } from 'next/server'
-import { AuthService } from '@/lib/auth-service'
+import { createUser } from '@/lib/auth-service'
+import { sendVerificationEmail, sendWelcomeEmail } from '@/lib/email'
+import prisma from '@/lib/prisma'
+import { Role } from '@prisma/client'
 
 export async function POST(req: Request) {
   try {
     const { firstName, lastName, email, password } = await req.json()
 
-    console.log('Received registration data:', { firstName, lastName, email })
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    })
 
-    const user = await AuthService.registerUser(firstName, lastName, email, password, 'PROVIDER')
+    if (existingUser) {
+      return NextResponse.json({ message: 'User already exists' }, { status: 400 })
+    }
 
-    console.log('User created successfully:', user.id)
+    const user = await createUser(email, password, firstName, lastName, Role.PROVIDER)
+
+    if (user.verificationToken) {
+      // Send verification email
+      await sendVerificationEmail(email, user.verificationToken)
+    }
+
+    // Send welcome email
+    await sendWelcomeEmail(email, firstName)
 
     return NextResponse.json({ message: 'User created successfully. Please check your email to verify your account.' }, { status: 201 })
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Registration error:', error)
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
-    return NextResponse.json({ message: 'An error occurred during registration', error: errorMessage }, { status: 500 })
+    return NextResponse.json({ message: 'An error occurred during registration' }, { status: 500 })
   }
 }

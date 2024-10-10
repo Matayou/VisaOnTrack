@@ -1,16 +1,22 @@
-import { NextResponse } from 'next/server'
-import { AuthService } from '@/lib/auth-service'
+import { NextResponse } from 'next/server';
+import { findPasswordResetToken, updateUserPassword, deletePasswordResetToken } from '@/lib/auth-service';
 
 export async function POST(req: Request) {
   try {
-    const { token, password } = await req.json()
+    const { token, newPassword } = await req.json();
 
-    await AuthService.resetPassword(token, password)
+    const resetToken = await findPasswordResetToken(token);
 
-    return NextResponse.json({ message: 'Password reset successfully' })
+    if (!resetToken || resetToken.expires < new Date()) {
+      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 400 });
+    }
+
+    await updateUserPassword(resetToken.userId, newPassword);
+    await deletePasswordResetToken(token);
+
+    return NextResponse.json({ message: 'Password reset successfully' });
   } catch (error) {
-    console.error('Password reset error:', error)
-    const errorMessage = error instanceof Error ? error.message : 'An error occurred while resetting your password'
-    return NextResponse.json({ message: errorMessage }, { status: 400 })
+    console.error('Password reset error:', error);
+    return NextResponse.json({ error: 'An error occurred while resetting the password' }, { status: 500 });
   }
 }

@@ -4,30 +4,14 @@ import React, { useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { Session } from 'next-auth'
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const { data: session } = useSession() as { data: Session | null }
+  const { data: session } = useSession()
 
   const isActive = useCallback((path: string) => pathname === path, [pathname])
 
   const userRole = session?.user?.role || 'guest'
-  const profileCompleted = session?.user?.profileCompleted
-
-  if (!profileCompleted) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold mb-4">Profile Incomplete</h1>
-          <p className="mb-4">Please complete your profile to access the dashboard.</p>
-          <Link href="/complete-profile" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Complete Profile
-          </Link>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="flex">
@@ -42,23 +26,23 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           >
             Dashboard
           </Link>
-          {userRole === 'provider' && (
+          {userRole === 'PROVIDER' && (
             <Link
-              href="/browse-requests"
+              href="/dashboard/browse-requests"
               aria-label="Browse Requests"
               className={`block p-2 rounded ${
-                isActive('/browse-requests') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
+                isActive('/dashboard/browse-requests') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
               }`}
             >
               Browse Requests
             </Link>
           )}
-          {userRole === 'seeker' && (
+          {userRole === 'SEEKER' && (
             <Link
-              href="/my-requests"
+              href="/dashboard/my-requests"
               aria-label="View My Requests"
               className={`block p-2 rounded ${
-                isActive('/my-requests') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
+                isActive('/dashboard/my-requests') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
               }`}
             >
               My Requests

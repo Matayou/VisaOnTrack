@@ -1,16 +1,16 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { Toaster } from "../components/ui/toaster"
-import { Providers } from "../components/Providers"
-import { HeaderNavigation } from "../components/HeaderNavigation"
-import Footer from "../components/Footer"
+import { Toaster } from 'react-hot-toast'
+import { Providers } from '@/components/Providers'
+import { HeaderNavigation } from '@/components/HeaderNavigation'
+import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'VisaOnTrack',
-  description: 'Simplify your visa journey',
+  description: 'Track and manage your visa application process',
 }
 
 export default function RootLayout({
@@ -24,8 +24,10 @@ export default function RootLayout({
         <Providers>
           <div className="flex flex-col min-h-screen">
             <HeaderNavigation />
-            <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              {children}
+            <main className="flex-grow">
+              <div className="container mx-auto px-4">
+                {children}
+              </div>
             </main>
             <Footer />
           </div>

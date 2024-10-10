@@ -1,17 +1,12 @@
 'use client';
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from "@/components/ui/button"
 
 export function HeaderNavigation() {
   const { data: session, status } = useSession()
-
-  useEffect(() => {
-    console.log('Session status:', status)
-    console.log('Session data:', session)
-  }, [session, status])
 
   return (
     <header className="bg-white shadow-sm">
@@ -24,30 +19,23 @@ export function HeaderNavigation() {
             <span>Loading...</span>
           ) : session ? (
             <>
-              {session.user.emailVerified ? (
+              {session.user.profileCompleted ? (
                 <>
+                  <Button asChild variant="ghost">
+                    <Link href="/dashboard">Dashboard</Link>
+                  </Button>
                   {session.user.role === 'PROVIDER' && (
-                    <>
-                      <Button asChild variant="ghost">
-                        <Link href="/dashboard">Dashboard</Link>
-                      </Button>
-                      <Button asChild variant="ghost">
-                        <Link href="/dashboard/browse-requests">Browse Requests</Link>
-                      </Button>
-                    </>
-                  )}
-                  {session.user.role === 'SEEKER' && (
                     <Button asChild variant="ghost">
-                      <Link href="/dashboard/my-requests">My Requests</Link>
+                      <Link href="/dashboard/browse-requests">Browse Requests</Link>
                     </Button>
                   )}
                   <Button asChild variant="ghost">
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/account">Account</Link>
                   </Button>
                 </>
               ) : (
                 <Button asChild variant="ghost">
-                  <Link href="/verify-email">Verify Email</Link>
+                  <Link href="/dashboard/complete-profile">Complete Profile</Link>
                 </Button>
               )}
               <Button onClick={() => signOut()} variant="outline">

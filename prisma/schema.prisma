@@ -11,23 +11,23 @@ datasource db {
 }
 
 model User {
-  id                 String               @id @default(cuid())
-  firstName          String
-  lastName           String
-  email              String               @unique
-  emailVerified      DateTime?
-  password           String
-  role               Role                 @default(SEEKER)
-  verificationToken  String?              @unique
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  PasswordResetToken PasswordResetToken[]
+  id                    String               @id @default(cuid())
+  firstName             String
+  lastName              String
+  email                 String               @unique
+  emailVerified         DateTime?
+  password              String
+  role                  Role                 @default(SEEKER)
+  verificationToken     String?              @unique
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  PasswordResetToken    PasswordResetToken[]
   serviceProviderProfile ServiceProviderProfile?
-  dateOfBirth        DateTime?
-  nationality        String?
-  thaiVisaType       String?
-  visaExpiryDate     DateTime?
-  profileCompleted   Boolean              @default(false)
+  dateOfBirth           DateTime?
+  nationality           String?
+  thaiVisaType          String?
+  visaExpiryDate        DateTime?
+  profileCompleted      Boolean              @default(false)
 }
 
 model PasswordResetToken {

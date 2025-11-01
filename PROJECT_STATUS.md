@@ -1,10 +1,10 @@
 # VisaOnTrack v2 — Project Status
 
-**Last Updated:** M0 Complete (All Tasks Multi-Agent Approved)
-**Current Milestone:** M0 — Contracts & Skeletons ✅ **COMPLETE**
-**Phase:** Ready for M1 — Auth & Onboarding
+**Last Updated:** RFC-001 Approved (Mockups Prerequisite Added)
+**Current Milestone:** M0 → M1 Prerequisite (Mockups)
+**Phase:** Creating M1 Mockups (Prerequisite)
 **Agent Team:** ✅ All agents created and ready
-**Current Task:** M1 Planning — Auth & Onboarding
+**Current Task:** Create M1 Mockups/Wireframes (RFC-001 Approved)
 **Git Status:** ✅ M0 committed (all 6 tasks)
 
 ---
@@ -19,11 +19,21 @@
 - [x] CI/CD workflow skeleton ✅ **COMPLETE** (Multi-agent approved: Tech Lead, QA, Scope Guardian)
 - [x] Project documentation (README, DoR/DoD templates) ✅ **COMPLETE** (Multi-agent approved: Tech Lead, Scope Guardian)
 
-### 📋 M1 — Auth & Onboarding (4–5d) — **PENDING**
-- [ ] Login/Register flows
-- [ ] Account type selection
-- [ ] Provider business details onboarding
-- [ ] Services/packages onboarding
+### ⏳ M0 → M1 Prerequisite — Mockups/Wireframes — **IN PROGRESS**
+- [ ] Create M1 HTML mock files (11 files for Auth & Onboarding routes)
+- [ ] Store in `/docs/mockups/` directory
+- [ ] Update spec Section 2 links
+- [ ] Tech Lead review
+- [ ] Scope Guardian review
+
+**Status:** 📋 PENDING ASSIGNMENT (RFC-001 Approved)
+
+### 📋 M1 — Auth & Onboarding (4–5d) — **BLOCKED**
+**Blocked by:** DoR checklist requires wireframes/mocks before frontend work
+- [ ] Login/Register flows (blocked until mockups complete)
+- [ ] Account type selection (blocked until mockups complete)
+- [ ] Provider business details onboarding (blocked until mockups complete)
+- [ ] Services/packages onboarding (blocked until mockups complete)
 
 ### 📋 M2 — Requests & Messaging (5–6d) — **PENDING**
 - [ ] Post request/list/thread
@@ -64,7 +74,12 @@
 
 ## Blockers & Risks
 
-_None currently._
+**Current Blocker:**
+- ⚠️ **M1 Frontend Work Blocked** — DoR checklist requires wireframes/mocks before frontend work
+  - **Resolution:** RFC-001 approved — Create M1 mockups (11 HTML files)
+  - **Status:** Task created (`TASK_M0_MOCKUPS_M1.md`), pending assignment
+  - **Timeline:** 1-2 days estimated
+  - **Impact:** M1 frontend work cannot start until mockups complete
 
 ---
 
@@ -153,6 +168,32 @@ _None currently._
 
 **🎉 M0 MILESTONE COMPLETE — All 6 tasks completed and approved**
 
+**RFC-001 Approval (Mockups Prerequisite):**
+- ✅ RFC-001 created and approved (Scope Guardian)
+- ✅ Problem: Spec Section 2 references HTML mocks that don't exist
+- ✅ DoR checklist requires wireframes/mocks before frontend work
+- ✅ M1 frontend work blocked without mockups
+- ✅ Solution: Create M1 mockups (11 HTML files) before M1
+- ✅ Task created: `TASK_M0_MOCKUPS_M1.md`
+- ✅ Directory created: `/docs/mockups/`
+- ✅ Status: Pending assignment to Frontend Engineer
+
+**RFC-001 Decision:**
+> ✅ **APPROVED** — Mockups are required per spec Section 2 and DoR checklist
+> 
+> **Reason:** RFC-001 addresses a required prerequisite per the spec. Spec Section 2 explicitly references HTML mocks. DoR checklist blocks frontend work without wireframes/mocks. M1 frontend work cannot proceed without these. This is not scope creep—it fulfills a prerequisite already required by the spec. Option A (M1-specific mockups) aligns with MVP focus and unblocks M1 quickly.
+> 
+> **Timeline Impact:** 1-2 days added before M1 (acceptable for MVP prerequisite)
+> 
+> **Next Actions:**
+> 1. Assign mockup creation task (Frontend Engineer or dedicated designer)
+> 2. Create 11 HTML mock files per spec Section 2 routes for M1
+> 3. Store in `/docs/mockups/` directory
+> 4. Update spec Section 2 links once files are created
+> 5. Tech Lead review
+> 6. Scope Guardian review
+> 7. Unblock M1 frontend work
+
 ---
 
 ## Next Actions
@@ -166,7 +207,17 @@ _None currently._
 
 **🎉 M0 MILESTONE COMPLETE — Ready for M1 Planning**
 
-**M1 Planning (Next):**
+**M1 Prerequisite (Current):**
+- ✅ RFC-001 approved — Mockups required per spec Section 2 & DoR
+- ✅ Task created — `TASK_M0_MOCKUPS_M1.md` (11 HTML files for M1 routes)
+- ⏳ Assign to Frontend Engineer (or dedicated designer)
+- ⏳ Create HTML mock files (1-2 days estimated)
+- ⏳ Tech Lead review
+- ⏳ Scope Guardian review
+- ⏳ Update spec Section 2 links
+- ⏳ Unblock M1 frontend work
+
+**M1 Planning (After Mockups Complete):**
 - Break down M1 tasks per `visaontrack-v2-spec.md` Section 6 (Auth & Onboarding)
 - Assign agents to M1 tasks
 - Create M1 milestone document

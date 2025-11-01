@@ -14,7 +14,7 @@ See `TASK_TEMPLATES.md` for RFC template (1-page format: Problem → Proposal �
 
 | ID | Title | Status | Date | Decision |
 |----|-------|--------|------|----------|
-| _None yet_ | | | | |
+| RFC-001 | Add Mockups/Wireframes as Prerequisite for M1 | APPROVED | 2025-01-11 | ✅ APPROVED — Required per spec Section 2 & DoR |
 
 **Status values:**
 - `DRAFT` — RFC created, awaiting review
@@ -51,5 +51,5 @@ See `TASK_TEMPLATES.md` for RFC template (1-page format: Problem → Proposal �
 
 ---
 
-**Last Updated:** Project Init
+**Last Updated:** 2025-01-11 (RFC-001 created)
 

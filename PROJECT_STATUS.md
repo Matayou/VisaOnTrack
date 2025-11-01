@@ -1,10 +1,10 @@
 # VisaOnTrack v2 — Project Status
 
-**Last Updated:** M0 Task 3 Complete (Multi-Agent Approved)
+**Last Updated:** M0 Task 4 Complete (Multi-Agent Approved)
 **Current Milestone:** M0 — Contracts & Skeletons
 **Phase:** Active Development — M0 In Progress
 **Agent Team:** ✅ All agents created and ready
-**Current Task:** M0 Task 4 — OpenAPI Client Generation
+**Current Task:** M0 Task 5 — CI/CD Workflow Skeleton
 **Git Status:** ✅ Initial commit complete (M0 Tasks 1-3)
 
 ---
@@ -15,8 +15,8 @@
 - [x] OpenAPI v0.2 specification ✅ **COMPLETE** (Scope Guardian approved)
 - [x] Prisma schema (all models) ✅ **COMPLETE** (Multi-agent approved: Tech Lead, QA, Security, Scope Guardian)
 - [x] Monorepo structure setup ✅ **COMPLETE** (Scope Guardian approved)
-- [ ] OpenAPI client generation configured
-- [ ] CI/CD workflow skeleton
+- [x] OpenAPI client generation configured ✅ **COMPLETE** (Multi-agent approved: Tech Lead, Scope Guardian)
+- [ ] CI/CD workflow skeleton — **NEXT**
 - [ ] Project documentation (README, DoR/DoD templates)
 
 ### 📋 M1 — Auth & Onboarding (4–5d) — **PENDING**
@@ -94,13 +94,29 @@ _None currently._
 - ✅ Tech Lead fix applied (invalid Request.orders relation removed)
 - ✅ Schema validates and Prisma client generates successfully
 
-**Multi-Agent Review Results:**
+**M0 Task 4 Completion (OpenAPI Client Generation):**
+- ✅ Client generator configured (openapi-typescript-codegen)
+- ✅ Generated TypeScript client from OpenAPI spec v0.2.0
+- ✅ JWT HttpOnly cookie authentication configured (credentials: 'include')
+- ✅ Type-safe TypeScript client generated
+- ✅ Client generation is idempotent
+- ✅ All endpoints from spec Section 5 available
+- ✅ Documentation complete (README.md)
+- ✅ Tech Lead fix applied (Package.json exports, README.md output path)
+
+**Multi-Agent Review Results (Task 3 - Prisma Schema):**
 > ✅ **Tech Lead:** APPROVED — Architecture approved, fix applied
 > ✅ **QA Engineer:** APPROVED — Schema complete, testable, all 28 models present
 > ✅ **Security Guard:** APPROVED — Security requirements met, compliance verified
 > ✅ **Scope Guardian:** APPROVED — Schema matches spec Section 3 exactly
 > 
-> **Status:** All reviews approved. Task 3 complete. Proceed to Task 4 (OpenAPI Client Generation).
+> **Status:** All reviews approved. Task 3 complete.
+
+**Multi-Agent Review Results (Task 4 - OpenAPI Client Generation):**
+> ✅ **Tech Lead:** APPROVED — Client generation ready for frontend usage
+> ✅ **Scope Guardian:** APPROVED — Client generation matches spec Section 1 exactly
+> 
+> **Status:** All reviews approved. Task 4 complete. Proceed to Task 5 (CI/CD Workflow Skeleton).
 > 
 > Spec is Truth. MVP focus. No exceptions without RFC.
 
@@ -111,8 +127,9 @@ _None currently._
 1. ✅ Set up monorepo structure — **COMPLETE** (Scope Guardian approved)
 2. ✅ Create OpenAPI v0.2 spec — **COMPLETE** (Scope Guardian approved)
 3. ✅ Define Prisma schema — **COMPLETE** (Multi-agent approved: Tech Lead, QA, Security, Scope Guardian)
-4. Configure OpenAPI client generation — **NEXT** (Frontend Engineer)
-5. Configure CI/CD workflow skeleton
+4. ✅ Configure OpenAPI client generation — **COMPLETE** (Multi-agent approved: Tech Lead, Scope Guardian)
+5. Configure CI/CD workflow skeleton — **NEXT** (Tech Lead)
+6. Configure project documentation
 
 ---
 

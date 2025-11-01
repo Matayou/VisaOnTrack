@@ -1,0 +1,15 @@
+# Generated files (but we'll commit them for type-safety)
+# Uncomment if you want to regenerate on build:
+# src/generated/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+

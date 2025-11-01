@@ -1,4 +1,74 @@
-// Placeholder for generated API client
-// This will be auto-generated from OpenAPI spec
+/* generated using openapi-typescript-codegen -- do no edit */
+/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
+export { ApiError } from './core/ApiError';
+export { CancelablePromise, CancelError } from './core/CancelablePromise';
+export { OpenAPI } from './core/OpenAPI';
+export type { OpenAPIConfig } from './core/OpenAPI';
 
-export {};
+export type { Attachment } from './models/Attachment';
+export type { CheckoutSessionResponse } from './models/CheckoutSessionResponse';
+export { CreateCheckoutSessionRequest } from './models/CreateCheckoutSessionRequest';
+export type { CreateMessageRequest } from './models/CreateMessageRequest';
+export type { CreatePackageRequest } from './models/CreatePackageRequest';
+export type { CreatePaymentIntentRequest } from './models/CreatePaymentIntentRequest';
+export type { CreateProviderRequest } from './models/CreateProviderRequest';
+export type { CreateQuoteRequest } from './models/CreateQuoteRequest';
+export type { CreateRequestRequest } from './models/CreateRequestRequest';
+export type { CreateReviewRequest } from './models/CreateReviewRequest';
+export type { CustomerPortalResponse } from './models/CustomerPortalResponse';
+export type { EntitlementExceededError } from './models/EntitlementExceededError';
+export type { EntitlementsResponse } from './models/EntitlementsResponse';
+export type { Error } from './models/Error';
+export { EscrowStatus } from './models/EscrowStatus';
+export type { Limit } from './models/Limit';
+export type { LoginRequest } from './models/LoginRequest';
+export type { LoginResponse } from './models/LoginResponse';
+export type { Message } from './models/Message';
+export type { MessageListResponse } from './models/MessageListResponse';
+export type { Milestone } from './models/Milestone';
+export type { MilestoneInput } from './models/MilestoneInput';
+export { MilestoneStatus } from './models/MilestoneStatus';
+export type { Order } from './models/Order';
+export type { OrderListResponse } from './models/OrderListResponse';
+export { OrderStatus } from './models/OrderStatus';
+export type { Page } from './models/Page';
+export type { PaginationMeta } from './models/PaginationMeta';
+export type { PaymentIntentResponse } from './models/PaymentIntentResponse';
+export { PlanCode } from './models/PlanCode';
+export type { ProviderListResponse } from './models/ProviderListResponse';
+export type { ProviderProfile } from './models/ProviderProfile';
+export type { Quote } from './models/Quote';
+export type { QuoteItem } from './models/QuoteItem';
+export { QuoteStatus } from './models/QuoteStatus';
+export type { Request } from './models/Request';
+export type { RequestListResponse } from './models/RequestListResponse';
+export { RequestStatus } from './models/RequestStatus';
+export type { Review } from './models/Review';
+export type { ServicePackage } from './models/ServicePackage';
+export type { Subscription } from './models/Subscription';
+export { SubscriptionStatus } from './models/SubscriptionStatus';
+export type { ThrottledError } from './models/ThrottledError';
+export type { UpdateOrderRequest } from './models/UpdateOrderRequest';
+export type { UpdateProviderRequest } from './models/UpdateProviderRequest';
+export type { UpdateQuoteRequest } from './models/UpdateQuoteRequest';
+export type { UpdateRequestRequest } from './models/UpdateRequestRequest';
+export type { UploadAttachmentRequest } from './models/UploadAttachmentRequest';
+export type { UsageCounter } from './models/UsageCounter';
+export type { User } from './models/User';
+export { UserRole } from './models/UserRole';
+export type { ValidationError } from './models/ValidationError';
+
+export { AdminService } from './services/AdminService';
+export { AuthService } from './services/AuthService';
+export { BillingService } from './services/BillingService';
+export { CheckoutService } from './services/CheckoutService';
+export { MessagesService } from './services/MessagesService';
+export { OrdersService } from './services/OrdersService';
+export { PackagesService } from './services/PackagesService';
+export { ProvidersService } from './services/ProvidersService';
+export { QuotesService } from './services/QuotesService';
+export { RequestsService } from './services/RequestsService';
+export { ReviewsService } from './services/ReviewsService';
+export { UsersService } from './services/UsersService';

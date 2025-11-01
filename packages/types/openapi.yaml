@@ -239,7 +239,7 @@ paths:
       tags:
         - packages
       summary: Create service package
-      description: Create service package (PROVIDER role, entitlement check: packages.max)
+      description: 'Create service package (PROVIDER role, entitlement check: packages.max)'
       operationId: createPackage
       security:
         - cookieAuth: []
@@ -442,11 +442,9 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#/components/responses/Forbidden'
+          $ref: '#/components/responses/AttachmentLimitExceeded'
         '413':
           $ref: '#/components/responses/PayloadTooLarge'
-        '403':
-          $ref: '#/components/responses/AttachmentLimitExceeded'
 
   /messages/attachments:
     post:
@@ -511,7 +509,7 @@ paths:
       tags:
         - quotes
       summary: Submit quote
-      description: Submit quote for request (PROVIDER role, entitlement check: quotes.monthly.max)
+      description: 'Submit quote for request (PROVIDER role, entitlement check: quotes.monthly.max)'
       operationId: submitQuote
       security:
         - cookieAuth: []
@@ -572,7 +570,7 @@ paths:
       tags:
         - quotes
       summary: Update quote
-      description: Update quote status (provider owner or seeker can accept/decline)
+      description: 'Update quote status (provider owner or seeker can accept/decline)'
       operationId: updateQuote
       security:
         - cookieAuth: []
@@ -1301,7 +1299,7 @@ components:
     
     CreatePackageRequest:
       type: object
-      description: Create service package request (entitlement check: packages.max)
+      description: 'Create service package request (entitlement check: packages.max)'
       required:
         - title
         - description
@@ -1522,18 +1520,18 @@ components:
             type: string
             format: uuid
           maxItems: 10
-          description: Attachment IDs from POST /messages/attachments (entitlement check: attachments.maxSizeMB)
+          description: 'Attachment IDs from POST /messages/attachments (entitlement check: attachments.maxSizeMB)'
     
     UploadAttachmentRequest:
       type: object
-      description: File upload request (multipart/form-data). Enforces size limits per plan and MIME allowlist per Section 9.
+      description: 'File upload request (multipart/form-data). Enforces size limits per plan and MIME allowlist per Section 9.'
       required:
         - file
       properties:
         file:
           type: string
           format: binary
-          description: File to upload. Allowed MIME types: pdf, jpg, png, webp, docx, xlsx. Size limit enforced per plan (attachments.maxSizeMB).
+          description: 'File to upload. Allowed MIME types: pdf, jpg, png, webp, docx, xlsx. Size limit enforced per plan (attachments.maxSizeMB).'
         requestId:
           type: string
           format: uuid
@@ -1633,7 +1631,7 @@ components:
     
     CreateQuoteRequest:
       type: object
-      description: Submit quote for request (PROVIDER role, entitlement check: quotes.monthly.max)
+      description: 'Submit quote for request (PROVIDER role, entitlement check: quotes.monthly.max)'
       required:
         - items
         - totalTHB
@@ -1658,7 +1656,7 @@ components:
     
     UpdateQuoteRequest:
       type: object
-      description: Update quote status (provider owner or seeker can accept/decline)
+      description: 'Update quote status (provider owner or seeker can accept/decline)'
       properties:
         status:
           $ref: '#/components/schemas/QuoteStatus'
@@ -1671,7 +1669,7 @@ components:
     # ==================== CHECKOUT ====================
     CreatePaymentIntentRequest:
       type: object
-      description: Create Stripe Connect PaymentIntent for quote acceptance (SEEKER role)
+      description: 'Create Stripe Connect PaymentIntent for quote acceptance (SEEKER role)'
       required:
         - quoteId
       properties:

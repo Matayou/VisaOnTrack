@@ -4,15 +4,20 @@
   "private": true,
   "description": "VisaOnTrack v2 — Generated API client from OpenAPI",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./src/api.ts",
+  "types": "./src/api.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/api.ts",
+    "./services": "./src/index.ts"
   },
   "scripts": {
-    "generate": "echo 'OpenAPI client generation placeholder'"
+    "generate": "npx openapi-typescript-codegen --input ../types/openapi.yaml --output ./src --client fetch --useOptions --exportSchemas false --exportCore true --exportServices true --exportModels true",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@visaontrack/types": "workspace:*"
+  },
+  "devDependencies": {
+    "openapi-typescript-codegen": "^0.25.0"
   }
 }

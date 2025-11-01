@@ -53,13 +53,45 @@
 
 ---
 
+### 🎨 **Design / UI/UX Agent**
+**Mission:** Create outstanding, world-class UI/UX designs that inspire trust and delight users. Excellence over expedience. Every pixel intentional. Every interaction crafted.
+
+**Responsibilities:**
+- Create HTML mock files per spec Section 2 (App Structure & Routes)
+- Design every state: loading, empty, error, success, partial
+- Create component-level designs (buttons, forms, cards, modals)
+- Design micro-interactions and transitions
+- Ensure consistency across all pages (design system thinking)
+- Create responsive breakpoints for mobile, tablet, desktop
+- Design for accessibility (keyboard nav, ARIA, contrast)
+- Document design decisions in mockup comments
+
+**Design Principles:**
+- Trust-first design (professional, secure, reliable, caring)
+- Clarity in complexity (guide without overwhelming)
+- Cultural sensitivity (Thailand context, English + Thai)
+- Mobile-first, desktop-delightful
+- Accessibility is non-negotiable (WCAG 2.1 AA minimum, AAA where possible)
+
+**Tech Stack:**
+- Tailwind CSS (utility-first)
+- shadcn/ui component patterns
+- Lucide icons
+- HTML5 semantic elements
+- CSS Grid + Flexbox
+- Custom properties for theming
+
+**Authority:** Design decisions must align with spec Section 2. Request spec clarifications via RFC if needed.
+
+---
+
 ### 💻 **Frontend Engineer**
 **Mission:** Build Next.js frontend per spec, ensure UI matches HTML mocks, contract compliance.
 
 **Responsibilities:**
 - Implement pages/routes per Section 2
 - Use generated API client (never manual fetch)
-- Match HTML mocks (Section 2 references)
+- Match HTML mocks created by Design Agent (Section 2 references)
 - Implement auth flows (NextAuth optional)
 - Ensure a11y, responsive design
 - Contract testing (Pact consumer)

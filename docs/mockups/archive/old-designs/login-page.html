@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - VisaOnTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --error: #dc2626;
+      --success: #16a34a;
+    }
+    
+    * {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+      background-attachment: fixed;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .input-field {
+      background: white;
+      border: 1.5px solid #e5e7eb;
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .input-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      outline: none;
+    }
+    
+    .input-field:hover:not(:focus) {
+      border-color: #d1d5db;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(37, 99, 235, 0.4);
+    }
+    
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      color: #059669;
+      font-weight: 500;
+    }
+    
+    .logo-text {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-4 min-h-screen">
+  
+  <!-- 
+    DESIGN DECISION: Refined login experience with visual depth
+    - Subtle gradient background for warmth and professionalism
+    - Glass morphism card for modern, trustworthy feel
+    - Refined typography with Inter font for clarity
+    - Smooth micro-interactions on inputs and buttons
+    - Trust badges and visual indicators
+    - Better visual hierarchy with purposeful spacing
+  -->
+  
+    <div class="w-full max-w-md">
+    <!-- Logo / Brand -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-md mb-3">
+        <i data-lucide="shield-check" class="w-6 h-6 text-blue-600"></i>
+      </div>
+      <h1 class="text-2xl font-bold logo-text mb-1">VisaOnTrack</h1>
+      <p class="text-xs text-gray-600 font-medium">Your trusted visa service marketplace in Thailand</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="glass-card rounded-xl shadow-xl p-6 border border-gray-100">
+      <div class="mb-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Welcome back</h2>
+        <p class="text-xs text-gray-600">Sign in to continue to your account</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="space-y-4" aria-label="Login form">
+        
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+            Email address
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="mail" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder="you@example.com"
+              class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-gray-900 placeholder-gray-400"
+              aria-describedby="email-error email-help"
+            />
+          </div>
+          <p id="email-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="password" class="block text-sm font-semibold text-gray-700">
+              Password
+            </label>
+            <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
+              Forgot password?
+            </a>
+          </div>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-gray-900 placeholder-gray-400"
+              aria-describedby="password-error"
+            />
+          </div>
+          <p id="password-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            id="remember"
+            name="remember"
+            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+          />
+          <label for="remember" class="ml-3 block text-sm text-gray-700 font-medium cursor-pointer">
+            Remember me for 30 days
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-primary w-full text-white py-2.5 px-4 rounded-lg font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          Sign in
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="my-8 flex items-center">
+        <div class="flex-1 border-t border-gray-200"></div>
+        <span class="px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Or</span>
+        <div class="flex-1 border-t border-gray-200"></div>
+      </div>
+
+      <!-- Register Link -->
+      <div class="text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account? 
+          <a href="#" class="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+            Sign up for free
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Trust Indicators -->
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs">
+      <div class="trust-badge">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+        <span>Secure & encrypted</span>
+      </div>
+      <div class="trust-badge">
+        <i data-lucide="users" class="w-3.5 h-3.5"></i>
+        <span>Trusted by thousands</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
+    ERROR STATES (Enhanced):
+    - Email format invalid: Show inline error with icon below email field
+    - Password incorrect: Show inline error with icon below password field
+    - Account locked: Show banner at top of form
+    - Network error: Show toast notification
+    
+    LOADING STATE (Enhanced):
+    - Disable submit button
+    - Show loading spinner with smooth animation
+    - Add loading overlay with subtle pulse
+    - Disable form fields
+  -->
+
+  <script>
+    lucide.createIcons();
+    
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      console.log('Login form submitted');
+    });
+  </script>
+</body>
+</html>

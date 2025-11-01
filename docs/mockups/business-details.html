@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Details - VisaOnTrack</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-text-primary: #0a0a0a;
+      --color-text-secondary: #525252;
+      --color-text-tertiary: #a3a3a3;
+      --color-bg-primary: #ffffff;
+      --color-bg-secondary: #fafafa;
+      --color-border-light: rgba(0, 0, 0, 0.06);
+      --color-border-medium: rgba(0, 0, 0, 0.12);
+      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 48rem;
+      margin: 0 auto;
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .header {
+      padding: 2rem;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+    
+    .progress-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .progress-step {
+      flex: 1;
+      height: 0.25rem;
+      background: var(--color-border-light);
+      border-radius: 0.125rem;
+    }
+    
+    .progress-step.active { background: var(--color-primary); }
+    
+    .header-content h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header-content p {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+    
+    .form-content {
+      padding: 2rem;
+    }
+    
+    .form-section {
+      margin-bottom: 2rem;
+    }
+    
+    .form-section:last-child { margin-bottom: 0; }
+    
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .form-grid.cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .input-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .required { color: #dc2626; }
+    
+    .input-field, .select-field, .textarea-field {
+      width: 100%;
+      padding: 0 1rem;
+      height: 2.75rem;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      color: var(--color-text-primary);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: 0.5rem;
+      transition: all var(--transition-fast);
+      outline: none;
+    }
+    
+    .textarea-field {
+      height: auto;
+      min-height: 6rem;
+      padding: 0.75rem 1rem;
+      resize: vertical;
+    }
+    
+    .input-field:hover, .select-field:hover, .textarea-field:hover {
+      border-color: var(--color-border-medium);
+    }
+    
+    .input-field:focus, .select-field:focus, .textarea-field:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .input-hint {
+      font-size: 0.8125rem;
+      color: var(--color-text-tertiary);
+    }
+    
+    .input-icon {
+      position: relative;
+    }
+    
+    .input-icon .input-field {
+      padding-left: 2.75rem;
+    }
+    
+    .input-icon-left {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-tertiary);
+    }
+    
+    .input-icon-left svg { width: 1.125rem; height: 1.125rem; }
+    
+    .char-count {
+      font-size: 0.8125rem;
+      color: var(--color-text-tertiary);
+      text-align: right;
+    }
+    
+    .actions {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    
+    .btn {
+      height: 2.75rem;
+      padding: 0 1.5rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-secondary {
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-light);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--color-bg-primary);
+    }
+    
+    .btn-primary {
+      color: white;
+      background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    
+    .btn svg { width: 1.125rem; height: 1.125rem; }
+    
+    @media (max-width: 640px) {
+      .form-grid.cols-2 { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+      <div class="header-content">
+        <h1>Business Details</h1>
+        <p>Tell us about your business and expertise</p>
+      </div>
+    </div>
+    
+    <form class="form-content">
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h2 class="section-title">Basic Information</h2>
+        <div class="form-grid cols-2">
+          <div class="input-group">
+            <label for="businessName" class="input-label">
+              Business Name <span class="required">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="businessName"
+              class="input-field"
+              placeholder="Immigration Services Inc."
+              required
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="registrationNumber" class="input-label">
+              Registration Number
+            </label>
+            <input 
+              type="text" 
+              id="registrationNumber"
+              class="input-field"
+              placeholder="123456789"
+            />
+            <span class="input-hint">Business registration or license number</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Location -->
+      <div class="form-section">
+        <h2 class="section-title">Location</h2>
+        <div class="form-grid cols-2">
+          <div class="input-group">
+            <label for="city" class="input-label">
+              City <span class="required">*</span>
+            </label>
+            <select id="city" class="select-field" required>
+              <option value="">Select city</option>
+              <option value="bangkok">Bangkok</option>
+              <option value="chiang-mai">Chiang Mai</option>
+              <option value="chiang-rai">Chiang Rai</option>
+              <option value="phuket">Phuket</option>
+              <option value="pattaya">Pattaya</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="input-hint">All providers must be based in Thailand</span>
+          </div>
+          
+          <div class="input-group">
+            <label for="timezone" class="input-label">
+              Timezone
+            </label>
+            <input 
+              type="text" 
+              id="timezone"
+              class="input-field"
+              value="ICT (UTC+7)"
+              readonly
+              disabled
+              style="background: #f5f5f5; color: #737373;"
+            />
+            <span class="input-hint">Thailand timezone (Indochina Time)</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Expertise -->
+      <div class="form-section">
+        <h2 class="section-title">Expertise</h2>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="languages" class="input-label">
+              Languages Spoken <span class="required">*</span>
+            </label>
+            <select id="languages" class="select-field" multiple required>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="zh">Chinese</option>
+              <option value="ar">Arabic</option>
+            </select>
+            <span class="input-hint">Hold Ctrl/Cmd to select multiple</span>
+          </div>
+          
+          <div class="input-group">
+            <label for="yearsExperience" class="input-label">
+              Years of Experience <span class="required">*</span>
+            </label>
+            <input 
+              type="number" 
+              id="yearsExperience"
+              class="input-field"
+              placeholder="5"
+              min="0"
+              required
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="description" class="input-label">
+              Business Description <span class="required">*</span>
+            </label>
+            <textarea 
+              id="description"
+              class="textarea-field"
+              placeholder="Tell us about your business, expertise, and what makes you unique..."
+              maxlength="500"
+              required
+            ></textarea>
+            <div class="char-count">0 / 500</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contact -->
+      <div class="form-section">
+        <h2 class="section-title">Contact Information</h2>
+        <div class="form-grid cols-2">
+          <div class="input-group">
+            <label for="phone" class="input-label">
+              Phone Number <span class="required">*</span>
+            </label>
+            <div class="input-icon">
+              <span class="input-icon-left">
+                <i data-lucide="phone"></i>
+              </span>
+              <input 
+                type="tel" 
+                id="phone"
+                class="input-field"
+                placeholder="+1 (555) 000-0000"
+                required
+              />
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label for="website" class="input-label">
+              Website
+            </label>
+            <div class="input-icon">
+              <span class="input-icon-left">
+                <i data-lucide="globe"></i>
+              </span>
+              <input 
+                type="url" 
+                id="website"
+                class="input-field"
+                placeholder="https://yourwebsite.com"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    
+    <div class="actions">
+      <button type="button" class="btn btn-secondary">
+        <i data-lucide="arrow-left"></i>
+        Back
+      </button>
+      <button type="submit" class="btn btn-primary">
+        Continue
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    
+    // Character counter
+    const textarea = document.getElementById('description');
+    const charCount = document.querySelector('.char-count');
+    
+    textarea?.addEventListener('input', (e) => {
+      const length = e.target.value.length;
+      charCount.textContent = `${length} / 500`;
+    });
+  </script>
+</body>
+</html>
+

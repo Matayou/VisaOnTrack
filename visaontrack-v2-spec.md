@@ -43,15 +43,15 @@
 ## 2) App Structure & Routes (with your HTML mocks)
 
 **Auth & Onboarding**
-- `/auth/login` → `login-page.html`
-- `/auth/register` (+ `/auth/register/simple`) → `register-page.html`, `simplified-registration.html`
-- `/onboarding/account-type` → `account-type-selection.html`
-- `/onboarding/seeker/welcome` → `onboarding-welcome.html`
-- `/onboarding/provider/welcome` → `provider-onboarding-welcome.html`
-- `/onboarding/provider/business` → `business-details-page.html`
-- `/onboarding/provider/services` → **use** `services-pricing-improved.html`
-- `/onboarding/provider/credentials` → `credentials-page.html` → `/complete` → `complete-credentials-page.html`
-- `/onboarding/provider/payouts` → **use** `payment-setup-final.html` (supersedes `payment-setup-simple.html`)
+- `/auth/login` → [`docs/mockups/login-page.html`](docs/mockups/login-page.html)
+- `/auth/register` (+ `/auth/register/simple`) → [`docs/mockups/register-page.html`](docs/mockups/register-page.html), [`docs/mockups/simplified-registration.html`](docs/mockups/simplified-registration.html)
+- `/onboarding/account-type` → [`docs/mockups/account-type-selection.html`](docs/mockups/account-type-selection.html)
+- `/onboarding/seeker/welcome` → [`docs/mockups/onboarding-welcome.html`](docs/mockups/onboarding-welcome.html)
+- `/onboarding/provider/welcome` → [`docs/mockups/provider-onboarding-welcome.html`](docs/mockups/provider-onboarding-welcome.html)
+- `/onboarding/provider/business` → [`docs/mockups/business-details-page.html`](docs/mockups/business-details-page.html)
+- `/onboarding/provider/services` → [`docs/mockups/services-pricing-improved.html`](docs/mockups/services-pricing-improved.html)
+- `/onboarding/provider/credentials` → [`docs/mockups/credentials-page.html`](docs/mockups/credentials-page.html) → `/complete` → [`docs/mockups/complete-credentials-page.html`](docs/mockups/complete-credentials-page.html)
+- `/onboarding/provider/payouts` → [`docs/mockups/payment-setup-final.html`](docs/mockups/payment-setup-final.html)
 
 **Core User Flows**
 - `/requests` (list) → `visa-requests-final.html`

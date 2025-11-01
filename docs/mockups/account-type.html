@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Account Type - VisaOnTrack</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-primary-light: #dbeafe;
+      --color-text-primary: #0a0a0a;
+      --color-text-secondary: #525252;
+      --color-text-tertiary: #a3a3a3;
+      --color-bg-primary: #ffffff;
+      --color-bg-secondary: #fafafa;
+      --color-border-light: rgba(0, 0, 0, 0.06);
+      --color-border-medium: rgba(0, 0, 0, 0.12);
+      --color-success: #16a34a;
+      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-base: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 56rem;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+    }
+    
+    .logo svg { width: 1.5rem; height: 1.5rem; color: white; }
+    
+    .title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    
+    .subtitle {
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+    }
+    
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .account-card {
+      background: var(--color-bg-primary);
+      border: 2px solid var(--color-border-light);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      position: relative;
+    }
+    
+    .account-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-border-medium);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+    
+    .account-card.selected {
+      border-color: var(--color-primary);
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.15);
+    }
+    
+    .card-icon {
+      width: 3rem;
+      height: 3rem;
+      background: var(--color-bg-secondary);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: all var(--transition-base);
+    }
+    
+    .account-card.selected .card-icon {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+    }
+    
+    .card-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--color-text-primary);
+      transition: color var(--transition-base);
+    }
+    
+    .account-card.selected .card-icon svg { color: white; }
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .card-description {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.75rem;
+      background: var(--color-success);
+      color: white;
+      border-radius: 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+    
+    .badge svg { width: 0.875rem; height: 0.875rem; }
+    
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+    }
+    
+    .feature-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+      color: var(--color-success);
+      margin-top: 0.125rem;
+    }
+    
+    .actions {
+      text-align: center;
+    }
+    
+    .btn-continue {
+      padding: 0.75rem 2rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: white;
+      background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-continue:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    
+    .btn-continue:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .help-text {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--color-text-tertiary);
+    }
+    
+    .help-link {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color var(--transition-fast);
+    }
+    
+    .help-link:hover { color: var(--color-primary-hover); }
+    
+    @media (max-width: 768px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <i data-lucide="sparkles"></i>
+      </div>
+      <h1 class="title">Choose your account type</h1>
+      <p class="subtitle">Select the option that best describes you</p>
+    </div>
+    
+    <div class="cards-grid">
+      <!-- Seeker Card -->
+      <div class="account-card" id="seeker-card" role="button" tabindex="0">
+        <div class="card-icon">
+          <i data-lucide="user"></i>
+        </div>
+        <h2 class="card-title">I'm a Seeker</h2>
+        <p class="card-description">I need help with my visa application</p>
+        <div class="badge">
+          <i data-lucide="gift"></i>
+          Free to use
+        </div>
+        <div class="features">
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Get quotes from verified providers</span>
+          </div>
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Compare services and prices</span>
+          </div>
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Secure escrow protection</span>
+          </div>
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Track application progress</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Provider Card -->
+      <div class="account-card" id="provider-card" role="button" tabindex="0">
+        <div class="card-icon">
+          <i data-lucide="briefcase"></i>
+        </div>
+        <h2 class="card-title">I'm a Provider</h2>
+        <p class="card-description">I offer visa services</p>
+        <div class="badge">
+          <i data-lucide="sparkles"></i>
+          Free plan available
+        </div>
+        <div class="features">
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Build professional profile</span>
+          </div>
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Receive visa requests</span>
+          </div>
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Get verified badge</span>
+          </div>
+          <div class="feature">
+            <i data-lucide="check" class="feature-icon"></i>
+            <span>Secure Stripe payouts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button class="btn-continue" id="continue-btn" disabled>
+        Continue
+      </button>
+    </div>
+    
+    <p class="help-text">
+      Not sure which one? 
+      <a href="#" class="help-link">Learn more about account types</a>
+    </p>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    
+    const seekerCard = document.getElementById('seeker-card');
+    const providerCard = document.getElementById('provider-card');
+    const continueBtn = document.getElementById('continue-btn');
+    let selectedType = null;
+    
+    function selectCard(type) {
+      selectedType = type;
+      
+      if (type === 'seeker') {
+        seekerCard.classList.add('selected');
+        providerCard.classList.remove('selected');
+      } else {
+        providerCard.classList.add('selected');
+        seekerCard.classList.remove('selected');
+      }
+      
+      continueBtn.disabled = false;
+      lucide.createIcons();
+    }
+    
+    seekerCard.addEventListener('click', () => selectCard('seeker'));
+    providerCard.addEventListener('click', () => selectCard('provider'));
+    
+    continueBtn.addEventListener('click', () => {
+      if (selectedType) {
+        console.log(`Selected: ${selectedType}`);
+        // Navigate to appropriate onboarding flow
+      }
+    });
+  </script>
+</body>
+</html>
+

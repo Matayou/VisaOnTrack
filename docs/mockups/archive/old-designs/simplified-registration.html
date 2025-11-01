@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Sign Up - VisaOnTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Inter', -apple-system, BlinkSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+      background-attachment: fixed;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .input-field {
+      background: white;
+      border: 1.5px solid #e5e7eb;
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .input-field:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      outline: none;
+    }
+    
+    .input-field:hover:not(:focus) {
+      border-color: #d1d5db;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(37, 99, 235, 0.4);
+    }
+    
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      color: #059669;
+      font-weight: 500;
+    }
+    
+    .logo-text {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-4 min-h-screen">
+  
+  <!-- 
+    DESIGN DECISION: Minimal friction registration for quick sign-up
+    - Only email and password required (minimal fields)
+    - Fast path: Name and other details can be added later
+    - Clear benefit: "Get started in seconds"
+    - Still secure: Password requirements maintained
+    - Alternative: Link to full registration available
+  -->
+  
+    <div class="w-full max-w-md">
+    <!-- Logo / Brand -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-md mb-3">
+        <i data-lucide="zap" class="w-6 h-6 text-blue-600"></i>
+      </div>
+      <h1 class="text-2xl font-bold logo-text mb-1">VisaOnTrack</h1>
+      <p class="text-xs text-gray-600 font-medium">Get started in seconds</p>
+    </div>
+
+    <!-- Simplified Registration Card -->
+    <div class="glass-card rounded-xl shadow-xl p-6 border border-gray-100">
+      <div class="mb-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Quick sign up</h2>
+        <p class="text-xs text-gray-600">Create your account with just email and password. Complete your profile later.</p>
+      </div>
+
+      <!-- Simplified Registration Form -->
+      <form id="simpleRegisterForm" class="space-y-4" aria-label="Simplified registration form">
+        
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+            Email address
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="mail" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder="you@example.com"
+              class="input-field w-full pl-12 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400"
+              aria-describedby="email-error"
+            />
+          </div>
+          <p id="email-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+            Password
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              autocomplete="new-password"
+              placeholder="At least 8 characters"
+              class="input-field w-full pl-12 pr-12 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400"
+              aria-describedby="password-error password-help"
+            />
+            <button
+              type="button"
+              id="toggle-password"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+              aria-label="Toggle password visibility"
+            >
+              <i data-lucide="eye" class="w-5 h-5" id="eye-icon"></i>
+            </button>
+          </div>
+          <p id="password-help" class="mt-1 text-sm text-gray-500">
+            Minimum 8 characters
+          </p>
+          <p id="password-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Terms & Privacy -->
+        <div class="flex items-start">
+          <input
+            type="checkbox"
+            id="terms"
+            name="terms"
+            required
+            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+          />
+          <label for="terms" class="ml-2 block text-sm text-gray-700">
+            I agree to the 
+            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Terms</a>
+            and 
+            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-primary w-full text-white py-2.5 px-4 rounded-lg font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          Create account
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="my-6 flex items-center">
+        <div class="flex-1 border-t border-gray-300"></div>
+        <span class="px-4 text-sm text-gray-500">Or</span>
+        <div class="flex-1 border-t border-gray-300"></div>
+      </div>
+
+      <!-- Login Link -->
+      <div class="text-center mb-4">
+        <p class="text-sm text-gray-600">
+          Already have an account? 
+          <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">
+            Sign in
+          </a>
+        </p>
+      </div>
+
+      <!-- Full Registration Link -->
+      <div class="text-center">
+        <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+          Use full registration instead (includes name and more details)
+        </a>
+      </div>
+    </div>
+
+    <!-- Trust Indicators -->
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs">
+      <div class="trust-badge">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+        <span>Secure & encrypted</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
+    ERROR STATES:
+    - Email already exists: "This email is already registered. Sign in instead?"
+    - Email format invalid: "Please enter a valid email address"
+    - Password too short: "Password must be at least 8 characters"
+    - Terms not accepted: "You must agree to the terms to continue"
+    
+    SUCCESS STATE:
+    - Redirect to /onboarding/account-type after successful registration
+    - Prompt user to complete profile (name, etc.) in account type selection
+    
+    LOADING STATE:
+    - Disable submit button
+    - Show loading spinner
+    - Disable form fields
+  -->
+
+  <script>
+    lucide.createIcons();
+    
+    // Password toggle
+    const passwordInput = document.getElementById('password');
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    const eyeIcon = document.getElementById('eye-icon');
+    let isPasswordVisible = false;
+    
+    togglePasswordBtn.addEventListener('click', function() {
+      isPasswordVisible = !isPasswordVisible;
+      passwordInput.type = isPasswordVisible ? 'text' : 'password';
+      eyeIcon.setAttribute('data-lucide', isPasswordVisible ? 'eye-off' : 'eye');
+      lucide.createIcons();
+    });
+    
+    document.getElementById('simpleRegisterForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      console.log('Simplified registration form submitted');
+    });
+  </script>
+</body>
+</html>
+

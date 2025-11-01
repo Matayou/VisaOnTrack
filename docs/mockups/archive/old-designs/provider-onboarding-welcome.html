@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome, Provider - VisaOnTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Inter', -apple-system, BlinkSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+      background-attachment: fixed;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .progress-bar {
+      background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+      transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .step-card {
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .step-card.active {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-color: #2563eb;
+      transform: translateX(4px);
+    }
+    
+    .step-card:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step-number {
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .step-card.active .step-number {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      transform: scale(1.1);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(37, 99, 235, 0.4);
+    }
+    
+    .benefit-item {
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .benefit-item:hover {
+      transform: translateX(2px);
+    }
+    
+    button:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-4 min-h-screen">
+  
+  <!-- 
+    DESIGN DECISION: Professional welcome for providers with refined onboarding overview
+    - Gradient background for visual interest
+    - Enhanced progress indicator with smooth animation
+    - Step cards with active state (first step highlighted)
+    - Better visual hierarchy for onboarding steps
+    - Refined benefits section
+    - Professional, trustworthy tone
+  -->
+  
+  <div class="w-full max-w-3xl">
+    <!-- Welcome Card -->
+    <div class="glass-card rounded-2xl shadow-2xl p-10 md:p-12 border border-gray-100">
+      
+      <!-- Progress Indicator -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm font-bold text-gray-700">Step 1 of 4</span>
+          <span class="text-sm font-bold text-blue-600">Welcome</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+          <div class="progress-bar h-3 rounded-full" style="width: 25%"></div>
+        </div>
+      </div>
+
+      <!-- Welcome Message -->
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-100 to-emerald-200 rounded-3xl shadow-lg mb-6">
+          <i data-lucide="briefcase" class="w-12 h-12 text-green-600"></i>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3">
+          Welcome, <span class="text-green-600">Provider</span>!
+        </h1>
+        <p class="text-lg md:text-xl text-gray-600 mb-2 font-medium">
+          Let's set up your provider profile.
+        </p>
+        <p class="text-sm text-gray-500 font-medium">
+          This will take about 10-15 minutes
+        </p>
+      </div>
+
+      <!-- Onboarding Steps Preview -->
+      <div class="space-y-4 mb-10">
+        <div class="step-card active flex items-start p-6 rounded-xl border-2">
+          <div class="step-number flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-xl flex items-center justify-center mr-4 font-bold text-base shadow-lg">
+            1
+          </div>
+          <div class="flex-1">
+            <h3 class="font-bold text-gray-900 mb-2 text-base">Business Details</h3>
+            <p class="text-sm text-gray-700 font-medium">Tell us about your business and location</p>
+          </div>
+          <div class="flex-shrink-0 ml-4">
+            <i data-lucide="chevron-right" class="w-5 h-5 text-blue-600"></i>
+          </div>
+        </div>
+
+        <div class="step-card flex items-start p-6 bg-gray-50 rounded-xl border-2 border-gray-200">
+          <div class="step-number flex-shrink-0 w-12 h-12 bg-gray-300 text-gray-600 rounded-xl flex items-center justify-center mr-4 font-bold text-base">
+            2
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-700 mb-2 text-base">Services & Pricing</h3>
+            <p class="text-sm text-gray-600">Add your service packages and pricing</p>
+          </div>
+        </div>
+
+        <div class="step-card flex items-start p-6 bg-gray-50 rounded-xl border-2 border-gray-200">
+          <div class="step-number flex-shrink-0 w-12 h-12 bg-gray-300 text-gray-600 rounded-xl flex items-center justify-center mr-4 font-bold text-base">
+            3
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-700 mb-2 text-base">Credentials</h3>
+            <p class="text-sm text-gray-600">Upload credentials for verification</p>
+          </div>
+        </div>
+
+        <div class="step-card flex items-start p-6 bg-gray-50 rounded-xl border-2 border-gray-200">
+          <div class="step-number flex-shrink-0 w-12 h-12 bg-gray-300 text-gray-600 rounded-xl flex items-center justify-center mr-4 font-bold text-base">
+            4
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-700 mb-2 text-base">Payment Setup</h3>
+            <p class="text-sm text-gray-600">Configure Stripe Connect for payouts</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Benefits -->
+      <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 mb-8 border border-green-100">
+        <h3 class="font-bold text-gray-900 mb-4 text-base">What you'll get:</h3>
+        <div class="space-y-3">
+          <div class="benefit-item flex items-center">
+            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+              <i data-lucide="badge-check" class="w-5 h-5 text-green-600"></i>
+            </div>
+            <span class="text-sm text-gray-700 font-medium">Verified provider badge after credential review</span>
+          </div>
+          <div class="benefit-item flex items-center">
+            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+              <i data-lucide="credit-card" class="w-5 h-5 text-green-600"></i>
+            </div>
+            <span class="text-sm text-gray-700 font-medium">Secure payouts through Stripe Connect</span>
+          </div>
+          <div class="benefit-item flex items-center">
+            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+              <i data-lucide="inbox" class="w-5 h-5 text-green-600"></i>
+            </div>
+            <span class="text-sm text-gray-700 font-medium">Access to visa requests from seekers</span>
+          </div>
+          <div class="benefit-item flex items-center">
+            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+              <i data-lucide="gift" class="w-5 h-5 text-green-600"></i>
+            </div>
+            <span class="text-sm text-gray-700 font-medium">Free plan available (upgrade anytime)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Get Started Button -->
+      <div class="text-center space-y-4">
+        <button
+          id="get-started-btn"
+          class="btn-primary w-full md:w-auto text-white py-4 px-10 rounded-xl font-bold text-base"
+        >
+          Get Started
+        </button>
+        
+        <div class="text-sm text-gray-600 font-medium">
+          <p>Ready to set up your provider profile?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skip Option -->
+    <div class="mt-6 text-center">
+      <a href="#" class="text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors">
+        Skip for now
+      </a>
+    </div>
+  </div>
+
+  <!-- 
+    INTERACTION STATES (Enhanced):
+    - Get Started button: Smooth gradient with shadow on hover
+    - Step cards: Hover effects with smooth transitions
+    - Active step: Highlighted with gradient background
+    - Progress bar: Smooth animation when step changes
+  -->
+
+  <script>
+    lucide.createIcons();
+    
+    document.getElementById('get-started-btn').addEventListener('click', () => {
+      console.log('Redirect to /onboarding/provider/business');
+    });
+  </script>
+</body>
+</html>

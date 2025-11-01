@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - VisaOnTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Inter', -apple-system, BlinkSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+      background-attachment: fixed;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .input-field {
+      background: white;
+      border: 1.5px solid #e5e7eb;
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .input-field:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      outline: none;
+    }
+    
+    .input-field:hover:not(:focus) {
+      border-color: #d1d5db;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(37, 99, 235, 0.4);
+    }
+    
+    .password-strength-bar {
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      color: #059669;
+      font-weight: 500;
+    }
+    
+    .logo-text {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-4 min-h-screen">
+  
+  <!-- 
+    DESIGN DECISION: Clean registration form with clear value proposition
+    - Trust-building: Security indicators, clear benefits
+    - Minimal friction: Only essential fields upfront
+    - Password strength indicator: Real-time feedback
+    - Clear error states: Inline validation
+    - Success path: Redirect to account type selection after registration
+  -->
+  
+    <div class="w-full max-w-md">
+    <!-- Logo / Brand -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-md mb-3">
+        <i data-lucide="user-plus" class="w-6 h-6 text-blue-600"></i>
+      </div>
+      <h1 class="text-2xl font-bold logo-text mb-1">VisaOnTrack</h1>
+      <p class="text-xs text-gray-600 font-medium">Join thousands of visa seekers and service providers</p>
+    </div>
+
+    <!-- Registration Card -->
+    <div class="glass-card rounded-xl shadow-xl p-6 border border-gray-100">
+      <div class="mb-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Create your account</h2>
+        <p class="text-xs text-gray-600">Sign up to get started with VisaOnTrack</p>
+      </div>
+
+      <!-- Registration Form -->
+      <form id="registerForm" class="space-y-4" aria-label="Registration form">
+        
+        <!-- Name Field -->
+        <div>
+          <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+            Full name
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              autocomplete="name"
+              placeholder="John Doe"
+              class="input-field w-full pl-12 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400"
+              aria-describedby="name-error"
+            />
+          </div>
+          <p id="name-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+            Email address
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="mail" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder="you@example.com"
+              class="input-field w-full pl-12 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400"
+              aria-describedby="email-error"
+            />
+          </div>
+          <p id="email-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Password Field with Strength Indicator -->
+        <div>
+          <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+            Password
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              autocomplete="new-password"
+              placeholder="Create a strong password"
+              class="input-field w-full pl-12 pr-12 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400"
+              aria-describedby="password-error password-strength password-help"
+            />
+            <button
+              type="button"
+              id="toggle-password"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+              aria-label="Toggle password visibility"
+            >
+              <i data-lucide="eye" class="w-5 h-5" id="eye-icon"></i>
+            </button>
+          </div>
+          <!-- Password Strength Indicator -->
+          <div id="password-strength" class="mt-3 hidden">
+            <div class="flex gap-1.5 mb-2">
+              <div class="password-strength-bar flex-1 h-2 bg-gray-200 rounded-full" data-strength="weak"></div>
+              <div class="password-strength-bar flex-1 h-2 bg-gray-200 rounded-full" data-strength="medium"></div>
+              <div class="password-strength-bar flex-1 h-2 bg-gray-200 rounded-full" data-strength="strong"></div>
+            </div>
+            <p class="text-xs font-medium" id="password-strength-text"></p>
+          </div>
+          <p id="password-help" class="mt-1 text-sm text-gray-500">
+            Must be at least 8 characters with letters and numbers
+          </p>
+          <p id="password-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+            Confirm password
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+              autocomplete="new-password"
+              placeholder="Re-enter your password"
+              class="input-field w-full pl-12 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400"
+              aria-describedby="confirm-password-error"
+            />
+          </div>
+          <p id="confirm-password-error" class="mt-2 text-sm text-red-600 hidden flex items-center gap-1" role="alert">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span></span>
+          </p>
+        </div>
+
+        <!-- Terms & Privacy -->
+        <div class="flex items-start">
+          <input
+            type="checkbox"
+            id="terms"
+            name="terms"
+            required
+            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+          />
+          <label for="terms" class="ml-2 block text-sm text-gray-700">
+            I agree to the 
+            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</a>
+            and 
+            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-primary w-full text-white py-2.5 px-4 rounded-lg font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          Create account
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="my-6 flex items-center">
+        <div class="flex-1 border-t border-gray-300"></div>
+        <span class="px-4 text-sm text-gray-500">Or</span>
+        <div class="flex-1 border-t border-gray-300"></div>
+      </div>
+
+      <!-- Login Link -->
+      <div class="text-center">
+        <p class="text-sm text-gray-600">
+          Already have an account? 
+          <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">
+            Sign in
+          </a>
+        </p>
+      </div>
+
+      <!-- Simplified Registration Link -->
+      <div class="mt-4 text-center">
+        <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+          Use simplified registration instead
+        </a>
+      </div>
+    </div>
+
+    <!-- Trust Indicators -->
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs">
+      <div class="trust-badge">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+        <span>Secure & encrypted</span>
+      </div>
+      <div class="trust-badge">
+        <i data-lucide="users" class="w-3.5 h-3.5"></i>
+        <span>Trusted by thousands</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
+    ERROR STATES:
+    - Name too short: "Name must be at least 2 characters"
+    - Email already exists: "This email is already registered. Sign in instead?"
+    - Email format invalid: "Please enter a valid email address"
+    - Password too weak: "Password must be at least 8 characters with letters and numbers"
+    - Passwords don't match: "Passwords do not match"
+    - Terms not accepted: "You must agree to the terms to continue"
+    
+    SUCCESS STATE:
+    - Redirect to /onboarding/account-type after successful registration
+    
+    LOADING STATE:
+    - Disable submit button
+    - Show loading spinner
+    - Disable form fields
+  -->
+
+  <script>
+    lucide.createIcons();
+    
+    // Password toggle
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    const eyeIcon = document.getElementById('eye-icon');
+    let isPasswordVisible = false;
+    
+    togglePasswordBtn.addEventListener('click', function() {
+      isPasswordVisible = !isPasswordVisible;
+      passwordInput.type = isPasswordVisible ? 'text' : 'password';
+      confirmPasswordInput.type = isPasswordVisible ? 'text' : 'password';
+      eyeIcon.setAttribute('data-lucide', isPasswordVisible ? 'eye-off' : 'eye');
+      lucide.createIcons();
+    });
+    
+    // Password strength indicator
+    const strengthDiv = document.getElementById('password-strength');
+    const strengthText = document.getElementById('password-strength-text');
+    
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      if (password.length === 0) {
+        strengthDiv.classList.add('hidden');
+        return;
+      }
+      
+      strengthDiv.classList.remove('hidden');
+      
+      // Simple strength calculation
+      let strength = 0;
+      if (password.length >= 8) strength++;
+      if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+      if (/\d/.test(password)) strength++;
+      if (/[^a-zA-Z\d]/.test(password)) strength++;
+      
+      const bars = strengthDiv.querySelectorAll('[data-strength]');
+      bars.forEach((bar, index) => {
+        if (index < strength) {
+          if (strength <= 1) {
+            bar.className = 'password-strength-bar flex-1 h-2 bg-red-500 rounded-full';
+          } else if (strength <= 2) {
+            bar.className = 'password-strength-bar flex-1 h-2 bg-yellow-500 rounded-full';
+          } else {
+            bar.className = 'password-strength-bar flex-1 h-2 bg-green-500 rounded-full';
+          }
+        } else {
+          bar.className = 'password-strength-bar flex-1 h-2 bg-gray-200 rounded-full';
+        }
+      });
+      
+      if (strength <= 1) {
+        strengthText.textContent = 'Weak password';
+        strengthText.className = 'text-xs font-medium text-red-600';
+      } else if (strength <= 2) {
+        strengthText.textContent = 'Medium strength';
+        strengthText.className = 'text-xs font-medium text-yellow-600';
+      } else {
+        strengthText.textContent = 'Strong password';
+        strengthText.className = 'text-xs font-medium text-green-600';
+      }
+    });
+    
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      console.log('Registration form submitted');
+    });
+  </script>
+</body>
+</html>
+

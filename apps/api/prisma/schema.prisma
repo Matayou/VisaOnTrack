@@ -1,0 +1,625 @@
+// VisaOnTrack v2 - Prisma Schema
+// Schema-first design per Section 3 data model
+// Generated: M0 Task 3
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== ENUMS ====================
+
+enum UserRole {
+  SEEKER
+  PROVIDER
+  ADMIN
+}
+
+enum RequestStatus {
+  DRAFT
+  OPEN
+  CLOSED
+  HIRED
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum EscrowStatus {
+  REQUIRES_PAYMENT
+  HELD
+  RELEASED
+  REFUNDED
+}
+
+enum OrderStatus {
+  ACTIVE
+  DELIVERED
+  COMPLETED
+  DISPUTED
+  CANCELLED
+}
+
+enum MilestoneStatus {
+  PENDING
+  DONE
+}
+
+enum PlanCode {
+  FREE
+  PRO
+  PRO_PLUS
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  INCOMPLETE
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+}
+
+enum VerificationCaseStatus {
+  PENDING
+  APPROVED
+  CHANGES_REQUESTED
+  REJECTED
+}
+
+enum DisputeCaseStatus {
+  OPEN
+  RESOLVED
+  REFUNDED
+  ESCALATED
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum RefundStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum AdminRole {
+  ADMIN
+  MODERATOR
+  FINANCE
+  SUPPORT
+}
+
+enum FeeScheduleType {
+  PLATFORM_FEE
+  PAYOUT_FEE
+}
+
+enum BannerType {
+  INFO
+  WARN
+  CRITICAL
+}
+
+enum ReportStatus {
+  OPEN
+  ACTIONED
+  DISMISSED
+}
+
+// ==================== CORE MODELS (11 models) ====================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique @db.VarChar(255)
+  role      UserRole
+  name      String?  @db.VarChar(200)
+  phone     String?  @db.VarChar(50)
+  locale    String   @default("en") @db.VarChar(10)
+  createdAt DateTime @default(now())
+
+  // Relations
+  providerProfile  ProviderProfile?
+  requests         Request[]        @relation("SeekerRequests")
+  sentMessages     Message[]        @relation("MessageSender")
+  ownedAttachments Attachment[]     @relation("AttachmentOwner")
+  notifications    Notification[]
+  createdReports   Report[]         @relation("ReportReporter")
+  authoredNotes    InternalNote[]
+  auditLogs        AuditLog[]       @relation("AuditLogActor")
+
+  @@index([email])
+  @@index([role])
+}
+
+model ProviderProfile {
+  id           String    @id @default(uuid())
+  userId       String    @unique
+  businessName String    @db.VarChar(200)
+  description  String?   @db.Text
+  location     String?   @db.VarChar(200)
+  languages    Json      @default("[]") // Array of strings
+  verifiedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  user             User               @relation(fields: [userId], references: [id], onDelete: Restrict)
+  servicePackages  ServicePackage[]
+  quotes           Quote[]
+  billingCustomer  BillingCustomer?
+  entitlements     Entitlement[]
+  usageCounters    UsageCounter[]
+  verificationCase VerificationCase[]
+  payouts          Payout[]
+
+  @@index([userId])
+  @@index([businessName])
+}
+
+model ServicePackage {
+  id           String   @id @default(uuid())
+  providerId   String
+  title        String   @db.VarChar(200)
+  description  String   @db.VarChar(2000)
+  priceTHB     Decimal  @db.Decimal(10, 2)
+  deliverables Json     @default("[]") // Array of strings
+  etaDays      Int
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([providerId])
+  @@index([isActive])
+}
+
+model Request {
+  id          String        @id @default(uuid())
+  seekerId    String
+  title       String        @db.VarChar(200)
+  description String        @db.Text
+  visaType    String?       @db.VarChar(100)
+  budgetMin   Decimal?      @db.Decimal(10, 2)
+  budgetMax   Decimal?      @db.Decimal(10, 2)
+  location    String?       @db.VarChar(200)
+  status      RequestStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+
+  // Relations
+  seeker      User         @relation("SeekerRequests", fields: [seekerId], references: [id], onDelete: Restrict)
+  messages    Message[]
+  quotes      Quote[]
+  attachments Attachment[]
+
+  @@index([seekerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  requestId String
+  senderId  String
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+
+  // Relations
+  request Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  sender  User    @relation("MessageSender", fields: [senderId], references: [id], onDelete: Restrict)
+
+  @@index([requestId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+model Quote {
+  id         String      @id @default(uuid())
+  requestId  String
+  providerId String
+  items      Json // Array of QuoteItem objects
+  totalTHB   Decimal     @db.Decimal(10, 2)
+  etaDays    Int
+  terms      String?     @db.Text
+  status     QuoteStatus @default(PENDING)
+  validUntil DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  // Relations
+  request  Request         @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  order    Order?
+
+  @@index([requestId])
+  @@index([providerId])
+  @@index([status])
+}
+
+model Order {
+  id           String       @id @default(uuid())
+  quoteId      String       @unique
+  escrowStatus EscrowStatus @default(REQUIRES_PAYMENT)
+  status       OrderStatus  @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  quote       Quote        @relation(fields: [quoteId], references: [id], onDelete: Restrict)
+  milestones  Milestone[]
+  reviews     Review[]
+  attachments Attachment[]
+  disputeCase DisputeCase?
+  refunds     Refund[]
+
+  @@index([quoteId])
+  @@index([status])
+  @@index([escrowStatus])
+}
+
+model Milestone {
+  id        String          @id @default(uuid())
+  orderId   String
+  title     String          @db.VarChar(200)
+  dueAt     DateTime
+  status    MilestoneStatus @default(PENDING)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
+  @@index([dueAt])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  orderId   String
+  rating    Int // 1-5
+  tags      Json     @default("[]") // Array of strings
+  text      String?  @db.Text
+  createdAt DateTime @default(now())
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([rating])
+  @@index([createdAt])
+}
+
+model Attachment {
+  id          String   @id @default(uuid())
+  ownerUserId String
+  requestId   String?
+  orderId     String?
+  key         String   @db.VarChar(500) // S3/R2 object key
+  mime        String   @db.VarChar(100)
+  size        Int // Size in bytes
+  createdAt   DateTime @default(now())
+
+  // Relations
+  owner   User     @relation("AttachmentOwner", fields: [ownerUserId], references: [id], onDelete: Restrict)
+  request Request? @relation(fields: [requestId], references: [id], onDelete: SetNull)
+  order   Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([ownerUserId])
+  @@index([requestId])
+  @@index([orderId])
+  @@index([key])
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  type      String    @db.VarChar(100)
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([readAt])
+  @@index([createdAt])
+}
+
+// ==================== BILLING MODELS (5 models) ====================
+
+model BillingCustomer {
+  id               String   @id @default(uuid())
+  providerId       String   @unique
+  stripeCustomerId String   @unique @db.VarChar(255)
+  createdAt        DateTime @default(now())
+
+  // Relations
+  provider      ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  subscriptions Subscription[]
+  invoices      Invoice[]
+
+  @@index([providerId])
+  @@index([stripeCustomerId])
+}
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  billingCustomerId    String
+  stripeSubscriptionId String             @unique @db.VarChar(255)
+  planCode             PlanCode
+  status               SubscriptionStatus @default(INCOMPLETE)
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  // Relations
+  billingCustomer BillingCustomer @relation(fields: [billingCustomerId], references: [id], onDelete: Cascade)
+
+  @@index([billingCustomerId])
+  @@index([stripeSubscriptionId])
+  @@index([status])
+  @@index([planCode])
+}
+
+model Entitlement {
+  id         String   @id @default(uuid())
+  providerId String
+  key        String   @db.VarChar(100)
+  value      Json
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, key])
+  @@index([providerId])
+  @@index([key])
+}
+
+model UsageCounter {
+  id         String   @id @default(uuid())
+  providerId String
+  periodKey  String   @db.VarChar(7) // YYYY-MM format
+  metric     String   @db.VarChar(100)
+  used       Decimal  @default(0) @db.Decimal(10, 2)
+  limit      Decimal  @default(0) @db.Decimal(10, 2)
+  resetAt    DateTime
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, metric, periodKey])
+  @@index([providerId, metric, periodKey])
+  @@index([providerId])
+  @@index([periodKey])
+}
+
+model Invoice {
+  id                String    @id @default(uuid())
+  billingCustomerId String
+  stripeInvoiceId   String    @unique @db.VarChar(255)
+  total             Decimal   @db.Decimal(10, 2)
+  currency          String    @default("THB") @db.VarChar(3)
+  paidAt            DateTime?
+  hostedInvoiceUrl  String?   @db.VarChar(500)
+  createdAt         DateTime  @default(now())
+
+  // Relations
+  billingCustomer BillingCustomer @relation(fields: [billingCustomerId], references: [id], onDelete: Cascade)
+
+  @@index([billingCustomerId])
+  @@index([stripeInvoiceId])
+  @@index([paidAt])
+}
+
+// ==================== ADMIN MODELS (12 models) ====================
+
+model AdminUser {
+  id         String    @id @default(uuid())
+  email      String    @unique @db.VarChar(255)
+  role       AdminRole
+  mfaEnabled Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  // Relations
+  reviewedVerificationCases VerificationCase[] @relation("VerificationCaseReviewer")
+  handledDisputeCases       DisputeCase[]      @relation("DisputeCaseHandler")
+
+  @@index([email])
+  @@index([role])
+}
+
+model VerificationCase {
+  id         String                 @id @default(uuid())
+  providerId String
+  status     VerificationCaseStatus @default(PENDING)
+  checklist  Json // JSON checklist
+  reviewerId String?
+  decidedAt  DateTime?
+  createdAt  DateTime               @default(now())
+  updatedAt  DateTime               @updatedAt
+
+  // Relations
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  reviewer AdminUser?      @relation("VerificationCaseReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+
+  @@index([providerId])
+  @@index([status])
+  @@index([reviewerId])
+}
+
+model DisputeCase {
+  id         String            @id @default(uuid())
+  orderId    String            @unique
+  status     DisputeCaseStatus @default(OPEN)
+  resolution Json? // JSON resolution data
+  handlerId  String?
+  openedAt   DateTime          @default(now())
+  closedAt   DateTime?
+
+  // Relations
+  order   Order      @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  handler AdminUser? @relation("DisputeCaseHandler", fields: [handlerId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([status])
+  @@index([handlerId])
+}
+
+model Payout {
+  id             String       @id @default(uuid())
+  providerId     String
+  amountTHB      Decimal      @db.Decimal(10, 2)
+  stripePayoutId String?      @db.VarChar(255)
+  status         PayoutStatus @default(PENDING)
+  scheduledAt    DateTime
+  paidAt         DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
+
+  @@index([providerId])
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model Refund {
+  id             String       @id @default(uuid())
+  orderId        String
+  amountTHB      Decimal      @db.Decimal(10, 2)
+  reason         String       @db.Text
+  stripeRefundId String?      @db.VarChar(255)
+  status         RefundStatus @default(PENDING)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model FeatureFlag {
+  key       String   @id @db.VarChar(100)
+  enabled   Boolean  @default(false)
+  audience  Json     @default("{}")
+  updatedAt DateTime @updatedAt
+
+  @@index([enabled])
+}
+
+model FeeSchedule {
+  id            String          @id @default(uuid())
+  type          FeeScheduleType
+  valuePct      Decimal?        @db.Decimal(5, 4) // Percentage (e.g., 0.0250 for 2.5%)
+  valueFixedTHB Decimal?        @db.Decimal(10, 2)
+  effectiveFrom DateTime        @default(now())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([type])
+  @@index([effectiveFrom])
+}
+
+model Banner {
+  id         String     @id @default(uuid())
+  title      String     @db.VarChar(200)
+  message    String     @db.Text
+  type       BannerType
+  activeFrom DateTime
+  activeTo   DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([type])
+  @@index([activeFrom])
+  @@index([activeTo])
+}
+
+model EmailTemplate {
+  id        String   @id @default(uuid())
+  key       String   @unique @db.VarChar(100)
+  subject   String   @db.VarChar(500)
+  html      String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorUserId String?
+  actorRole   String   @db.VarChar(50) // UserRole or AdminRole
+  action      String   @db.VarChar(100)
+  entityType  String   @db.VarChar(100)
+  entityId    String   @db.VarChar(255)
+  diff        Json? // JSON diff data
+  ip          String?  @db.VarChar(45) // IPv6 max length
+  ua          String?  @db.VarChar(500) // User agent
+  createdAt   DateTime @default(now())
+
+  // Relations
+  actor User? @relation("AuditLogActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model InternalNote {
+  id         String   @id @default(uuid())
+  entityType String   @db.VarChar(100)
+  entityId   String   @db.VarChar(255)
+  authorId   String
+  body       String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  author User @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([entityType, entityId])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model Report {
+  id             String       @id @default(uuid())
+  entityType     String       @db.VarChar(100)
+  entityId       String       @db.VarChar(255)
+  reporterUserId String
+  reason         String       @db.Text
+  status         ReportStatus @default(OPEN)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  reporter User @relation("ReportReporter", fields: [reporterUserId], references: [id], onDelete: Restrict)
+
+  @@index([entityType, entityId])
+  @@index([reporterUserId])
+  @@index([status])
+  @@index([createdAt])
+}

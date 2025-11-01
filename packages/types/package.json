@@ -1,0 +1,12 @@
+{
+  "name": "@visaontrack/types",
+  "version": "0.2.0",
+  "private": true,
+  "description": "VisaOnTrack v2 — OpenAPI specs and Zod models",
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "visaontrack",
+  "version": "0.2.0",
+  "private": true,
+  "description": "VisaOnTrack v2 — Two-sided marketplace for visa seekers and service providers in Thailand",
+  "license": "UNLICENSED",
+  "scripts": {
+    "generate:client": "pnpm --filter @visaontrack/client generate",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "lint": "pnpm -r --parallel lint",
+    "test": "pnpm -r --parallel test",
+    "build": "pnpm -r --filter './apps/*' build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

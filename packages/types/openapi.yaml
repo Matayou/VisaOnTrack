@@ -1,0 +1,2087 @@
+openapi: 3.1.0
+info:
+  title: VisaOnTrack v2 API
+  version: 0.2.0
+  description: |
+    Two-sided marketplace API connecting visa seekers with vetted service providers in Thailand.
+    
+    ## Authentication
+    This API uses JWT tokens stored in HttpOnly cookies. Include credentials with requests.
+    
+    ## Entitlements & Quotas
+    Provider plans (Free/Pro/Pro+/Enterprise) enforce entitlements at the API middleware level.
+    Over-quota actions return structured errors (403 EntitlementExceeded, 429 Throttled).
+    
+    ## Versioning
+    Contract version: 0.2.0 (semver)
+    Breaking changes will increment major version and require client regeneration.
+  
+  contact:
+    name: VisaOnTrack API Support
+  
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.visaontrack.com
+    description: Production
+  - url: https://api-staging.visaontrack.com
+    description: Staging
+  - url: http://localhost:3001
+    description: Local development
+
+tags:
+  - name: auth
+    description: Authentication endpoints
+  - name: users
+    description: User profile and management
+  - name: providers
+    description: Provider profiles and management
+  - name: packages
+    description: Service packages
+  - name: requests
+    description: Visa request posting and management
+  - name: messages
+    description: Request messaging and attachments
+  - name: quotes
+    description: Quote submission and management
+  - name: checkout
+    description: Stripe Connect PaymentIntent creation
+  - name: orders
+    description: Order management and delivery
+  - name: reviews
+    description: Order reviews and ratings
+  - name: billing
+    description: Stripe Billing (plans, subscriptions, entitlements)
+  - name: admin
+    description: Admin-only operations (M7 - placeholders)
+
+paths:
+  # ==================== AUTH ====================
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login user
+      description: Authenticate user with email/password. Returns JWT in HttpOnly cookie.
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful. JWT set in HttpOnly cookie.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'token=eyJhbGc...; HttpOnly; Secure; SameSite=Strict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 'UNAUTHORIZED'
+                message: 'Invalid email or password'
+
+  # ==================== USERS ====================
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Get current user
+      description: Returns authenticated user profile
+      operationId: getCurrentUser
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ==================== PROVIDERS ====================
+  /providers:
+    get:
+      tags:
+        - providers
+      summary: Search providers
+      description: Search and list providers with pagination
+      operationId: searchProviders
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: query
+          in: query
+          description: Search query
+          schema:
+            type: string
+        - name: location
+          in: query
+          description: Location filter
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Provider list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    post:
+      tags:
+        - providers
+      summary: Create provider profile
+      description: Create or update provider profile (PROVIDER role required)
+      operationId: createProvider
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProviderRequest'
+      responses:
+        '201':
+          description: Provider created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /providers/{id}:
+    get:
+      tags:
+        - providers
+      summary: Get provider by ID
+      description: Get provider profile by ID
+      operationId: getProvider
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Provider profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfile'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    patch:
+      tags:
+        - providers
+      summary: Update provider profile
+      description: Update provider profile (owner or ADMIN only)
+      operationId: updateProvider
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProviderRequest'
+      responses:
+        '200':
+          description: Provider updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== PACKAGES ====================
+  /packages:
+    post:
+      tags:
+        - packages
+      summary: Create service package
+      description: Create service package (PROVIDER role, entitlement check: packages.max)
+      operationId: createPackage
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePackageRequest'
+      responses:
+        '201':
+          description: Package created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicePackage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/EntitlementExceeded'
+
+  # ==================== REQUESTS ====================
+  /requests:
+    get:
+      tags:
+        - requests
+      summary: List requests
+      description: List visa requests with pagination
+      operationId: listRequests
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/RequestStatus'
+        - name: seekerId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Request list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    post:
+      tags:
+        - requests
+      summary: Create request
+      description: Post new visa request (SEEKER role required)
+      operationId: createRequest
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRequestRequest'
+      responses:
+        '201':
+          description: Request created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /requests/{id}:
+    get:
+      tags:
+        - requests
+      summary: Get request by ID
+      description: Get request details
+      operationId: getRequest
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    patch:
+      tags:
+        - requests
+      summary: Update request
+      description: Update request (owner or ADMIN only)
+      operationId: updateRequest
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestRequest'
+      responses:
+        '200':
+          description: Request updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== MESSAGES ====================
+  /requests/{id}/messages:
+    get:
+      tags:
+        - messages
+      summary: List messages
+      description: Get messages for a request (participants only)
+      operationId: listMessages
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Message list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    post:
+      tags:
+        - messages
+      summary: Send message
+      description: Send message in request thread (participants only)
+      operationId: sendMessage
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessageRequest'
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '403':
+          $ref: '#/components/responses/AttachmentLimitExceeded'
+
+  /messages/attachments:
+    post:
+      tags:
+        - messages
+      summary: Upload attachment
+      description: |
+        Upload attachment file for use in messages. Files are stored in S3/R2 and scanned for viruses.
+        
+        **Requirements:**
+        - File size must not exceed plan limit (entitlement: attachments.maxSizeMB)
+        - MIME type must be in allowlist: pdf, jpg, png, webp, docx, xlsx
+        - Attachment quota per user is enforced
+        
+        **Usage:**
+        1. Upload file via this endpoint to get attachment ID
+        2. Use attachment ID in POST /requests/{id}/messages (attachmentIds array)
+        
+        **Storage:**
+        - Files stored in S3/R2 with signed URLs for access
+        - Virus scan performed in background queue
+      operationId: uploadAttachment
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadAttachmentRequest'
+            encoding:
+              file:
+                contentType: application/pdf,image/jpeg,image/png,image/webp,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      responses:
+        '200':
+          description: Attachment uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+              example:
+                id: '550e8400-e29b-41d4-a716-446655440000'
+                ownerUserId: '550e8400-e29b-41d4-a716-446655440001'
+                key: 'attachments/550e8400-e29b-41d4-a716-446655440000/document.pdf'
+                mime: 'application/pdf'
+                size: 2456789
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid file type or format
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/AttachmentLimitExceeded'
+          description: Attachment quota exceeded
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+          description: File size exceeds plan limit (check attachments.maxSizeMB entitlement)
+
+  # ==================== QUOTES ====================
+  /requests/{id}/quotes:
+    post:
+      tags:
+        - quotes
+      summary: Submit quote
+      description: Submit quote for request (PROVIDER role, entitlement check: quotes.monthly.max)
+      operationId: submitQuote
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuoteRequest'
+      responses:
+        '201':
+          description: Quote submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/EntitlementExceeded'
+        '429':
+          $ref: '#/components/responses/Throttled'
+
+  /quotes/{id}:
+    get:
+      tags:
+        - quotes
+      summary: Get quote by ID
+      description: Get quote details
+      operationId: getQuote
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Quote details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    patch:
+      tags:
+        - quotes
+      summary: Update quote
+      description: Update quote status (provider owner or seeker can accept/decline)
+      operationId: updateQuote
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateQuoteRequest'
+      responses:
+        '200':
+          description: Quote updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== CHECKOUT ====================
+  /checkout/intent:
+    post:
+      tags:
+        - checkout
+      summary: Create PaymentIntent
+      description: Create Stripe Connect PaymentIntent for quote acceptance
+      operationId: createPaymentIntent
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentIntentRequest'
+      responses:
+        '201':
+          description: PaymentIntent created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ==================== ORDERS ====================
+  /orders:
+    get:
+      tags:
+        - orders
+      summary: List orders
+      description: List orders (user's own orders)
+      operationId: listOrders
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Order list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /orders/{id}:
+    get:
+      tags:
+        - orders
+      summary: Get order by ID
+      description: Get order details (participants only)
+      operationId: getOrder
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    patch:
+      tags:
+        - orders
+      summary: Update order
+      description: Update order status/milestones (participants or ADMIN only)
+      operationId: updateOrder
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderRequest'
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== REVIEWS ====================
+  /orders/{id}/review:
+    post:
+      tags:
+        - reviews
+      summary: Submit review
+      description: Submit review for completed order (order participant only)
+      operationId: submitReview
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReviewRequest'
+      responses:
+        '201':
+          description: Review submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== BILLING ====================
+  /billing/checkout-session:
+    post:
+      tags:
+        - billing
+      summary: Create checkout session
+      description: Create Stripe Checkout session for plan upgrade (PROVIDER role)
+      operationId: createCheckoutSession
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckoutSessionRequest'
+      responses:
+        '201':
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutSessionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /billing/portal:
+    get:
+      tags:
+        - billing
+      summary: Get customer portal URL
+      description: Get Stripe Customer Portal session URL (PROVIDER role)
+      operationId: getCustomerPortal
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Portal URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPortalResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /billing/subscription:
+    get:
+      tags:
+        - billing
+      summary: Get subscription
+      description: Get current subscription details (PROVIDER role)
+      operationId: getSubscription
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Subscription details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: No active subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /billing/entitlements/me:
+    get:
+      tags:
+        - billing
+      summary: Get entitlements
+      description: Get full entitlements + usage counters (PROVIDER role)
+      operationId: getEntitlements
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Entitlements and usage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitlementsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /billing/webhook:
+    post:
+      tags:
+        - billing
+      summary: Stripe webhook handler
+      description: Stripe Billing webhook endpoint (no auth, signature verification required)
+      operationId: handleBillingWebhook
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Stripe webhook event
+      responses:
+        '200':
+          description: Webhook processed (idempotent)
+        '400':
+          description: Invalid webhook signature or payload
+
+  # ==================== ADMIN (Placeholders - M7) ====================
+  /admin/providers:
+    get:
+      tags:
+        - admin
+      summary: List providers (admin)
+      description: Admin-only endpoint for provider management (M7 placeholder)
+      operationId: adminListProviders
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Provider list
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Placeholder - M7 implementation
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: JWT token in HttpOnly cookie
+    
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    
+    Limit:
+      name: limit
+      in: query
+      description: Items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+  
+  responses:
+    BadRequest:
+      description: Invalid request parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'BAD_REQUEST'
+            message: 'Invalid request parameters'
+    
+    Unauthorized:
+      description: Authentication required or invalid token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'UNAUTHORIZED'
+            message: 'Authentication required'
+    
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'FORBIDDEN'
+            message: 'Insufficient permissions'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'NOT_FOUND'
+            message: 'Resource not found'
+    
+    EntitlementExceeded:
+      description: Entitlement limit exceeded (e.g., quotes.monthly.max, packages.max)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EntitlementExceededError'
+          example:
+            code: 'ENTITLEMENT_EXCEEDED'
+            message: 'Monthly quote limit exceeded'
+            entitlement: 'quotes.monthly.max'
+            limit: 50
+            used: 50
+    
+    Throttled:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ThrottledError'
+          example:
+            code: 'THROTTLED'
+            message: 'Rate limit exceeded'
+            retryAfter: 3600
+    
+    PayloadTooLarge:
+      description: Request payload too large (attachment size limit)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'PAYLOAD_TOO_LARGE'
+            message: 'Attachment size exceeds limit'
+    
+    AttachmentLimitExceeded:
+      description: Attachment count limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'ATTACHMENT_LIMIT_EXCEEDED'
+            message: 'Attachment count limit exceeded'
+    
+    ValidationError:
+      description: Request validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+          example:
+            code: 'VALIDATION_ERROR'
+            message: 'Validation failed'
+            errors:
+              - field: 'email'
+                message: 'Invalid email format'
+    
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'INTERNAL_SERVER_ERROR'
+            message: 'An internal error occurred'
+
+  schemas:
+    # ==================== COMMON ====================
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+    
+    EntitlementExceededError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            entitlement:
+              type: string
+              description: Entitlement key (e.g., 'quotes.monthly.max')
+            limit:
+              type: number
+              description: Entitlement limit
+            used:
+              type: number
+              description: Current usage
+    
+    ThrottledError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            retryAfter:
+              type: integer
+              description: Seconds until retry allowed
+    
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - errors
+          properties:
+            errors:
+              type: array
+              items:
+                type: object
+                required:
+                  - field
+                  - message
+                properties:
+                  field:
+                    type: string
+                    description: Field name that failed validation
+                  message:
+                    type: string
+                    description: Validation error message
+    
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+    
+    # ==================== AUTH ====================
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+    
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+    
+    # ==================== USERS ====================
+    User:
+      type: object
+      description: User schema per Section 3 data model
+      required:
+        - id
+        - email
+        - role
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          $ref: '#/components/schemas/UserRole'
+        name:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          default: 'en'
+          example: 'en'
+        createdAt:
+          type: string
+          format: date-time
+    
+    UserRole:
+      type: string
+      enum:
+        - SEEKER
+        - PROVIDER
+        - ADMIN
+    
+    # ==================== PROVIDERS ====================
+    ProviderProfile:
+      type: object
+      description: Provider profile schema per Section 3 data model
+      required:
+        - id
+        - userId
+        - businessName
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+          description: Foreign key to User
+        businessName:
+          type: string
+        description:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        languages:
+          type: array
+          items:
+            type: string
+          default: []
+          example: ['en', 'th']
+        verifiedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO 8601 timestamp when provider was verified
+    
+    ProviderListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderProfile'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    
+    CreateProviderRequest:
+      type: object
+      description: Create provider profile request
+      required:
+        - businessName
+      properties:
+        businessName:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+          nullable: true
+        location:
+          type: string
+          maxLength: 200
+          nullable: true
+        languages:
+          type: array
+          items:
+            type: string
+            minLength: 2
+            maxLength: 10
+          default: []
+    
+    UpdateProviderRequest:
+      type: object
+      description: Update provider profile request (partial update)
+      properties:
+        businessName:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+        location:
+          type: string
+          maxLength: 200
+        languages:
+          type: array
+          items:
+            type: string
+            minLength: 2
+            maxLength: 10
+    
+    # ==================== PACKAGES ====================
+    ServicePackage:
+      type: object
+      description: Service package schema per Section 3 data model
+      required:
+        - id
+        - providerId
+        - title
+        - description
+        - priceTHB
+        - deliverables
+        - etaDays
+        - isActive
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerId:
+          type: string
+          format: uuid
+          description: Foreign key to ProviderProfile
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+        priceTHB:
+          type: number
+          minimum: 0
+          description: Price in Thai Baht
+        deliverables:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: List of deliverables included in package
+        etaDays:
+          type: integer
+          minimum: 1
+          description: Estimated delivery time in days
+        isActive:
+          type: boolean
+          default: true
+    
+    CreatePackageRequest:
+      type: object
+      description: Create service package request (entitlement check: packages.max)
+      required:
+        - title
+        - description
+        - priceTHB
+        - deliverables
+        - etaDays
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+        priceTHB:
+          type: number
+          minimum: 0
+        deliverables:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 1
+        etaDays:
+          type: integer
+          minimum: 1
+    
+    # ==================== REQUESTS ====================
+    Request:
+      type: object
+      description: Visa request schema per Section 3 data model
+      required:
+        - id
+        - seekerId
+        - title
+        - description
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        seekerId:
+          type: string
+          format: uuid
+          description: Foreign key to User (role=SEEKER)
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 5000
+        visaType:
+          type: string
+          nullable: true
+          maxLength: 100
+          description: Type of visa (e.g., 'Tourist', 'Business', 'Work Permit')
+        budgetMin:
+          type: number
+          minimum: 0
+          nullable: true
+          description: Minimum budget in THB
+        budgetMax:
+          type: number
+          minimum: 0
+          nullable: true
+          description: Maximum budget in THB
+        location:
+          type: string
+          nullable: true
+          maxLength: 200
+          description: Location preference
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+        createdAt:
+          type: string
+          format: date-time
+    
+    RequestStatus:
+      type: string
+      enum:
+        - DRAFT
+        - OPEN
+        - CLOSED
+        - HIRED
+    
+    RequestListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Request'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    
+    CreateRequestRequest:
+      type: object
+      description: Create visa request (SEEKER role required)
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 5000
+        visaType:
+          type: string
+          maxLength: 100
+          nullable: true
+        budgetMin:
+          type: number
+          minimum: 0
+          nullable: true
+        budgetMax:
+          type: number
+          minimum: 0
+          nullable: true
+        location:
+          type: string
+          maxLength: 200
+          nullable: true
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+          default: DRAFT
+    
+    UpdateRequestRequest:
+      type: object
+      description: Update visa request (owner or ADMIN only)
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 5000
+        visaType:
+          type: string
+          maxLength: 100
+        budgetMin:
+          type: number
+          minimum: 0
+        budgetMax:
+          type: number
+          minimum: 0
+        location:
+          type: string
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+    
+    # ==================== MESSAGES ====================
+    Message:
+      type: object
+      description: Message schema per Section 3 data model
+      required:
+        - id
+        - requestId
+        - senderId
+        - body
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        requestId:
+          type: string
+          format: uuid
+          description: Foreign key to Request
+        senderId:
+          type: string
+          format: uuid
+          description: Foreign key to User (sender)
+        body:
+          type: string
+          minLength: 1
+          maxLength: 10000
+          description: Message content
+        createdAt:
+          type: string
+          format: date-time
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+          description: Attachments linked to this message
+          nullable: true
+    
+    MessageListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    
+    CreateMessageRequest:
+      type: object
+      description: Send message in request thread (participants only, attachment limits enforced)
+      required:
+        - body
+      properties:
+        body:
+          type: string
+          minLength: 1
+          maxLength: 10000
+        attachmentIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 10
+          description: Attachment IDs from POST /messages/attachments (entitlement check: attachments.maxSizeMB)
+    
+    UploadAttachmentRequest:
+      type: object
+      description: File upload request (multipart/form-data). Enforces size limits per plan and MIME allowlist per Section 9.
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+          description: File to upload. Allowed MIME types: pdf, jpg, png, webp, docx, xlsx. Size limit enforced per plan (attachments.maxSizeMB).
+        requestId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional request ID to associate attachment with request
+        orderId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional order ID to associate attachment with order
+    
+    # ==================== QUOTES ====================
+    Quote:
+      type: object
+      description: Quote schema per Section 3 data model
+      required:
+        - id
+        - requestId
+        - providerId
+        - items
+        - totalTHB
+        - etaDays
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        requestId:
+          type: string
+          format: uuid
+          description: Foreign key to Request
+        providerId:
+          type: string
+          format: uuid
+          description: Foreign key to ProviderProfile
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteItem'
+          minItems: 1
+          description: Quote line items
+        totalTHB:
+          type: number
+          minimum: 0
+          description: Total quote amount in Thai Baht
+        etaDays:
+          type: integer
+          minimum: 1
+          description: Estimated completion time in days
+        terms:
+          type: string
+          maxLength: 2000
+          nullable: true
+          description: Terms and conditions
+        status:
+          $ref: '#/components/schemas/QuoteStatus'
+        validUntil:
+          type: string
+          format: date-time
+          nullable: true
+          description: Quote expiration timestamp
+    
+    QuoteItem:
+      type: object
+      description: Quote line item
+      required:
+        - title
+        - quantity
+        - priceTHB
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Item description
+        quantity:
+          type: integer
+          minimum: 1
+          default: 1
+        priceTHB:
+          type: number
+          minimum: 0
+          description: Unit price in Thai Baht
+        subtotalTHB:
+          type: number
+          minimum: 0
+          description: Calculated subtotal (quantity * priceTHB)
+          readOnly: true
+    
+    QuoteStatus:
+      type: string
+      enum:
+        - PENDING
+        - ACCEPTED
+        - DECLINED
+        - EXPIRED
+    
+    CreateQuoteRequest:
+      type: object
+      description: Submit quote for request (PROVIDER role, entitlement check: quotes.monthly.max)
+      required:
+        - items
+        - totalTHB
+        - etaDays
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteItem'
+          minItems: 1
+        totalTHB:
+          type: number
+          minimum: 0
+          description: Total amount in Thai Baht (should match sum of items)
+        etaDays:
+          type: integer
+          minimum: 1
+        terms:
+          type: string
+          maxLength: 2000
+          nullable: true
+    
+    UpdateQuoteRequest:
+      type: object
+      description: Update quote status (provider owner or seeker can accept/decline)
+      properties:
+        status:
+          $ref: '#/components/schemas/QuoteStatus'
+          description: Status change (seeker can set ACCEPTED/DECLINED, provider can update)
+        terms:
+          type: string
+          maxLength: 2000
+          description: Update terms (provider only)
+    
+    # ==================== CHECKOUT ====================
+    CreatePaymentIntentRequest:
+      type: object
+      description: Create Stripe Connect PaymentIntent for quote acceptance (SEEKER role)
+      required:
+        - quoteId
+      properties:
+        quoteId:
+          type: string
+          format: uuid
+          description: ID of accepted quote
+    
+    PaymentIntentResponse:
+      type: object
+      description: PaymentIntent creation response
+      required:
+        - clientSecret
+        - orderId
+      properties:
+        clientSecret:
+          type: string
+          description: Stripe PaymentIntent client_secret for frontend confirmation
+          example: 'pi_xxx_secret_xxx'
+        orderId:
+          type: string
+          format: uuid
+          description: Created order ID (escrowStatus=REQUIRES_PAYMENT)
+    
+    # ==================== ORDERS ====================
+    Order:
+      type: object
+      description: Order schema per Section 3 data model
+      required:
+        - id
+        - quoteId
+        - escrowStatus
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        quoteId:
+          type: string
+          format: uuid
+          description: Foreign key to Quote
+        escrowStatus:
+          $ref: '#/components/schemas/EscrowStatus'
+          description: Stripe Connect escrow state
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+          description: Order lifecycle status
+        milestones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Milestone'
+          description: Order milestones
+          nullable: true
+    
+    EscrowStatus:
+      type: string
+      enum:
+        - REQUIRES_PAYMENT
+        - HELD
+        - RELEASED
+        - REFUNDED
+    
+    OrderStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - DELIVERED
+        - COMPLETED
+        - DISPUTED
+        - CANCELLED
+    
+    OrderListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    
+    UpdateOrderRequest:
+      type: object
+      description: Update order status/milestones (participants or ADMIN only)
+      properties:
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+          description: Order status update
+        escrowStatus:
+          $ref: '#/components/schemas/EscrowStatus'
+          description: Escrow status (admin-controlled, via Stripe webhook)
+        milestones:
+          type: array
+          items:
+            $ref: '#/components/schemas/MilestoneInput'
+          description: Milestone updates
+    
+    # ==================== REVIEWS ====================
+    Review:
+      type: object
+      description: Review schema per Section 3 data model
+      required:
+        - id
+        - orderId
+        - rating
+        - tags
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+          description: Foreign key to Order
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Rating 1-5 stars
+        tags:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          description: Review tags (e.g., 'professional', 'timely', 'helpful')
+        text:
+          type: string
+          maxLength: 2000
+          nullable: true
+          description: Review text content
+        createdAt:
+          type: string
+          format: date-time
+    
+    CreateReviewRequest:
+      type: object
+      description: Submit review for completed order (order participant only)
+      required:
+        - rating
+        - tags
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        tags:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          minItems: 1
+          maxItems: 10
+        text:
+          type: string
+          maxLength: 2000
+          nullable: true
+    
+    # ==================== MILESTONES ====================
+    Milestone:
+      type: object
+      description: Milestone schema per Section 3 data model
+      required:
+        - id
+        - orderId
+        - title
+        - dueAt
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+          description: Foreign key to Order
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Milestone title
+        dueAt:
+          type: string
+          format: date-time
+          description: Due date/timestamp
+        status:
+          $ref: '#/components/schemas/MilestoneStatus'
+    
+    MilestoneStatus:
+      type: string
+      enum:
+        - PENDING
+        - DONE
+    
+    MilestoneInput:
+      type: object
+      description: Milestone input for order updates
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Milestone ID (if updating existing)
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        dueAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/MilestoneStatus'
+    
+    # ==================== ATTACHMENTS ====================
+    Attachment:
+      type: object
+      description: Attachment schema per Section 3 data model
+      required:
+        - id
+        - ownerUserId
+        - key
+        - mime
+        - size
+      properties:
+        id:
+          type: string
+          format: uuid
+        ownerUserId:
+          type: string
+          format: uuid
+          description: Foreign key to User (owner)
+        requestId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Foreign key to Request (if attached to request)
+        orderId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Foreign key to Order (if attached to order)
+        key:
+          type: string
+          description: Storage key (S3/R2 object key)
+          example: 'attachments/xxx-xxx-xxx/file.pdf'
+        mime:
+          type: string
+          description: MIME type
+          example: 'application/pdf'
+        size:
+          type: integer
+          minimum: 0
+          description: File size in bytes
+    
+    # ==================== BILLING ====================
+    CreateCheckoutSessionRequest:
+      type: object
+      description: Create Stripe Checkout session for plan upgrade (PROVIDER role)
+      required:
+        - planCode
+        - interval
+      properties:
+        planCode:
+          $ref: '#/components/schemas/PlanCode'
+          description: Plan to subscribe to (FREE not allowed)
+        interval:
+          type: string
+          enum:
+            - monthly
+            - yearly
+          description: Billing interval
+    
+    PlanCode:
+      type: string
+      enum:
+        - FREE
+        - PRO
+        - PRO_PLUS
+        - ENTERPRISE
+    
+    CheckoutSessionResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Stripe Checkout session URL
+    
+    CustomerPortalResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Stripe Customer Portal session URL
+    
+    Subscription:
+      type: object
+      description: Subscription schema per Section 3 data model
+      required:
+        - planCode
+        - status
+        - currentPeriodStart
+        - currentPeriodEnd
+        - cancelAtPeriodEnd
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Subscription ID
+        billingCustomerId:
+          type: string
+          format: uuid
+          description: Foreign key to BillingCustomer
+        stripeSubscriptionId:
+          type: string
+          description: Stripe subscription ID
+          example: 'sub_xxx'
+        planCode:
+          $ref: '#/components/schemas/PlanCode'
+        status:
+          $ref: '#/components/schemas/SubscriptionStatus'
+        currentPeriodStart:
+          type: string
+          format: date-time
+          description: Current billing period start
+        currentPeriodEnd:
+          type: string
+          format: date-time
+          description: Current billing period end
+        cancelAtPeriodEnd:
+          type: boolean
+          description: Whether subscription will cancel at period end
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    
+    SubscriptionStatus:
+      type: string
+      enum:
+        - INCOMPLETE
+        - TRIALING
+        - ACTIVE
+        - PAST_DUE
+        - CANCELED
+        - UNPAID
+    
+    EntitlementsResponse:
+      type: object
+      description: Full entitlements and usage counters per Section 4
+      required:
+        - entitlements
+        - usage
+      properties:
+        entitlements:
+          type: object
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+              - type: boolean
+          description: Key-value entitlements per plan (e.g., quotes.monthly.max=50, packages.max=12, visibility.weight=1.2, attachments.maxSizeMB=25)
+          example:
+            quotes.monthly.max: 50
+            packages.max: 12
+            photos.max: 12
+            attachments.maxSizeMB: 25
+            visibility.weight: 1.2
+            analytics.level: 'advanced'
+        usage:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageCounter'
+          description: Usage counters for current period
+    
+    UsageCounter:
+      type: object
+      description: Usage counter schema per Section 3 data model
+      required:
+        - metric
+        - used
+        - limit
+        - periodKey
+        - resetAt
+      properties:
+        metric:
+          type: string
+          description: Counter metric name
+          example: 'quotes.monthly'
+        used:
+          type: number
+          minimum: 0
+          description: Current usage count
+        limit:
+          type: number
+          minimum: 0
+          description: Usage limit (from entitlements)
+        periodKey:
+          type: string
+          pattern: '^\d{4}-\d{2}$'
+          description: Period key in YYYY-MM format
+          example: '2024-01'
+        resetAt:
+          type: string
+          format: date-time
+          description: When counter resets (first of next month)
+

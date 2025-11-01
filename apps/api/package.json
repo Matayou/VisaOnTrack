@@ -1,0 +1,12 @@
+{
+  "name": "@visaontrack/api",
+  "version": "0.2.0",
+  "private": true,
+  "description": "VisaOnTrack v2 — NestJS Backend API",
+  "type": "module",
+  "scripts": {
+    "typecheck": "echo 'TypeScript typecheck placeholder'",
+    "lint": "echo 'Lint placeholder'",
+    "test": "echo 'Test placeholder'"
+  }
+}

@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma
+/apps/api/prisma/migrations/
+/apps/api/prisma/dev.db
+/apps/api/prisma/dev.db-journal
+
+# Generated files (will be committed, but keep generator configs out)
+/.openapi-generator/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

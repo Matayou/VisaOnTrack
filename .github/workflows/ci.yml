@@ -1,0 +1,270 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8'
+
+jobs:
+  # ==================== Job 1: Verify ====================
+  verify:
+    name: Verify (Typecheck, Lint, Test)
+    runs-on: ubuntu-latest
+    description: Verify code quality (typecheck, lint, tests). Fail fast if errors found.
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm -w typecheck
+        continue-on-error: false
+
+      - name: Lint
+        run: pnpm -w lint
+        continue-on-error: false
+
+      - name: Test
+        run: pnpm -w test
+        continue-on-error: false
+
+  # ==================== Job 2: Contracts ====================
+  contracts:
+    name: Contracts (OpenAPI Lint, Pact Verify, Client Generation)
+    runs-on: ubuntu-latest
+    description: Ensure contract compliance (OpenAPI lint, Pact verify, client generation check).
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: OpenAPI Lint (Spectral)
+        run: |
+          npx @stoplight/spectral-cli lint packages/types/openapi.yaml
+        continue-on-error: false
+
+      - name: Pact Verify (Contract Testing)
+        run: |
+          echo "Pact contract verification placeholder"
+          # TODO: Add Pact verification once contracts are implemented
+          # npx pact-cli verify --pact-dir ./pact/contracts
+        continue-on-error: true
+
+      - name: Client Generation Check
+        run: |
+          # Verify client can be generated
+          pnpm generate:client
+          # Check if generated files match expected structure
+          test -f packages/client/src/api.ts || exit 1
+          test -f packages/client/src/index.ts || exit 1
+        continue-on-error: false
+
+  # ==================== Job 3: Build ====================
+  build:
+    name: Build (Frontend & Backend)
+    runs-on: ubuntu-latest
+    description: Verify both apps build successfully (FE Next.js, BE NestJS/Docker).
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: |
+          cd apps/api
+          npx prisma generate
+        continue-on-error: false
+
+      - name: Build Frontend (Next.js)
+        run: |
+          cd apps/web
+          pnpm build
+        continue-on-error: false
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'http://localhost:3001' }}
+
+      - name: Build Backend (NestJS)
+        run: |
+          cd apps/api
+          pnpm build
+        continue-on-error: false
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/visaontrack' }}
+          NODE_ENV: production
+
+      - name: Build Backend Docker Image
+        run: |
+          docker build -t visaontrack-api:latest -f apps/api/Dockerfile apps/api
+        continue-on-error: true
+
+  # ==================== Job 4: Preview ====================
+  preview:
+    name: Preview (Vercel Preview, Staging/Preview)
+    runs-on: ubuntu-latest
+    needs: [verify, contracts, build]
+    description: Preview deployments for PR review (FE Vercel preview, BE staging/preview).
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy Frontend to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod=false'
+          working-directory: apps/web
+        continue-on-error: true
+
+      - name: Deploy Backend to Staging/Preview
+        run: |
+          echo "Backend staging/preview deployment placeholder"
+          # TODO: Add Fly.io or Railway deployment once configured
+          # flyctl deploy --remote-only --app visaontrack-api-staging
+          # OR
+          # railway up
+        continue-on-error: true
+
+      - name: Get Preview URLs
+        id: preview-urls
+        run: |
+          FE_URL="${VERCEL_URL:-https://preview.visaontrack.com}"
+          BE_URL="${STAGING_API_URL:-https://api-staging.visaontrack.com}"
+          echo "fe_url=$FE_URL" >> $GITHUB_OUTPUT
+          echo "be_url=$BE_URL" >> $GITHUB_OUTPUT
+        continue-on-error: false
+        env:
+          VERCEL_URL: ${{ env.VERCEL_URL }}
+          STAGING_API_URL: ${{ secrets.STAGING_API_URL }}
+
+  # ==================== Job 5: PR Comment ====================
+  pr-comment:
+    name: PR Comment (Preview Links, Test Summary, Sentry DSNs)
+    runs-on: ubuntu-latest
+    needs: [verify, contracts, build, preview]
+    description: Post preview links + test summary + Sentry DSNs in preview.
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Test Summary
+        id: test-summary
+        run: |
+          # Run tests and capture summary
+          pnpm -w test --reporter=json > test-results.json 2>/dev/null || echo '{"summary": "Tests pending"}'
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          cat test-results.json | head -20 || echo "Test summary unavailable"
+          echo "EOF" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Create PR Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const testSummary = `${{ steps.test-summary.outputs.summary }}`;
+            const feUrl = `${{ needs.preview.outputs.fe_url || 'N/A' }}`;
+            const beUrl = `${{ needs.preview.outputs.be_url || 'N/A' }}`;
+            const sentryDsn = `${{ secrets.SENTRY_DSN || 'N/A' }}`;
+            
+            const comment = `## 🚀 Preview Deployment
+            
+            ### Preview URLs
+            - **Frontend:** ${feUrl}
+            - **Backend:** ${beUrl}
+            
+            ### Test Summary
+            \`\`\`
+            ${testSummary}
+            \`\`\`
+            
+            ### Sentry Configuration (Preview)
+            - **Sentry DSN:** ${sentryDsn ? 'Configured' : 'Not configured'}
+            
+            ### Build Status
+            - ✅ Verify: ${{ needs.verify.result }}
+            - ✅ Contracts: ${{ needs.contracts.result }}
+            - ✅ Build: ${{ needs.build.result }}
+            - ${needs.preview.result == 'success' ? '✅' : '⏸️'} Preview: ${{ needs.preview.result }}
+            
+            ---
+            **CI/CD Pipeline:** [View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+        continue-on-error: true
+

@@ -1,0 +1,61 @@
+name: Database Migrations
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/api/prisma/schema.prisma'
+      - 'apps/api/prisma/migrations/**'
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8'
+
+jobs:
+  migrate:
+    name: Run Prisma Migrations
+    runs-on: ubuntu-latest
+    description: Apply database migrations safely on merge to main.
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: |
+          cd apps/api
+          npx prisma generate
+        continue-on-error: false
+
+      - name: Run Prisma Migrations
+        run: |
+          cd apps/api
+          npx prisma migrate deploy
+        continue-on-error: false
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        if: github.ref == 'refs/heads/main'
+
+      - name: Verify Migration Success
+        run: |
+          cd apps/api
+          npx prisma migrate status
+        continue-on-error: false
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+

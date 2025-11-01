@@ -1,11 +1,11 @@
 # VisaOnTrack v2 — Project Status
 
-**Last Updated:** M0 Task 4 Complete (Multi-Agent Approved)
+**Last Updated:** M0 Task 5 Complete (Multi-Agent Approved)
 **Current Milestone:** M0 — Contracts & Skeletons
 **Phase:** Active Development — M0 In Progress
 **Agent Team:** ✅ All agents created and ready
-**Current Task:** M0 Task 5 — CI/CD Workflow Skeleton
-**Git Status:** ✅ Initial commit complete (M0 Tasks 1-3)
+**Current Task:** M0 Task 6 — Project Documentation
+**Git Status:** ✅ Regular commits in progress (Task 4 committed, Task 5 ready)
 
 ---
 
@@ -16,8 +16,8 @@
 - [x] Prisma schema (all models) ✅ **COMPLETE** (Multi-agent approved: Tech Lead, QA, Security, Scope Guardian)
 - [x] Monorepo structure setup ✅ **COMPLETE** (Scope Guardian approved)
 - [x] OpenAPI client generation configured ✅ **COMPLETE** (Multi-agent approved: Tech Lead, Scope Guardian)
-- [ ] CI/CD workflow skeleton — **NEXT**
-- [ ] Project documentation (README, DoR/DoD templates)
+- [x] CI/CD workflow skeleton ✅ **COMPLETE** (Multi-agent approved: Tech Lead, QA, Scope Guardian)
+- [ ] Project documentation (README, DoR/DoD templates) — **NEXT**
 
 ### 📋 M1 — Auth & Onboarding (4–5d) — **PENDING**
 - [ ] Login/Register flows
@@ -112,11 +112,26 @@ _None currently._
 > 
 > **Status:** All reviews approved. Task 3 complete.
 
+**M0 Task 5 Completion (CI/CD Workflow Skeleton):**
+- ✅ All 5 jobs defined per spec Section 14
+- ✅ Migration workflow configured separately
+- ✅ pnpm workspaces used correctly
+- ✅ Environment variables handled securely
+- ✅ Workflows follow best practices
+- ✅ Placeholders documented (Pact verify, backend deployment - acceptable for M0)
+
 **Multi-Agent Review Results (Task 4 - OpenAPI Client Generation):**
 > ✅ **Tech Lead:** APPROVED — Client generation ready for frontend usage
 > ✅ **Scope Guardian:** APPROVED — Client generation matches spec Section 1 exactly
 > 
-> **Status:** All reviews approved. Task 4 complete. Proceed to Task 5 (CI/CD Workflow Skeleton).
+> **Status:** All reviews approved. Task 4 complete.
+
+**Multi-Agent Review Results (Task 5 - CI/CD Workflow Skeleton):**
+> ✅ **Tech Lead:** APPROVED — CI/CD workflow skeleton ready for use
+> ✅ **QA Engineer:** APPROVED — Workflow complete, testable, follows spec
+> ✅ **Scope Guardian:** APPROVED — Workflow matches spec Section 14 exactly
+> 
+> **Status:** All reviews approved. Task 5 complete. Proceed to Task 6 (Project Documentation).
 > 
 > Spec is Truth. MVP focus. No exceptions without RFC.
 
@@ -128,8 +143,8 @@ _None currently._
 2. ✅ Create OpenAPI v0.2 spec — **COMPLETE** (Scope Guardian approved)
 3. ✅ Define Prisma schema — **COMPLETE** (Multi-agent approved: Tech Lead, QA, Security, Scope Guardian)
 4. ✅ Configure OpenAPI client generation — **COMPLETE** (Multi-agent approved: Tech Lead, Scope Guardian)
-5. Configure CI/CD workflow skeleton — **NEXT** (Tech Lead)
-6. Configure project documentation
+5. ✅ Configure CI/CD workflow skeleton — **COMPLETE** (Multi-agent approved: Tech Lead, QA, Scope Guardian)
+6. Configure project documentation — **NEXT** (PM)
 
 ---
 

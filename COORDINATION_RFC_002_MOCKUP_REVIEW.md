@@ -200,8 +200,8 @@ Location: docs/mockups/forgot-password.html, docs/mockups/reset-password.html
 Status: Tech Lead & Scope Guardian approved, awaiting QA review
 
 Previous Reviews:
-✅ Tech Lead: APPROVED (technical requirements met)
-✅ Scope Guardian: APPROVED (spec compliance verified)
+✅ Tech Lead: ✅ APPROVED (all technical requirements met — design consistency verified, all states designed, responsive design verified, accessibility requirements met, security messaging appropriate)
+✅ Scope Guardian: ✅ APPROVED (spec compliance verified — routes match spec Section 2, no code creep, RFC-002 requirements met)
 
 Task: Review quality, accessibility, and responsiveness for forgot/reset password mockups
 
@@ -284,19 +284,19 @@ Priority: HIGH — Blocks M1 completion
 ### Current Status:
 - ✅ Design Agent: ✅ COMPLETE — Mockups delivered
 - ✅ Tech Lead Review: ✅ APPROVED (all technical requirements met)
-- ⏳ Scope Guardian Review: ⏳ PENDING (NEXT)
-- ⏳ QA Engineer Review: ⏳ PENDING
+- ✅ Scope Guardian Review: ✅ APPROVED (spec compliance verified)
+- ⏳ QA Engineer Review: ⏳ PENDING (NEXT)
 - ⏳ PM Final Approval: ⏳ PENDING
 
 ---
 
 ## 🎯 Next Immediate Action
 
-**Step 1: Scope Guardian Review (START HERE)**
+**Step 1: QA Engineer Review (START HERE)**
 
-Copy the Scope Guardian review prompt below into your Scope Guardian agent chat to continue the review sequence.
+Copy the QA Engineer review prompt below into your QA Engineer agent chat to continue the review sequence.
 
-After Scope Guardian approves, proceed to QA Engineer review.
+After QA Engineer approves, proceed to PM final approval.
 
 ---
 

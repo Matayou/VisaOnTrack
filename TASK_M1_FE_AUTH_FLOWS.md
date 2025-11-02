@@ -3,8 +3,9 @@
 **Milestone:** M1 — Auth & Onboarding  
 **Assigned To:** Frontend Engineer  
 **Duration:** 1–1.5 days  
-**Status:** ⏳ PENDING  
-**Priority:** HIGH (core authentication flow)
+**Status:** ⚠️ IN PROGRESS — Files created by Scope Guardian (incorrect role), awaiting Frontend Engineer review  
+**Priority:** HIGH (core authentication flow)  
+**⚠️ INCIDENT:** Scope Guardian created implementation files (role boundary violation). Files kept per user request. Frontend Engineer to review/validate/complete.
 
 ---
 

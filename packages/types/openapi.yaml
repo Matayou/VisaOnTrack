@@ -93,6 +93,91 @@ paths:
                 code: 'UNAUTHORIZED'
                 message: 'Invalid email or password'
 
+  /auth/forgot-password:
+    post:
+      tags:
+        - auth
+      summary: Request password reset
+      description: |
+        Send password reset email to user. Always returns success (200 OK) for security reasons (no user enumeration).
+        If user exists, email with reset token link is sent. Token expires in 1 hour.
+      operationId: forgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '200':
+          description: |
+            Always returns success (200 OK) regardless of whether user exists, to prevent user enumeration.
+            If user exists, password reset email is sent with reset token link.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForgotPasswordResponse'
+        '400':
+          description: Invalid email format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 'BAD_REQUEST'
+                message: 'Invalid email format'
+        '429':
+          $ref: '#/components/responses/Throttled'
+
+  /auth/reset-password:
+    post:
+      tags:
+        - auth
+      summary: Reset password with token
+      description: |
+        Reset user password using reset token from email. Token must be valid, not expired, and not already used.
+        Token is single-use and invalidated after successful reset.
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset successful. User can now login with new password.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPasswordResponse'
+        '400':
+          description: Invalid token or weak password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidToken:
+                  value:
+                    code: 'BAD_REQUEST'
+                    message: 'Invalid or expired reset token'
+                weakPassword:
+                  value:
+                    code: 'BAD_REQUEST'
+                    message: 'Password does not meet strength requirements'
+        '401':
+          description: Token expired or already used
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 'UNAUTHORIZED'
+                message: 'Reset token has expired or has already been used'
+        '429':
+          $ref: '#/components/responses/Throttled'
+
   # ==================== USERS ====================
   /users/me:
     get:

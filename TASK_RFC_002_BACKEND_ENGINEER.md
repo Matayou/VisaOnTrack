@@ -16,12 +16,14 @@ Implement forgot/reset password API endpoints with security requirements per RFC
 
 ## DoR Checklist (Definition of Ready)
 - [x] User story defined ✅
-- [x] Wireframe/mock available ⏳ (Design Agent creating mockups)
+- [x] Wireframe/mock available ✅ (Design Agent delivered mockups — forgot-password.html, reset-password.html)
 - [x] API contract defined (OpenAPI) ✅ (Tech Lead designed)
 - [x] Prisma schema updated ✅ (passwordResetTokenHash, passwordResetTokenExpiry fields added)
 - [x] Error states documented ✅ (OpenAPI spec)
 - [x] Dependencies identified ✅ (Email service — Resend/SES per spec)
 - [x] DoR reviewed and approved ✅
+
+**Status:** ✅ DoR SATISFIED — All requirements met, ready for implementation
 
 ---
 

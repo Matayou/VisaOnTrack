@@ -41,15 +41,18 @@
 ## ⏳ Pending Tasks
 
 ### 5. ✅ Create Mockups (Design Agent)
-- **Status:** ✅ COMPLETE (Delivered, awaiting review)
+- **Status:** ✅ COMPLETE (Delivered, Tech Lead approved)
 - **Task:** `TASK_RFC_002_DESIGN_AGENT.md`
 - **Assignment:** `DESIGN_AGENT_ASSIGNMENT_RFC_002.md`
 - **Deliverables:**
   - ✅ `forgot-password.html` (email input form) — DELIVERED
   - ✅ `reset-password.html` (new password form with token validation) — DELIVERED
 - **Timeline:** 1 day — ✅ COMPLETE
-- **Reviewers:** Tech Lead, Scope Guardian, QA Engineer — ⏳ PENDING
-- **Next Step:** Coordinate multi-agent review (Tech Lead → Scope Guardian → QA)
+- **Reviewers:** 
+  - ✅ Tech Lead: ✅ APPROVED (all technical requirements met)
+  - ⏳ Scope Guardian: ⏳ PENDING (spec adherence)
+  - ⏳ QA Engineer: ⏳ PENDING (accessibility & responsiveness)
+- **Next Step:** Scope Guardian review (spec compliance)
 
 ### 6. ⏳ Implement API Endpoints (Backend Engineer)
 - **Status:** ASSIGNED
@@ -79,14 +82,15 @@
 4. ✅ Implementation tasks created
 
 **In Progress:**
-5. ✅ Design Agent: ✅ COMPLETE — Mockups delivered, awaiting review
+5. ✅ Design Agent: ✅ COMPLETE — Mockups delivered, Tech Lead approved
 6. ⏳ Backend Engineer: Task assigned — Awaiting implementation
-7. ⏳ Multi-agent review: Tech Lead → Scope Guardian → QA — ⏳ PENDING
+7. ⏳ Multi-agent review: Scope Guardian → QA — ⏳ PENDING
 
 **Pending:**
-7. ⏳ Tech Lead review (mockups and API implementation)
-8. ⏳ Security Guard review (API implementation)
-9. ⏳ Scope Guardian review (spec compliance)
+7. ⏳ Scope Guardian review (mockups — spec compliance) — ⏳ NEXT
+8. ⏳ QA Engineer review (mockups — accessibility & responsiveness)
+9. ⏳ Tech Lead review (API implementation)
+10. ⏳ Security Guard review (API implementation)
 10. ⏳ Final approval and merge
 
 ---

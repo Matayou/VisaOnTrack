@@ -105,7 +105,10 @@
 - ✅ OpenAPI spec updated (endpoints added, version bumped to v0.2.1)
 - ✅ Implementation tasks created (Design Agent, Backend Engineer)
 - ✅ Task assignments created (`DESIGN_AGENT_ASSIGNMENT_RFC_002.md`, `TASK_RFC_002_BACKEND_ENGINEER.md`)
-- ✅ Design Agent: ✅ COMPLETE — Mockups delivered (forgot-password.html, reset-password.html), awaiting review
+- ✅ Design Agent: ✅ COMPLETE — Mockups delivered (forgot-password.html, reset-password.html)
+  - ✅ Tech Lead: ✅ APPROVED (all technical requirements met)
+  - ⏳ Scope Guardian: ⏳ PENDING (spec adherence review)
+  - ⏳ QA Engineer: ⏳ PENDING (accessibility & responsiveness review)
 - 📋 Backend Engineer: Task ASSIGNED — Awaiting API implementation (with token hashing, audit logging, data retention)
 
 **Previous Blocker (Resolved):**

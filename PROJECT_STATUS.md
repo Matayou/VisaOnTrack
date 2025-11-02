@@ -110,7 +110,14 @@
   - ✅ Scope Guardian: ✅ APPROVED (spec compliance verified)
   - ✅ QA Engineer: ✅ APPROVED (accessibility & responsiveness verified)
   - ✅ PM Final Approval: ✅ APPROVED (DoR satisfied for M1)
-- 📋 Backend Engineer: Task ASSIGNED — DoR satisfied, ready for API implementation (with token hashing, audit logging, data retention)
+- ✅ Backend Engineer: ✅ COMPLETE — API endpoints implemented (forgot/reset password)
+  - ✅ Token hashing implemented (bcrypt, passwordResetTokenHash)
+  - ✅ Audit logging implemented (PASSWORD_RESET_REQUEST, PASSWORD_RESET_COMPLETE, PASSWORD_RESET_FAILED)
+  - ✅ Data retention policy implemented (cleanup job, daily at 2 AM)
+  - ✅ Rate limiting implemented (3/hour forgot, 5/hour reset)
+  - ⏳ Tech Lead: ⏳ PENDING (technical implementation review)
+  - ⏳ Security Guard: ⏳ PENDING (security requirements review)
+  - ⏳ Scope Guardian: ⏳ PENDING (spec compliance review)
 
 **Previous Blocker (Resolved):**
 - ✅ **M1 Frontend Work Blocked** — DoR checklist requires wireframes/mocks

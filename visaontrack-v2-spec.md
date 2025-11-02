@@ -40,18 +40,25 @@
 
 ---
 
-## 2) App Structure & Routes (with your HTML mocks)
+## 2) App Structure & Routes (with HTML mockups)
 
-**Auth & Onboarding**
-- `/auth/login` → [`docs/mockups/login-page.html`](docs/mockups/login-page.html)
-- `/auth/register` (+ `/auth/register/simple`) → [`docs/mockups/register-page.html`](docs/mockups/register-page.html), [`docs/mockups/simplified-registration.html`](docs/mockups/simplified-registration.html)
-- `/onboarding/account-type` → [`docs/mockups/account-type-selection.html`](docs/mockups/account-type-selection.html)
-- `/onboarding/seeker/welcome` → [`docs/mockups/onboarding-welcome.html`](docs/mockups/onboarding-welcome.html)
-- `/onboarding/provider/welcome` → [`docs/mockups/provider-onboarding-welcome.html`](docs/mockups/provider-onboarding-welcome.html)
-- `/onboarding/provider/business` → [`docs/mockups/business-details-page.html`](docs/mockups/business-details-page.html)
-- `/onboarding/provider/services` → [`docs/mockups/services-pricing-improved.html`](docs/mockups/services-pricing-improved.html)
-- `/onboarding/provider/credentials` → [`docs/mockups/credentials-page.html`](docs/mockups/credentials-page.html) → `/complete` → [`docs/mockups/complete-credentials-page.html`](docs/mockups/complete-credentials-page.html)
-- `/onboarding/provider/payouts` → [`docs/mockups/payment-setup-final.html`](docs/mockups/payment-setup-final.html)
+**Landing & Auth**
+- `/` (landing) → [`docs/mockups/landing.html`](docs/mockups/landing.html)
+- `/auth/login` → [`docs/mockups/login.html`](docs/mockups/login.html)
+- `/auth/register` → [`docs/mockups/register.html`](docs/mockups/register.html)
+- `/auth/register/simple` → [`docs/mockups/register-simple.html`](docs/mockups/register-simple.html)
+- `/auth/forgot-password` → [`docs/mockups/forgot-password.html`](docs/mockups/forgot-password.html) (RFC-002)
+- `/auth/reset-password?token=xxx` → [`docs/mockups/reset-password.html`](docs/mockups/reset-password.html) (RFC-002)
+
+**Onboarding**
+- `/onboarding/account-type` → [`docs/mockups/account-type.html`](docs/mockups/account-type.html)
+- `/onboarding/seeker/welcome` → [`docs/mockups/onboarding-seeker.html`](docs/mockups/onboarding-seeker.html)
+- `/onboarding/provider/welcome` → [`docs/mockups/onboarding-provider.html`](docs/mockups/onboarding-provider.html)
+- `/onboarding/provider/business` → [`docs/mockups/business-details.html`](docs/mockups/business-details.html)
+- `/onboarding/provider/services` → [`docs/mockups/services-pricing.html`](docs/mockups/services-pricing.html)
+- `/onboarding/provider/credentials` → [`docs/mockups/credentials.html`](docs/mockups/credentials.html)
+- `/onboarding/provider/credentials/complete` → [`docs/mockups/credentials-complete.html`](docs/mockups/credentials-complete.html)
+- `/onboarding/provider/payouts` → [`docs/mockups/payment-setup.html`](docs/mockups/payment-setup.html)
 
 **Core User Flows**
 - `/requests` (list) → `visa-requests-final.html`

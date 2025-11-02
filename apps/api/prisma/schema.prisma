@@ -122,13 +122,15 @@ enum ReportStatus {
 // ==================== CORE MODELS (11 models) ====================
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique @db.VarChar(255)
-  role      UserRole
-  name      String?  @db.VarChar(200)
-  phone     String?  @db.VarChar(50)
-  locale    String   @default("en") @db.VarChar(10)
-  createdAt DateTime @default(now())
+  id                      String    @id @default(uuid())
+  email                   String    @unique @db.VarChar(255)
+  role                    UserRole
+  name                    String?   @db.VarChar(200)
+  phone                   String?   @db.VarChar(50)
+  locale                  String    @default("en") @db.VarChar(10)
+  passwordResetTokenHash  String?   // Hashed reset token (RFC-002: Security requirement - never store plaintext)
+  passwordResetTokenExpiry DateTime? // Token expiry time (RFC-002)
+  createdAt               DateTime  @default(now())
 
   // Relations
   providerProfile  ProviderProfile?

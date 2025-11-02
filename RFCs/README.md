@@ -15,6 +15,7 @@ See `TASK_TEMPLATES.md` for RFC template (1-page format: Problem → Proposal �
 | ID | Title | Status | Date | Decision |
 |----|-------|--------|------|----------|
 | RFC-001 | Add Mockups/Wireframes as Prerequisite for M1 | APPROVED | 2025-01-11 | ✅ APPROVED — Required per spec Section 2 & DoR |
+| RFC-002 | Add Forgot/Reset Password Flow to M1 | DRAFT | 2025-01-11 | PENDING — Critical gap blocking M1 |
 
 **Status values:**
 - `DRAFT` — RFC created, awaiting review
@@ -51,5 +52,5 @@ See `TASK_TEMPLATES.md` for RFC template (1-page format: Problem → Proposal �
 
 ---
 
-**Last Updated:** 2025-01-11 (RFC-001 created)
+**Last Updated:** 2025-01-11 (RFC-002 created — Critical gap)
 

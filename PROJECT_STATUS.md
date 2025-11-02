@@ -104,8 +104,9 @@
 - ✅ Prisma schema updated (passwordResetTokenHash, passwordResetTokenExpiry fields)
 - ✅ OpenAPI spec updated (endpoints added, version bumped to v0.2.1)
 - ✅ Implementation tasks created (Design Agent, Backend Engineer)
-- ⏳ Design Agent: Creating mockups (forgot-password.html, reset-password.html)
-- ⏳ Backend Engineer: Implementing API endpoints (with token hashing, audit logging, data retention)
+- ✅ Task assignments created (`DESIGN_AGENT_ASSIGNMENT_RFC_002.md`, `TASK_RFC_002_BACKEND_ENGINEER.md`)
+- 📋 Design Agent: Task ASSIGNED — Awaiting mockups (forgot-password.html, reset-password.html)
+- 📋 Backend Engineer: Task ASSIGNED — Awaiting API implementation (with token hashing, audit logging, data retention)
 
 **Previous Blocker (Resolved):**
 - ✅ **M1 Frontend Work Blocked** — DoR checklist requires wireframes/mocks

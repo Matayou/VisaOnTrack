@@ -41,13 +41,15 @@
 ## ⏳ Pending Tasks
 
 ### 5. ⏳ Create Mockups (Design Agent)
-- **Status:** ASSIGNED
+- **Status:** 📋 ASSIGNED (Ready for Design Agent)
 - **Task:** `TASK_RFC_002_DESIGN_AGENT.md`
+- **Assignment:** `DESIGN_AGENT_ASSIGNMENT_RFC_002.md`
 - **Deliverables:**
   - `forgot-password.html` (email input form)
   - `reset-password.html` (new password form with token validation)
 - **Timeline:** 1 day
-- **Reviewers:** Tech Lead, Scope Guardian
+- **Reviewers:** Tech Lead, Scope Guardian, QA Engineer
+- **Next Step:** Design Agent creates mockups → Report back to PM
 
 ### 6. ⏳ Implement API Endpoints (Backend Engineer)
 - **Status:** ASSIGNED
@@ -77,8 +79,8 @@
 4. ✅ Implementation tasks created
 
 **In Progress:**
-5. ⏳ Design Agent: Creating mockups
-6. ⏳ Backend Engineer: Implementing API endpoints
+5. ⏳ Design Agent: Task assigned — Awaiting mockups
+6. ⏳ Backend Engineer: Task assigned — Awaiting implementation
 
 **Pending:**
 7. ⏳ Tech Lead review (mockups and API implementation)

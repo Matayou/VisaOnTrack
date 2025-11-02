@@ -93,11 +93,19 @@
 - 🔴 **M1 Mockup Review — Critical Gap: Forgot/Reset Password Flow Missing**
   - **Problem:** Login page has "Forgot password?" link but no pages exist
   - **Gap:** Missing from spec Section 2, OpenAPI spec, and mockups
-  - **Resolution:** RFC-002 created — Add forgot/reset password flow to M1
-  - **Status:** RFC-002 created, pending multi-agent review
-  - **Timeline:** 2-3 days estimated (spec update, API endpoints, mockups)
+  - **Resolution:** RFC-002 created and approved — Add forgot/reset password flow to M1
+  - **Status:** 🟢 IMPLEMENTATION IN PROGRESS (40% complete — spec/schema/OpenAPI updated, mockups and API pending)
+  - **Timeline:** 2-3 days estimated (1 day mockups + 1-2 days API implementation)
   - **Impact:** 🔴 CRITICAL — M1 cannot launch without password reset
-  - **See:** `MOCKUP_REVIEW_CRITICAL_GAPS.md`, `RFCs/RFC-002-forgot-reset-password.md`
+  - **See:** `MOCKUP_REVIEW_CRITICAL_GAPS.md`, `RFCs/RFC-002-forgot-reset-password.md`, `RFC_002_IMPLEMENTATION_STATUS.md`
+
+**RFC-002 Implementation Progress:**
+- ✅ Spec Section 2 updated (routes added)
+- ✅ Prisma schema updated (passwordResetTokenHash, passwordResetTokenExpiry fields)
+- ✅ OpenAPI spec updated (endpoints added, version bumped to v0.2.1)
+- ✅ Implementation tasks created (Design Agent, Backend Engineer)
+- ⏳ Design Agent: Creating mockups (forgot-password.html, reset-password.html)
+- ⏳ Backend Engineer: Implementing API endpoints (with token hashing, audit logging, data retention)
 
 **Previous Blocker (Resolved):**
 - ✅ **M1 Frontend Work Blocked** — DoR checklist requires wireframes/mocks

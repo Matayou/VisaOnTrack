@@ -108,7 +108,8 @@
 - ✅ Design Agent: ✅ COMPLETE — Mockups delivered (forgot-password.html, reset-password.html)
   - ✅ Tech Lead: ✅ APPROVED (all technical requirements met)
   - ✅ Scope Guardian: ✅ APPROVED (spec compliance verified)
-  - ⏳ QA Engineer: ⏳ PENDING (accessibility & responsiveness review)
+  - ✅ QA Engineer: ✅ APPROVED (accessibility & responsiveness verified)
+  - ✅ PM Final Approval: ✅ APPROVED (DoR satisfied for M1)
 - 📋 Backend Engineer: Task ASSIGNED — Awaiting API implementation (with token hashing, audit logging, data retention)
 
 **Previous Blocker (Resolved):**

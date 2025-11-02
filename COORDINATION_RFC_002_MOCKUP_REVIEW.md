@@ -285,18 +285,16 @@ Priority: HIGH — Blocks M1 completion
 - ✅ Design Agent: ✅ COMPLETE — Mockups delivered
 - ✅ Tech Lead Review: ✅ APPROVED (all technical requirements met)
 - ✅ Scope Guardian Review: ✅ APPROVED (spec compliance verified)
-- ⏳ QA Engineer Review: ⏳ PENDING (NEXT)
-- ⏳ PM Final Approval: ⏳ PENDING
+- ✅ QA Engineer Review: ✅ APPROVED (accessibility & responsiveness verified)
+- ⏳ PM Final Approval: ⏳ PENDING (NEXT)
 
 ---
 
 ## 🎯 Next Immediate Action
 
-**Step 1: QA Engineer Review (START HERE)**
+**Step 1: PM Final Approval (START HERE)**
 
-Copy the QA Engineer review prompt below into your QA Engineer agent chat to continue the review sequence.
-
-After QA Engineer approves, proceed to PM final approval.
+Verify DoR checklist is satisfied for M1 tasks. After PM approval, mockups are complete and ready for implementation.
 
 ---
 

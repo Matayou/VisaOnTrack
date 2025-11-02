@@ -90,21 +90,21 @@
 ## Blockers & Risks
 
 **Current Blocker:**
-- 🔴 **M1 Mockup Review — Critical Gap: Forgot/Reset Password Flow Missing**
+- ✅ **RFC-002 Implementation — RESOLVED**
   - **Problem:** Login page has "Forgot password?" link but no pages exist
   - **Gap:** Missing from spec Section 2, OpenAPI spec, and mockups
-  - **Resolution:** RFC-002 created and approved — Add forgot/reset password flow to M1
-  - **Status:** 🟢 IMPLEMENTATION IN PROGRESS (40% complete — spec/schema/OpenAPI updated, mockups and API pending)
-  - **Timeline:** 2-3 days estimated (1 day mockups + 1-2 days API implementation)
-  - **Impact:** 🔴 CRITICAL — M1 cannot launch without password reset
-  - **See:** `MOCKUP_REVIEW_CRITICAL_GAPS.md`, `RFCs/RFC-002-forgot-reset-password.md`, `RFC_002_IMPLEMENTATION_STATUS.md`
+  - **Resolution:** RFC-002 created, approved, and implemented — Forgot/reset password flow added to M1
+  - **Status:** ✅ COMPLETE — All reviews approved (Tech Lead, Security Guard, Scope Guardian, PM)
+  - **Timeline:** 2-3 days — ✅ COMPLETE (1 day mockups + 1-2 days API implementation)
+  - **Impact:** ✅ RESOLVED — M1 password reset flow complete
+  - **See:** `RFCs/RFC-002-forgot-reset-password.md`, `RFC_002_IMPLEMENTATION_STATUS.md`, `PM_FINAL_APPROVAL_RFC_002_API.md`
 
 **RFC-002 Implementation Progress:**
 - ✅ Spec Section 2 updated (routes added)
 - ✅ Prisma schema updated (passwordResetTokenHash, passwordResetTokenExpiry fields)
 - ✅ OpenAPI spec updated (endpoints added, version bumped to v0.2.1)
 - ✅ Implementation tasks created (Design Agent, Backend Engineer)
-- ✅ Task assignments created (`DESIGN_AGENT_ASSIGNMENT_RFC_002.md`, `TASK_RFC_002_BACKEND_ENGINEER.md`)
+- ✅ Task assignments created (`DESIGN_AGENT_ASSIGNMENT_RFC_002.md`, `BACKEND_ENGINEER_ASSIGNMENT_RFC_002.md`)
 - ✅ Design Agent: ✅ COMPLETE — Mockups delivered (forgot-password.html, reset-password.html)
   - ✅ Tech Lead: ✅ APPROVED (all technical requirements met)
   - ✅ Scope Guardian: ✅ APPROVED (spec compliance verified)
@@ -119,6 +119,8 @@
   - ✅ Security Guard: ✅ APPROVED (security requirements met, minor recommendation: remove token from email service console.log)
   - ✅ Scope Guardian: ✅ APPROVED (spec compliance verified — matches RFC-002 exactly)
   - ✅ PM Final Approval: ✅ APPROVED (DoD satisfied for M1)
+
+**RFC-002 Status:** ✅ COMPLETE — All reviews approved, ready for M1 deployment
 
 **Previous Blocker (Resolved):**
 - ✅ **M1 Frontend Work Blocked** — DoR checklist requires wireframes/mocks

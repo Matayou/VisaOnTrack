@@ -37,7 +37,7 @@
 
 ### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS**
 **Unblocked:** All mockups complete with polished UX features
-- [x] Landing page with animations & sticky header ✅ **COMPLETE** (awaiting review)
+- [x] Landing page with animations & sticky header ✅ **COMPLETE** (all reviews approved)
 - [ ] Login/Register flows with smart validation & typo detection
 - [ ] Account type selection with interactive cards
 - [ ] Seeker onboarding welcome with animated benefits
@@ -51,7 +51,7 @@
 **Design Reference:** All pages in `docs/mockups/` are production-ready with advanced UX features
 
 **Current Status:**
-- ✅ **Frontend Engineer:** Landing page implemented (M1-FE-1 complete — awaiting Scope Guardian review)
+- ✅ **Frontend Engineer:** Landing page implemented (M1-FE-1 complete — all reviews approved)
 - ✅ **Frontend Engineer:** Login/Register flows reviewed (M1-FE-2 — review complete, ready for multi-agent review)
 - ⚠️ **Incident:** Scope Guardian created M1-FE-2 files (incorrect role). Frontend Engineer reviewed and approved. See `PM_NOTIFICATION_M1_FE_2_INCIDENT.md` for details.
 

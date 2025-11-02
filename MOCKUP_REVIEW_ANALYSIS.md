@@ -314,6 +314,14 @@
 ### Gaps: 🔴 CRITICAL — Forgot/reset password flow missing
 ### Status: 🚨 **BLOCKED** — Cannot approve without password reset flow
 
+### Resolution In Progress:
+- ✅ RFC-002 created — Add Forgot/Reset Password Flow to M1
+- ✅ Multi-agent review coordinated — See `COORDINATION_RFC_002.md`
+- ⏳ Pending Scope Guardian review
+- ⏳ Pending Tech Lead review (API contract design)
+- ⏳ Pending Security Guard review
+- ⏳ Pending RFC approval
+
 ---
 
 **Next Steps:**

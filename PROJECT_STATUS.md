@@ -110,7 +110,7 @@
   - ✅ Scope Guardian: ✅ APPROVED (spec compliance verified)
   - ✅ QA Engineer: ✅ APPROVED (accessibility & responsiveness verified)
   - ✅ PM Final Approval: ✅ APPROVED (DoR satisfied for M1)
-- 📋 Backend Engineer: Task ASSIGNED — Awaiting API implementation (with token hashing, audit logging, data retention)
+- 📋 Backend Engineer: Task ASSIGNED — DoR satisfied, ready for API implementation (with token hashing, audit logging, data retention)
 
 **Previous Blocker (Resolved):**
 - ✅ **M1 Frontend Work Blocked** — DoR checklist requires wireframes/mocks

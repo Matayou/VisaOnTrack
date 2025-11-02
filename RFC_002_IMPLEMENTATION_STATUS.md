@@ -55,8 +55,9 @@
 - **Status:** ✅ COMPLETE — All reviews approved, ready for PM final approval
 
 ### 6. ⏳ Implement API Endpoints (Backend Engineer)
-- **Status:** ASSIGNED
+- **Status:** 📋 ASSIGNED (DoR satisfied, ready for implementation)
 - **Task:** `TASK_RFC_002_BACKEND_ENGINEER.md`
+- **Assignment:** `BACKEND_ENGINEER_ASSIGNMENT_RFC_002.md`
 - **Deliverables:**
   - `POST /auth/forgot-password` endpoint (with token hashing, audit logging)
   - `POST /auth/reset-password` endpoint (with token hashing, audit logging)

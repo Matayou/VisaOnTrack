@@ -71,20 +71,22 @@ Add complete forgot/reset password flow to M1 scope:
 7. QA review (security testing)
 
 ## Decision
-[ ] Approved [ ] Rejected [ ] Deferred
+[x] Approved [ ] Rejected [ ] Deferred
 
-**Decision Date:** [TBD]  
-**Decided By:** [TBD]
+**Decision Date:** 2025-01-11  
+**Decided By:** Tech Lead
+
+**Decision Reason:** API contract design is complete and secure. Security best practices are implemented. OpenAPI spec updates are specified. Implementation notes are comprehensive. Token storage and validation are specified. The API contract design follows security best practices and is ready for implementation.
 
 ---
 
-**Status:** 🟡 PENDING REVIEW
+**Status:** ✅ APPROVED (Tech Lead)
 
 **Reviewers:**
-- Scope Guardian (spec adherence check)
-- Tech Lead (API contract design)
-- Security Guard (security requirements)
-- PM (timeline and dependency impact)
+- ✅ Scope Guardian — APPROVED (password reset essential for MVP)
+- ✅ Tech Lead — APPROVED (API contract designed)
+- ⏳ Security Guard — IN REVIEW (security requirements)
+- ✅ PM — APPROVED (timeline acceptable: 2-3 days)
 
 ---
 

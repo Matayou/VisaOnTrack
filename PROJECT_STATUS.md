@@ -117,7 +117,8 @@
   - ✅ Rate limiting implemented (3/hour forgot, 5/hour reset)
   - ✅ Tech Lead: ✅ APPROVED (API contract compliance verified, implementation quality verified, Issue #1 fixed: password strength validation)
   - ✅ Security Guard: ✅ APPROVED (security requirements met, minor recommendation: remove token from email service console.log)
-  - ⏳ Scope Guardian: ⏳ PENDING (spec compliance review)
+  - ✅ Scope Guardian: ✅ APPROVED (spec compliance verified — matches RFC-002 exactly)
+  - ✅ PM Final Approval: ✅ APPROVED (DoD satisfied for M1)
 
 **Previous Blocker (Resolved):**
 - ✅ **M1 Frontend Work Blocked** — DoR checklist requires wireframes/mocks

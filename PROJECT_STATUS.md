@@ -35,9 +35,9 @@
 
 **Status:** ✅ **COMPLETE** — M1 frontend work unblocked!
 
-### 📋 M1 — Auth & Onboarding (4–5d) — **READY TO START**
+### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS**
 **Unblocked:** All mockups complete with polished UX features
-- [ ] Landing page with animations & sticky header
+- [x] Landing page with animations & sticky header ✅ **COMPLETE** (awaiting review)
 - [ ] Login/Register flows with smart validation & typo detection
 - [ ] Account type selection with interactive cards
 - [ ] Seeker onboarding welcome with animated benefits
@@ -49,6 +49,10 @@
   - Real-time validation
 
 **Design Reference:** All pages in `docs/mockups/` are production-ready with advanced UX features
+
+**Current Status:**
+- ✅ **Frontend Engineer:** Landing page implemented (M1-FE-1 complete)
+- ⏳ **Multi-Agent Review:** Tech Lead → QA Engineer → Scope Guardian → PM (awaiting)
 
 ### 📋 M2 — Requests & Messaging (5–6d) — **PENDING**
 - [ ] Post request/list/thread

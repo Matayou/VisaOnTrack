@@ -3,7 +3,7 @@
 **Milestone:** M1 — Auth & Onboarding  
 **Assigned To:** Frontend Engineer  
 **Duration:** 0.5–1 day  
-**Status:** ⏳ PENDING  
+**Status:** ⏳ IN PROGRESS — Frontend Engineer assigned  
 **Priority:** HIGH (security requirement, RFC-002)
 
 ---

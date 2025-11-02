@@ -11,7 +11,7 @@
 ### Completed Reviews:
 - ✅ **Scope Guardian:** APPROVED — Password reset essential for MVP
 - ✅ **Tech Lead:** APPROVED — API contract designed and secure
-- ⏳ **Security Guard:** IN REVIEW (next step)
+- ✅ **Security Guard:** APPROVED WITH REQUIRED CHANGES — Security requirements met, changes required
 
 ### Pending:
 - ⏳ Security Guard review (security requirements)
@@ -120,9 +120,10 @@ Focus: Security requirements, compliance, best practices
 **Assigned To:** Backend Engineer
 
 **Actions:**
-1. Add `passwordResetToken` field to User model
+1. Add `passwordResetTokenHash` field to User model
    - Type: `String?` (optional)
-   - Purpose: Store reset token
+   - Purpose: Store **hashed** reset token (SECURITY: Never store plaintext tokens)
+   - **SECURITY REQUIREMENT:** Hash tokens before storing (bcrypt/argon2)
 2. Add `passwordResetTokenExpiry` field to User model
    - Type: `DateTime?` (optional)
    - Purpose: Store token expiry time
@@ -136,6 +137,11 @@ Focus: Security requirements, compliance, best practices
 - Fields are optional (nullable)
 - No data loss (existing users unaffected)
 - Migration is reversible
+
+**Security Guard Required Changes:**
+- 🔴 **CRITICAL:** Use `passwordResetTokenHash` (hashed) instead of `passwordResetToken` (plaintext)
+- Hash tokens before storing in database (bcrypt/argon2)
+- Never store plaintext tokens in database
 
 ---
 
@@ -182,31 +188,43 @@ Focus: Security requirements, compliance, best practices
 **Actions:**
 1. Implement `POST /auth/forgot-password` endpoint
    - Generate secure token (UUID v4 or crypto.randomBytes)
-   - Store token and expiry in User model
+   - **Hash token before storing** (bcrypt/argon2) — 🔴 SECURITY REQUIREMENT
+   - Store **hashed token** and expiry in User model (`passwordResetTokenHash`)
    - Send email with reset link (Resend/SES)
    - Always return success (no user enumeration)
    - Rate limiting (e.g., 3 requests/hour per email)
+   - **Audit logging:** Log password reset request event (per Section 11)
 2. Implement `POST /auth/reset-password` endpoint
-   - Validate token (exists, not expired, not used)
+   - **Hash provided token** and compare with stored hash (not plaintext comparison)
+   - Validate token (hash matches, not expired, not used)
    - Validate password strength (same as registration)
    - Update password (bcrypt/argon2)
-   - Invalidate token (single-use)
+   - Invalidate token (single-use: clear `passwordResetTokenHash` and expiry)
    - Rate limiting (e.g., 5 attempts/hour per token)
+   - **Audit logging:** Log password reset completion event (per Section 11)
 3. Email integration (Resend/SES per spec)
 4. Error handling (user-friendly messages)
-5. Audit logging (password reset events)
+5. **Data retention policy:** Auto-delete expired tokens (cleanup job/cron)
+
+**Security Guard Required Changes:**
+- 🔴 **CRITICAL:** Hash tokens before storing (use `passwordResetTokenHash` field)
+- 🔴 **REQUIRED:** Audit logging for password reset requests and completions
+- 🟡 **REQUIRED:** Data retention policy (auto-delete expired tokens)
+- ✅ **Low Priority:** Document token exclusion from logs (no sensitive data)
 
 **Files to Create/Update:**
 - `apps/api/src/auth/auth.controller.ts` (add endpoints)
-- `apps/api/src/auth/auth.service.ts` (add service methods)
+- `apps/api/src/auth/auth.service.ts` (add service methods with token hashing)
+- `apps/api/src/auth/auth.service.ts` (add audit logging methods)
 - Email templates (for password reset email)
+- Cleanup job/cron (for expired token deletion)
 
 **Testing:**
-- Unit tests (token generation, validation)
-- Integration tests (endpoints, email sending)
-- Security tests (rate limiting, token expiry, single-use)
+- Unit tests (token generation, hashing, validation)
+- Integration tests (endpoints, email sending, audit logging)
+- Security tests (rate limiting, token expiry, single-use, token hashing)
 
-**Timeline:** 1-2 days (implementation + tests)
+**Timeline:** 1-2 days (implementation + tests + security changes)
 
 ---
 
@@ -247,32 +265,49 @@ Focus: Security requirements, compliance, best practices
 - [x] RFC-002 created ✅
 - [x] Scope Guardian review ✅ APPROVED
 - [x] Tech Lead review ✅ APPROVED
-- [ ] Security Guard review ⏳ IN PROGRESS (NEXT)
-- [ ] RFC-002 final approval ⏳ PENDING
+- [x] Security Guard review ✅ APPROVED WITH REQUIRED CHANGES
+- [x] RFC-002 final approval ✅ APPROVED
 - [ ] Spec Section 2 update ⏳ PENDING
 - [ ] OpenAPI spec update ⏳ PENDING
-- [ ] Prisma schema update ⏳ PENDING
+- [ ] Prisma schema update ⏳ PENDING (with token hashing)
 - [ ] Mockups creation ⏳ PENDING
-- [ ] API implementation ⏳ PENDING
+- [ ] API implementation ⏳ PENDING (with token hashing, audit logging, data retention)
 - [ ] Final review ⏳ PENDING
+
+### Security Guard Required Changes:
+- 🔴 **CRITICAL:** Token hashing (use `passwordResetTokenHash`, hash before storing)
+- 🔴 **REQUIRED:** Audit logging (log password reset events per Section 11)
+- 🟡 **REQUIRED:** Data retention policy (auto-delete expired tokens)
+- ✅ **Low Priority:** Document token exclusion from logs
+
+**See:** `RFC_002_SECURITY_REQUIREMENTS.md` for detailed implementation checklist
 
 ---
 
 ## 🎯 Next Immediate Action
 
-**Step 1: Security Guard Review**
+**RFC-002 is now APPROVED with required security changes!**
 
-Copy the prompt above (Task 1) into your Security Guard agent chat to complete the review sequence.
+**Implementation can begin with these tasks:**
 
-After Security Guard approves, we'll:
-1. Mark RFC-002 as fully APPROVED
-2. Assign implementation tasks
-3. Update spec Section 2
-4. Begin implementation
+1. ✅ **Update Spec Section 2** — Add routes (PM)
+2. ✅ **Update OpenAPI Spec** — Add endpoints per Tech Lead design (Backend Engineer)
+3. ✅ **Update Prisma Schema** — Add `passwordResetTokenHash` and `passwordResetTokenExpiry` fields (Backend Engineer)
+4. ✅ **Create Mockups** — Design Agent creates `forgot-password.html` and `reset-password.html`
+5. ✅ **Implement API** — Backend Engineer implements endpoints with:
+   - Token hashing (🔴 CRITICAL requirement)
+   - Audit logging (🔴 REQUIRED for Section 11)
+   - Data retention policy (🟡 REQUIRED for PDPA/GDPR)
+
+**Security Guard Required Changes (must be implemented):**
+- See `RFC_002_SECURITY_REQUIREMENTS.md` for detailed checklist
+- Token hashing implementation (required before production)
+- Audit logging implementation (required for Section 11 compliance)
+- Data retention policy (required for PDPA/GDPR compliance)
 
 ---
 
 **Priority:** 🔴 HIGH — Blocks M1 completion  
-**Status:** ✅ RFC APPROVED (Tech Lead) — Security Guard review pending  
-**Next Step:** Security Guard review → RFC approval → Implementation
+**Status:** ✅ RFC APPROVED WITH REQUIRED CHANGES (Security Guard)  
+**Next Step:** Begin implementation with security requirements included
 

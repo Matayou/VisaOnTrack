@@ -33,8 +33,9 @@ Add complete forgot/reset password flow to M1 scope:
 2. `reset-password.html` — New password form with token validation
 
 **Prisma Schema (if needed):**
-- Add `passwordResetToken` field to User model (optional, string)
+- Add `passwordResetTokenHash` field to User model (optional, string) — **SECURITY: Hashed token, not plaintext**
 - Add `passwordResetTokenExpiry` field to User model (optional, DateTime)
+- Add `AuditLog` entries for password reset events (per Section 11 compliance)
 
 **Standard Flow:**
 1. User clicks "Forgot password?" on login page
@@ -65,28 +66,38 @@ Add complete forgot/reset password flow to M1 scope:
 1. Update spec Section 2 with forgot/reset password routes
 2. Add OpenAPI endpoints (`POST /auth/forgot-password`, `POST /auth/reset-password`)
 3. Create mockups (`forgot-password.html`, `reset-password.html`)
-4. Update Prisma schema (add reset token fields)
-5. Tech Lead review (API contract)
-6. Scope Guardian review (spec compliance)
-7. QA review (security testing)
+4. Update Prisma schema (add `passwordResetTokenHash` and `passwordResetTokenExpiry` fields)
+5. Implement token hashing (hash tokens before storing in DB)
+6. Implement audit logging (log password reset requests and completions)
+7. Implement data retention policy (auto-delete expired tokens)
+8. Tech Lead review (API contract)
+9. Scope Guardian review (spec compliance)
+10. Security Guard review (security requirements)
+11. QA review (security testing)
 
 ## Decision
 [x] Approved [ ] Rejected [ ] Deferred
 
 **Decision Date:** 2025-01-11  
-**Decided By:** Tech Lead
+**Decided By:** Security Guard (Final Approval)
 
-**Decision Reason:** API contract design is complete and secure. Security best practices are implemented. OpenAPI spec updates are specified. Implementation notes are comprehensive. Token storage and validation are specified. The API contract design follows security best practices and is ready for implementation.
+**Decision Reason:** Security requirements met with required changes. API contract design is secure. Required changes: (1) Token hashing — use `passwordResetTokenHash` instead of plaintext token, (2) Audit logging — log password reset events per Section 11, (3) Data retention policy — auto-delete expired tokens for PDPA/GDPR compliance. Implementation blockers: Token hashing (required before production), Audit logging (required for Section 11 compliance), Data retention policy (required for PDPA/GDPR compliance).
 
 ---
 
-**Status:** ✅ APPROVED (Tech Lead)
+**Status:** ✅ APPROVED WITH REQUIRED CHANGES (Security Guard)
 
 **Reviewers:**
 - ✅ Scope Guardian — APPROVED (password reset essential for MVP)
 - ✅ Tech Lead — APPROVED (API contract designed)
-- ⏳ Security Guard — IN REVIEW (security requirements)
+- ✅ Security Guard — APPROVED WITH REQUIRED CHANGES (security requirements met, changes required)
 - ✅ PM — APPROVED (timeline acceptable: 2-3 days)
+
+**Security Guard Required Changes:**
+1. 🔴 **CRITICAL** — Token hashing: Use `passwordResetTokenHash` instead of `passwordResetToken` (hash tokens before storing)
+2. 🔴 **REQUIRED** — Audit logging: Log password reset requests and completions per Section 11
+3. 🟡 **REQUIRED** — Data retention policy: Specify auto-delete policy for expired tokens (PDPA/GDPR compliance)
+4. ✅ **Low Priority** — Document token exclusion from logs (no sensitive data in logs)
 
 ---
 

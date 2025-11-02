@@ -3,7 +3,8 @@
 **Task:** M1-FE-2: Login/Register Flows Implementation  
 **Engineer:** Frontend Engineer (reviewed Scope Guardian's implementation)  
 **Status:** ✅ REVIEW COMPLETE — Ready for Multi-Agent Review  
-**Date:** 2025-01-11
+**Date:** 2025-01-11  
+**Current Phase:** ⏳ Tech Lead Review (NEXT)
 
 ---
 
@@ -29,6 +30,8 @@
 - ⚠️ Typed routes disabled (temporary — will re-enable later)
 
 **Status:** ✅ **READY FOR MULTI-AGENT REVIEW**
+
+**See:** `FRONTEND_ENGINEER_REVIEW_M1_FE_2.md` for full review details
 
 ---
 
@@ -314,9 +317,10 @@ Reply format:
 ### Known Blockers:
 - ⚠️ Register API endpoint missing (expected — Backend Engineer M1-BE-7)
 - ⚠️ Register pages have commented API calls (will uncomment when endpoint available)
+- ⚠️ Note: This is expected and acceptable for review — Frontend Engineer will uncomment once endpoint is available
 
 ### Next Action:
-**Deliver Tech Lead Review Prompt** (see above)
+**Deliver Tech Lead Review Prompt** (see below)
 
 ---
 

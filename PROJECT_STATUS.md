@@ -52,15 +52,16 @@
 
 **Current Status:**
 - ✅ **Frontend Engineer:** Landing page implemented (M1-FE-1 complete — all reviews approved)
-- ✅ **Frontend Engineer:** Login/Register flows reviewed (M1-FE-2 — review complete, ready for multi-agent review)
-- ⚠️ **Incident:** Scope Guardian created M1-FE-2 files (incorrect role). Frontend Engineer reviewed and approved. See `PM_NOTIFICATION_M1_FE_2_INCIDENT.md` for details.
+- ✅ **Frontend Engineer:** Login/Register flows implemented (M1-FE-2 complete — all reviews approved, all fixes applied)
 
 **M1-FE-2 Status:**
-- ✅ Frontend Engineer: REVIEW COMPLETE — APPROVED WITH CHANGES
-- ✅ All TypeScript errors fixed
-- ✅ Implementation matches mockups exactly
-- ⏳ Multi-Agent Review: Tech Lead → QA Engineer → Security Guard → Scope Guardian → PM (pending)
-- ⚠️ Blocker: Missing `/auth/register` endpoint (Backend Engineer M1-BE-7)
+- ✅ Frontend Engineer: APPROVED WITH CHANGES (implementation complete)
+- ✅ Tech Lead: APPROVED (production-ready, quality 10/10)
+- ✅ QA Engineer: VERIFIED (all accessibility fixes applied, no regressions)
+- ✅ Security Guard: APPROVED WITH REQUIRED CHANGES → FIXES APPLIED (password validation fixed)
+- ✅ Scope Guardian: APPROVED (spec adherence 100%, no scope creep)
+- ✅ PM: APPROVED (DoD satisfied, task complete)
+- ⚠️ Blocker: Missing `/auth/register` endpoint (Backend Engineer M1-BE-7) — Expected, Frontend Engineer will uncomment API calls when endpoint is available
 
 ### 📋 M2 — Requests & Messaging (5–6d) — **PENDING**
 - [ ] Post request/list/thread

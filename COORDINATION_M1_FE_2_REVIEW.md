@@ -310,8 +310,8 @@ Reply format:
 - ✅ Frontend Engineer: ✅ REVIEW COMPLETE — APPROVED WITH CHANGES
 - ✅ Tech Lead Review: ✅ APPROVED (production-ready, quality 10/10)
 - ✅ QA Engineer Review: ⚠️ APPROVED WITH REQUIRED CHANGES (accessibility fixes needed)
-- ⏳ Frontend Engineer: ⏳ PENDING FIXES (NEXT — accessibility fixes)
-- ⏳ QA Engineer: ⏳ PENDING VERIFICATION (after fixes)
+- ✅ Frontend Engineer: ✅ FIXES APPLIED (accessibility fixes complete)
+- ⏳ QA Engineer: ⏳ PENDING VERIFICATION (NEXT)
 - ⏳ Security Guard Review: ⏳ PENDING (REQUIRED)
 - ⏳ Scope Guardian Review: ⏳ PENDING (REQUIRED)
 - ⏳ PM Final Approval: ⏳ PENDING

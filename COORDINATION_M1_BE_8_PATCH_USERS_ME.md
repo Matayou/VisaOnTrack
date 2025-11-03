@@ -155,12 +155,11 @@
 1. ✅ **Backend Engineer:** Add `PATCH /users/me` to OpenAPI spec — ✅ COMPLETE
 2. ✅ **API Client Regeneration:** API client regenerated — ✅ COMPLETE
 3. ✅ **Method Verification:** `api.users.updateCurrentUser()` verified — ✅ COMPLETE
-4. ⏳ **Frontend Engineer:** Verify API client method (can verify now)
-5. ⏳ **Tech Lead:** Review OpenAPI spec update (parallel)
-6. ⏳ **Scope Guardian:** Review spec adherence (parallel)
-7. ⏳ **PM:** Update blocker status (BLOCKED → RESOLVED) after Frontend verification
-8. ⏳ **Frontend Engineer:** Continue M1-FE-4 implementation (after verification)
-9. ⏳ **Backend Engineer:** Implement `PATCH /users/me` endpoint (M1-BE-8 — separate task)
+4. ✅ **Tech Lead:** Review OpenAPI spec update — ✅ APPROVED
+5. ✅ **Scope Guardian:** Review spec adherence — ✅ APPROVED
+6. ✅ **PM:** Update blocker status — ✅ RESOLVED
+7. ⏳ **Frontend Engineer:** Verify API client method and proceed with M1-FE-4 implementation
+8. ⏳ **Backend Engineer:** Implement `PATCH /users/me` endpoint (M1-BE-8 — separate task)
 
 ---
 

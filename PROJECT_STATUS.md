@@ -38,7 +38,8 @@
 ### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS**
 **Unblocked:** All mockups complete with polished UX features
 - [x] Landing page with animations & sticky header ✅ **COMPLETE** (all reviews approved)
-- [ ] Login/Register flows with smart validation & typo detection
+- [x] Login/Register flows with smart validation & typo detection ✅ **COMPLETE** (all reviews approved, all fixes applied)
+- [x] Forgot/Reset password flow (RFC-002) ✅ **COMPLETE** (all reviews approved, all fixes applied)
 - [ ] Account type selection with interactive cards
 - [ ] Seeker onboarding welcome with animated benefits
 - [ ] Provider onboarding (5 steps: welcome, business, services, credentials, payment)
@@ -53,6 +54,7 @@
 **Current Status:**
 - ✅ **Frontend Engineer:** Landing page implemented (M1-FE-1 complete — all reviews approved)
 - ✅ **Frontend Engineer:** Login/Register flows implemented (M1-FE-2 complete — all reviews approved, all fixes applied)
+- ✅ **Frontend Engineer:** Forgot/Reset password flow implemented (M1-FE-3 complete — all reviews approved, all fixes applied)
 
 **M1-FE-2 Status:**
 - ✅ Frontend Engineer: APPROVED WITH CHANGES (implementation complete)

@@ -121,23 +121,31 @@ Implement authentication and onboarding flows for both Seekers and Providers, en
 
 #### Task 3: Forgot/Reset Password Flow (RFC-002)
 **Duration:** 0.5–1 day  
-**Status:** ⏳ PENDING
+**Status:** ✅ **COMPLETE**
 
 **Forgot Password:**
-- [ ] Implement forgot password page
-- [ ] Email input with validation
-- [ ] Submit button with loading state
-- [ ] Success message (always shown, no user enumeration)
-- [ ] Match mockup: `docs/mockups/forgot-password.html`
+- [x] Implement forgot password page ✅
+- [x] Email input with validation ✅
+- [x] Submit button with loading state ✅
+- [x] Success message (always shown, no user enumeration) ✅
+- [x] Match mockup: `docs/mockups/forgot-password.html` ✅
 
 **Reset Password:**
-- [ ] Implement reset password page (token from URL)
-- [ ] Token validation (client-side + server-side)
-- [ ] New password input with strength indicator
-- [ ] Submit button with loading state
-- [ ] Error handling (invalid token, expired token, weak password)
-- [ ] Success redirect to login
-- [ ] Match mockup: `docs/mockups/reset-password.html`
+- [x] Implement reset password page (token from URL) ✅
+- [x] Token validation (client-side + server-side) ✅
+- [x] New password input with strength indicator ✅
+- [x] Submit button with loading state ✅
+- [x] Error handling (invalid token, expired token, weak password) ✅
+- [x] Success redirect to login ✅
+- [x] Match mockup: `docs/mockups/reset-password.html` ✅
+
+**Review Status:**
+- ✅ Frontend Engineer: IMPLEMENTATION COMPLETE (implementation complete)
+- ✅ Tech Lead: APPROVED WITH RECOMMENDATIONS (production-ready, quality 10/10)
+- ✅ QA Engineer: VERIFIED (all accessibility fixes applied, no regressions)
+- ✅ Security Guard: APPROVED (security requirements met per RFC-002)
+- ✅ Scope Guardian: APPROVED (spec adherence 100%, matches RFC-002 exactly)
+- ✅ PM: APPROVED (DoD satisfied, task complete)
 
 **DoR Checklist:**
 - [x] Wireframe/mock available ✅ (mockups exist)

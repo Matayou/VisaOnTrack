@@ -4,14 +4,18 @@
 **Coordinated By:** Project Manager  
 **Task:** M1-FE-4: Account Type Selection Implementation  
 **Assigned To:** Frontend Engineer  
-**Status:** 🔴 **BLOCKED** — Waiting for `PATCH /users/me` endpoint in OpenAPI spec
+**Status:** ⏳ **READY** — Blocker resolved, all reviews approved, ready for implementation
 
-**⚠️ BLOCKER IDENTIFIED:**
-- `PATCH /users/me` endpoint is missing from OpenAPI spec (v0.2.1)
-- Required for M1-FE-4 (Account Type Selection)
-- Blocks M1-FE-4, M1-FE-5, M1-FE-6, and all downstream M1 tasks
-- **See:** `BLOCKER_M1_FE_4_MISSING_PATCH_USERS_ME.md` for full blocker details  
-- **Resolution:** Backend Engineer adding `PATCH /users/me` to OpenAPI spec (see `COORDINATION_M1_BE_8_PATCH_USERS_ME.md`)
+**✅ BLOCKER RESOLVED:**
+- ✅ Backend Engineer: Added `PATCH /users/me` to OpenAPI spec — ✅ COMPLETE
+- ✅ Backend Engineer: Regenerated API client — ✅ COMPLETE
+- ✅ Method Verified: `api.users.updateCurrentUser()` exists — ✅ COMPLETE
+- ✅ Tech Lead Review: ✅ APPROVED (production-ready)
+- ✅ Scope Guardian Review: ✅ APPROVED (matches spec requirements, no scope creep)
+- ✅ **BLOCKER STATUS: RESOLVED**
+
+**See:** `BLOCKER_RESOLUTION_PATCH_USERS_ME.md` for resolution summary  
+**See:** `TASK_M1_FE_4_ACCOUNT_TYPE.md` for complete task details
 
 ---
 
@@ -82,7 +86,8 @@
 - [ ] Animations (hover effects, selection animations, page transitions)
 
 ### API Integration
-- [ ] Use `PATCH /users/me` to update user role
+- [ ] Use `api.users.updateCurrentUser()` to update user role
+- [ ] Request body: `{ role: 'SEEKER' | 'PROVIDER' }`
 - [ ] Handle loading states (show spinner on Continue button)
 - [ ] Handle error states (display error messages)
 - [ ] Handle success (redirect to appropriate onboarding flow)

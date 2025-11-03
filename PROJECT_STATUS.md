@@ -113,6 +113,15 @@
 ## Blockers & Risks
 
 **Current Blocker:**
+- 🔴 **M1-FE-4 Missing API Endpoint — PATCH /users/me**
+  - **Problem:** `PATCH /users/me` endpoint is missing from OpenAPI spec (v0.2.1), which is required for M1-FE-4 (Account Type Selection)
+  - **Impact:** Blocks M1-FE-4, M1-FE-5, M1-FE-6, and all downstream M1 tasks
+  - **Resolution:** Backend Engineer adding `PATCH /users/me` to OpenAPI spec (M1-BE-8)
+  - **Status:** ⏳ IN PROGRESS — Backend Engineer working on OpenAPI spec update
+  - **Timeline:** ~0.5 day (OpenAPI spec update + API client regeneration)
+  - **See:** `BLOCKER_M1_FE_4_MISSING_PATCH_USERS_ME.md`, `COORDINATION_M1_BE_8_PATCH_USERS_ME.md`
+
+**Previous Blocker:**
 - ✅ **RFC-002 Implementation — RESOLVED**
   - **Problem:** Login page has "Forgot password?" link but no pages exist
   - **Gap:** Missing from spec Section 2, OpenAPI spec, and mockups

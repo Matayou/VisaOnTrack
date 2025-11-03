@@ -171,7 +171,7 @@ Implement account type selection page with interactive selection cards, smooth a
 - Enable Continue button only when selection is made
 
 ### API Integration
-- Use `api.users.updateMe()` from `@visaontrack/client`
+- Use `api.users.updateCurrentUser()` from `@visaontrack/client`
 - Request body: `{ role: 'SEEKER' | 'PROVIDER' }`
 - Handle loading state (show spinner, disable button)
 - Handle error state (show error message)
@@ -221,5 +221,5 @@ Implement account type selection page with interactive selection cards, smooth a
 
 **Created:** 2025-01-11  
 **Assigned To:** Frontend Engineer  
-**Status:** ⏳ PENDING — Ready for implementation
+**Status:** ⏳ **READY** — API client regenerated, awaiting Frontend Engineer verification and implementation
 

@@ -153,13 +153,14 @@
 ## Next Steps After Completion
 
 1. ✅ **Backend Engineer:** Add `PATCH /users/me` to OpenAPI spec — ✅ COMPLETE
-2. ⏳ **API Client Regeneration:** Regenerate API client (see `COORDINATION_API_CLIENT_REGENERATION_PATCH_USERS_ME.md`)
-3. ⏳ **Tech Lead:** Review OpenAPI spec update
-4. ⏳ **Scope Guardian:** Review spec adherence
-5. ⏳ **Frontend Engineer:** Verify API client method exists
-6. ⏳ **PM:** Update blocker status (BLOCKED → RESOLVED)
-7. ⏳ **Frontend Engineer:** Continue M1-FE-4 implementation
-8. ⏳ **Backend Engineer:** Implement `PATCH /users/me` endpoint (M1-BE-8 — separate task)
+2. ✅ **API Client Regeneration:** API client regenerated — ✅ COMPLETE
+3. ✅ **Method Verification:** `api.users.updateCurrentUser()` verified — ✅ COMPLETE
+4. ⏳ **Frontend Engineer:** Verify API client method (can verify now)
+5. ⏳ **Tech Lead:** Review OpenAPI spec update (parallel)
+6. ⏳ **Scope Guardian:** Review spec adherence (parallel)
+7. ⏳ **PM:** Update blocker status (BLOCKED → RESOLVED) after Frontend verification
+8. ⏳ **Frontend Engineer:** Continue M1-FE-4 implementation (after verification)
+9. ⏳ **Backend Engineer:** Implement `PATCH /users/me` endpoint (M1-BE-8 — separate task)
 
 ---
 

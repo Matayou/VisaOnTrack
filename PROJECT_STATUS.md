@@ -113,12 +113,20 @@
 ## Blockers & Risks
 
 **Current Blocker:**
-- 🔴 **M1-FE-4 Missing API Endpoint — PATCH /users/me**
-  - **Problem:** `PATCH /users/me` endpoint is missing from OpenAPI spec (v0.2.1), which is required for M1-FE-4 (Account Type Selection)
-  - **Impact:** Blocks M1-FE-4, M1-FE-5, M1-FE-6, and all downstream M1 tasks
-  - **Resolution:** Backend Engineer adding `PATCH /users/me` to OpenAPI spec (M1-BE-8)
-  - **Status:** ⏳ IN PROGRESS — Backend Engineer working on OpenAPI spec update
-  - **Timeline:** ~0.5 day (OpenAPI spec update + API client regeneration)
+- ⏳ **M1-FE-4 Missing API Endpoint — PATCH /users/me** — **MOSTLY RESOLVED**
+  - **Problem:** `PATCH /users/me` endpoint was missing from OpenAPI spec (v0.2.1), which was required for M1-FE-4 (Account Type Selection)
+  - **Impact:** Blocked M1-FE-4, M1-FE-5, M1-FE-6, and all downstream M1 tasks
+  - **Resolution:** Backend Engineer added `PATCH /users/me` to OpenAPI spec and regenerated API client
+  - **Status:** ⏳ **MOSTLY RESOLVED** — Awaiting Frontend Engineer verification and reviews
+  - **Completed:**
+    - ✅ Backend Engineer: Added `PATCH /users/me` to OpenAPI spec (lines 201-227)
+    - ✅ Backend Engineer: Added `UpdateUserRequest` schema (lines 1316-1338)
+    - ✅ Backend Engineer: Regenerated API client
+    - ✅ Method Verified: `api.users.updateCurrentUser()` exists and accessible
+  - **Pending:**
+    - ⏳ Frontend Engineer: Verify API client method (can verify now)
+    - ⏳ Tech Lead: Review OpenAPI spec update (parallel)
+    - ⏳ Scope Guardian: Review spec adherence (parallel)
   - **See:** `BLOCKER_M1_FE_4_MISSING_PATCH_USERS_ME.md`, `COORDINATION_M1_BE_8_PATCH_USERS_ME.md`
 
 **Previous Blocker:**

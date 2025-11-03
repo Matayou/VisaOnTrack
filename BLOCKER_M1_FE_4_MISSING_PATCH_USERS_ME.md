@@ -205,17 +205,18 @@
 
 ## Status
 
-**Current Status:** ⏳ **PARTIALLY RESOLVED** — Endpoint added to OpenAPI spec, awaiting API client regeneration and reviews
+**Current Status:** ⏳ **MOSTLY RESOLVED** — Endpoint added, API client regenerated, awaiting reviews and Frontend verification
 
-**Resolution Status:** ✅ **IN PROGRESS** — Backend Engineer completed OpenAPI spec update
+**Resolution Status:** ✅ **IN PROGRESS** — Backend work complete, awaiting reviews and Frontend verification
 
 **Completion Steps:**
 - ✅ **Backend Engineer:** Added `PATCH /users/me` to OpenAPI spec — ✅ COMPLETE
-- ⏳ **API Client Regeneration:** Regenerate API client (see `COORDINATION_API_CLIENT_REGENERATION_PATCH_USERS_ME.md`)
-- ⏳ **Tech Lead:** Review OpenAPI spec update
-- ⏳ **Scope Guardian:** Review spec adherence
-- ⏳ **Frontend Engineer:** Verify API client method exists
-- ⏳ **PM:** Update blocker status (BLOCKED → RESOLVED)
+- ✅ **API Client Regeneration:** API client regenerated — ✅ COMPLETE
+- ✅ **Method Verification:** `api.users.updateCurrentUser()` verified — ✅ COMPLETE
+- ⏳ **Frontend Engineer:** Verify API client method (can verify now)
+- ⏳ **Tech Lead:** Review OpenAPI spec update (parallel)
+- ⏳ **Scope Guardian:** Review spec adherence (parallel)
+- ⏳ **PM:** Update blocker status (BLOCKED → RESOLVED) after Frontend verification
 
 **See:** `BACKEND_ENGINEER_COMPLETION_PATCH_USERS_ME.md` for completion details
 

@@ -3,8 +3,12 @@
 **Milestone:** M1 — Auth & Onboarding  
 **Assigned To:** Frontend Engineer  
 **Duration:** 0.5 day  
-**Status:** ⏳ PENDING  
+**Status:** 🔴 **BLOCKED** — Waiting for `PATCH /users/me` endpoint in OpenAPI spec  
 **Priority:** HIGH (core onboarding flow)
+
+**⚠️ BLOCKER:** `PATCH /users/me` endpoint is missing from OpenAPI spec (v0.2.1), which is required for this task.  
+**See:** `BLOCKER_M1_FE_4_MISSING_PATCH_USERS_ME.md` for full blocker details  
+**Resolution:** Backend Engineer adding `PATCH /users/me` to OpenAPI spec (see `COORDINATION_M1_BE_8_PATCH_USERS_ME.md`)
 
 ---
 

@@ -4,7 +4,14 @@
 **Coordinated By:** Project Manager  
 **Task:** M1-FE-4: Account Type Selection Implementation  
 **Assigned To:** Frontend Engineer  
-**Status:** ⏳ PENDING
+**Status:** 🔴 **BLOCKED** — Waiting for `PATCH /users/me` endpoint in OpenAPI spec
+
+**⚠️ BLOCKER IDENTIFIED:**
+- `PATCH /users/me` endpoint is missing from OpenAPI spec (v0.2.1)
+- Required for M1-FE-4 (Account Type Selection)
+- Blocks M1-FE-4, M1-FE-5, M1-FE-6, and all downstream M1 tasks
+- **See:** `BLOCKER_M1_FE_4_MISSING_PATCH_USERS_ME.md` for full blocker details  
+- **Resolution:** Backend Engineer adding `PATCH /users/me` to OpenAPI spec (see `COORDINATION_M1_BE_8_PATCH_USERS_ME.md`)
 
 ---
 

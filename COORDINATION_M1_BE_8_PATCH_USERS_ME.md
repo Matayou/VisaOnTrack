@@ -138,15 +138,27 @@
 
 ---
 
+## Completion Status
+
+**Backend Engineer:** ✅ **COMPLETE** — Endpoint added to OpenAPI spec
+- ✅ `PATCH /users/me` endpoint added (lines 201-227)
+- ✅ `UpdateUserRequest` schema added (lines 1316-1338)
+- ✅ OpenAPI version updated to `0.2.1`
+- ✅ All schema references valid
+- ✅ All response references valid
+- ✅ Matches coordination document specification
+
+**See:** `BACKEND_ENGINEER_COMPLETION_PATCH_USERS_ME.md` for completion details
+
 ## Next Steps After Completion
 
-1. ✅ **Backend Engineer:** Add `PATCH /users/me` to OpenAPI spec
-2. ✅ **Tech Lead:** Review OpenAPI spec update
-3. ✅ **Scope Guardian:** Review spec adherence
-4. ✅ **Backend Engineer:** Regenerate API client
-5. ✅ **Frontend Engineer:** Verify API client method exists
-6. ✅ **PM:** Update blocker status (BLOCKED → RESOLVED)
-7. ✅ **Frontend Engineer:** Continue M1-FE-4 implementation
+1. ✅ **Backend Engineer:** Add `PATCH /users/me` to OpenAPI spec — ✅ COMPLETE
+2. ⏳ **API Client Regeneration:** Regenerate API client (see `COORDINATION_API_CLIENT_REGENERATION_PATCH_USERS_ME.md`)
+3. ⏳ **Tech Lead:** Review OpenAPI spec update
+4. ⏳ **Scope Guardian:** Review spec adherence
+5. ⏳ **Frontend Engineer:** Verify API client method exists
+6. ⏳ **PM:** Update blocker status (BLOCKED → RESOLVED)
+7. ⏳ **Frontend Engineer:** Continue M1-FE-4 implementation
 8. ⏳ **Backend Engineer:** Implement `PATCH /users/me` endpoint (M1-BE-8 — separate task)
 
 ---

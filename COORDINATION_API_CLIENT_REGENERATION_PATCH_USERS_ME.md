@@ -19,7 +19,9 @@
 
 ## Required Action
 
-**Tech Lead or Backend Engineer:** Please regenerate the API client.
+**Backend Engineer:** Please regenerate the API client (you just updated the OpenAPI spec).
+
+**Rationale:** In contract-first development, whoever updates the OpenAPI contract should regenerate the client immediately to ensure consistency.
 
 ---
 

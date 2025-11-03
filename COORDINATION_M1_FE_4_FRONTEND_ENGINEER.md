@@ -53,11 +53,11 @@
 ✅ **All DoR Requirements Met:**
 - ✅ User story defined with acceptance criteria
 - ✅ Wireframe/mock available (`docs/mockups/account-type.html`)
-- ✅ API contract defined (`PATCH /users/me` — OpenAPI v0.2.1)
+- ✅ API contract defined (`PATCH /users/me` — OpenAPI v0.2.1) — ✅ **RESOLVED**
 - ✅ Error states documented (selection required, API errors)
-- ✅ Dependencies identified (OpenAPI client generated)
+- ✅ Dependencies identified (OpenAPI client generated) — ✅ **API client regenerated**
 
-**Status:** ✅ **DoR SATISFIED** — Ready for implementation
+**Status:** ✅ **DoR SATISFIED** — **BLOCKER RESOLVED** — Ready for implementation
 
 ---
 
@@ -154,5 +154,7 @@
 **Created:** 2025-01-11  
 **Coordinated By:** Project Manager  
 **Assigned To:** Frontend Engineer  
-**Status:** ⏳ PENDING — Ready for Frontend Engineer implementation
+**Status:** ⏳ **READY** — Blocker resolved, all reviews approved, ready for Frontend Engineer implementation
+
+**✅ BLOCKER RESOLVED:** All backend work complete, all reviews approved. Frontend Engineer can proceed with implementation.
 

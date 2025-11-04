@@ -266,6 +266,13 @@
 - **Task Coordination:** `docs/coordination/COORDINATION_[TASK_ID]_*.md` — Task-specific coordination
 - **Templates:** `docs/coordination/TEMPLATES/` — Reusable templates for consistency
 
+### Context Management
+- **Context Snapshots:** `docs/coordination/context-snapshots/` — Periodic context captures
+- **Resume Guide:** `docs/pm/RESUME_GUIDE.md` — Quick context recovery
+- **Context Management:** `docs/pm/CONTEXT_MANAGEMENT_SYSTEM.md` — Context preservation guidelines
+- **Before chat gets full (80%):** Create context snapshot → Commit
+- **When starting new chat:** Read COORDINATION_HUB.md → Read latest context snapshot
+
 ---
 
 ## Escalation Path

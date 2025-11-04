@@ -243,12 +243,28 @@
 
 ## Communication Channels
 
+- **Current Status & Action Items:** Check `docs/coordination/COORDINATION_HUB.md` first
+- **Your Status & Tasks:** Check `docs/coordination/AGENT_STATUS_BOARD.md`
 - **Scope Questions:** Tag `@ScopeGuardian`
 - **Technical Decisions:** Tag `@TechLead`
 - **Milestone Tracking:** Tag `@PM`
 - **Test Failures:** Tag `@QA`
 - **Security Concerns:** Tag `@Security`
 - **RFC Proposals:** Create RFC in `RFCs/` directory
+
+## Coordination System
+
+### Daily Workflow
+1. **Check COORDINATION_HUB.md** — See current status and your action items
+2. **Check AGENT_STATUS_BOARD.md** — See your specific status and tasks
+3. **Update status** — Notify PM when completing actions
+4. **Reference task docs** — Use coordination documents for active tasks
+
+### Coordination Documents
+- **Central Hub:** `docs/coordination/COORDINATION_HUB.md` — Single source of truth
+- **Agent Board:** `docs/coordination/AGENT_STATUS_BOARD.md` — Agent-specific status
+- **Task Coordination:** `docs/coordination/COORDINATION_[TASK_ID]_*.md` — Task-specific coordination
+- **Templates:** `docs/coordination/TEMPLATES/` — Reusable templates for consistency
 
 ---
 

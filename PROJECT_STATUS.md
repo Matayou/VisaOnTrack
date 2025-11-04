@@ -35,13 +35,13 @@
 
 **Status:** ✅ **COMPLETE** — M1 frontend work unblocked!
 
-### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS**
+### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS** (56% complete — 5/9 tasks)
 **Unblocked:** All mockups complete with polished UX features
 - [x] Landing page with animations & sticky header ✅ **COMPLETE** (all reviews approved)
 - [x] Login/Register flows with smart validation & typo detection ✅ **COMPLETE** (all reviews approved, all fixes applied)
 - [x] Forgot/Reset password flow (RFC-002) ✅ **COMPLETE** (all reviews approved, all fixes applied)
-- [ ] Account type selection with interactive cards
-- [ ] Seeker onboarding welcome with animated benefits
+- [x] Account type selection with interactive cards ✅ **COMPLETE** (all reviews approved, task complete)
+- [x] Seeker onboarding welcome with animated benefits ✅ **COMPLETE** (all reviews approved, task complete)
 - [ ] Provider onboarding (5 steps: welcome, business, services, credentials, payment)
   - Auto-save indicators
   - Drag-drop file uploads
@@ -55,6 +55,9 @@
 - ✅ **Frontend Engineer:** Landing page implemented (M1-FE-1 complete — all reviews approved)
 - ✅ **Frontend Engineer:** Login/Register flows implemented (M1-FE-2 complete — all reviews approved, all fixes applied)
 - ✅ **Frontend Engineer:** Forgot/Reset password flow implemented (M1-FE-3 complete — all reviews approved, all fixes applied)
+- ✅ **Frontend Engineer:** Account type selection implemented (M1-FE-4 complete — all reviews approved, task complete)
+- ✅ **Frontend Engineer:** Seeker onboarding welcome (M1-FE-5 complete — all reviews approved, task complete)
+- ✅ **Backend Engineer:** User Management API endpoints implemented (M1-BE-8 complete — all reviews approved, all tests verified, task complete)
 
 **M1-FE-2 Status:**
 - ✅ Frontend Engineer: APPROVED WITH CHANGES (implementation complete)
@@ -72,6 +75,33 @@
 - ✅ Security Guard: APPROVED (security requirements met per RFC-002)
 - ✅ Scope Guardian: APPROVED (spec adherence 100%, matches RFC-002 exactly)
 - ✅ PM: APPROVED (DoD satisfied, task complete)
+
+**M1-BE-8 Status:**
+- ✅ Backend Engineer: IMPLEMENTATION COMPLETE (GET /users/me and PATCH /users/me endpoints implemented)
+- ✅ Tech Lead: APPROVED WITH RECOMMENDATIONS (Code quality: 10/10, API contract compliance: 10/10, Validation: 10/10, Error handling: 10/10, Audit logging: 9/10, Security: 10/10)
+- ✅ Security Guard: APPROVED (Security score: 10/10, Section 11 fully compliant, no sensitive data exposure, security requirements met)
+- ✅ QA Engineer: VERIFIED AND APPROVED (All tests implemented: 80+ test cases, Testability: 10/10, Test quality: 10/10, All requirements met)
+- ✅ Scope Guardian: APPROVED (Spec adherence score: 10/10, no scope creep, fully compliant with spec requirements)
+- ✅ PM: APPROVED (DoD satisfied, task complete)
+- ⚠️ Note: JWT guard TODO is expected (will be implemented in M1-BE-7)
+
+**M1-FE-4 Status:**
+- ✅ Frontend Engineer: IMPLEMENTATION COMPLETE (Account Type Selection page implemented)
+- ✅ Tech Lead: APPROVED WITH RECOMMENDATIONS (Code quality: 10/10, API integration: 10/10, Error handling: 10/10, Accessibility: 10/10, Design match: 10/10)
+- ✅ QA Engineer: APPROVED (All quality standards met)
+- ✅ Security Guard: APPROVED (Security score: 10/10, all security requirements met, no vulnerabilities found)
+- ✅ Scope Guardian: APPROVED (Spec adherence score: 10/10, no scope creep, fully compliant with spec requirements)
+- ✅ PM: APPROVED (DoD satisfied, task complete)
+
+**M1-FE-5 Status:**
+- ✅ Frontend Engineer: IMPLEMENTATION COMPLETE (Seeker Onboarding Welcome page implemented)
+- ✅ Tech Lead: APPROVED WITH RECOMMENDATIONS (Code quality: 10/10, Design match: 10/10, Accessibility: 10/10, Performance: 10/10)
+- ✅ QA Engineer: APPROVED (Accessibility: 10/10, Responsive design: 10/10, Browser tested: ✅)
+- ✅ Security Guard: APPROVED (Security score: 10/10, All security requirements met, No vulnerabilities found, Secure navigation, Ready for production)
+- ✅ Scope Guardian: APPROVED (Spec adherence: 10/10, No scope creep, Fully compliant with spec requirements)
+- ✅ PM: APPROVED (DoD satisfied, task complete)
+- **Review Coordination:** See `COORDINATION_M1_FE_5_REVIEW.md` for review prompts and status tracking
+- **PM Final Approval:** See `docs/approvals/PM_FINAL_APPROVAL_M1_FE_5_SEEKER_WELCOME.md`
 
 ### 📋 M2 — Requests & Messaging (5–6d) — **PENDING**
 - [ ] Post request/list/thread

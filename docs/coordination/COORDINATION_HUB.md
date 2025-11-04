@@ -21,6 +21,16 @@
 - **Review Status:** Tech Lead ✅ | Security Guard ✅ | Scope Guardian ✅ | QA Engineer ⏳
 - **Coordination:** `docs/coordination/COORDINATION_M1_BE_7_REVIEW.md`
 
+### M1-FE-6: Provider Onboarding (Ready to Start)
+- **Status:** ⏳ READY TO START — No blocker dependencies
+- **Assigned To:** Frontend Engineer (pending assignment)
+- **Blockers:** None — Can proceed independently of M1-BE-7
+- **Next Actions:**
+  - [ ] PM: Assign task to Frontend Engineer
+  - [ ] Frontend Engineer: Review task document and mockups
+  - [ ] Frontend Engineer: Begin implementation
+- **Coordination:** `docs/tasks/TASK_M1_FE_ONBOARDING.md`
+
 ---
 
 ## 📋 Agent Action Items
@@ -53,15 +63,18 @@
 - **Next:** Standby for future tasks
 
 ### 💻 Frontend Engineer
-- **Current:** No active tasks
-- **Next:** Standby for next M1 frontend task
+- **Current:** ✅ Standby (all current M1 frontend tasks complete)
+- **Next:** M1-FE-6: Provider Onboarding (5 steps) — Ready to start
+- **Note:** Can proceed independently of M1-BE-7 setup blocker
 
 ### 📋 Project Manager
-- **Current:** Coordinating M1-BE-7 setup completion
+- **Current:** Coordinating M1-BE-7 setup completion & planning M1-FE-6
 - **Action Required:**
   1. ⏳ Coordinate `.env` file creation (User/DevOps)
   2. ⏳ Track test implementation progress
-  3. ⏳ Provide final approval after all reviews complete
+  3. ⏳ Coordinate M1-FE-6 assignment (Frontend Engineer ready)
+  4. ⏳ Provide final approval after all reviews complete
+- **Daily Check:** `docs/coordination/PM_DAILY_CHECK_2025-01-11.md`
 
 ---
 
@@ -152,7 +165,7 @@
 
 ---
 
-**Last Updated:** 2025-01-11  
+**Last Updated:** 2025-01-11 (PM Daily Check)  
 **Next Update:** When M1-BE-7 setup completes or status changes
 
 ---

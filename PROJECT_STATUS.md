@@ -1,6 +1,6 @@
 # VisaOnTrack v2 — Project Status
 
-**Last Updated:** RFC-002 Complete | M1 Milestone Documented | Ready for M1 Kickoff
+**Last Updated:** M1-BE-7 Implementation Complete | Unblocking in Progress | Parallel Work Streams Active (Reviews + Setup)
 **Current Milestone:** M1 — Auth & Onboarding (READY TO START)
 **Phase:** Implementation Ready — All Prerequisites Complete
 **Agent Team:** ✅ All agents created and ready
@@ -35,19 +35,21 @@
 
 **Status:** ✅ **COMPLETE** — M1 frontend work unblocked!
 
-### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS** (56% complete — 5/9 tasks)
+### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS** (89% complete — 8/9 tasks)
 **Unblocked:** All mockups complete with polished UX features
 - [x] Landing page with animations & sticky header ✅ **COMPLETE** (all reviews approved)
 - [x] Login/Register flows with smart validation & typo detection ✅ **COMPLETE** (all reviews approved, all fixes applied)
 - [x] Forgot/Reset password flow (RFC-002) ✅ **COMPLETE** (all reviews approved, all fixes applied)
 - [x] Account type selection with interactive cards ✅ **COMPLETE** (all reviews approved, task complete)
 - [x] Seeker onboarding welcome with animated benefits ✅ **COMPLETE** (all reviews approved, task complete)
-- [ ] Provider onboarding (5 steps: welcome, business, services, credentials, payment)
+- [x] Provider onboarding (6 pages: welcome, business, services, credentials, complete, payment) ✅ **COMPLETE** (all reviews approved, task complete)
   - Auto-save indicators
   - Drag-drop file uploads
   - Progress tracking
   - Character counters
   - Real-time validation
+  - File size validation
+  - WCAG AA accessibility
 
 **Design Reference:** All pages in `docs/mockups/` are production-ready with advanced UX features
 
@@ -57,7 +59,9 @@
 - ✅ **Frontend Engineer:** Forgot/Reset password flow implemented (M1-FE-3 complete — all reviews approved, all fixes applied)
 - ✅ **Frontend Engineer:** Account type selection implemented (M1-FE-4 complete — all reviews approved, task complete)
 - ✅ **Frontend Engineer:** Seeker onboarding welcome (M1-FE-5 complete — all reviews approved, task complete)
+- ✅ **Frontend Engineer:** Provider onboarding (M1-FE-6 complete — all reviews approved, task complete)
 - ✅ **Backend Engineer:** User Management API endpoints implemented (M1-BE-8 complete — all reviews approved, all tests verified, task complete)
+- ✅ **Backend Engineer:** Authentication API endpoints (M1-BE-7 complete — all reviews approved, PM final approval granted, task complete)
 
 **M1-FE-2 Status:**
 - ✅ Frontend Engineer: APPROVED WITH CHANGES (implementation complete)
@@ -103,6 +107,46 @@
 - **Review Coordination:** See `COORDINATION_M1_FE_5_REVIEW.md` for review prompts and status tracking
 - **PM Final Approval:** See `docs/approvals/PM_FINAL_APPROVAL_M1_FE_5_SEEKER_WELCOME.md`
 
+**M1-FE-6 Status:**
+- ✅ Frontend Engineer: IMPLEMENTATION COMPLETE (Provider Onboarding — all 6 pages implemented)
+- ✅ Tech Lead: APPROVED WITH RECOMMENDATIONS (Code quality: 10/10, Design match: 10/10, Accessibility: 10/10, Performance: 10/10)
+- ✅ QA Engineer: APPROVED (All 6 accessibility fixes verified, WCAG AA compliance achieved, Responsive design: 10/10)
+- ✅ Security Guard: APPROVED (Security score: 10/10, File upload security: Fully compliant, File size validation: Enforced, All security requirements met)
+- ✅ Scope Guardian: APPROVED (Spec adherence score: 10/10, No scope creep, Fully compliant with spec requirements)
+- ✅ PM: APPROVED (DoD satisfied, task complete)
+- **Review Coordination:** See `docs/coordination/COORDINATION_M1_FE_6_REVIEW.md` for review prompts and status tracking
+- **PM Final Approval:** See `docs/approvals/PM_FINAL_APPROVAL_M1_FE_6_PROVIDER_ONBOARDING.md`
+
+**M1-BE-7 Status:**
+- ✅ Backend Engineer: IMPLEMENTATION COMPLETE (POST /auth/login and POST /auth/register endpoints implemented)
+- ✅ Dependencies installed (npm install)
+- ✅ API client regenerated (register endpoint available)
+- ✅ OpenAPI spec updated (v0.2.2, register endpoint and rememberMe field added)
+- ✅ Prisma schema updated (passwordHash field added)
+- ✅ Infrastructure Setup: **COMPLETE** (PostgreSQL 16 installed, database created, migrations applied, servers running)
+- ✅ Cookie-parser middleware configured (main.ts created by PM)
+- ✅ Test Suite: **COMPLETE** (100+ test cases, 7 test files, all follow M1-BE-8 pattern)
+  - ✅ Unit tests: auth.service.spec.ts (20+ test cases)
+  - ✅ Unit tests: auth.controller.spec.ts (15+ test cases)
+  - ✅ Integration tests: auth.integration.spec.ts (10+ test cases)
+  - ✅ Security tests: auth.security.spec.ts (20+ test cases)
+  - ✅ Contract tests: auth.contract.spec.ts (15+ test cases)
+  - ✅ DTO tests: login.dto.spec.ts (15+ test cases)
+  - ✅ DTO tests: register.dto.spec.ts (20+ test cases)
+  - ✅ No linter errors
+- ✅ Tech Lead review: APPROVED WITH RECOMMENDATIONS (Code quality: 10/10, API contract compliance: 10/10, Security: 10/10, Error handling: 10/10, Audit logging: 10/10)
+- ✅ Security Guard review: APPROVED (Security score: 9.5/10, Section 11 fully compliant, all security requirements met, no vulnerabilities found, minor console.error logging improvement recommended)
+- ✅ Scope Guardian review: APPROVED (Spec adherence score: 10/10, no scope creep, fully compliant with spec requirements)
+- ✅ QA Engineer review: APPROVED (Test suite review complete - 100% pattern compliance with M1-BE-8, excellent test quality, 100+ test cases across 7 files, Jest config fixed)
+- ✅ PM review: APPROVED (DoD satisfied, task complete)
+- **See:** 
+  - `apps/api/M1_BE_7_IMPLEMENTATION_COMPLETE.md` (implementation report)
+  - `apps/api/M1_BE_7_STATUS.md` (status report)
+  - `apps/api/M1_BE_7_SETUP_REQUIRED.md` (setup instructions)
+  - `PM_UNBLOCKING_ACTION_PLAN_M1_BE_7.md` (unblocking strategy)
+  - `TEAM_UNBLOCKING_NOTICE_M1_BE_7.md` (team communication)
+  - `COORDINATION_M1_BE_7_REVIEW.md` (review coordination)
+
 ### 📋 M2 — Requests & Messaging (5–6d) — **PENDING**
 - [ ] Post request/list/thread
 - [ ] Attachments (base caps)
@@ -143,6 +187,34 @@
 ## Blockers & Risks
 
 **Current Blocker:**
+**None** — All infrastructure setup complete ✅
+
+**Previous Blocker (Resolved):**
+- ✅ **M1-BE-7 Infrastructure Setup** — **RESOLVED**
+  - **Problem:** M1-BE-7 implementation complete, but required .env file with DATABASE_URL to run migration
+  - **Impact:** Database migration could not run without .env file, blocking endpoint testing
+  - **Status:** ✅ **RESOLVED** — Infrastructure setup complete (PostgreSQL 16 installed, database created, migrations applied, servers running)
+  - **Completed:**
+    - ✅ Backend Engineer: Implementation complete (login/register endpoints)
+    - ✅ Backend Engineer: Dependencies installed
+    - ✅ Backend Engineer: API client regenerated
+    - ✅ Backend Engineer: OpenAPI spec updated (v0.2.2)
+    - ✅ Infrastructure Setup: PostgreSQL 16 installed and running
+    - ✅ Infrastructure Setup: Database `visaontrack` created
+    - ✅ Infrastructure Setup: Prisma migrations applied successfully
+    - ✅ Infrastructure Setup: Both servers running (Frontend: 3000, Backend: 3001)
+    - ✅ Configure cookie-parser middleware (main.ts created by PM)
+    - ✅ Tech Lead review: APPROVED WITH RECOMMENDATIONS
+    - ✅ Security Guard review: APPROVED
+    - ✅ Scope Guardian review: APPROVED
+  - **Next Steps:**
+    - ✅ Backend Engineer: Implement tests (COMPLETE — 100+ test cases, 7 test files)
+    - ✅ QA Engineer: Review tests (COMPLETE — APPROVED)
+    - ✅ Backend Engineer: Fix Jest config (COMPLETE — jest.config.cjs working correctly)
+    - ✅ PM: Final approval (COMPLETE — APPROVED)
+  - **See:** `docs/coordination/COORDINATION_M1_BE_7_INFRASTRUCTURE_SETUP.md` ✅ COMPLETE
+
+**Previous Blocker (Resolved):**
 - ✅ **M1-FE-4 Missing API Endpoint — PATCH /users/me** — **RESOLVED**
   - **Problem:** `PATCH /users/me` endpoint was missing from OpenAPI spec (v0.2.1), which was required for M1-FE-4 (Account Type Selection)
   - **Impact:** Blocked M1-FE-4, M1-FE-5, M1-FE-6, and all downstream M1 tasks

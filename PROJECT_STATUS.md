@@ -1,7 +1,7 @@
 # VisaOnTrack v2 — Project Status
 
-**Last Updated:** M1-BE-7 Implementation Complete | Unblocking in Progress | Parallel Work Streams Active (Reviews + Setup)
-**Current Milestone:** M1 — Auth & Onboarding (READY TO START)
+**Last Updated:** 2025-01-11 (PM Coordination Sweep — RFC-004 Complete, M1 100% Complete)
+**Current Milestone:** M1 — Auth & Onboarding (✅ COMPLETE — 10/10 tasks)
 **Phase:** Implementation Ready — All Prerequisites Complete
 **Agent Team:** ✅ All agents created and ready
 **Current Task:** M1 Task Assignments Complete ✅ | Ready for Engineer Execution
@@ -35,19 +35,20 @@
 
 **Status:** ✅ **COMPLETE** — M1 frontend work unblocked!
 
-### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS** (89% complete — 8/9 tasks)
+### 📋 M1 — Auth & Onboarding (4–5d) — **IN PROGRESS** (100% complete — 10/10 tasks)
 **Unblocked:** All mockups complete with polished UX features
 - [x] Landing page with animations & sticky header ✅ **COMPLETE** (all reviews approved)
 - [x] Login/Register flows with smart validation & typo detection ✅ **COMPLETE** (all reviews approved, all fixes applied)
 - [x] Forgot/Reset password flow (RFC-002) ✅ **COMPLETE** (all reviews approved, all fixes applied)
 - [x] Account type selection with interactive cards ✅ **COMPLETE** (all reviews approved, task complete)
 - [x] Seeker onboarding welcome with animated benefits ✅ **COMPLETE** (all reviews approved, task complete)
-- [x] Provider onboarding (6 pages: welcome, business, services, credentials, complete, payment) ✅ **COMPLETE** (all reviews approved, task complete)
+- [x] Provider onboarding (5 pages in onboarding flow, 1 page deferred: welcome, business, services, credentials, complete, payment setup removed from flow) ✅ **COMPLETE** (all reviews approved, task complete)
   - Auto-save indicators
   - Drag-drop file uploads
   - Progress tracking
   - Character counters
   - Real-time validation
+  - **Recent Update:** Payouts step removed from onboarding flow (2025-01-11) — Flow now 3 steps instead of 4
   - File size validation
   - WCAG AA accessibility
 
@@ -62,6 +63,8 @@
 - ✅ **Frontend Engineer:** Provider onboarding (M1-FE-6 complete — all reviews approved, task complete)
 - ✅ **Backend Engineer:** User Management API endpoints implemented (M1-BE-8 complete — all reviews approved, all tests verified, task complete)
 - ✅ **Backend Engineer:** Authentication API endpoints (M1-BE-7 complete — all reviews approved, PM final approval granted, task complete)
+- ✅ **Backend Engineer:** Onboarding completion tracking (RFC-004-BE complete — implementation & tests complete, 42 tests passing — 2025-01-11)
+- ✅ **Frontend Engineer:** Onboarding completion tracking (RFC-004-FE complete — all reviews approved, PM final approval granted — 2025-01-11)
 
 **M1-FE-2 Status:**
 - ✅ Frontend Engineer: APPROVED WITH CHANGES (implementation complete)
@@ -126,19 +129,20 @@
 - ✅ Infrastructure Setup: **COMPLETE** (PostgreSQL 16 installed, database created, migrations applied, servers running)
 - ✅ Cookie-parser middleware configured (main.ts created by PM)
 - ✅ Test Suite: **COMPLETE** (100+ test cases, 7 test files, all follow M1-BE-8 pattern)
-  - ✅ Unit tests: auth.service.spec.ts (20+ test cases)
-  - ✅ Unit tests: auth.controller.spec.ts (15+ test cases)
-  - ✅ Integration tests: auth.integration.spec.ts (10+ test cases)
-  - ✅ Security tests: auth.security.spec.ts (20+ test cases)
-  - ✅ Contract tests: auth.contract.spec.ts (15+ test cases)
-  - ✅ DTO tests: login.dto.spec.ts (15+ test cases)
-  - ✅ DTO tests: register.dto.spec.ts (20+ test cases)
-  - ✅ No linter errors
-- ✅ Tech Lead review: APPROVED WITH RECOMMENDATIONS (Code quality: 10/10, API contract compliance: 10/10, Security: 10/10, Error handling: 10/10, Audit logging: 10/10)
-- ✅ Security Guard review: APPROVED (Security score: 9.5/10, Section 11 fully compliant, all security requirements met, no vulnerabilities found, minor console.error logging improvement recommended)
+- ✅ Tech Lead review: APPROVED WITH RECOMMENDATIONS (Security issues identified — 2025-01-11)
+- ✅ Security Guard review: APPROVED (Initial review — Security issues identified in follow-up)
 - ✅ Scope Guardian review: APPROVED (Spec adherence score: 10/10, no scope creep, fully compliant with spec requirements)
 - ✅ QA Engineer review: APPROVED (Test suite review complete - 100% pattern compliance with M1-BE-8, excellent test quality, 100+ test cases across 7 files, Jest config fixed)
-- ✅ PM review: APPROVED (DoD satisfied, task complete)
+- ✅ PM review: APPROVED (DoD satisfied, task complete — 2025-01-11)
+- 🔴 **CRITICAL:** Task RE-OPENED — Critical security issues identified (JWT guard missing, token logging, rate limiting bypass)
+- ✅ **Security Fixes:** **COMPLETE** (All 5 issues fixed — 2025-01-11)
+  - ✅ JWT Authentication Guard implemented (jwt-auth.guard.ts)
+  - ✅ Password reset token logging removed
+  - ✅ Rate limiting bypass fixed (IP-based instead of token-based)
+  - ✅ Global ValidationPipe added
+  - ✅ PrismaClient refactored to shared PrismaService
+- ✅ **Security Guard Re-Review:** **APPROVED** (All security fixes verified — 2025-01-11)
+- ✅ **PM Final Approval:** **APPROVED** (Task Complete — 2025-01-11)
 - **See:** 
   - `apps/api/M1_BE_7_IMPLEMENTATION_COMPLETE.md` (implementation report)
   - `apps/api/M1_BE_7_STATUS.md` (status report)
@@ -146,6 +150,12 @@
   - `PM_UNBLOCKING_ACTION_PLAN_M1_BE_7.md` (unblocking strategy)
   - `TEAM_UNBLOCKING_NOTICE_M1_BE_7.md` (team communication)
   - `COORDINATION_M1_BE_7_REVIEW.md` (review coordination)
+  - 🔴 **Security Incident:** `docs/incidents/SECURITY_INCIDENT_M1_BE_7_CRITICAL_ISSUES.md` (critical security issues)
+  - 🔴 **Security Fixes Assignment:** `docs/coordination/BACKEND_ENGINEER_ASSIGNMENT_M1_BE_7_SECURITY_FIXES.md`
+  - 🔴 **Blocker:** `docs/blockers/BLOCKER_M1_BE_7_SECURITY_ISSUES.md`
+  - ✅ **Security Fixes Complete:** `docs/completion/M1_BE_7_SECURITY_FIXES_COMPLETE.md`
+  - ✅ **Security Guard Re-Review:** `docs/reviews/SECURITY_GUARD_REVIEW_M1_BE_7_SECURITY_FIXES.md` ✅ APPROVED
+  - ✅ **PM Final Approval:** `docs/approvals/PM_FINAL_APPROVAL_M1_BE_7_AUTH_API_SECURITY_FIXES.md` ✅ APPROVED
 
 ### 📋 M2 — Requests & Messaging (5–6d) — **PENDING**
 - [ ] Post request/list/thread
@@ -186,8 +196,30 @@
 
 ## Blockers & Risks
 
-**Current Blocker:**
-**None** — All infrastructure setup complete ✅
+### Active Blockers
+
+**None** — All blockers resolved ✅
+
+### Resolved Blockers
+
+- ✅ **M1-BE-7 Security Guard Re-Review** — **RESOLVED** (2025-01-11)
+  - **Issue:** Security fixes complete, awaiting Security Guard re-review
+  - **Solution:** Security Guard re-review complete — ✅ APPROVED (All security fixes verified)
+  - **Status:** ✅ **RESOLVED** — Ready for PM final approval
+  - **Review Document:** `docs/reviews/SECURITY_GUARD_REVIEW_M1_BE_7_SECURITY_FIXES.md`
+- ✅ **M1-BE-7 Security Fixes** — **RESOLVED** (2025-01-11)
+  - **Issue:** 3 high-priority security vulnerabilities (JWT guard missing, token logging, rate limiting bypass)
+  - **Solution:** All 5 security issues fixed (JWT guard implemented, token logging removed, rate limiting fixed, ValidationPipe added, PrismaService created)
+  - **Status:** ✅ **RESOLVED** — Security fixes complete, awaiting Security Guard re-review
+  - **Time Taken:** ~2 hours
+- ✅ **Jest Configuration Fix** — **RESOLVED** (2025-01-11)
+  - **Issue:** CommonJS vs ESM conflict prevented test execution
+  - **Solution:** Renamed `jest.config.js` to `jest.config.cjs`
+  - **Status:** ✅ **RESOLVED** — Jest config working correctly, tests running
+- ✅ M1-BE-7 Infrastructure Setup — Resolved (PostgreSQL installed, database created, migrations applied)
+- ✅ M1-FE-4 Missing PATCH /users/me endpoint — Resolved
+- ✅ RFC-002 Forgot/Reset Password — Resolved
+- ✅ M1 Mockups — Resolved
 
 **Previous Blocker (Resolved):**
 - ✅ **M1-BE-7 Infrastructure Setup** — **RESOLVED**

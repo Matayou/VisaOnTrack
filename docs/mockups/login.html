@@ -3,85 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign in to VisaOnTrack</title>
+  <title>Sign In - VisaOnTrack</title>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Elite Design System Implementation */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
     :root {
-      /* Typography */
       --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --font-size-xs: 0.8125rem;
       --font-size-sm: 0.875rem;
       --font-size-base: 0.9375rem;
-      --font-size-md: 1rem;
       --font-size-lg: 1.125rem;
-      --font-size-xl: 1.25rem;
       --font-size-2xl: 1.5rem;
-      --font-size-3xl: 2rem;
-      
       --font-weight-normal: 400;
       --font-weight-medium: 500;
       --font-weight-semibold: 600;
-      --font-weight-bold: 700;
-      
       --line-height-tight: 1.2;
-      --line-height-snug: 1.4;
       --line-height-normal: 1.5;
       --line-height-relaxed: 1.6;
-      
       --tracking-tight: -0.02em;
       --tracking-normal: -0.01em;
-      
-      /* Colors */
       --color-primary: #2563eb;
       --color-primary-hover: #1d4ed8;
-      --color-primary-light: #dbeafe;
-      
+      --color-success: #16a34a;
+      --color-error: #dc2626;
+      --color-warning: #f59e0b;
       --color-text-primary: #0a0a0a;
       --color-text-secondary: #525252;
       --color-text-tertiary: #a3a3a3;
-      
       --color-bg-primary: #ffffff;
       --color-bg-secondary: #fafafa;
-      
       --color-border-light: rgba(0, 0, 0, 0.06);
       --color-border-medium: rgba(0, 0, 0, 0.12);
-      
-      --color-error: #dc2626;
-      --color-error-light: #fee2e2;
-      
-      /* Spacing */
-      --space-1: 0.25rem;
       --space-2: 0.5rem;
       --space-3: 0.75rem;
       --space-4: 1rem;
       --space-5: 1.25rem;
       --space-6: 1.5rem;
       --space-8: 2rem;
-      --space-12: 3rem;
-      --space-16: 4rem;
-      
-      /* Border Radius */
       --radius-sm: 0.25rem;
       --radius-base: 0.5rem;
       --radius-md: 0.75rem;
-      
-      /* Shadows */
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-      
-      /* Animation */
       --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-base: 300ms cubic-bezier(0.16, 1, 0.3, 1);
     }
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
       font-family: var(--font-family);
@@ -90,7 +57,6 @@
       color: var(--color-text-primary);
       background: var(--color-bg-secondary);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
     
     .page-container {
@@ -108,6 +74,12 @@
       border: 1px solid var(--color-border-light);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-md);
+      animation: slideUp 300ms var(--transition-fast);
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .auth-header {
@@ -127,17 +99,12 @@
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
     }
     
-    .logo svg {
-      width: 1.5rem;
-      height: 1.5rem;
-      color: white;
-    }
+    .logo svg { width: 1.5rem; height: 1.5rem; color: white; }
     
     .auth-title {
       font-size: var(--font-size-2xl);
       font-weight: var(--font-weight-semibold);
       letter-spacing: var(--tracking-tight);
-      color: var(--color-text-primary);
       margin-bottom: var(--space-2);
       line-height: var(--line-height-tight);
     }
@@ -145,12 +112,9 @@
     .auth-subtitle {
       font-size: var(--font-size-sm);
       color: var(--color-text-secondary);
-      line-height: var(--line-height-normal);
     }
     
-    .auth-content {
-      padding: 0 var(--space-8) var(--space-8);
-    }
+    .auth-content { padding: 0 var(--space-8) var(--space-8); }
     
     .form {
       display: flex;
@@ -162,13 +126,16 @@
       display: flex;
       flex-direction: column;
       gap: var(--space-2);
+      position: relative;
     }
     
     .input-label {
       font-size: var(--font-size-sm);
       font-weight: var(--font-weight-medium);
-      color: var(--color-text-primary);
       letter-spacing: var(--tracking-normal);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
     }
     
     .input-wrapper {
@@ -189,53 +156,110 @@
       outline: none;
     }
     
-    .input-field::placeholder {
-      color: var(--color-text-tertiary);
-    }
+    .input-field.has-icon { padding-right: 2.75rem; }
     
-    .input-field:hover {
+    .input-field::placeholder { color: var(--color-text-tertiary); }
+    
+    .input-field:hover:not(:focus):not(.error):not(:disabled) {
       border-color: var(--color-border-medium);
     }
     
     .input-field:focus {
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      transform: scale(1.01);
     }
     
+    /* Enhanced: Success state */
+    .input-field.success {
+      border-color: var(--color-success);
+      background: rgba(22, 163, 74, 0.02);
+    }
+    
+    .input-field.success:focus {
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+    
+    /* Enhanced: Error state */
     .input-field.error {
       border-color: var(--color-error);
+      background: rgba(220, 38, 38, 0.02);
     }
     
     .input-field.error:focus {
       box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
     }
     
-    .input-hint {
-      font-size: var(--font-size-xs);
-      color: var(--color-text-tertiary);
-      line-height: var(--line-height-normal);
-    }
-    
-    .input-error {
+    /* Enhanced: Input icons (validation feedback) */
+    .input-icon {
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
       align-items: center;
       gap: var(--space-2);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    
+    .input-icon.show { opacity: 1; animation: iconPop 200ms var(--transition-fast); }
+    
+    @keyframes iconPop {
+      0% { transform: translateY(-50%) scale(0.8); }
+      50% { transform: translateY(-50%) scale(1.1); }
+      100% { transform: translateY(-50%) scale(1); }
+    }
+    
+    .input-icon svg { width: 1.125rem; height: 1.125rem; }
+    .input-icon.success { color: var(--color-success); }
+    .input-icon.error { color: var(--color-error); }
+    
+    /* Enhanced: Validation message */
+    .input-message {
       font-size: var(--font-size-xs);
-      color: var(--color-error);
-      line-height: var(--line-height-normal);
-    }
-    
-    .input-error svg {
-      width: 0.875rem;
-      height: 0.875rem;
-      flex-shrink: 0;
-    }
-    
-    .form-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: var(--space-2);
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: all var(--transition-fast);
+      min-height: 1.125rem;
     }
+    
+    .input-message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .input-message.success { color: var(--color-success); }
+    .input-message.error { color: var(--color-error); }
+    .input-message.hint { color: var(--color-text-tertiary); }
+    
+    /* Enhanced: Password toggle */
+    .password-toggle {
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      padding: var(--space-2);
+      cursor: pointer;
+      color: var(--color-text-tertiary);
+      display: flex;
+      align-items: center;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .password-toggle:hover {
+      color: var(--color-text-secondary);
+      background: var(--color-bg-secondary);
+    }
+    
+    .password-toggle svg { width: 1.125rem; height: 1.125rem; }
     
     .checkbox-group {
       display: flex;
@@ -243,22 +267,16 @@
       gap: var(--space-2);
     }
     
-    .checkbox {
+    .checkbox-wrapper {
+      position: relative;
+      display: flex;
+    }
+    
+    .checkbox-input {
       width: 1rem;
       height: 1rem;
-      border: 1px solid var(--color-border-medium);
-      border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-    
-    .checkbox:hover {
-      border-color: var(--color-primary);
-    }
-    
-    .checkbox:checked {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
+      accent-color: var(--color-primary);
     }
     
     .checkbox-label {
@@ -268,18 +286,18 @@
       user-select: none;
     }
     
-    .link {
+    .forgot-link {
       font-size: var(--font-size-sm);
       font-weight: var(--font-weight-medium);
       color: var(--color-primary);
       text-decoration: none;
       transition: color var(--transition-fast);
+      margin-left: auto;
     }
     
-    .link:hover {
-      color: var(--color-primary-hover);
-    }
+    .forgot-link:hover { color: var(--color-primary-hover); }
     
+    /* Enhanced: Button with loading state */
     .btn-primary {
       width: 100%;
       height: 2.75rem;
@@ -294,6 +312,12 @@
       cursor: pointer;
       transition: all var(--transition-fast);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
     }
     
     .btn-primary:hover:not(:disabled) {
@@ -301,13 +325,47 @@
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
     
-    .btn-primary:active:not(:disabled) {
-      transform: translateY(0);
-    }
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
     
     .btn-primary:disabled {
-      opacity: 0.4;
+      opacity: 0.6;
       cursor: not-allowed;
+    }
+    
+    /* Enhanced: Loading spinner */
+    .btn-spinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+      display: none;
+    }
+    
+    .btn-primary.loading .btn-spinner { display: block; }
+    .btn-primary.loading .btn-text { opacity: 0.7; }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Enhanced: Success checkmark animation */
+    .btn-success-icon {
+      display: none;
+      animation: successPop 400ms var(--transition-fast);
+    }
+    
+    .btn-primary.success {
+      background: linear-gradient(180deg, var(--color-success) 0%, #15803d 100%);
+    }
+    
+    .btn-primary.success .btn-success-icon { display: block; }
+    
+    @keyframes successPop {
+      0% { transform: scale(0) rotate(-45deg); }
+      50% { transform: scale(1.2) rotate(0deg); }
+      100% { transform: scale(1) rotate(0deg); }
     }
     
     .divider {
@@ -317,8 +375,7 @@
       margin: var(--space-6) 0;
     }
     
-    .divider::before,
-    .divider::after {
+    .divider::before, .divider::after {
       content: '';
       flex: 1;
       height: 1px;
@@ -328,16 +385,16 @@
     .divider-text {
       font-size: var(--font-size-xs);
       color: var(--color-text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
     
-    .auth-footer {
-      padding: var(--space-6) var(--space-8) var(--space-8);
-      text-align: center;
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
+    .link {
+      font-weight: var(--font-weight-medium);
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
     }
+    
+    .link:hover { color: var(--color-primary-hover); }
     
     .trust-badges {
       display: flex;
@@ -355,127 +412,160 @@
       color: var(--color-text-tertiary);
     }
     
-    .trust-badge svg {
-      width: 1rem;
-      height: 1rem;
+    .trust-badge svg { width: 1rem; height: 1rem; }
+    
+    /* Enhanced: Tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-flex;
+      cursor: help;
     }
     
-    /* Responsive */
-    @media (max-width: 640px) {
-      .auth-header,
-      .auth-content,
-      .auth-footer {
-        padding-left: var(--space-6);
-        padding-right: var(--space-6);
-      }
+    .tooltip-icon {
+      width: 1rem;
+      height: 1rem;
+      color: var(--color-text-tertiary);
+      transition: color var(--transition-fast);
+    }
+    
+    .tooltip:hover .tooltip-icon { color: var(--color-text-secondary); }
+    
+    .tooltip-content {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      background: var(--color-text-primary);
+      color: white;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-xs);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all var(--transition-fast);
+      z-index: 10;
+    }
+    
+    .tooltip-content::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: var(--color-text-primary);
+    }
+    
+    .tooltip:hover .tooltip-content {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
     }
   </style>
 </head>
 <body>
   <div class="page-container">
     <div class="auth-card">
-      <!-- Header -->
       <div class="auth-header">
         <div class="logo">
-          <i data-lucide="shield-check"></i>
+          <i data-lucide="compass"></i>
         </div>
         <h1 class="auth-title">Welcome back</h1>
-        <p class="auth-subtitle">Sign in to continue to your account</p>
+        <p class="auth-subtitle">Sign in to your VisaOnTrack account</p>
       </div>
       
-      <!-- Content -->
       <div class="auth-content">
         <form class="form" id="loginForm">
-          <!-- Email -->
+          <!-- Email with enhanced validation -->
           <div class="input-group">
-            <label for="email" class="input-label">Email address</label>
+            <label for="email" class="input-label">
+              Email address
+              <div class="tooltip">
+                <i data-lucide="help-circle" class="tooltip-icon"></i>
+                <div class="tooltip-content">Use the email you registered with</div>
+              </div>
+            </label>
             <div class="input-wrapper">
               <input 
                 type="email" 
                 id="email"
-                name="email"
-                class="input-field"
-                placeholder="you@company.com"
+                class="input-field has-icon"
+                placeholder="you@example.com"
                 required
                 autocomplete="email"
               />
+              <div class="input-icon" id="emailIcon">
+                <i data-lucide="check-circle"></i>
+              </div>
             </div>
-            <span class="input-hint hidden" id="email-hint">Enter your registered email</span>
-            <div class="input-error hidden" id="email-error">
-              <i data-lucide="alert-circle"></i>
-              <span>Please enter a valid email address</span>
-            </div>
+            <div class="input-message" id="emailMessage"></div>
           </div>
           
-          <!-- Password -->
+          <!-- Password with visibility toggle -->
           <div class="input-group">
             <label for="password" class="input-label">Password</label>
             <div class="input-wrapper">
               <input 
                 type="password" 
                 id="password"
-                name="password"
                 class="input-field"
                 placeholder="Enter your password"
                 required
                 autocomplete="current-password"
               />
+              <button type="button" class="password-toggle" id="passwordToggle">
+                <i data-lucide="eye"></i>
+              </button>
             </div>
-            <div class="input-error hidden" id="password-error">
-              <i data-lucide="alert-circle"></i>
-              <span>Password is required</span>
-            </div>
+            <div class="input-message" id="passwordMessage"></div>
           </div>
           
           <!-- Remember me + Forgot password -->
-          <div class="form-row">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
             <div class="checkbox-group">
-              <input 
-                type="checkbox" 
-                id="remember"
-                name="remember"
-                class="checkbox"
-              />
-              <label for="remember" class="checkbox-label">
-                Remember me
-              </label>
+              <div class="checkbox-wrapper">
+                <input 
+                  type="checkbox" 
+                  id="remember"
+                  class="checkbox-input"
+                />
+              </div>
+              <label for="remember" class="checkbox-label">Remember me</label>
             </div>
-            <a href="#" class="link">Forgot password?</a>
+            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
           </div>
           
-          <!-- Submit -->
-          <button type="submit" class="btn-primary">
-            Sign in
+          <!-- Enhanced submit button with states -->
+          <button type="submit" class="btn-primary" id="submitBtn">
+            <span class="btn-spinner"></span>
+            <i data-lucide="check-circle" class="btn-success-icon"></i>
+            <span class="btn-text">Sign in</span>
           </button>
         </form>
         
-        <!-- Divider -->
         <div class="divider">
-          <span class="divider-text">Or</span>
+          <span class="divider-text">New to VisaOnTrack?</span>
         </div>
         
-        <!-- Register link -->
         <div style="text-align: center;">
           <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
             Don't have an account?
           </span>
-          <a href="register-elite.html" class="link" style="margin-left: var(--space-2);">
+          <a href="register.html" class="link" style="margin-left: var(--space-2);">
             Create account
           </a>
         </div>
       </div>
       
-      <!-- Footer -->
-      <div class="auth-footer">
-        <!-- Trust badges -->
+      <div style="padding: 0 var(--space-8) var(--space-8);">
         <div class="trust-badges">
           <div class="trust-badge">
             <i data-lucide="shield-check"></i>
             <span>Secure & encrypted</span>
           </div>
           <div class="trust-badge">
-            <i data-lucide="users"></i>
-            <span>Trusted by thousands</span>
+            <i data-lucide="clock"></i>
+            <span>24/7 support</span>
           </div>
         </div>
       </div>
@@ -483,18 +573,146 @@
   </div>
 
   <script>
-    // Initialize Lucide icons
     lucide.createIcons();
     
-    // Form validation (demo)
-    const form = document.getElementById('loginForm');
+    // Enhanced: Email validation with smart feedback
     const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
+    const emailIcon = document.getElementById('emailIcon');
+    const emailMessage = document.getElementById('emailMessage');
     
-    form.addEventListener('submit', (e) => {
+    const commonTypos = {
+      'gmial.com': 'gmail.com',
+      'gmai.com': 'gmail.com',
+      'gmil.com': 'gmail.com',
+      'yahooo.com': 'yahoo.com',
+      'yaho.com': 'yahoo.com',
+      'hotmial.com': 'hotmail.com'
+    };
+    
+    function validateEmail(email) {
+      if (!email) {
+        return { status: 'empty', message: '', icon: '' };
+      }
+      
+      if (!email.includes('@')) {
+        return { 
+          status: 'error', 
+          message: 'Email is missing @ symbol',
+          icon: 'alert-circle'
+        };
+      }
+      
+      const parts = email.split('@');
+      if (parts.length !== 2 || !parts[0] || !parts[1]) {
+        return {
+          status: 'error',
+          message: 'Email format looks incorrect',
+          icon: 'alert-circle'
+        };
+      }
+      
+      const domain = parts[1].toLowerCase();
+      
+      // Check for common typos
+      for (const [typo, correct] of Object.entries(commonTypos)) {
+        if (domain === typo) {
+          return {
+            status: 'error',
+            message: `Did you mean ${parts[0]}@${correct}?`,
+            icon: 'alert-circle',
+            suggestion: `${parts[0]}@${correct}`
+          };
+        }
+      }
+      
+      // Check for basic domain format
+      if (!domain.includes('.')) {
+        return {
+          status: 'error',
+          message: 'Domain needs a dot (like .com)',
+          icon: 'alert-circle'
+        };
+      }
+      
+      // Valid!
+      return { 
+        status: 'success', 
+        message: 'Looks good!',
+        icon: 'check-circle'
+      };
+    }
+    
+    emailInput.addEventListener('input', (e) => {
+      const result = validateEmail(e.target.value);
+      
+      // Update field state
+      emailInput.classList.remove('success', 'error');
+      emailIcon.classList.remove('show', 'success', 'error');
+      emailMessage.classList.remove('show', 'success', 'error', 'hint');
+      
+      if (result.status === 'success') {
+        emailInput.classList.add('success');
+        emailIcon.classList.add('show', 'success');
+        emailIcon.innerHTML = `<i data-lucide="${result.icon}"></i>`;
+        emailMessage.textContent = result.message;
+        emailMessage.classList.add('show', 'success');
+        lucide.createIcons();
+      } else if (result.status === 'error') {
+        emailInput.classList.add('error');
+        emailIcon.classList.add('show', 'error');
+        emailIcon.innerHTML = `<i data-lucide="${result.icon}"></i>`;
+        emailMessage.textContent = result.message;
+        emailMessage.classList.add('show', 'error');
+        lucide.createIcons();
+      }
+    });
+    
+    // Enhanced: Password visibility toggle
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+    
+    passwordToggle.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      passwordToggle.innerHTML = isPassword 
+        ? '<i data-lucide="eye-off"></i>' 
+        : '<i data-lucide="eye"></i>';
+      lucide.createIcons();
+    });
+    
+    // Enhanced: Form submission with loading and success states
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      console.log('Form submitted');
-      // Add your authentication logic here
+      
+      // Validate before submit
+      const emailResult = validateEmail(emailInput.value);
+      if (emailResult.status !== 'success') {
+        emailInput.focus();
+        return;
+      }
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      const btnText = submitBtn.querySelector('.btn-text');
+      btnText.textContent = 'Signing in...';
+      
+      // Simulate API call
+      setTimeout(() => {
+        // Show success state
+        submitBtn.classList.remove('loading');
+        submitBtn.classList.add('success');
+        btnText.textContent = 'Success!';
+        
+        // Redirect after brief success state
+        setTimeout(() => {
+          // window.location.href = '/dashboard';
+          console.log('Would redirect to dashboard');
+        }, 1000);
+      }, 1500);
     });
   </script>
 </body>

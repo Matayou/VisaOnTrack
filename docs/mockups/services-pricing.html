@@ -12,13 +12,13 @@
       --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --color-primary: #2563eb;
       --color-primary-hover: #1d4ed8;
+      --color-success: #16a34a;
       --color-text-primary: #0a0a0a;
       --color-text-secondary: #525252;
       --color-text-tertiary: #a3a3a3;
       --color-bg-primary: #ffffff;
       --color-bg-secondary: #fafafa;
       --color-border-light: rgba(0, 0, 0, 0.06);
-      --color-success: #16a34a;
       --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
     }
     
@@ -41,6 +41,12 @@
       border: 1px solid var(--color-border-light);
       border-radius: 0.75rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+      animation: slideUp 300ms var(--transition-fast);
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .header {
@@ -59,18 +65,19 @@
       height: 0.25rem;
       background: var(--color-border-light);
       border-radius: 0.125rem;
+      transition: background var(--transition-fast);
     }
     
     .progress-step.active { background: var(--color-primary); }
     
-    .header-content h1 {
+    h1 {
       font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       margin-bottom: 0.5rem;
     }
     
-    .header-content p {
+    .subtitle {
       font-size: 0.875rem;
       color: var(--color-text-secondary);
     }
@@ -86,10 +93,21 @@
       border-radius: 0.5rem;
       margin-bottom: 1rem;
       transition: all var(--transition-fast);
+      animation: fadeInUp 400ms var(--transition-fast) both;
+    }
+    
+    .service-card:nth-child(1) { animation-delay: 0ms; }
+    .service-card:nth-child(2) { animation-delay: 100ms; }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .service-card:hover {
       border-color: rgba(37, 99, 235, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
     
     .service-header {
@@ -124,6 +142,7 @@
     
     .btn-remove:hover {
       background: rgba(220, 38, 38, 0.1);
+      transform: scale(1.05);
     }
     
     .btn-remove svg { width: 1rem; height: 1rem; }
@@ -150,7 +169,7 @@
     
     .required { color: #dc2626; }
     
-    .input-field, .select-field, .textarea-field {
+    .input-field, .textarea-field {
       width: 100%;
       padding: 0 1rem;
       height: 2.75rem;
@@ -171,14 +190,10 @@
       resize: vertical;
     }
     
-    .input-field:focus, .select-field:focus, .textarea-field:focus {
+    .input-field:focus, .textarea-field:focus {
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-    
-    .input-hint {
-      font-size: 0.8125rem;
-      color: var(--color-text-tertiary);
+      transform: scale(1.005);
     }
     
     .input-icon {
@@ -199,6 +214,7 @@
       font-weight: 500;
     }
     
+    /* Enhanced: Add button with pulse animation */
     .btn-add {
       width: 100%;
       height: 2.75rem;
@@ -215,10 +231,12 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      animation: fadeInUp 400ms var(--transition-fast) 200ms both;
     }
     
     .btn-add:hover {
       background: rgba(37, 99, 235, 0.1);
+      transform: scale(1.02);
     }
     
     .btn-add svg { width: 1.125rem; height: 1.125rem; }
@@ -282,12 +300,9 @@
         <div class="progress-step active"></div>
         <div class="progress-step active"></div>
         <div class="progress-step"></div>
-        <div class="progress-step"></div>
       </div>
-      <div class="header-content">
-        <h1>Services & Pricing</h1>
-        <p>List the visa services you offer and set your pricing</p>
-      </div>
+      <h1>Services & Pricing</h1>
+      <p class="subtitle">List the visa services you offer and set your pricing</p>
     </div>
     
     <div class="form-content">
@@ -295,65 +310,61 @@
       <div class="service-card">
         <div class="service-header">
           <span class="service-number">1</span>
-          <button type="button" class="btn-remove" aria-label="Remove service">
+          <button type="button" class="btn-remove">
             <i data-lucide="trash-2"></i>
           </button>
         </div>
         
         <div class="form-grid">
           <div class="input-group">
-            <label for="service1" class="input-label">
+            <label class="input-label">
               Service Name <span class="required">*</span>
             </label>
             <input 
               type="text" 
-              id="service1"
               class="input-field"
-              placeholder="e.g., H-1B Visa Application"
-              required
+              placeholder="e.g., Marriage Visa Application"
+              value="Marriage Visa Application"
             />
           </div>
           
           <div class="form-grid cols-2">
             <div class="input-group">
-              <label for="price1" class="input-label">
+              <label class="input-label">
                 Base Price <span class="required">*</span>
               </label>
               <div class="input-icon">
-                <span class="input-icon-left">$</span>
+                <span class="input-icon-left">฿</span>
                 <input 
                   type="number" 
-                  id="price1"
                   class="input-field"
-                  placeholder="2,500"
-                  min="0"
-                  required
+                  placeholder="25,000"
+                  value="25000"
                 />
               </div>
             </div>
             
             <div class="input-group">
-              <label for="duration1" class="input-label">
+              <label class="input-label">
                 Typical Duration
               </label>
               <input 
                 type="text" 
-                id="duration1"
                 class="input-field"
                 placeholder="4-6 weeks"
+                value="4-6 weeks"
               />
             </div>
           </div>
           
           <div class="input-group">
-            <label for="description1" class="input-label">
+            <label class="input-label">
               Description
             </label>
             <textarea 
-              id="description1"
               class="textarea-field"
               placeholder="Describe what's included in this service..."
-            ></textarea>
+            >Complete application process including document preparation, form filing, and immigration office representation</textarea>
           </div>
         </div>
       </div>
@@ -362,65 +373,61 @@
       <div class="service-card">
         <div class="service-header">
           <span class="service-number">2</span>
-          <button type="button" class="btn-remove" aria-label="Remove service">
+          <button type="button" class="btn-remove">
             <i data-lucide="trash-2"></i>
           </button>
         </div>
         
         <div class="form-grid">
           <div class="input-group">
-            <label for="service2" class="input-label">
+            <label class="input-label">
               Service Name <span class="required">*</span>
             </label>
             <input 
               type="text" 
-              id="service2"
               class="input-field"
-              placeholder="e.g., Green Card Application"
-              required
+              placeholder="e.g., Retirement Visa Extension"
+              value="Retirement Visa Extension"
             />
           </div>
           
           <div class="form-grid cols-2">
             <div class="input-group">
-              <label for="price2" class="input-label">
+              <label class="input-label">
                 Base Price <span class="required">*</span>
               </label>
               <div class="input-icon">
-                <span class="input-icon-left">$</span>
+                <span class="input-icon-left">฿</span>
                 <input 
                   type="number" 
-                  id="price2"
                   class="input-field"
-                  placeholder="5,000"
-                  min="0"
-                  required
+                  placeholder="15,000"
+                  value="15000"
                 />
               </div>
             </div>
             
             <div class="input-group">
-              <label for="duration2" class="input-label">
+              <label class="input-label">
                 Typical Duration
               </label>
               <input 
                 type="text" 
-                id="duration2"
                 class="input-field"
-                placeholder="6-12 months"
+                placeholder="2-3 weeks"
+                value="2-3 weeks"
               />
             </div>
           </div>
           
           <div class="input-group">
-            <label for="description2" class="input-label">
+            <label class="input-label">
               Description
             </label>
             <textarea 
-              id="description2"
               class="textarea-field"
               placeholder="Describe what's included in this service..."
-            ></textarea>
+            >Annual retirement visa extension with full document preparation and immigration assistance</textarea>
           </div>
         </div>
       </div>
@@ -437,7 +444,7 @@
         <i data-lucide="arrow-left"></i>
         Back
       </button>
-      <button type="submit" class="btn btn-primary">
+      <button type="button" class="btn btn-primary">
         Continue
         <i data-lucide="arrow-right"></i>
       </button>

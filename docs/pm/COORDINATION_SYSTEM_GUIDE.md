@@ -230,6 +230,12 @@ The coordination system provides:
 - **Real-time:** Commit on status changes
 - **Weekly:** Summary commit
 
+### Context Management
+- **See:** `CONTEXT_MANAGEMENT_SYSTEM.md` for context preservation
+- **Before chat gets full (80%):** Create context snapshot → Commit
+- **When starting new chat:** Read COORDINATION_HUB.md → Read latest context snapshot
+- **Weekly:** Create context snapshot → Archive completed docs
+
 ### Document Locations
 - **Central Hub:** `docs/coordination/COORDINATION_HUB.md`
 - **Agent Board:** `docs/coordination/AGENT_STATUS_BOARD.md`

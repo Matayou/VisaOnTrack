@@ -5,6 +5,13 @@
 
 import type { User } from './User';
 
+/**
+ * Login response (RFC-003: includes emailVerified status)
+ */
 export type LoginResponse = {
     user?: User;
+    /**
+     * Success message
+     */
+    message?: string;
 };

@@ -268,15 +268,18 @@ Implement authentication and onboarding flows for both Seekers and Providers, en
 
 ---
 
-#### Task 6: Provider Onboarding (5 Steps)
+#### Task 6: Provider Onboarding (3 Steps in Flow, 1 Deferred)
 **Duration:** 2–2.5 days  
 **Status:** ✅ **COMPLETE** — All reviews approved, task complete
 
+**Note:** Payment Setup step removed from onboarding flow (2025-01-11) — Flow now 3 steps instead of 4, ends at credentials complete → dashboard
+
 **Step 1: Provider Welcome**
 - [x] Implement provider onboarding welcome page ✅
-- [x] Progress bar (5 steps) ✅
+- [x] Progress bar (3 steps) ✅ (updated from 4 steps — 2025-01-11)
 - [x] Overview of onboarding process ✅
 - [x] Step cards with numbers ✅
+- [x] **Recent Update:** Updated from 4 steps to 3 steps (payment setup removed) ✅
 - [x] Match mockup: `docs/mockups/onboarding-provider.html` ✅
 
 **Step 2: Business Details**
@@ -312,11 +315,16 @@ Implement authentication and onboarding flows for both Seekers and Providers, en
 - [x] Timeline with review estimate ✅
 - [x] Clear next steps ✅
 - [x] What happens next explanation ✅
+- [x] **Recent Update:** Payment setup button removed, redirects to dashboard (2025-01-11) ✅
 - [x] Match mockup: `docs/mockups/credentials-complete.html` ✅
 
-**Step 6: Payment Setup (Stripe Connect)**
-- [x] Implement payment setup page ✅
+**Step 6: Payment Setup (Stripe Connect)** — **REMOVED FROM FLOW** (2025-01-11)
+- [x] Implement payment setup page ✅ (page still exists at `/onboarding/provider/payouts`)
 - [x] Stripe Connect branding ✅
+- [x] Benefits list ✅
+- [x] Connect button ✅
+- [x] **Status:** Deferred — Not part of onboarding flow, can be added later (dashboard, settings, or separate flow)
+- [x] **Update Document:** `docs/coordination/FRONTEND_ENGINEER_UPDATE_PAYOUTS_REMOVAL.md`
 - [x] Benefits explanation ✅
 - [x] External redirect flow (to Stripe Connect) ✅
 - [x] Security messaging ✅
@@ -408,11 +416,18 @@ Implement authentication and onboarding flows for both Seekers and Providers, en
   - [x] Security Guard: ✅ APPROVED (Security score: 9.5/10, Section 11 fully compliant, all security requirements met, no vulnerabilities found)
   - [x] QA Engineer: ✅ APPROVED (Test suite review complete - 100% pattern compliance with M1-BE-8, excellent test quality, 100+ test cases across 7 files, Jest config fixed)
   - [x] Scope Guardian: ✅ APPROVED **REQUIRED** (Spec adherence score: 10/10, no scope creep, fully compliant with spec requirements)
-- [x] PM final approval ✅ (APPROVED — 2025-01-11)
+- [x] PM final approval ✅ (APPROVED — 2025-01-11, Re-approved after security fixes — 2025-01-11)
+- [x] Security fixes complete ✅ (All 5 issues fixed — 2025-01-11)
+- [x] Security Guard re-review ✅ (APPROVED — All security fixes verified — 2025-01-11)
+- [x] PM final approval after security fixes ✅ (APPROVED — Task Complete — 2025-01-11)
 
 **Review Coordination:** See `COORDINATION_M1_BE_7_REVIEW.md` for review prompts and status tracking. ✅ COMPLETE  
 **Implementation Report:** See `apps/api/M1_BE_7_IMPLEMENTATION_COMPLETE.md`  
-**PM Final Approval:** See `docs/approvals/PM_FINAL_APPROVAL_M1_BE_7_AUTH_API.md` ✅ Created
+**PM Final Approval:** See `docs/approvals/PM_FINAL_APPROVAL_M1_BE_7_AUTH_API.md` ✅ Created  
+**Security Incident:** See `docs/incidents/SECURITY_INCIDENT_M1_BE_7_CRITICAL_ISSUES.md`  
+**Security Fixes Complete:** See `docs/completion/M1_BE_7_SECURITY_FIXES_COMPLETE.md` ✅  
+**Security Guard Re-Review:** See `docs/reviews/SECURITY_GUARD_REVIEW_M1_BE_7_SECURITY_FIXES.md` ✅ APPROVED  
+**PM Final Approval (After Security Fixes):** See `docs/approvals/PM_FINAL_APPROVAL_M1_BE_7_AUTH_API_SECURITY_FIXES.md` ✅ APPROVED
 
 ---
 

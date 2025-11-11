@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Provider - VisaOnTrack</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-size-xs: 0.8125rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 0.9375rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.6;
+      --tracking-tight: -0.02em;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-primary-light: #dbeafe;
+      --color-success: #16a34a;
+      --color-success-light: #dcfce7;
+      --color-error: #dc2626;
+      --color-warning: #eab308;
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #525252;
+      --color-text-tertiary: #a3a3a3;
+      --color-bg-primary: #ffffff;
+      --color-bg-secondary: #fafafa;
+      --color-border-light: rgba(0, 0, 0, 0.06);
+      --color-border-medium: rgba(0, 0, 0, 0.08);
+      --color-border-dark: rgba(0, 0, 0, 0.12);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --radius-sm: 0.25rem;
+      --radius-base: 0.5rem;
+      --radius-md: 0.75rem;
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+      -webkit-font-smoothing: antialiased;
+      line-height: var(--line-height-relaxed);
+    }
+    
+    /* Sidebar Navigation - Complete Redesign */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 16rem;
+      height: 100vh;
+      background: var(--color-bg-primary);
+      border-right: 1px solid var(--color-border-light);
+      padding: var(--space-6);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Custom Scrollbar */
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--color-border-medium);
+      border-radius: 3px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: var(--color-border-dark);
+    }
+    
+    .sidebar {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border-medium) transparent;
+    }
+    
+    /* Logo - Fixed at top with consistent height */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      height: 2rem;
+      margin-bottom: var(--space-10);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      transition: opacity 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+    }
+    
+    .logo:hover {
+      opacity: 0.8;
+    }
+    
+    .logo-icon {
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .logo-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: white;
+    }
+    
+    /* Navigation Container */
+    .nav-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      min-height: 0;
+    }
+    
+    /* Nav Section */
+    .nav-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    
+    .nav-section-title {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 var(--space-3);
+      margin-bottom: var(--space-2);
+      flex-shrink: 0;
+    }
+    
+    /* Nav Link - Stable and Consistent */
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-normal);
+      border-radius: var(--radius-base);
+      transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                  color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      box-sizing: border-box;
+      min-height: 2.5rem;
+      flex-shrink: 0;
+    }
+    
+    .nav-link:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+    
+    .nav-link.active {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 60%;
+      background: var(--color-primary);
+      border-radius: 0 2px 2px 0;
+    }
+    
+    .nav-link svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+    
+    .nav-link span:not(.nav-badge) {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-error);
+      color: white;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      padding: 0.125rem var(--space-2);
+      border-radius: var(--radius-sm);
+      min-width: 1.25rem;
+      text-align: center;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+        /* Main Content */
+    .main-content {
+      margin-left: 16rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform var(--transition-fast);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .container {
+        padding: var(--space-8) var(--space-4);
+      }
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-primary);
+    }
+
+    .page-subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      max-width: 42rem;
+    }
+
+    .card {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .card-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: 2.75rem;
+      padding: 0 var(--space-6);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      letter-spacing: -0.01em;
+      border-radius: var(--radius-base);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background-color var(--transition-fast),
+                  color var(--transition-fast),
+                  border-color var(--transition-fast),
+                  box-shadow var(--transition-fast),
+                  transform var(--transition-fast);
+      text-decoration: none;
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+    }
+
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 1px 2px rgba(10, 10, 10, 0.06);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      box-shadow: 0 1px 2px rgba(10, 10, 10, 0.06);
+    }
+
+    .btn-secondary {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-light);
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-bg-secondary);
+      border-color: var(--color-border-medium);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .btn svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .page-header-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+
+    .profile-avatar {
+      width: 5rem;
+      height: 5rem;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+      position: relative;
+    }
+
+    .profile-avatar::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: var(--radius-md);
+      padding: 2px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .profile-header:hover .profile-avatar::after {
+      opacity: 0.3;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      flex: 1;
+      min-width: 16rem;
+    }
+
+    .profile-name {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-primary);
+    }
+
+    .profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-base);
+      background: linear-gradient(135deg, var(--color-primary-light), #e0e7ff);
+      color: var(--color-primary);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+    }
+
+    .profile-badge i {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .profile-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .profile-meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .profile-meta-item i {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-top: var(--space-3);
+    }
+
+    .profile-actions .btn-secondary {
+      min-height: 2.5rem;
+      padding: 0 var(--space-4);
+    }
+
+    .profile-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .metric-card {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      position: relative;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--color-primary);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .metric-card:hover {
+      border-color: var(--color-border-medium);
+      background: var(--color-bg-primary);
+    }
+
+    .metric-card:hover::before {
+      opacity: 0.6;
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .metric-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .metric-icon.rating {
+      background: var(--color-warning);
+      color: white;
+    }
+
+    .metric-icon.orders {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+
+    .metric-icon.clients {
+      background: #dcfce7;
+      color: var(--color-success);
+    }
+
+    .metric-icon.win-rate {
+      background: #e0e7ff;
+      color: #6366f1;
+    }
+
+    .metric-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .metric-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: var(--font-weight-medium);
+    }
+
+    .metric-value {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+
+    .metric-helper {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .metric-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.125rem;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-success);
+    }
+
+    .metric-trend.down {
+      color: var(--color-error);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .info-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: var(--font-weight-medium);
+    }
+
+    .info-value {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-primary);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 var(--space-3);
+      height: 2rem;
+      border-radius: 999px;
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-light);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-medium);
+      transition: background-color var(--transition-fast),
+                  border-color var(--transition-fast),
+                  color var(--transition-fast);
+    }
+
+    .tag:hover {
+      background: var(--color-primary-light);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .body-copy {
+      font-size: var(--font-size-base);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-relaxed);
+    }
+
+    .review-summary {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+
+    .rating {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+    }
+
+    .rating-value {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .rating-stars {
+      display: flex;
+      gap: 0.125rem;
+      color: #fbbf24;
+    }
+
+    .rating-stars .star {
+      width: 1.125rem;
+      height: 1.125rem;
+      filter: drop-shadow(0 1px 1px rgba(251, 191, 36, 0.2));
+    }
+
+    .review-count {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .service-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .service-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      border-radius: var(--radius-base);
+      border: 1px solid var(--color-border-light);
+      background: var(--color-bg-secondary);
+      flex-wrap: wrap;
+      transition: border-color var(--transition-fast), 
+                  background-color var(--transition-fast),
+                  box-shadow var(--transition-fast);
+      position: relative;
+    }
+
+    .service-item:hover {
+      border-color: var(--color-border-medium);
+      background: var(--color-bg-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .service-content {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .service-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--radius-base);
+      background: linear-gradient(135deg, var(--color-primary-light), #e0e7ff);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.08);
+    }
+
+    .service-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .service-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .service-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .service-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .service-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.125rem var(--space-2);
+      border-radius: 999px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .service-badge.popular {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #92400e;
+      box-shadow: 0 1px 2px rgba(234, 179, 8, 0.2);
+    }
+
+    .service-badge.fast-track {
+      background: linear-gradient(135deg, var(--color-primary-light), #e0e7ff);
+      color: var(--color-primary);
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.15);
+    }
+
+    .service-description {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+      max-width: 36rem;
+    }
+
+    .service-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .service-price {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .service-timeline {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .service-timeline i {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .photo-item {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-base);
+      border: 1px solid var(--color-border-light);
+      background: linear-gradient(135deg, var(--color-bg-secondary), #f5f5f5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-tertiary);
+      transition: border-color var(--transition-fast),
+                  box-shadow var(--transition-fast);
+      overflow: hidden;
+    }
+
+    .photo-item:hover {
+      border-color: var(--color-border-medium);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .photo-placeholder i {
+      width: 1.75rem;
+      height: 1.75rem;
+      opacity: 0.5;
+    }
+
+    .cta-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: var(--font-size-sm);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .cta-inline:hover {
+      color: var(--color-primary-hover);
+    }
+
+    .credential-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .credential-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      transition: border-color var(--transition-fast), 
+                  background-color var(--transition-fast),
+                  box-shadow var(--transition-fast);
+      position: relative;
+    }
+
+    .credential-item:hover {
+      border-color: var(--color-border-medium);
+      background: var(--color-bg-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .credential-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--radius-base);
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      color: var(--color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(22, 163, 74, 0.1);
+    }
+
+    .credential-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .credential-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .credential-title {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-1);
+    }
+
+    .credential-description {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .meta-note {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+<a href="provider-dashboard-overview.html" class="logo">
+      <div class="logo-icon">
+        <i data-lucide="briefcase"></i>
+      </div>
+      <span>VisaOnTrack</span>
+    </a>
+    
+    <div class="nav-container">
+      <nav class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="provider-dashboard-overview.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="provider-profile-view.html" class="nav-link active">
+          <i data-lucide="user"></i>
+          <span>Profile</span>
+        </a>
+        <a href="provider-service-packages.html" class="nav-link">
+          <i data-lucide="package"></i>
+          <span>Service Packages</span>
+        </a>
+        <a href="provider-requests-marketplace.html" class="nav-link">
+          <i data-lucide="search"></i>
+          <span>Browse Requests</span>
+        </a>
+        <a href="provider-quotes.html" class="nav-link">
+          <i data-lucide="file-text"></i>
+          <span>My Quotes</span>
+        </a>
+        <a href="provider-orders.html" class="nav-link">
+          <i data-lucide="shopping-cart"></i>
+          <span>Orders</span>
+        </a>
+      </nav>
+      
+      <nav class="nav-section">
+        <div class="nav-section-title">Business</div>
+        <a href="provider-billing.html" class="nav-link">
+          <i data-lucide="credit-card"></i>
+          <span>Billing & Plans</span>
+        </a>
+        <a href="provider-analytics.html" class="nav-link">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Analytics</span>
+        </a>
+        <a href="provider-messages.html" class="nav-link">
+          <i data-lucide="message-square"></i>
+          <span>Messages</span>
+          <span class="nav-badge">3</span>
+        </a>
+        <a href="provider-payouts.html" class="nav-link">
+          <i data-lucide="dollar-sign"></i>
+          <span>Payouts</span>
+        </a>
+      </nav>
+      
+      <nav class="nav-section">
+        <div class="nav-section-title">Settings</div>
+        <a href="provider-settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+        <a href="provider-verification.html" class="nav-link">
+          <i data-lucide="shield-check"></i>
+          <span>Verification</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <div class="page-header-info">
+          <h1 class="page-title">Profile</h1>
+          <p class="page-subtitle">Present a polished, trustworthy brand so seekers know they are working with Thailand’s leading visa specialists.</p>
+        </div>
+        <div class="header-actions">
+          <a href="provider-profile-view.html" class="btn btn-secondary">
+            <i data-lucide="external-link"></i>
+            <span>Preview Profile</span>
+          </a>
+          <a href="provider-profile-edit.html" class="btn btn-primary">
+            <i data-lucide="edit"></i>
+            <span>Edit Profile</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="profile-header">
+          <div class="profile-avatar">TV</div>
+          <div class="profile-info">
+            <div>
+              <h2 class="profile-name">Thailand Visa Experts</h2>
+              <div class="profile-badge">
+                <i data-lucide="shield-check"></i>
+                <span>Verified Provider</span>
+              </div>
+            </div>
+            <p class="body-copy">Dedicated consultants guiding professionals, families, and investors through every stage of the Thai immigration journey.</p>
+            <div class="profile-meta">
+              <div class="profile-meta-item">
+                <i data-lucide="map-pin"></i>
+                <span>Bangkok, Thailand</span>
+              </div>
+              <div class="profile-meta-item">
+                <i data-lucide="calendar"></i>
+                <span>Member since Jan 2024</span>
+              </div>
+              <div class="profile-meta-item">
+                <i data-lucide="clock"></i>
+                <span>Responds in under 2 hours</span>
+              </div>
+              <div class="profile-meta-item">
+                <i data-lucide="globe"></i>
+                <span>English, Thai</span>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <a href="provider-messages.html" class="btn btn-secondary">
+                <i data-lucide="message-circle"></i>
+                <span>Message team</span>
+              </a>
+              <a href="#" class="btn btn-secondary">
+                <i data-lucide="link"></i>
+                <span>Copy profile link</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="profile-metrics">
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-icon rating">
+                <i data-lucide="star"></i>
+              </div>
+            </div>
+            <span class="metric-label">Average Rating</span>
+            <span class="metric-value">4.9</span>
+            <span class="metric-helper">
+              127 client reviews
+              <span class="metric-trend">
+                <i data-lucide="trending-up"></i>
+                +0.2
+              </span>
+            </span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-icon orders">
+                <i data-lucide="check-circle"></i>
+              </div>
+            </div>
+            <span class="metric-label">Completed Orders</span>
+            <span class="metric-value">86</span>
+            <span class="metric-helper">
+              Past 12 months
+              <span class="metric-trend">
+                <i data-lucide="trending-up"></i>
+                +12%
+              </span>
+            </span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-icon clients">
+                <i data-lucide="users"></i>
+              </div>
+            </div>
+            <span class="metric-label">Repeat Clients</span>
+            <span class="metric-value">68%</span>
+            <span class="metric-helper">Strong retention</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-icon win-rate">
+                <i data-lucide="target"></i>
+              </div>
+            </div>
+            <span class="metric-label">Quote Win Rate</span>
+            <span class="metric-value">54%</span>
+            <span class="metric-helper">Marketplace performance</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Business Information</h3>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Business Name</span>
+            <span class="info-value">Thailand Visa Experts Co., Ltd.</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Primary Contact</span>
+            <span class="info-value">Jariya Duangchai</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Contact Email</span>
+            <span class="info-value">hello@thailandvisaexperts.com</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone</span>
+            <span class="info-value">+66 2 123 4567</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Languages</span>
+            <div class="tag-list">
+              <span class="tag">English</span>
+              <span class="tag">Thai</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Core Visa Expertise</span>
+            <div class="tag-list">
+              <span class="tag">DTV Visa</span>
+              <span class="tag">Volunteer Visa</span>
+              <span class="tag">Student Visa</span>
+              <span class="tag">Non Immigrant-B</span>
+              <span class="tag">Guardian Visa</span>
+              <span class="tag">LTR Visa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">About</h3>
+        </div>
+        <p class="body-copy">
+          Thailand Visa Experts delivers concierge-level immigration support for digital professionals, volunteers, students, and multinational teams relocating to Thailand. We manage every milestone—from eligibility assessments to embassy coordination—so seekers can focus on their plans.
+        </p>
+        <p class="body-copy">
+          Our specialists cover DTV, Volunteer, Student, Non Immigrant-B, Guardian, and LTR visas with transparent pricing, bilingual support, and rigorous compliance standards.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Reputation & Reviews</h3>
+          <a href="#" class="cta-inline">
+            <span>View detailed feedback</span>
+            <i data-lucide="arrow-up-right"></i>
+          </a>
+        </div>
+        <div class="review-summary">
+          <div class="rating">
+            <span class="rating-value">4.9</span>
+            <div class="rating-stars">
+              <i data-lucide="star" class="star"></i>
+              <i data-lucide="star" class="star"></i>
+              <i data-lucide="star" class="star"></i>
+              <i data-lucide="star" class="star"></i>
+              <i data-lucide="star" class="star"></i>
+            </div>
+          </div>
+          <span class="review-count">Consistently rated Excellent by seekers</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Service Packages</h3>
+          <a href="provider-service-packages.html" class="btn btn-secondary">
+            <i data-lucide="plus"></i>
+            <span>Manage Packages</span>
+          </a>
+        </div>
+        <div class="service-list">
+          <div class="service-item">
+            <div class="service-content">
+              <div class="service-icon">
+                <i data-lucide="laptop"></i>
+              </div>
+              <div class="service-info">
+                <div class="service-header">
+                  <div class="service-title">Digital Nomad (DTV) Visa Concierge</div>
+                  <span class="service-badge popular">Most Popular</span>
+                </div>
+                <div class="service-description">Onboarding, document preparation, and coordinated immigration appointments for DTV applicants.</div>
+                <div class="service-footer">
+                  <span class="service-price">฿12,500</span>
+                  <span class="service-timeline">
+                    <i data-lucide="clock"></i>
+                    <span>2-3 weeks</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <a href="provider-service-packages.html" class="btn btn-secondary">View Details</a>
+          </div>
+          <div class="service-item">
+            <div class="service-content">
+              <div class="service-icon">
+                <i data-lucide="heart-handshake"></i>
+              </div>
+              <div class="service-info">
+                <div class="service-header">
+                  <div class="service-title">Volunteer Visa Setup</div>
+                </div>
+                <div class="service-description">Organization sponsorship matching, compliance briefing, and embassy submissions for NGO placements.</div>
+                <div class="service-footer">
+                  <span class="service-price">฿9,800</span>
+                  <span class="service-timeline">
+                    <i data-lucide="clock"></i>
+                    <span>3-4 weeks</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <a href="provider-service-packages.html" class="btn btn-secondary">View Details</a>
+          </div>
+          <div class="service-item">
+            <div class="service-content">
+              <div class="service-icon">
+                <i data-lucide="briefcase"></i>
+              </div>
+              <div class="service-info">
+                <div class="service-header">
+                  <div class="service-title">Non Immigrant-B Corporate Launch</div>
+                  <span class="service-badge fast-track">Fast Track</span>
+                </div>
+                <div class="service-description">Company registration support, work authorization, and ongoing renewals for business leaders.</div>
+                <div class="service-footer">
+                  <span class="service-price">฿15,400</span>
+                  <span class="service-timeline">
+                    <i data-lucide="clock"></i>
+                    <span>4-6 weeks</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <a href="provider-service-packages.html" class="btn btn-secondary">View Details</a>
+          </div>
+          <div class="service-item">
+            <div class="service-content">
+              <div class="service-icon">
+                <i data-lucide="award"></i>
+              </div>
+              <div class="service-info">
+                <div class="service-header">
+                  <div class="service-title">LTR Visa Elite Pathway</div>
+                </div>
+                <div class="service-description">Strategic planning and documentation for high-net-worth individuals securing long-term residency.</div>
+                <div class="service-footer">
+                  <span class="service-price">฿18,900</span>
+                  <span class="service-timeline">
+                    <i data-lucide="clock"></i>
+                    <span>6-8 weeks</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <a href="provider-service-packages.html" class="btn btn-secondary">View Details</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Credentials & Associations</h3>
+        </div>
+        <div class="credential-list">
+          <div class="credential-item">
+            <div class="credential-icon">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="credential-content">
+              <div class="credential-title">TICA Licensed Member</div>
+              <div class="credential-description">Thai Immigration Consultant Association certified since 2020</div>
+            </div>
+          </div>
+          <div class="credential-item">
+            <div class="credential-icon">
+              <i data-lucide="award"></i>
+            </div>
+            <div class="credential-content">
+              <div class="credential-title">ISO 9001 Certified</div>
+              <div class="credential-description">Quality-certified process management and compliance standards</div>
+            </div>
+          </div>
+          <div class="credential-item">
+            <div class="credential-icon">
+              <i data-lucide="building-2"></i>
+            </div>
+            <div class="credential-content">
+              <div class="credential-title">Tier 2 Corporate Partner</div>
+              <div class="credential-description">Dedicated compliance liaison for enterprise accounts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Profile Photos</h3>
+          <span class="meta-note">10 / 12 used</span>
+        </div>
+        <div class="photo-grid">
+          <div class="photo-item">
+            <div class="photo-placeholder">
+              <i data-lucide="image"></i>
+            </div>
+          </div>
+          <div class="photo-item">
+            <div class="photo-placeholder">
+              <i data-lucide="image"></i>
+            </div>
+          </div>
+          <div class="photo-item">
+            <div class="photo-placeholder">
+              <i data-lucide="image"></i>
+            </div>
+          </div>
+          <div class="photo-item">
+            <div class="photo-placeholder">
+              <i data-lucide="image"></i>
+            </div>
+          </div>
+          <div class="photo-item">
+            <div class="photo-placeholder">
+              <i data-lucide="image"></i>
+            </div>
+          </div>
+          <div class="photo-item">
+            <div class="photo-placeholder">
+              <i data-lucide="image"></i>
+            </div>
+          </div>
+        </div>
+        <a href="#" class="cta-inline">
+          <span>Update media gallery</span>
+          <i data-lucide="arrow-up-right"></i>
+        </a>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+

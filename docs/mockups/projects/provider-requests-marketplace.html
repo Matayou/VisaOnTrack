@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Requests - Provider - VisaOnTrack</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-size-xs: 0.8125rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 0.9375rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --line-height-normal: 1.5;
+      --tracking-tight: -0.02em;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-primary-light: #dbeafe;
+      --color-success: #16a34a;
+      --color-error: #dc2626;
+      --color-warning: #eab308;
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #525252;
+      --color-text-tertiary: #a3a3a3;
+      --color-bg-primary: #ffffff;
+      --color-bg-secondary: #fafafa;
+      --color-border-light: rgba(0, 0, 0, 0.06);
+      --color-border-medium: rgba(0, 0, 0, 0.08);
+      --color-border-dark: rgba(0, 0, 0, 0.12);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --radius-sm: 0.25rem;
+      --radius-base: 0.5rem;
+      --radius-md: 0.75rem;
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+      -webkit-font-smoothing: antialiased;
+      line-height: var(--line-height-relaxed);
+    }
+    
+    /* Sidebar Navigation - Complete Redesign */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 16rem;
+      height: 100vh;
+      background: var(--color-bg-primary);
+      border-right: 1px solid var(--color-border-light);
+      padding: var(--space-6);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Custom Scrollbar */
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--color-border-medium);
+      border-radius: 3px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: var(--color-border-dark);
+    }
+    
+    .sidebar {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border-medium) transparent;
+    }
+    
+    /* Logo - Fixed at top with consistent height */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      height: 2rem;
+      margin-bottom: var(--space-10);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      transition: opacity 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+    }
+    
+    .logo:hover {
+      opacity: 0.8;
+    }
+    
+    .logo-icon {
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .logo-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: white;
+    }
+    
+    /* Navigation Container */
+    .nav-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      min-height: 0;
+    }
+    
+    /* Nav Section */
+    .nav-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    
+    .nav-section-title {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 var(--space-3);
+      margin-bottom: var(--space-2);
+      flex-shrink: 0;
+    }
+    
+    /* Nav Link - Stable and Consistent */
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-normal);
+      border-radius: var(--radius-base);
+      transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                  color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      box-sizing: border-box;
+      min-height: 2.5rem;
+      flex-shrink: 0;
+    }
+    
+    .nav-link:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+    
+    .nav-link.active {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 60%;
+      background: var(--color-primary);
+      border-radius: 0 2px 2px 0;
+    }
+    
+    .nav-link svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+    
+    .nav-link span:not(.nav-badge) {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-error);
+      color: white;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      padding: 0.125rem var(--space-2);
+      border-radius: var(--radius-sm);
+      min-width: 1.25rem;
+      text-align: center;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+        /* Main Content */
+    .main-content {
+      margin-left: 16rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform var(--transition-fast);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .container {
+        padding: var(--space-8) var(--space-4);
+      }
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-primary);
+    }
+
+    .page-subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      max-width: 42rem;
+    }
+
+    .card {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .card-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: 2.75rem;
+      padding: 0 var(--space-6);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      letter-spacing: -0.01em;
+      border-radius: var(--radius-base);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background-color var(--transition-fast),
+                  color var(--transition-fast),
+                  border-color var(--transition-fast),
+                  box-shadow var(--transition-fast),
+                  transform var(--transition-fast);
+      text-decoration: none;
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+    }
+
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 1px 2px rgba(10, 10, 10, 0.06);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      box-shadow: 0 1px 2px rgba(10, 10, 10, 0.06);
+    }
+
+    .btn-secondary {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-light);
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-bg-secondary);
+      border-color: var(--color-border-medium);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .btn svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+        .usage-banner {
+      background: var(--color-warning-light);
+      border: 1px solid var(--color-warning);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .usage-text {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+    }
+    
+    .usage-text strong { font-weight: var(--font-weight-semibold); }
+    
+    .btn {
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-base);
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    
+    .btn-secondary {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-light);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--color-bg-secondary);
+    }
+    
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .filters {
+      display: flex;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+      flex-wrap: wrap;
+    }
+    
+    .filter-input {
+      flex: 1;
+      min-width: 200px;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      background: var(--color-bg-primary);
+    }
+    
+    .filter-select {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      background: var(--color-bg-primary);
+    }
+    
+    .request-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: var(--space-6);
+    }
+    
+    .request-card {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      transition: all var(--transition-fast);
+    }
+    
+    
+    .request-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    
+    .request-info {
+      flex: 1;
+    }
+    
+    .request-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-2);
+    }
+    
+    .request-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+    }
+    
+    .request-status {
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-base);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      background: var(--color-success-light);
+      color: var(--color-success);
+    }
+    
+    .request-description {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-normal);
+      margin-bottom: var(--space-4);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .request-details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      padding: var(--space-4);
+      background: var(--color-bg-secondary);
+      border-radius: var(--radius-base);
+    }
+    
+    .request-detail-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+    }
+    
+    .request-detail-item svg {
+      width: 1rem;
+      height: 1rem;
+      color: var(--color-text-tertiary);
+    }
+    
+    .request-budget {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-primary);
+    }
+    
+    .request-actions {
+      display: flex;
+      gap: var(--space-2);
+    }
+    
+    .request-actions .btn {
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .already-quoted-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      border-radius: var(--radius-base);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--space-3);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: var(--space-16);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+    
+    .empty-state-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto var(--space-4);
+      background: var(--color-bg-secondary);
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-tertiary);
+    }
+    
+    .empty-state-icon svg { width: 2rem; height: 2rem; }
+    
+    .empty-state-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-2);
+    }
+    
+    .empty-state-text {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-6);
+    }
+    
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      top: var(--space-6);
+      right: var(--space-6);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      pointer-events: none;
+    }
+    
+    .toast {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      padding: var(--space-4) var(--space-5);
+      box-shadow: var(--shadow-md);
+      min-width: 20rem;
+      max-width: 24rem;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+    
+    .toast-success {
+      border-left: 3px solid var(--color-success);
+    }
+    
+    .toast-error {
+      border-left: 3px solid var(--color-error);
+    }
+    
+    .toast-info {
+      border-left: 3px solid var(--color-primary);
+    }
+    
+    .toast-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+    
+    .toast-message {
+      flex: 1;
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+    }
+    
+    @keyframes toastSlideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    /* ButtonWithStates */
+    .btn-with-states {
+      position: relative;
+    }
+    
+    .btn-with-states.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .btn-with-states.success {
+      background: linear-gradient(180deg, var(--color-success) 0%, #15803d 100%);
+    }
+    
+    .btn-spinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+      display: inline-block;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Request Detail Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-6);
+      animation: fadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .modal {
+      background: var(--color-bg-primary);
+      border-radius: var(--radius-md);
+      max-width: 48rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      animation: slideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .modal-header {
+      padding: var(--space-6);
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--color-bg-primary);
+      z-index: 10;
+    }
+    
+    .modal-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: -0.02em;
+      color: var(--color-text-primary);
+    }
+    
+    .modal-close {
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .modal-close:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+    
+    .modal-close svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+    .modal-content {
+      padding: var(--space-6);
+    }
+    
+    .request-detail-section {
+      margin-bottom: var(--space-8);
+    }
+    
+    .request-detail-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .section-label {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+    
+    .request-full-description {
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-6);
+    }
+    
+    .request-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    
+    .detail-label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-medium);
+    }
+    
+    .detail-value {
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      font-weight: var(--font-weight-medium);
+    }
+    
+    .quote-form {
+      background: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin-top: var(--space-8);
+    }
+    
+    .form-group {
+      margin-bottom: var(--space-6);
+    }
+    
+    .form-label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .form-label .required {
+      color: var(--color-error);
+    }
+    
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
+      font-family: var(--font-family);
+      color: var(--color-text-primary);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .form-textarea {
+      min-height: 8rem;
+      resize: vertical;
+    }
+    
+    .form-hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-2);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: flex-end;
+      padding: var(--space-6);
+      border-top: 1px solid var(--color-border-light);
+      position: sticky;
+      bottom: 0;
+      background: var(--color-bg-primary);
+    }
+
+    .stats-banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .stat-label {
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-tertiary);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .stat-value {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-primary);
+    }
+
+    .usage-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-6);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+
+    .usage-banner.emphasis {
+      background: var(--color-primary-light);
+      border-color: transparent;
+      color: var(--color-primary);
+    }
+
+    .usage-banner .usage-text {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .usage-banner.emphasis .usage-text {
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+
+    .filter-input {
+      flex: 1;
+      min-width: 200px;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      background: var(--color-bg-primary);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .filter-select {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      background: var(--color-bg-primary);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+<a href="provider-dashboard-overview.html" class="logo">
+      <div class="logo-icon">
+        <i data-lucide="briefcase"></i>
+      </div>
+      <span>VisaOnTrack</span>
+    </a>
+    
+    <div class="nav-container">
+      <nav class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="provider-dashboard-overview.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="provider-profile-view.html" class="nav-link">
+          <i data-lucide="user"></i>
+          <span>Profile</span>
+        </a>
+        <a href="provider-service-packages.html" class="nav-link">
+          <i data-lucide="package"></i>
+          <span>Service Packages</span>
+        </a>
+        <a href="provider-requests-marketplace.html" class="nav-link active">
+          <i data-lucide="search"></i>
+          <span>Browse Requests</span>
+        </a>
+        <a href="provider-quotes.html" class="nav-link">
+          <i data-lucide="file-text"></i>
+          <span>My Quotes</span>
+        </a>
+        <a href="provider-orders.html" class="nav-link">
+          <i data-lucide="shopping-cart"></i>
+          <span>Orders</span>
+        </a>
+      </nav>
+      
+      <nav class="nav-section">
+        <div class="nav-section-title">Business</div>
+        <a href="provider-billing.html" class="nav-link">
+          <i data-lucide="credit-card"></i>
+          <span>Billing & Plans</span>
+        </a>
+        <a href="provider-analytics.html" class="nav-link">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Analytics</span>
+        </a>
+        <a href="provider-messages.html" class="nav-link">
+          <i data-lucide="message-square"></i>
+          <span>Messages</span>
+          <span class="nav-badge">3</span>
+        </a>
+        <a href="provider-payouts.html" class="nav-link">
+          <i data-lucide="dollar-sign"></i>
+          <span>Payouts</span>
+        </a>
+      </nav>
+      
+      <nav class="nav-section">
+        <div class="nav-section-title">Settings</div>
+        <a href="provider-settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+        <a href="provider-verification.html" class="nav-link">
+          <i data-lucide="shield-check"></i>
+          <span>Verification</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">Browse Requests</h1>
+        <a href="provider-quotes.html" class="btn btn-secondary">
+          <i data-lucide="file-text"></i>
+          <span>My Quotes</span>
+        </a>
+      </div>
+      <p class="page-subtitle">Curated opportunities from verified seekers. Use filters to focus on the visas and regions where you can deliver the most impact.</p>
+    
+    <!-- Stats Banner -->
+    <div class="stats-banner">
+      <div class="stat-item">
+        <span class="stat-label">Open Requests</span>
+        <span class="stat-value">24</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">My Quotes Submitted</span>
+        <span class="stat-value">12</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Quotes Remaining</span>
+        <span class="stat-value">38 / 50</span>
+      </div>
+    </div>
+    
+    <!-- Usage Banner -->
+    <div class="usage-banner">
+      <div class="usage-text">
+        <strong>Quote allowance:</strong> 12 of 50 used this month — submit up to <strong>38</strong> more quotes before Feb 1.
+      </div>
+      <button class="btn btn-secondary">Upgrade Plan</button>
+    </div>
+    
+    <!-- Provider Services Info -->
+    <div class="usage-banner emphasis">
+      <div class="usage-text">
+        <strong>Your specializations:</strong> DTV Visa • Volunteer Visa • Student Visa • Non Immigrant-B • Guardian Visa • LTR Visa
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filters">
+      <input type="text" class="filter-input" placeholder="Search requests...">
+      <select class="filter-select">
+        <option value="">All Visa Types</option>
+        <option value="dtv">DTV Visa</option>
+        <option value="volunteer">Volunteer Visa</option>
+        <option value="student">Student Visa</option>
+        <option value="non-imm-b">Non Immigrant-B</option>
+        <option value="guardian">Guardian Visa</option>
+        <option value="ltr">LTR Visa</option>
+      </select>
+      <select class="filter-select">
+        <option value="">All Locations</option>
+        <option value="bangkok">Bangkok</option>
+        <option value="chiang-mai">Chiang Mai</option>
+        <option value="phuket">Phuket</option>
+      </select>
+      <select class="filter-select">
+        <option value="">Budget Range</option>
+        <option value="0-5000">฿0 - ฿5,000</option>
+        <option value="5000-10000">฿5,000 - ฿10,000</option>
+        <option value="10000+">฿10,000+</option>
+      </select>
+      <select class="filter-select">
+        <option value="">Sort by</option>
+        <option value="date-new">Newest First</option>
+        <option value="date-old">Oldest First</option>
+        <option value="budget-high">Budget: High to Low</option>
+        <option value="budget-low">Budget: Low to High</option>
+      </select>
+    </div>
+    
+    <!-- Request Grid -->
+    <div class="request-grid">
+      <div class="request-card">
+        <div class="request-header">
+          <div class="request-info">
+            <h3 class="request-title">DTV Visa Application</h3>
+            <div class="request-meta">
+              <span>Request #1234</span>
+              <span>•</span>
+              <span>Posted 2 days ago</span>
+            </div>
+          </div>
+          <span class="request-status">Open</span>
+        </div>
+        <p class="request-description">
+          Need assistance with Digital Nomad (DTV) visa application for remote work in Thailand. 
+          Looking for help with document preparation, income verification, and submission process.
+        </p>
+        <div class="request-details">
+          <div class="request-detail-item">
+            <i data-lucide="map-pin"></i>
+            <span>Bangkok, Thailand</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="tag"></i>
+            <span>DTV Visa</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="dollar-sign"></i>
+            <span class="request-budget">Budget: ฿8,000 - ฿12,000</span>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn btn-secondary view-details-btn" data-request-id="1234">View Details</button>
+        </div>
+      </div>
+      
+      <div class="request-card">
+        <div class="request-header">
+          <div class="request-info">
+            <h3 class="request-title">Volunteer Visa Application</h3>
+            <div class="request-meta">
+              <span>Request #1230</span>
+              <span>•</span>
+              <span>Posted 5 days ago</span>
+            </div>
+          </div>
+          <span class="request-status">Open</span>
+        </div>
+        <div class="already-quoted-badge">
+          <i data-lucide="check-circle"></i>
+          <span>You already submitted a quote</span>
+        </div>
+        <p class="request-description">
+          Need comprehensive assistance with volunteer visa application for NGO work in Thailand. 
+          Looking for help with organization documentation, volunteer agreement, and submission process.
+        </p>
+        <div class="request-details">
+          <div class="request-detail-item">
+            <i data-lucide="map-pin"></i>
+            <span>Chiang Mai, Thailand</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="tag"></i>
+            <span>Volunteer Visa</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="dollar-sign"></i>
+            <span class="request-budget">Budget: ฿5,000 - ฿8,000</span>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn btn-secondary view-details-btn" data-request-id="1230">View Details</button>
+          <button class="btn btn-secondary">View My Quote</button>
+        </div>
+      </div>
+      
+      <div class="request-card">
+        <div class="request-header">
+          <div class="request-info">
+            <h3 class="request-title">Student Visa Application</h3>
+            <div class="request-meta">
+              <span>Request #1225</span>
+              <span>•</span>
+              <span>Posted 1 week ago</span>
+            </div>
+          </div>
+          <span class="request-status">Open</span>
+        </div>
+        <p class="request-description">
+          Need help with student visa application for university in Thailand. 
+          Looking for assistance with school documentation, financial proof, and submission process.
+        </p>
+        <div class="request-details">
+          <div class="request-detail-item">
+            <i data-lucide="map-pin"></i>
+            <span>Bangkok, Thailand</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="tag"></i>
+            <span>Student Visa</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="dollar-sign"></i>
+            <span class="request-budget">Budget: ฿6,000 - ฿9,000</span>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn btn-secondary view-details-btn" data-request-id="1225">View Details</button>
+        </div>
+      </div>
+      
+      <div class="request-card">
+        <div class="request-header">
+          <div class="request-info">
+            <h3 class="request-title">DTV Visa Extension</h3>
+            <div class="request-meta">
+              <span>Request #1220</span>
+              <span>•</span>
+              <span>Posted 1 week ago</span>
+            </div>
+          </div>
+          <span class="request-status">Open</span>
+        </div>
+        <p class="request-description">
+          Need assistance extending my DTV visa for another year. Currently on DTV visa and need 
+          help with renewal documentation and process.
+        </p>
+        <div class="request-details">
+          <div class="request-detail-item">
+            <i data-lucide="map-pin"></i>
+            <span>Phuket, Thailand</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="tag"></i>
+            <span>DTV Visa</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="dollar-sign"></i>
+            <span class="request-budget">Budget: ฿7,000 - ฿10,000</span>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn btn-secondary view-details-btn" data-request-id="1220">View Details</button>
+        </div>
+      </div>
+      
+      <div class="request-card">
+        <div class="request-header">
+          <div class="request-info">
+            <h3 class="request-title">Non Immigrant-B Visa Application</h3>
+            <div class="request-meta">
+              <span>Request #1215</span>
+              <span>•</span>
+              <span>Posted 2 weeks ago</span>
+            </div>
+          </div>
+          <span class="request-status">Open</span>
+        </div>
+        <p class="request-description">
+          Need assistance with Non Immigrant-B visa application for business purposes in Thailand. 
+          Looking for help with company documentation, business registration, and submission process.
+        </p>
+        <div class="request-details">
+          <div class="request-detail-item">
+            <i data-lucide="map-pin"></i>
+            <span>Bangkok, Thailand</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="tag"></i>
+            <span>Non Immigrant-B</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="dollar-sign"></i>
+            <span class="request-budget">Budget: ฿10,000 - ฿15,000</span>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn btn-secondary view-details-btn" data-request-id="1215">View Details</button>
+        </div>
+      </div>
+      
+      <div class="request-card">
+        <div class="request-header">
+          <div class="request-info">
+            <h3 class="request-title">Guardian Visa Application</h3>
+            <div class="request-meta">
+              <span>Request #1210</span>
+              <span>•</span>
+              <span>Posted 2 weeks ago</span>
+            </div>
+          </div>
+          <span class="request-status">Open</span>
+        </div>
+        <p class="request-description">
+          Need help with Guardian visa application to accompany my child studying in Thailand. 
+          Looking for assistance with relationship documentation, financial proof, and submission process.
+        </p>
+        <div class="request-details">
+          <div class="request-detail-item">
+            <i data-lucide="map-pin"></i>
+            <span>Bangkok, Thailand</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="tag"></i>
+            <span>Guardian Visa</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="dollar-sign"></i>
+            <span class="request-budget">Budget: ฿6,000 - ฿9,000</span>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn btn-secondary view-details-btn" data-request-id="1210">View Details</button>
+        </div>
+      </div>
+      
+      <div class="request-card">
+        <div class="request-header">
+          <div class="request-info">
+            <h3 class="request-title">LTR Visa Application</h3>
+            <div class="request-meta">
+              <span>Request #1205</span>
+              <span>•</span>
+              <span>Posted 3 weeks ago</span>
+            </div>
+          </div>
+          <span class="request-status">Open</span>
+        </div>
+        <p class="request-description">
+          Need comprehensive assistance with Long Term Resident (LTR) visa application. 
+          Looking for help with eligibility verification, investment proof, and submission process.
+        </p>
+        <div class="request-details">
+          <div class="request-detail-item">
+            <i data-lucide="map-pin"></i>
+            <span>Bangkok, Thailand</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="tag"></i>
+            <span>LTR Visa</span>
+          </div>
+          <div class="request-detail-item">
+            <i data-lucide="dollar-sign"></i>
+            <span class="request-budget">Budget: ฿15,000 - ฿25,000</span>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn btn-secondary view-details-btn" data-request-id="1205">View Details</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </main>
+  
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <!-- Request Detail Modal -->
+  <div class="modal-overlay" id="requestModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Request Details</h2>
+        <button class="modal-close" id="closeModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-content" id="modalContent">
+        <!-- Content will be populated by JavaScript -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="cancelQuote">Cancel</button>
+        <button class="btn btn-primary btn-with-states" id="submitQuoteBtn">Submit Quote</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    lucide.createIcons();
+    
+    // Toast System
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      const icon = type === 'success' ? 'check' : type === 'error' ? 'x' : 'info';
+      toast.innerHTML = `
+        <i data-lucide="${icon}" class="toast-icon"></i>
+        <span class="toast-message">${message}</span>
+      `;
+      
+      container.appendChild(toast);
+      lucide.createIcons();
+      
+      setTimeout(() => {
+        toast.style.animation = 'toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+    
+    // Request data (in real app, this would come from API)
+    // Note: Providers only see requests for visa types they offer (DTV, Volunteer, Student)
+    const requestData = {
+      '1234': {
+        title: 'DTV Visa Application',
+        id: '1234',
+        description: 'Need assistance with Digital Nomad (DTV) visa application for remote work in Thailand. Looking for help with document preparation, income verification, and submission process. I work remotely for a US company and need to establish legal residency in Thailand.',
+        location: 'Bangkok, Thailand',
+        visaType: 'DTV Visa',
+        budget: '฿8,000 - ฿12,000',
+        postedDate: '2 days ago',
+        status: 'Open',
+        requirements: [
+          'Passport copy (valid 6+ months)',
+          'Proof of income (฿80,000+/month or equivalent)',
+          'Health insurance (฿100,000+ coverage)',
+          'Bank statements (last 6 months)',
+          'Employment contract or business registration',
+          'Criminal background check'
+        ],
+        timeline: '4-6 weeks',
+        urgency: 'Standard'
+      },
+      '1230': {
+        title: 'Volunteer Visa Application',
+        id: '1230',
+        description: 'Need comprehensive assistance with volunteer visa application for NGO work in Thailand. Looking for help with organization documentation, volunteer agreement, and submission process. I will be volunteering with an environmental conservation organization in Chiang Mai.',
+        location: 'Chiang Mai, Thailand',
+        visaType: 'Volunteer Visa',
+        budget: '฿5,000 - ฿8,000',
+        postedDate: '5 days ago',
+        status: 'Open',
+        requirements: [
+          'Passport copy',
+          'NGO registration documents',
+          'Volunteer agreement/contract',
+          'Organization invitation letter',
+          'Medical certificate',
+          'Criminal background check',
+          'Proof of accommodation'
+        ],
+        timeline: '3-5 weeks',
+        urgency: 'Standard'
+      },
+      '1225': {
+        title: 'Student Visa Application',
+        id: '1225',
+        description: 'Need help with student visa application for university in Thailand. Looking for assistance with school documentation, financial proof, and submission process. I have been accepted to a university in Bangkok and need to apply for the student visa.',
+        location: 'Bangkok, Thailand',
+        visaType: 'Student Visa',
+        budget: '฿6,000 - ฿9,000',
+        postedDate: '1 week ago',
+        status: 'Open',
+        requirements: [
+          'University acceptance letter',
+          'Passport copy',
+          'Educational certificates (translated)',
+          'Financial proof (฿500,000+ or equivalent)',
+          'Medical certificate',
+          'Criminal background check',
+          'Proof of accommodation'
+        ],
+        timeline: '4-6 weeks',
+        urgency: 'Standard'
+      },
+      '1220': {
+        title: 'DTV Visa Extension',
+        id: '1220',
+        description: 'Need assistance extending my DTV visa for another year. Currently on DTV visa and need help with renewal documentation and process. My current DTV visa expires in 2 months and I want to extend it for another year.',
+        location: 'Phuket, Thailand',
+        visaType: 'DTV Visa',
+        budget: '฿7,000 - ฿10,000',
+        postedDate: '1 week ago',
+        status: 'Open',
+        requirements: [
+          'Current DTV visa copy',
+          'Updated proof of income',
+          'Updated health insurance',
+          'Bank statements (last 6 months)',
+          'Updated employment contract',
+          '90-day report receipts',
+          'TM.30 form (if applicable)'
+        ],
+        timeline: '3-4 weeks',
+        urgency: 'Standard'
+      },
+      '1215': {
+        title: 'Non Immigrant-B Visa Application',
+        id: '1215',
+        description: 'Need assistance with Non Immigrant-B visa application for business purposes in Thailand. Looking for help with company documentation, business registration, and submission process. I am establishing a business in Thailand and need the appropriate visa.',
+        location: 'Bangkok, Thailand',
+        visaType: 'Non Immigrant-B',
+        budget: '฿10,000 - ฿15,000',
+        postedDate: '2 weeks ago',
+        status: 'Open',
+        requirements: [
+          'Passport copy (valid 6+ months)',
+          'Company registration documents',
+          'Business license',
+          'Work permit application (if applicable)',
+          'Financial proof (company bank statements)',
+          'Business plan',
+          'Investment proof',
+          'Medical certificate'
+        ],
+        timeline: '4-8 weeks',
+        urgency: 'Standard'
+      },
+      '1210': {
+        title: 'Guardian Visa Application',
+        id: '1210',
+        description: 'Need help with Guardian visa application to accompany my child studying in Thailand. Looking for assistance with relationship documentation, financial proof, and submission process. My child is enrolled in an international school in Bangkok.',
+        location: 'Bangkok, Thailand',
+        visaType: 'Guardian Visa',
+        budget: '฿6,000 - ฿9,000',
+        postedDate: '2 weeks ago',
+        status: 'Open',
+        requirements: [
+          'Passport copy (parent and child)',
+          'Birth certificate (translated)',
+          'Child\'s student visa copy',
+          'School enrollment confirmation',
+          'Financial proof (฿500,000+ or equivalent)',
+          'Medical certificate',
+          'Criminal background check',
+          'Proof of relationship',
+          'Proof of accommodation'
+        ],
+        timeline: '3-5 weeks',
+        urgency: 'Standard'
+      },
+      '1205': {
+        title: 'LTR Visa Application',
+        id: '1205',
+        description: 'Need comprehensive assistance with Long Term Resident (LTR) visa application. Looking for help with eligibility verification, investment proof, and submission process. I qualify under the Wealthy Global Citizen category and want to establish long-term residency in Thailand.',
+        location: 'Bangkok, Thailand',
+        visaType: 'LTR Visa',
+        budget: '฿15,000 - ฿25,000',
+        postedDate: '3 weeks ago',
+        status: 'Open',
+        requirements: [
+          'Passport copy (valid 6+ months)',
+          'Proof of assets (฿1,000,000+ or equivalent)',
+          'Proof of income (฿80,000+/month for 12 months)',
+          'Health insurance (฿100,000+ coverage)',
+          'Investment proof (if applicable)',
+          'Educational certificates',
+          'Employment contract or business registration',
+          'Medical certificate',
+          'Criminal background check',
+          'Bank statements (last 12 months)'
+        ],
+        timeline: '6-10 weeks',
+        urgency: 'Standard'
+      }
+    };
+    
+    // Modal functionality
+    const modal = document.getElementById('requestModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModal = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelQuote');
+    const submitQuoteBtn = document.getElementById('submitQuoteBtn');
+    
+    function openRequestModal(requestId) {
+      const request = requestData[requestId];
+      if (!request) return;
+      
+      modalTitle.textContent = request.title;
+      modalContent.innerHTML = `
+        <div class="request-detail-section">
+          <div class="section-label">Description</div>
+          <p class="request-full-description">${request.description}</p>
+        </div>
+        
+        <div class="request-detail-section">
+          <div class="section-label">Request Details</div>
+          <div class="request-detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">Request ID</span>
+              <span class="detail-value">#${request.id}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Visa Type</span>
+              <span class="detail-value">${request.visaType}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Location</span>
+              <span class="detail-value">${request.location}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Budget Range</span>
+              <span class="detail-value">${request.budget}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Timeline</span>
+              <span class="detail-value">${request.timeline}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Posted</span>
+              <span class="detail-value">${request.postedDate}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="request-detail-section">
+          <div class="section-label">Required Documents</div>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            ${request.requirements.map(req => `
+              <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                <i data-lucide="file-text" style="width: 1rem; height: 1rem; color: var(--color-text-tertiary);"></i>
+                <span>${req}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        
+        <div class="quote-form">
+          <div class="section-label">Submit Your Quote</div>
+          <form id="quoteForm">
+            <div class="form-group">
+              <label class="form-label">
+                Quote Amount <span class="required">*</span>
+              </label>
+              <input 
+                type="number" 
+                class="form-input" 
+                id="quoteAmount"
+                placeholder="Enter amount in THB"
+                min="0"
+                step="100"
+                required
+              >
+              <div class="form-hint">Budget range: ${request.budget}</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                Estimated Timeline <span class="required">*</span>
+              </label>
+              <input 
+                type="text" 
+                class="form-input" 
+                id="quoteTimeline"
+                placeholder="e.g., 2-3 weeks"
+                required
+              >
+              <div class="form-hint">How long will it take to complete?</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                Quote Notes <span class="required">*</span>
+              </label>
+              <textarea 
+                class="form-textarea" 
+                id="quoteNotes"
+                placeholder="Describe your approach, what's included, and any additional information..."
+                required
+              ></textarea>
+              <div class="form-hint">Explain your services and approach to this request</div>
+            </div>
+          </form>
+        </div>
+      `;
+      
+      lucide.createIcons();
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeRequestModal() {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+      // Reset form
+      const form = document.getElementById('quoteForm');
+      if (form) form.reset();
+    }
+    
+    // View Details buttons
+    document.querySelectorAll('.view-details-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const requestId = this.getAttribute('data-request-id');
+        openRequestModal(requestId);
+      });
+    });
+    
+    // Close modal
+    closeModal.addEventListener('click', closeRequestModal);
+    cancelBtn.addEventListener('click', closeRequestModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeRequestModal();
+      }
+    });
+    
+    // Submit Quote
+    submitQuoteBtn.addEventListener('click', async function() {
+      const form = document.getElementById('quoteForm');
+      if (!form || !form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      
+      if (this.classList.contains('loading') || this.classList.contains('success')) {
+        return;
+      }
+      
+      this.classList.add('loading', 'btn-with-states');
+      const originalHTML = this.innerHTML;
+      this.innerHTML = `
+        <span class="btn-spinner"></span>
+        <span>Submitting...</span>
+      `;
+      this.disabled = true;
+      
+      try {
+        // Simulate quote submission
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        this.classList.remove('loading');
+        this.classList.add('success');
+        this.innerHTML = `
+          <i data-lucide="check"></i>
+          <span>Submitted!</span>
+        `;
+        lucide.createIcons();
+        
+        showToast('Quote submitted successfully!', 'success');
+        
+        setTimeout(() => {
+          closeRequestModal();
+          // Reset button
+          this.classList.remove('success');
+          this.innerHTML = originalHTML;
+          this.disabled = false;
+          lucide.createIcons();
+        }, 1500);
+      } catch (error) {
+        this.classList.remove('loading');
+        this.innerHTML = originalHTML;
+        this.disabled = false;
+        lucide.createIcons();
+        showToast('Failed to submit quote. Please try again.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
+

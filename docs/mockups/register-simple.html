@@ -10,21 +10,10 @@
     
     :root {
       --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --font-size-xs: 0.8125rem;
-      --font-size-sm: 0.875rem;
-      --font-size-base: 0.9375rem;
-      --font-size-lg: 1.125rem;
-      --font-size-2xl: 1.5rem;
-      --font-weight-normal: 400;
-      --font-weight-medium: 500;
-      --font-weight-semibold: 600;
-      --line-height-tight: 1.2;
-      --line-height-normal: 1.5;
-      --line-height-relaxed: 1.6;
-      --tracking-tight: -0.02em;
-      --tracking-normal: -0.01em;
       --color-primary: #2563eb;
       --color-primary-hover: #1d4ed8;
+      --color-success: #16a34a;
+      --color-error: #dc2626;
       --color-text-primary: #0a0a0a;
       --color-text-secondary: #525252;
       --color-text-tertiary: #a3a3a3;
@@ -32,17 +21,6 @@
       --color-bg-secondary: #fafafa;
       --color-border-light: rgba(0, 0, 0, 0.06);
       --color-border-medium: rgba(0, 0, 0, 0.12);
-      --color-success: #16a34a;
-      --space-2: 0.5rem;
-      --space-3: 0.75rem;
-      --space-4: 1rem;
-      --space-5: 1.25rem;
-      --space-6: 1.5rem;
-      --space-8: 2rem;
-      --radius-sm: 0.25rem;
-      --radius-base: 0.5rem;
-      --radius-md: 0.75rem;
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
       --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
     }
     
@@ -50,11 +28,10 @@
     
     body {
       font-family: var(--font-family);
-      font-size: var(--font-size-base);
-      line-height: var(--line-height-relaxed);
       color: var(--color-text-primary);
       background: var(--color-bg-secondary);
       -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
     }
     
     .page-container {
@@ -62,7 +39,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: var(--space-6);
+      padding: 2rem;
     }
     
     .auth-card {
@@ -70,12 +47,18 @@
       max-width: 28rem;
       background: var(--color-bg-primary);
       border: 1px solid var(--color-border-light);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-md);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+      animation: slideUp 300ms var(--transition-fast);
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .auth-header {
-      padding: var(--space-8) var(--space-8) var(--space-6);
+      padding: 2rem 2rem 1.5rem;
       text-align: center;
     }
     
@@ -85,103 +68,172 @@
       justify-content: center;
       width: 3rem;
       height: 3rem;
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-      border-radius: var(--radius-base);
-      margin-bottom: var(--space-5);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+      border-radius: 0.5rem;
+      margin-bottom: 1.25rem;
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
     }
     
     .logo svg { width: 1.5rem; height: 1.5rem; color: white; }
     
-    .auth-title {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-semibold);
-      letter-spacing: var(--tracking-tight);
-      margin-bottom: var(--space-2);
-      line-height: var(--line-height-tight);
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
     }
     
-    .auth-subtitle {
-      font-size: var(--font-size-sm);
+    .subtitle {
+      font-size: 0.875rem;
       color: var(--color-text-secondary);
     }
     
-    .auth-content { padding: 0 var(--space-8) var(--space-8); }
-    
+    /* Enhanced: Animated benefit badge */
     .benefit-badge {
       display: inline-flex;
       align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-2) var(--space-4);
-      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
       border: 1px solid #86efac;
-      border-radius: var(--radius-base);
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-medium);
+      border-radius: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
       color: var(--color-success);
-      margin-bottom: var(--space-6);
+      margin-top: 1rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
     
     .benefit-badge svg { width: 1rem; height: 1rem; }
     
+    .auth-content { padding: 0 2rem 2rem; }
+    
     .form {
       display: flex;
       flex-direction: column;
-      gap: var(--space-5);
+      gap: 1.25rem;
     }
     
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: var(--space-2);
+      gap: 0.5rem;
     }
     
     .input-label {
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
-      letter-spacing: var(--tracking-normal);
+      font-size: 0.875rem;
+      font-weight: 500;
     }
+    
+    .input-wrapper { position: relative; }
     
     .input-field {
       width: 100%;
       height: 2.75rem;
-      padding: 0 var(--space-4);
-      font-size: var(--font-size-base);
+      padding: 0 1rem;
+      font-size: 0.9375rem;
       font-family: inherit;
       color: var(--color-text-primary);
       background: var(--color-bg-primary);
       border: 1px solid var(--color-border-light);
-      border-radius: var(--radius-base);
+      border-radius: 0.5rem;
       transition: all var(--transition-fast);
       outline: none;
     }
     
+    .input-field.has-icon { padding-right: 2.75rem; }
+    
     .input-field::placeholder { color: var(--color-text-tertiary); }
-    .input-field:hover { border-color: var(--color-border-medium); }
+    
+    .input-field:hover:not(:focus):not(.error) {
+      border-color: var(--color-border-medium);
+    }
+    
     .input-field:focus {
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      transform: scale(1.01);
     }
     
+    .input-field.success {
+      border-color: var(--color-success);
+      background: rgba(22, 163, 74, 0.02);
+    }
+    
+    .input-field.error {
+      border-color: var(--color-error);
+      background: rgba(220, 38, 38, 0.02);
+    }
+    
+    .input-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    
+    .input-icon.show {
+      opacity: 1;
+      animation: iconPop 200ms var(--transition-fast);
+    }
+    
+    @keyframes iconPop {
+      0% { transform: translateY(-50%) scale(0.8); }
+      50% { transform: translateY(-50%) scale(1.1); }
+      100% { transform: translateY(-50%) scale(1); }
+    }
+    
+    .input-icon svg { width: 1.125rem; height: 1.125rem; }
+    .input-icon.success { color: var(--color-success); }
+    .input-icon.error { color: var(--color-error); }
+    
+    .input-message {
+      font-size: 0.8125rem;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: all var(--transition-fast);
+      min-height: 1.125rem;
+    }
+    
+    .input-message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .input-message.success { color: var(--color-success); }
+    .input-message.error { color: var(--color-error); }
+    .input-message.hint { color: var(--color-text-tertiary); }
+    
     .input-hint {
-      font-size: var(--font-size-xs);
+      font-size: 0.8125rem;
       color: var(--color-text-tertiary);
     }
     
     .btn-primary {
       width: 100%;
       height: 2.75rem;
-      padding: 0 var(--space-6);
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-medium);
-      letter-spacing: var(--tracking-normal);
+      padding: 0 1.5rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
       color: white;
-      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+      background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
       border: none;
-      border-radius: var(--radius-base);
+      border-radius: 0.5rem;
       cursor: pointer;
       transition: all var(--transition-fast);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
     
     .btn-primary:hover:not(:disabled) {
@@ -189,14 +241,50 @@
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
     
-    .btn-primary:active:not(:disabled) { transform: translateY(0); }
-    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-spinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+      display: none;
+    }
+    
+    .btn-primary.loading .btn-spinner { display: block; }
+    .btn-primary.loading .btn-text { opacity: 0.7; }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .btn-success-icon {
+      display: none;
+      animation: successPop 400ms var(--transition-fast);
+    }
+    
+    .btn-primary.success {
+      background: linear-gradient(180deg, var(--color-success), #15803d);
+    }
+    
+    .btn-primary.success .btn-success-icon { display: block; }
+    
+    @keyframes successPop {
+      0% { transform: scale(0) rotate(-45deg); }
+      50% { transform: scale(1.2) rotate(0deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
     
     .divider {
       display: flex;
       align-items: center;
-      gap: var(--space-4);
-      margin: var(--space-6) 0;
+      gap: 1rem;
+      margin: 1.5rem 0;
     }
     
     .divider::before, .divider::after {
@@ -207,12 +295,12 @@
     }
     
     .divider-text {
-      font-size: var(--font-size-xs);
+      font-size: 0.8125rem;
       color: var(--color-text-tertiary);
     }
     
     .link {
-      font-weight: var(--font-weight-medium);
+      font-weight: 500;
       color: var(--color-primary);
       text-decoration: none;
       transition: color var(--transition-fast);
@@ -224,15 +312,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: var(--space-6);
-      padding-top: var(--space-8);
+      gap: 1.5rem;
+      padding-top: 2rem;
     }
     
     .trust-badge {
       display: flex;
       align-items: center;
-      gap: var(--space-2);
-      font-size: var(--font-size-xs);
+      gap: 0.5rem;
+      font-size: 0.8125rem;
       color: var(--color-text-tertiary);
     }
     
@@ -246,33 +334,39 @@
         <div class="logo">
           <i data-lucide="zap"></i>
         </div>
-        <h1 class="auth-title">Get started in seconds</h1>
-        <p class="auth-subtitle">Quick signup • Complete profile later</p>
-        <div style="margin-top: 1rem;">
-          <div class="benefit-badge">
-            <i data-lucide="clock"></i>
-            Takes less than 30 seconds
-          </div>
+        <h1>Get started in seconds</h1>
+        <p class="subtitle">Quick signup • Complete profile later</p>
+        <div class="benefit-badge">
+          <i data-lucide="clock"></i>
+          Takes less than 30 seconds
         </div>
       </div>
       
       <div class="auth-content">
-        <form class="form">
-          <!-- Email -->
+        <form class="form" id="simpleRegisterForm">
+          <!-- Email with validation -->
           <div class="input-group">
             <label for="email" class="input-label">Email address</label>
-            <input 
-              type="email" 
-              id="email"
-              class="input-field"
-              placeholder="you@company.com"
-              required
-              autocomplete="email"
-            />
-            <span class="input-hint">We'll send you a verification email</span>
+            <div class="input-wrapper">
+              <input 
+                type="email" 
+                id="email"
+                class="input-field has-icon"
+                placeholder="you@company.com"
+                required
+                autocomplete="email"
+              />
+              <div class="input-icon" id="emailIcon">
+                <i data-lucide="check-circle"></i>
+              </div>
+            </div>
+            <div class="input-message hint show">
+              We'll send you a verification email
+            </div>
+            <div class="input-message" id="emailMessage"></div>
           </div>
           
-          <!-- Password -->
+          <!-- Password with hint -->
           <div class="input-group">
             <label for="password" class="input-label">Create password</label>
             <input 
@@ -286,9 +380,11 @@
             <span class="input-hint">Use a strong password to protect your account</span>
           </div>
           
-          <!-- Submit -->
-          <button type="submit" class="btn-primary">
-            Create account
+          <!-- Submit button with states -->
+          <button type="submit" class="btn-primary" id="submitBtn">
+            <span class="btn-spinner"></span>
+            <i data-lucide="check-circle" class="btn-success-icon"></i>
+            <span class="btn-text">Create account</span>
           </button>
         </form>
         
@@ -297,16 +393,16 @@
         </div>
         
         <div style="text-align: center;">
-          <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+          <span style="font-size: 0.875rem; color: var(--color-text-secondary);">
             Need more options?
           </span>
-          <a href="register.html" class="link" style="margin-left: var(--space-2);">
+          <a href="register.html" class="link" style="margin-left: 0.5rem;">
             Full registration
           </a>
         </div>
       </div>
       
-      <div style="padding: 0 var(--space-8) var(--space-8);">
+      <div style="padding: 0 2rem 2rem;">
         <div class="trust-badges">
           <div class="trust-badge">
             <i data-lucide="shield-check"></i>
@@ -319,6 +415,96 @@
 
   <script>
     lucide.createIcons();
+    
+    // Enhanced: Email validation
+    const emailInput = document.getElementById('email');
+    const emailIcon = document.getElementById('emailIcon');
+    const emailMessage = document.getElementById('emailMessage');
+    
+    const commonTypos = {
+      'gmial.com': 'gmail.com',
+      'gmai.com': 'gmail.com',
+      'yahooo.com': 'yahoo.com',
+      'hotmial.com': 'hotmail.com'
+    };
+    
+    function validateEmail(email) {
+      if (!email) return { status: 'empty' };
+      
+      if (!email.includes('@')) {
+        return { status: 'error', message: 'Email is missing @ symbol' };
+      }
+      
+      const parts = email.split('@');
+      if (parts.length !== 2 || !parts[0] || !parts[1]) {
+        return { status: 'error', message: 'Email format looks incorrect' };
+      }
+      
+      const domain = parts[1].toLowerCase();
+      for (const [typo, correct] of Object.entries(commonTypos)) {
+        if (domain === typo) {
+          return {
+            status: 'error',
+            message: `Did you mean ${parts[0]}@${correct}?`
+          };
+        }
+      }
+      
+      if (!domain.includes('.')) {
+        return { status: 'error', message: 'Domain needs a dot (like .com)' };
+      }
+      
+      return { status: 'success', message: 'Looks good!' };
+    }
+    
+    emailInput.addEventListener('input', (e) => {
+      const result = validateEmail(e.target.value);
+      
+      emailInput.classList.remove('success', 'error');
+      emailIcon.classList.remove('show', 'success', 'error');
+      emailMessage.classList.remove('show', 'success', 'error');
+      
+      if (result.status === 'success') {
+        emailInput.classList.add('success');
+        emailIcon.classList.add('show', 'success');
+        emailMessage.textContent = result.message;
+        emailMessage.classList.add('show', 'success');
+      } else if (result.status === 'error') {
+        emailInput.classList.add('error');
+        emailIcon.classList.add('show', 'error');
+        emailIcon.innerHTML = '<i data-lucide="alert-circle"></i>';
+        emailMessage.textContent = result.message;
+        emailMessage.classList.add('show', 'error');
+        lucide.createIcons();
+      }
+    });
+    
+    // Enhanced: Form submission with states
+    const form = document.getElementById('simpleRegisterForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Show loading
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      submitBtn.querySelector('.btn-text').textContent = 'Creating account...';
+      
+      // Simulate API call
+      setTimeout(() => {
+        // Show success
+        submitBtn.classList.remove('loading');
+        submitBtn.classList.add('success');
+        submitBtn.querySelector('.btn-text').textContent = 'Account created!';
+        
+        // Redirect
+        setTimeout(() => {
+          // window.location.href = 'account-type.html';
+          console.log('Would redirect to account type selection');
+        }, 1000);
+      }, 1500);
+    });
   </script>
 </body>
 </html>

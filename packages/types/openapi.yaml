@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: VisaOnTrack v2 API
-  version: 0.2.1
+  version: 0.2.4
   description: |
     Two-sided marketplace API connecting visa seekers with vetted service providers in Thailand.
     
@@ -13,7 +13,7 @@ info:
     Over-quota actions return structured errors (403 EntitlementExceeded, 429 Throttled).
     
     ## Versioning
-    Contract version: 0.2.0 (semver)
+    Contract version: 0.2.4 (semver) - RFC-003: Email verification flow
     Breaking changes will increment major version and require client regeneration.
   
   contact:
@@ -178,6 +178,135 @@ paths:
         '429':
           $ref: '#/components/responses/Throttled'
 
+  /auth/verify-email:
+    get:
+      tags:
+        - auth
+      summary: Verify email with token
+      description: |
+        Verify email address using token from verification email link (RFC-003).
+        Token expires after 24 hours and is single-use.
+      operationId: verifyEmail
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Verification token from email link
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyEmailResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid token format
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Invalid or expired token
+
+  /auth/resend-verification:
+    post:
+      tags:
+        - auth
+      summary: Resend verification email
+      description: |
+        Resend verification email to authenticated user (RFC-003).
+        Rate limited to 3 requests per hour per user.
+      operationId: resendVerification
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Verification email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResendVerificationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Email already verified
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/Throttled'
+
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Logout user
+      description: |
+        Logout authenticated user. Clears JWT cookie and logs logout event for audit.
+        Requires authentication (JWT token in HttpOnly cookie).
+      operationId: logout
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout successful. JWT cookie cleared.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication required
+
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register new user
+      description: |
+        Register a new user account. Creates user with default role SEEKER.
+        Password must meet strength requirements (uppercase, lowercase, number, special character).
+        Returns JWT token in HttpOnly cookie.
+        Sends verification email (RFC-003). User must verify email before full access.
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Registration successful. JWT set in HttpOnly cookie.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'token=eyJhbGc...; HttpOnly; Secure; SameSite=Strict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Invalid email format, weak password, or duplicate email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidEmail:
+                  value:
+                    code: 'BAD_REQUEST'
+                    message: 'Invalid email format'
+                weakPassword:
+                  value:
+                    code: 'BAD_REQUEST'
+                    message: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)'
+                duplicateEmail:
+                  value:
+                    code: 'BAD_REQUEST'
+                    message: 'Email already registered'
+        '429':
+          $ref: '#/components/responses/Throttled'
+
   # ==================== USERS ====================
   /users/me:
     get:
@@ -197,6 +326,96 @@ paths:
                 $ref: '#/components/schemas/User'
         '401':
           $ref: '#/components/responses/Unauthorized'
+    
+    patch:
+      tags:
+        - users
+      summary: Update current user
+      description: Update authenticated user's profile (including role selection for account type)
+      operationId: updateCurrentUser
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /users/me/mark-provider-step-complete:
+    post:
+      tags:
+        - users
+      summary: Mark provider onboarding step as complete
+      description: |
+        Mark a specific provider onboarding step as complete (step 1: business, 2: services, 3: credentials).
+        Used for step-by-step progress tracking.
+      operationId: markProviderStepComplete
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkStepCompleteRequest'
+      responses:
+        '200':
+          description: Step marked as complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarkStepCompleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /users/me/complete-onboarding:
+    post:
+      tags:
+        - users
+      summary: Complete onboarding
+      description: |
+        Mark onboarding as complete for current user (RFC-004).
+        Sets onboarding completion flags based on user's role.
+        Role must match user's actual role (SEEKER or PROVIDER).
+      operationId: completeOnboarding
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteOnboardingRequest'
+      responses:
+        '200':
+          description: Onboarding completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid role or role mismatch
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   # ==================== PROVIDERS ====================
   /providers:
@@ -1197,12 +1416,63 @@ components:
           type: string
           format: password
           minLength: 8
+        rememberMe:
+          type: boolean
+          nullable: true
+          description: If true, token expiration extended to 7 days instead of 15 minutes
     
     LoginResponse:
       type: object
+      description: 'Login response (RFC-003: includes emailVerified status)'
       properties:
         user:
           $ref: '#/components/schemas/User'
+        message:
+          type: string
+          description: Success message
+          example: 'Login successful'
+    
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address (must be unique)
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: |
+            Password must be at least 8 characters and contain:
+            - At least one uppercase letter
+            - At least one lowercase letter
+            - At least one number
+            - At least one special character (!@#$%^&*)
+        name:
+          type: string
+          maxLength: 200
+          nullable: true
+          description: User name (optional)
+        phone:
+          type: string
+          maxLength: 50
+          nullable: true
+          description: User phone number (optional)
+    
+    RegisterResponse:
+      type: object
+      description: 'Registration response (RFC-003: includes emailVerified status)'
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        message:
+          type: string
+          description: Success message
+          example: 'Registration successful. Please check your email to verify your account.'
     
     ForgotPasswordRequest:
       type: object
@@ -1221,6 +1491,43 @@ components:
           type: string
           description: Success message (always returned, regardless of whether user exists)
           example: 'If an account with that email exists, a password reset link has been sent.'
+    
+    VerifyEmailResponse:
+      type: object
+      description: 'RFC-003: Email verification response'
+      required:
+        - message
+        - verified
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: 'Email verified successfully. You can now login.'
+        verified:
+          type: boolean
+          description: Whether email was verified
+          example: true
+    
+    ResendVerificationResponse:
+      type: object
+      description: 'RFC-003: Resend verification email response'
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: 'Verification email sent. Please check your email.'
+    LogoutResponse:
+      type: object
+      description: Logout response
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: 'Logged out successfully'
     
     ResetPasswordRequest:
       type: object
@@ -1249,11 +1556,15 @@ components:
     # ==================== USERS ====================
     User:
       type: object
-      description: User schema per Section 3 data model
+      description: 'User schema per Section 3 data model (RFC-003: includes email verification status, RFC-004: includes onboarding completion status)'
       required:
         - id
         - email
         - role
+        - emailVerified
+        - onboardingCompleted
+        - seekerOnboardingCompleted
+        - providerOnboardingCompleted
         - createdAt
       properties:
         id:
@@ -1274,6 +1585,39 @@ components:
           type: string
           default: 'en'
           example: 'en'
+        emailVerified:
+          type: boolean
+          default: false
+          description: 'RFC-003: Whether user has verified their email address'
+        onboardingCompleted:
+          type: boolean
+          default: false
+          description: 'RFC-004: Whether user has completed onboarding'
+        onboardingCompletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'RFC-004: Timestamp when onboarding was completed'
+        seekerOnboardingCompleted:
+          type: boolean
+          default: false
+          description: 'RFC-004: Whether user has completed seeker onboarding'
+        providerOnboardingCompleted:
+          type: boolean
+          default: false
+          description: 'RFC-004: Whether user has completed provider onboarding'
+        providerBusinessStepCompleted:
+          type: boolean
+          default: false
+          description: 'Step 1: Business details completed (provider onboarding)'
+        providerServicesStepCompleted:
+          type: boolean
+          default: false
+          description: 'Step 2: Services & pricing completed (provider onboarding)'
+        providerCredentialsStepCompleted:
+          type: boolean
+          default: false
+          description: 'Step 3: Credentials upload completed (provider onboarding)'
         createdAt:
           type: string
           format: date-time
@@ -1284,6 +1628,65 @@ components:
         - SEEKER
         - PROVIDER
         - ADMIN
+    
+    UpdateUserRequest:
+      type: object
+      description: Update user profile request (partial update, including role selection)
+      properties:
+        role:
+          $ref: '#/components/schemas/UserRole'
+          description: Update user role (for account type selection)
+        name:
+          type: string
+          maxLength: 200
+          nullable: true
+          description: Update user name
+        phone:
+          type: string
+          maxLength: 50
+          nullable: true
+          description: Update user phone number
+        locale:
+          type: string
+          maxLength: 10
+          nullable: true
+          default: 'en'
+          description: Update user locale preference
+    
+    MarkStepCompleteRequest:
+      type: object
+      description: Request to mark a provider onboarding step as complete
+      required:
+        - step
+      properties:
+        step:
+          type: integer
+          minimum: 1
+          maximum: 3
+          description: 'Step number (1: business details, 2: services & pricing, 3: credentials upload)'
+          example: 1
+    MarkStepCompleteResponse:
+      type: object
+      description: Response after marking step as complete
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: 'Step 1 marked as complete'
+    CompleteOnboardingRequest:
+      type: object
+      description: 'RFC-004: Request to mark onboarding as complete'
+      required:
+        - role
+      properties:
+        role:
+          $ref: '#/components/schemas/UserRole'
+          description: Role to complete onboarding for (must match user's actual role, SEEKER or PROVIDER only)
+          enum:
+            - SEEKER
+            - PROVIDER
     
     # ==================== PROVIDERS ====================
     ProviderProfile:

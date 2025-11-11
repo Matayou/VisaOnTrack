@@ -128,8 +128,21 @@ model User {
   name                    String?   @db.VarChar(200)
   phone                   String?   @db.VarChar(50)
   locale                  String    @default("en") @db.VarChar(10)
-  passwordResetTokenHash  String?   // Hashed reset token (RFC-002: Security requirement - never store plaintext)
+  passwordHash            String?   // Hashed password (bcrypt) - M1-BE-7: Login/Register
+  passwordResetTokenHash  String?   // Hashed reset token (bcrypt) - RFC-002: Security requirement - never store plaintext
+  passwordResetTokenHashSha256 String? // SHA-256 hash of reset token for O(1) lookup - Performance optimization
   passwordResetTokenExpiry DateTime? // Token expiry time (RFC-002)
+  emailVerified          Boolean   @default(false) // RFC-003: Email verification status
+  emailVerificationToken String?   // Hashed verification token (bcrypt) - RFC-003: Security requirement - never store plaintext
+  emailVerificationTokenExpiry DateTime? // Verification token expiry time (RFC-003)
+  onboardingCompleted    Boolean   @default(false) // RFC-004: Onboarding completion tracking
+  onboardingCompletedAt   DateTime? // RFC-004: Onboarding completion timestamp
+  seekerOnboardingCompleted Boolean @default(false) // RFC-004: Seeker onboarding completion
+  providerOnboardingCompleted Boolean @default(false) // RFC-004: Provider onboarding completion
+  // Provider onboarding step tracking
+  providerBusinessStepCompleted Boolean @default(false) // Step 1: Business details completed
+  providerServicesStepCompleted Boolean @default(false) // Step 2: Services & pricing completed
+  providerCredentialsStepCompleted Boolean @default(false) // Step 3: Credentials upload completed
   createdAt               DateTime  @default(now())
 
   // Relations

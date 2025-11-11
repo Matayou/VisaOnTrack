@@ -1,6 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { api, UserRole } from '@visaontrack/client';
 import {
   CheckCircle,
   Search,
@@ -9,7 +11,9 @@ import {
   MessageCircle,
   Settings,
   ArrowRight,
+  LogOut,
 } from 'lucide-react';
+import { logout } from '@/lib/auth';
 
 interface Benefit {
   icon: React.ReactNode;
@@ -46,6 +50,62 @@ const benefits: Benefit[] = [
 
 export default function SeekerWelcomePage() {
   const router = useRouter();
+  const [isCheckingVerification, setIsCheckingVerification] = useState(true);
+
+  // Check email verification status on mount
+  useEffect(() => {
+    const checkEmailVerification = async () => {
+      try {
+        const user = await api.users.getCurrentUser();
+        // If email is not verified, redirect to verification page
+        if (!user.emailVerified) {
+          router.push('/auth/verify-email');
+          return;
+        }
+        setIsCheckingVerification(false);
+      } catch (err: any) {
+        // If not authenticated, redirect to login
+        if (err?.status === 401) {
+          router.push('/auth/login');
+          return;
+        }
+        // For other errors, allow user to proceed (they'll be caught by API calls)
+        setIsCheckingVerification(false);
+      }
+    };
+
+    checkEmailVerification();
+  }, [router]);
+
+  const [isCompletingOnboarding, setIsCompletingOnboarding] = useState(false);
+  const [onboardingError, setOnboardingError] = useState<string | null>(null);
+
+  // Complete onboarding when page loads
+  useEffect(() => {
+    const completeOnboarding = async () => {
+      setIsCompletingOnboarding(true);
+      setOnboardingError(null);
+
+      try {
+        await api.users.completeOnboarding({
+          requestBody: {
+            role: UserRole.SEEKER,
+          },
+        });
+        // Onboarding completed successfully (silent success)
+      } catch (err: any) {
+        // Log error but don't block user experience
+        console.error('[SeekerWelcome] Error completing onboarding:', err);
+        setOnboardingError(
+          err?.body?.message || 'Failed to mark onboarding as complete. You can continue using the app.'
+        );
+      } finally {
+        setIsCompletingOnboarding(false);
+      }
+    };
+
+    completeOnboarding();
+  }, []);
 
   const handleCompleteProfile = () => {
     // TODO: Navigate to profile completion page when implemented
@@ -64,8 +124,30 @@ export default function SeekerWelcomePage() {
     }
   };
 
+  // Show loading state while checking email verification
+  if (isCheckingVerification) {
+    return (
+      <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+          <p className="text-text-secondary">Checking verification status...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6 relative">
+      {/* Logout Button - Top Right */}
+      <button
+        onClick={() => logout(router)}
+        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 hover:border-border hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        aria-label="Logout"
+      >
+        <LogOut className="w-4 h-4" aria-hidden="true" />
+        <span>Logout</span>
+      </button>
+
       <div className="w-full max-w-[48rem] bg-bg-primary border border-border-light rounded-lg shadow-md animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="px-6 pt-8 pb-6 sm:px-12 sm:pt-12 sm:pb-8 text-center bg-gradient-to-br from-primary/2 to-primary/5 rounded-t-lg">

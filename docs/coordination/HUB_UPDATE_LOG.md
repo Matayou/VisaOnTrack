@@ -187,6 +187,43 @@
 **Status:** M1-BE-7: ✅ TASK COMPLETE | PM Final Approval: ✅ APPROVED | Milestone: 8/9 tasks (89%)  
 **Git Commit:** `[PM] Status: M1-BE-7 - PM Final Approval Granted`
 
+### 2025-01-11 — M1-FE-6 Payouts Step Removed from Onboarding Flow
+- ✅ Frontend Engineer: Payouts step removed from provider onboarding flow
+- ✅ Product decision: Payment setup deferred until later
+- ✅ Changes implemented:
+  - Provider Welcome: Updated from 4 steps to 3 steps
+  - All progress bars: Updated from 5 steps to 4 steps
+  - Credentials Complete: Removed payment setup button, redirects to dashboard
+- ✅ Technical verification:
+  - TypeScript compilation: Passes
+  - Linting: No errors
+  - Navigation: Flows correctly
+  - No breaking changes
+- ✅ Payouts page: Still exists at `/onboarding/provider/payouts` (deferred, not part of flow)
+- ✅ Update document created: `docs/coordination/FRONTEND_ENGINEER_UPDATE_PAYOUTS_REMOVAL.md`
+- ✅ All coordination files updated:
+  - ✅ COORDINATION_HUB.md: M1-FE-6 status updated with payouts removal
+  - ✅ HUB_UPDATE_LOG.md: Update entry added
+- ✅ Team notified: PM, Tech Lead, Backend Engineer informed
+- ✅ Backend impact: None (payouts was not integrated)
+
+### 2025-01-11 — RFC-004-BE Assigned to Backend Engineer
+- ✅ RFC-004-BE: Onboarding Completion Tracking assigned to Backend Engineer
+- ✅ Task document: `docs/tasks/TASK_RFC_004_BE_ONBOARDING_COMPLETION.md`
+- ✅ Assignment document: `docs/coordination/BACKEND_ENGINEER_ASSIGNMENT_RFC_004.md`
+- ✅ Priority: HIGH — Required for provider gating (RFC-005)
+- ✅ Duration: 1 day (5.5-7.5 hours)
+- ✅ All coordination files updated:
+  - ✅ COORDINATION_HUB.md: Backend Engineer status updated, RFC-004-BE marked as ASSIGNED
+  - ✅ AGENT_STATUS_BOARD.md: Backend Engineer status updated, current task set to RFC-004-BE
+  - ✅ PROJECT_STATUS.md: Last updated timestamp updated
+  - ✅ TASK_RFC_004_BE_ONBOARDING_COMPLETION.md: Status updated to ASSIGNED
+  - ✅ BACKEND_ENGINEER_ASSIGNMENT_RFC_004.md: Status updated to ASSIGNED
+- ✅ Next steps: Backend Engineer begins implementation
+
+**Status:** RFC-004-BE: ⏳ ASSIGNED | Backend Engineer: In Progress | Next: Implementation → Tests → Review  
+**Git Commit:** `[PM] Assign: RFC-004-BE Onboarding Completion Tracking to Backend Engineer`
+
 ---
 
 ## Update Workflow

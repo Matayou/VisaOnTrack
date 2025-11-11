@@ -1,0 +1,10 @@
+# E2E Tests Directory
+# 
+# Place your Playwright E2E tests here.
+# 
+# Example test structure:
+# - tests/e2e/auth.spec.ts (authentication flows)
+# - tests/e2e/onboarding.spec.ts (onboarding flows)
+# - tests/e2e/providers.spec.ts (provider features)
+# - tests/e2e/seekers.spec.ts (seeker features)
+

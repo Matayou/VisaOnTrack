@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications - VisaOnTrack</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-size-xs: 0.8125rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 0.9375rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --line-height-tight: 1.2;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.6;
+      --tracking-tight: -0.02em;
+      --tracking-normal: -0.01em;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-success: #16a34a;
+      --color-error: #dc2626;
+      --color-warning: #f59e0b;
+      --color-text-primary: #0a0a0a;
+      --color-text-secondary: #525252;
+      --color-text-tertiary: #a3a3a3;
+      --color-bg-primary: #ffffff;
+      --color-bg-secondary: #fafafa;
+      --color-border-light: rgba(0, 0, 0, 0.06);
+      --color-border-medium: rgba(0, 0, 0, 0.12);
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --radius-sm: 0.25rem;
+      --radius-base: 0.5rem;
+      --radius-md: 0.75rem;
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .header {
+      background: var(--color-bg-primary);
+      border-bottom: 1px solid var(--color-border-light);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.8);
+    }
+    
+    .nav {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+    
+    .logo-icon {
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logo-icon svg { width: 1.25rem; height: 1.25rem; color: white; }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-link:hover { color: var(--color-text-primary); }
+    .nav-link svg { width: 1rem; height: 1rem; }
+    
+    .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: var(--space-6);
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-6);
+    }
+    
+    .page-title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--tracking-tight);
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: var(--space-3);
+    }
+    
+    .btn {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-base);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      text-decoration: none;
+    }
+    
+    .btn-secondary {
+      color: var(--color-text-primary);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--color-bg-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .btn-primary {
+      color: white;
+      background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    
+    .btn svg { width: 1rem; height: 1rem; }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: var(--space-2);
+    }
+    
+    .tab {
+      flex: 1;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-base);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+    
+    .tab:hover {
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+    }
+    
+    .tab.active {
+      color: var(--color-primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+    
+    .tab svg { width: 1rem; height: 1rem; }
+    
+    /* Notifications List */
+    .notifications-section {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    
+    .notifications-header {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .section-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+    }
+    
+    .notifications-count {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .notifications-list {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .notification-item {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      gap: var(--space-4);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      animation: slideUp 300ms var(--transition-fast) both;
+    }
+    
+    .notification-item:nth-child(1) { animation-delay: 0ms; }
+    .notification-item:nth-child(2) { animation-delay: 50ms; }
+    .notification-item:nth-child(3) { animation-delay: 100ms; }
+    .notification-item:nth-child(4) { animation-delay: 150ms; }
+    .notification-item:nth-child(5) { animation-delay: 200ms; }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+    
+    .notification-item:hover {
+      background: var(--color-bg-secondary);
+      transform: translateX(4px);
+    }
+    
+    .notification-item.unread {
+      background: rgba(37, 99, 235, 0.02);
+      border-left: 3px solid var(--color-primary);
+    }
+    
+    .notification-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform var(--transition-fast);
+    }
+    
+    .notification-item:hover .notification-icon {
+      transform: scale(1.1);
+    }
+    
+    .notification-icon.order {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
+    }
+    
+    .notification-icon.order svg { color: var(--color-primary); }
+    
+    .notification-icon.milestone {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
+    }
+    
+    .notification-icon.milestone svg { color: var(--color-success); }
+    
+    .notification-icon.message {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+    }
+    
+    .notification-icon.message svg { color: var(--color-warning); }
+    
+    .notification-icon.deadline {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05));
+    }
+    
+    .notification-icon.deadline svg { color: var(--color-error); }
+    
+    .notification-icon.appointment {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+    }
+    
+    .notification-icon.appointment svg { color: #8b5cf6; }
+    
+    .notification-icon svg { width: 1.25rem; height: 1.25rem; }
+    
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .notification-title {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .notification-title.unread {
+      font-weight: var(--font-weight-bold);
+    }
+    
+    .unread-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--color-primary);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    
+    .notification-text {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-relaxed);
+      margin-bottom: var(--space-2);
+    }
+    
+    .notification-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+    }
+    
+    .notification-time {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    
+    .notification-time svg { width: 0.875rem; height: 0.875rem; }
+    
+    .notification-actions {
+      display: flex;
+      gap: var(--space-2);
+      flex-shrink: 0;
+    }
+    
+    .notification-action {
+      padding: var(--space-2);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--color-text-tertiary);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .notification-action:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+    
+    .notification-action svg { width: 1rem; height: 1rem; }
+    
+    .empty-state {
+      padding: var(--space-16);
+      text-align: center;
+    }
+    
+    .empty-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto var(--space-4);
+      background: var(--color-bg-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .empty-icon svg {
+      width: 2rem;
+      height: 2rem;
+      color: var(--color-text-tertiary);
+    }
+    
+    .empty-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-2);
+    }
+    
+    .empty-text {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    @media (max-width: 640px) {
+      .container { padding: var(--space-4); }
+      .page-header { flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+      .tabs { flex-direction: column; }
+      .tab { width: 100%; }
+      .notification-item { flex-direction: column; }
+      .notification-actions { align-self: flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <div class="nav-left">
+        <a href="../index.html" class="logo">
+          <div class="logo-icon">
+            <i data-lucide="compass"></i>
+          </div>
+          <span>VisaOnTrack</span>
+        </a>
+        <a href="order-dashboard.html" class="nav-link">
+          <i data-lucide="folder-kanban"></i>
+          <span>Orders</span>
+        </a>
+        <a href="#" class="nav-link">
+          <i data-lucide="message-square"></i>
+          <span>Messages</span>
+        </a>
+      </div>
+      <div class="nav-left">
+        <a href="notifications.html" class="nav-link">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+          <span style="background: var(--color-primary); color: white; width: 1.25rem; height: 1.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-left: 0.25rem;">3</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Notifications</h1>
+      <div class="header-actions">
+        <button class="btn btn-secondary" id="markAllReadBtn">
+          <i data-lucide="check-double"></i>
+          <span>Mark All Read</span>
+        </button>
+        <button class="btn btn-secondary">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="all">
+        <i data-lucide="bell"></i>
+        <span>All</span>
+      </button>
+      <button class="tab" data-tab="unread">
+        <i data-lucide="circle"></i>
+        <span>Unread</span>
+        <span style="background: var(--color-primary); color: white; width: 1.25rem; height: 1.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">3</span>
+      </button>
+      <button class="tab" data-tab="orders">
+        <i data-lucide="folder-kanban"></i>
+        <span>Orders</span>
+      </button>
+      <button class="tab" data-tab="messages">
+        <i data-lucide="message-square"></i>
+        <span>Messages</span>
+      </button>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="notifications-section">
+      <div class="notifications-header">
+        <div>
+          <h2 class="section-title">All Notifications</h2>
+          <div class="notifications-count">12 notifications • 3 unread</div>
+        </div>
+      </div>
+
+      <div class="notifications-list" id="notificationsList">
+        <!-- Unread Notification 1: Milestone -->
+        <a href="order-detail.html" class="notification-item unread">
+          <div class="notification-icon milestone">
+            <i data-lucide="check-circle"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title unread">
+              <span class="unread-dot"></span>
+              <span>Milestone Completed</span>
+            </div>
+            <div class="notification-text">
+              Provider completed "Document Preparation" milestone for Order #ORD-2025-001.
+            </div>
+            <div class="notification-meta">
+              <div class="notification-time">
+                <i data-lucide="clock"></i>
+                <span>2 hours ago</span>
+              </div>
+              <div class="meta-item">
+                <span>Order: Marriage Visa Application</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-actions">
+            <button class="notification-action" onclick="event.preventDefault(); markAsRead(this);">
+              <i data-lucide="check"></i>
+            </button>
+          </div>
+        </a>
+
+        <!-- Unread Notification 2: Deadline -->
+        <a href="order-detail.html" class="notification-item unread">
+          <div class="notification-icon deadline">
+            <i data-lucide="alert-circle"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title unread">
+              <span class="unread-dot"></span>
+              <span>Upcoming Deadline</span>
+            </div>
+            <div class="notification-text">
+              "Immigration Office Submission" milestone is due in 5 days. Please ensure all documents are ready.
+            </div>
+            <div class="notification-meta">
+              <div class="notification-time">
+                <i data-lucide="clock"></i>
+                <span>5 hours ago</span>
+              </div>
+              <div class="meta-item">
+                <span>Order: Marriage Visa Application</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-actions">
+            <button class="notification-action" onclick="event.preventDefault(); markAsRead(this);">
+              <i data-lucide="check"></i>
+            </button>
+          </div>
+        </a>
+
+        <!-- Unread Notification 3: Message -->
+        <a href="#" class="notification-item unread">
+          <div class="notification-icon message">
+            <i data-lucide="message-square"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title unread">
+              <span class="unread-dot"></span>
+              <span>New Message</span>
+            </div>
+            <div class="notification-text">
+              Bangkok Immigration Services sent a message: "All documents have been prepared and verified. Ready for submission."
+            </div>
+            <div class="notification-meta">
+              <div class="notification-time">
+                <i data-lucide="clock"></i>
+                <span>1 day ago</span>
+              </div>
+              <div class="meta-item">
+                <span>Order: Marriage Visa Application</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-actions">
+            <button class="notification-action" onclick="event.preventDefault(); markAsRead(this);">
+              <i data-lucide="check"></i>
+            </button>
+          </div>
+        </a>
+
+        <!-- Read Notification: Appointment -->
+        <a href="appointments.html" class="notification-item">
+          <div class="notification-icon appointment">
+            <i data-lucide="calendar"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">
+              <span>Appointment Scheduled</span>
+            </div>
+            <div class="notification-text">
+              Provider scheduled "Document Review Meeting" for Feb 2, 2025 at 10:00 AM.
+            </div>
+            <div class="notification-meta">
+              <div class="notification-time">
+                <i data-lucide="clock"></i>
+                <span>2 days ago</span>
+              </div>
+              <div class="meta-item">
+                <span>Order: Marriage Visa Application</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-actions">
+            <button class="notification-action" onclick="event.preventDefault();">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </a>
+
+        <!-- Read Notification: Order -->
+        <a href="order-detail.html" class="notification-item">
+          <div class="notification-icon order">
+            <i data-lucide="folder-kanban"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">
+              <span>Order Created</span>
+            </div>
+            <div class="notification-text">
+              Your order "Marriage Visa Application" has been created and is now active.
+            </div>
+            <div class="notification-meta">
+              <div class="notification-time">
+                <i data-lucide="clock"></i>
+                <span>3 days ago</span>
+              </div>
+              <div class="meta-item">
+                <span>Order: #ORD-2025-001</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-actions">
+            <button class="notification-action" onclick="event.preventDefault();">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </a>
+
+        <!-- Read Notification: Milestone -->
+        <a href="order-detail.html" class="notification-item">
+          <div class="notification-icon milestone">
+            <i data-lucide="check-circle"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">
+              <span>Milestone Completed</span>
+            </div>
+            <div class="notification-text">
+              Provider completed "Initial Consultation" milestone.
+            </div>
+            <div class="notification-meta">
+              <div class="notification-time">
+                <i data-lucide="clock"></i>
+                <span>5 days ago</span>
+              </div>
+              <div class="meta-item">
+                <span>Order: Marriage Visa Application</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-actions">
+            <button class="notification-action" onclick="event.preventDefault();">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </a>
+
+        <!-- More notifications would go here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        e.target.closest('.tab').classList.add('active');
+        
+        const tabType = e.target.closest('.tab').dataset.tab;
+        filterNotifications(tabType);
+      });
+    });
+    
+    // Filter notifications
+    function filterNotifications(type) {
+      const items = document.querySelectorAll('.notification-item');
+      
+      items.forEach(item => {
+        if (type === 'all') {
+          item.style.display = 'flex';
+        } else if (type === 'unread') {
+          if (item.classList.contains('unread')) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        } else if (type === 'orders') {
+          const icon = item.querySelector('.notification-icon.order, .notification-icon.milestone, .notification-icon.deadline');
+          if (icon) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        } else if (type === 'messages') {
+          const icon = item.querySelector('.notification-icon.message');
+          if (icon) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        }
+      });
+    }
+    
+    // Mark as read
+    function markAsRead(button) {
+      const item = button.closest('.notification-item');
+      item.classList.remove('unread');
+      item.querySelector('.notification-title').classList.remove('unread');
+      item.querySelector('.unread-dot')?.remove();
+      
+      // Update unread count
+      updateUnreadCount();
+    }
+    
+    // Mark all as read
+    document.getElementById('markAllReadBtn').addEventListener('click', () => {
+      document.querySelectorAll('.notification-item.unread').forEach(item => {
+        item.classList.remove('unread');
+        item.querySelector('.notification-title').classList.remove('unread');
+        item.querySelector('.unread-dot')?.remove();
+      });
+      updateUnreadCount();
+    });
+    
+    // Update unread count
+    function updateUnreadCount() {
+      const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+      // In real app: update badge count
+      console.log('Unread count:', unreadCount);
+    }
+  </script>
+</body>
+</html>
+

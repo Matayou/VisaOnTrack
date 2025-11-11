@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders Dashboard - VisaOnTrack</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-size-xs: 0.8125rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 0.9375rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --line-height-tight: 1.2;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.6;
+      --tracking-tight: -0.02em;
+      --tracking-normal: -0.01em;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-success: #16a34a;
+      --color-error: #dc2626;
+      --color-warning: #f59e0b;
+      --color-text-primary: #0a0a0a;
+      --color-text-secondary: #525252;
+      --color-text-tertiary: #a3a3a3;
+      --color-bg-primary: #ffffff;
+      --color-bg-secondary: #fafafa;
+      --color-border-light: rgba(0, 0, 0, 0.06);
+      --color-border-medium: rgba(0, 0, 0, 0.12);
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --radius-sm: 0.25rem;
+      --radius-base: 0.5rem;
+      --radius-md: 0.75rem;
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Header */
+    .header {
+      background: var(--color-bg-primary);
+      border-bottom: 1px solid var(--color-border-light);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.8);
+    }
+    
+    .nav {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+    
+    .logo-icon {
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logo-icon svg { width: 1.25rem; height: 1.25rem; color: white; }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-link:hover { color: var(--color-text-primary); }
+    .nav-link.active {
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
+    }
+    .nav-link svg { width: 1rem; height: 1rem; }
+    
+    .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: var(--space-6);
+    }
+    
+    /* Page Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-6);
+    }
+    
+    .page-title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--tracking-tight);
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: var(--space-3);
+    }
+    
+    .btn {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-base);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      text-decoration: none;
+    }
+    
+    .btn-secondary {
+      color: var(--color-text-primary);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--color-bg-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .btn-primary {
+      color: white;
+      background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    
+    .btn svg { width: 1rem; height: 1rem; }
+    
+    /* Filters & Search */
+    .filters-section {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+    
+    .filters-row {
+      display: flex;
+      gap: var(--space-4);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 16rem;
+      height: 2.5rem;
+      padding: 0 var(--space-4);
+      font-size: var(--font-size-base);
+      font-family: inherit;
+      color: var(--color-text-primary);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      transition: all var(--transition-fast);
+      outline: none;
+    }
+    
+    .search-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .filter-select {
+      height: 2.5rem;
+      padding: 0 var(--space-4);
+      font-size: var(--font-size-base);
+      font-family: inherit;
+      color: var(--color-text-primary);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-base);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      outline: none;
+    }
+    
+    .filter-select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    
+    .stat-card {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      transition: all var(--transition-fast);
+      animation: slideUp 300ms var(--transition-fast);
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-border-medium);
+    }
+    
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .stat-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .stat-icon.active {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
+    }
+    
+    .stat-icon.completed {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
+    }
+    
+    .stat-icon.cancelled {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05));
+    }
+    
+    .stat-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+    .stat-icon.active svg { color: var(--color-primary); }
+    .stat-icon.completed svg { color: var(--color-success); }
+    .stat-icon.cancelled svg { color: var(--color-error); }
+    
+    .stat-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .stat-value {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+    }
+    
+    .stat-change {
+      font-size: var(--font-size-xs);
+      color: var(--color-success);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    
+    /* Orders List */
+    .orders-section {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    
+    .orders-header {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .section-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--tracking-tight);
+    }
+    
+    .orders-count {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .order-card {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--color-border-light);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    
+    .order-card:last-child {
+      border-bottom: none;
+    }
+    
+    .order-card:hover {
+      background: var(--color-bg-secondary);
+      transform: translateX(4px);
+    }
+    
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-4);
+      gap: var(--space-4);
+    }
+    
+    .order-info {
+      flex: 1;
+    }
+    
+    .order-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .order-id {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-normal);
+      color: var(--color-text-tertiary);
+    }
+    
+    .order-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .meta-item svg { width: 1rem; height: 1rem; color: var(--color-text-tertiary); }
+    
+    .order-status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-2);
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-base);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+    }
+    
+    .status-badge.active {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
+      color: var(--color-primary);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+    
+    .status-badge.completed {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
+      color: var(--color-success);
+      border: 1px solid rgba(22, 163, 74, 0.2);
+    }
+    
+    .status-badge.cancelled {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05));
+      color: var(--color-error);
+      border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+    
+    .status-badge svg {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+    
+    .order-amount {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+    }
+    
+    .order-progress {
+      margin-top: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .progress-bar {
+      flex: 1;
+      height: 0.5rem;
+      background: var(--color-bg-secondary);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+      border-radius: var(--radius-sm);
+      transition: width 400ms var(--transition-fast);
+    }
+    
+    .progress-text {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+    
+    .empty-state {
+      padding: var(--space-16);
+      text-align: center;
+    }
+    
+    .empty-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto var(--space-4);
+      background: var(--color-bg-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .empty-icon svg {
+      width: 2rem;
+      height: 2rem;
+      color: var(--color-text-tertiary);
+    }
+    
+    .empty-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-2);
+    }
+    
+    .empty-text {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-6);
+    }
+    
+    @media (max-width: 640px) {
+      .container { padding: var(--space-4); }
+      .page-header { flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+      .filters-row { flex-direction: column; }
+      .search-input { width: 100%; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .order-card-header { flex-direction: column; }
+      .order-status { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <div class="nav-left">
+        <a href="../index.html" class="logo">
+          <div class="logo-icon">
+            <i data-lucide="compass"></i>
+          </div>
+          <span>VisaOnTrack</span>
+        </a>
+        <a href="order-dashboard.html" class="nav-link active">
+          <i data-lucide="folder-kanban"></i>
+          <span>Orders</span>
+        </a>
+        <a href="#" class="nav-link">
+          <i data-lucide="message-square"></i>
+          <span>Messages</span>
+        </a>
+      </div>
+      <div class="nav-left">
+        <a href="notifications.html" class="nav-link">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Orders</h1>
+      <div class="header-actions">
+        <button class="btn btn-secondary">
+          <i data-lucide="filter"></i>
+          <span>Filters</span>
+        </button>
+        <button class="btn btn-secondary">
+          <i data-lucide="download"></i>
+          <span>Export</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon active">
+            <i data-lucide="circle"></i>
+          </div>
+        </div>
+        <div class="stat-label">Active Orders</div>
+        <div class="stat-value">1</div>
+        <div class="stat-change">
+          <i data-lucide="arrow-up"></i>
+          <span>Your current project</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon completed">
+            <i data-lucide="check-circle"></i>
+          </div>
+        </div>
+        <div class="stat-label">Completed</div>
+        <div class="stat-value">3</div>
+        <div class="stat-change">
+          <i data-lucide="arrow-up"></i>
+          <span>All time</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon cancelled">
+            <i data-lucide="x-circle"></i>
+          </div>
+        </div>
+        <div class="stat-label">Cancelled</div>
+        <div class="stat-value">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon active">
+            <i data-lucide="calendar"></i>
+          </div>
+        </div>
+        <div class="stat-label">Total Spent</div>
+        <div class="stat-value">฿75,000</div>
+        <div class="stat-change">
+          <i data-lucide="arrow-up"></i>
+          <span>Across all orders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="filters-row">
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Search orders..."
+          id="searchInput"
+        />
+        <select class="filter-select" id="statusFilter">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <select class="filter-select" id="dateFilter">
+          <option value="">All Time</option>
+          <option value="this-month">This Month</option>
+          <option value="last-month">Last Month</option>
+          <option value="this-year">This Year</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Orders List -->
+    <div class="orders-section">
+      <div class="orders-header">
+        <div>
+          <h2 class="section-title">All Orders</h2>
+          <div class="orders-count">Showing 4 orders</div>
+        </div>
+      </div>
+
+      <div class="orders-list">
+        <!-- Active Order -->
+        <a href="order-detail.html" class="order-card">
+          <div class="order-card-header">
+            <div class="order-info">
+              <div class="order-title">
+                Marriage Visa Application
+                <span class="order-id">#ORD-2025-001</span>
+              </div>
+              <div class="order-meta">
+                <div class="meta-item">
+                  <i data-lucide="calendar"></i>
+                  <span>Started: Jan 15, 2025</span>
+                </div>
+                <div class="meta-item">
+                  <i data-lucide="user"></i>
+                  <span>Bangkok Immigration Services</span>
+                </div>
+                <div class="meta-item">
+                  <i data-lucide="flag"></i>
+                  <span>Due: Feb 20, 2025</span>
+                </div>
+              </div>
+              <div class="order-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 60%;"></div>
+                </div>
+                <div class="progress-text">3 / 5 milestones completed</div>
+              </div>
+            </div>
+            <div class="order-status">
+              <span class="status-badge active">
+                <i data-lucide="circle"></i>
+                <span>Active</span>
+              </span>
+              <div class="order-amount">฿25,000</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Completed Order -->
+        <a href="#" class="order-card">
+          <div class="order-card-header">
+            <div class="order-info">
+              <div class="order-title">
+                Retirement Visa Extension
+                <span class="order-id">#ORD-2024-089</span>
+              </div>
+              <div class="order-meta">
+                <div class="meta-item">
+                  <i data-lucide="calendar"></i>
+                  <span>Completed: Dec 10, 2024</span>
+                </div>
+                <div class="meta-item">
+                  <i data-lucide="user"></i>
+                  <span>Chiang Mai Visa Solutions</span>
+                </div>
+              </div>
+              <div class="order-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+                <div class="progress-text">5 / 5 milestones completed</div>
+              </div>
+            </div>
+            <div class="order-status">
+              <span class="status-badge completed">
+                <i data-lucide="check-circle"></i>
+                <span>Completed</span>
+              </span>
+              <div class="order-amount">฿15,000</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Completed Order 2 -->
+        <a href="#" class="order-card">
+          <div class="order-card-header">
+            <div class="order-info">
+              <div class="order-title">
+                Work Permit Application
+                <span class="order-id">#ORD-2024-078</span>
+              </div>
+              <div class="order-meta">
+                <div class="meta-item">
+                  <i data-lucide="calendar"></i>
+                  <span>Completed: Nov 22, 2024</span>
+                </div>
+                <div class="meta-item">
+                  <i data-lucide="user"></i>
+                  <span>Bangkok Immigration Services</span>
+                </div>
+              </div>
+              <div class="order-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+                <div class="progress-text">4 / 4 milestones completed</div>
+              </div>
+            </div>
+            <div class="order-status">
+              <span class="status-badge completed">
+                <i data-lucide="check-circle"></i>
+                <span>Completed</span>
+              </span>
+              <div class="order-amount">฿20,000</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Completed Order 3 -->
+        <a href="#" class="order-card">
+          <div class="order-card-header">
+            <div class="order-info">
+              <div class="order-title">
+                Tourist Visa to Non-Immigrant
+                <span class="order-id">#ORD-2024-065</span>
+              </div>
+              <div class="order-meta">
+                <div class="meta-item">
+                  <i data-lucide="calendar"></i>
+                  <span>Completed: Oct 15, 2024</span>
+                </div>
+                <div class="meta-item">
+                  <i data-lucide="user"></i>
+                  <span>Phuket Visa Experts</span>
+                </div>
+              </div>
+              <div class="order-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+                <div class="progress-text">3 / 3 milestones completed</div>
+              </div>
+            </div>
+            <div class="order-status">
+              <span class="status-badge completed">
+                <i data-lucide="check-circle"></i>
+                <span>Completed</span>
+              </span>
+              <div class="order-amount">฿15,000</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const cards = document.querySelectorAll('.order-card');
+      
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(query)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+    
+    // Filter functionality
+    document.getElementById('statusFilter').addEventListener('change', (e) => {
+      const status = e.target.value;
+      const cards = document.querySelectorAll('.order-card');
+      
+      cards.forEach(card => {
+        if (!status) {
+          card.style.display = 'block';
+          return;
+        }
+        
+        const badge = card.querySelector('.status-badge');
+        const badgeStatus = badge.className.includes('active') ? 'active' : 
+                           badge.className.includes('completed') ? 'completed' : 'cancelled';
+        
+        if (badgeStatus === status) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

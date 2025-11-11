@@ -29,10 +29,8 @@ function configureClient() {
     baseUrl = publicApiUrl;
   } else if (apiUrl) {
     baseUrl = apiUrl;
-  } else if (typeof globalThis !== 'undefined' && 'window' in globalThis) {
-    // Browser: try to use relative path
-    baseUrl = '/api';
   }
+  // Removed the browser fallback to '/api' - always use explicit URL in development
 
   // Configure OpenAPI client
   OpenAPI.BASE = baseUrl;
@@ -69,4 +67,7 @@ export const api = {
 
 // Re-export types and models
 export type * from './index';
+
+// Re-export enums as values (not types)
+export { UserRole } from './models/UserRole';
 

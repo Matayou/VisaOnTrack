@@ -13,10 +13,10 @@ import {
   Lightbulb,
   Sparkles,
   TrendingUp,
-  Check,
   MousePointerClick,
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 
 type AutoSaveStatus = 'idle' | 'saving' | 'saved';
 
@@ -38,7 +38,6 @@ export default function BusinessDetailsPage() {
 
   const [descriptionLength, setDescriptionLength] = useState(0);
   const [descriptionHint, setDescriptionHint] = useState('Tip: Mention specific visa types you specialize in');
-  const [showExample, setShowExample] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +75,7 @@ export default function BusinessDetailsPage() {
         setTimeout(() => {
           setAutoSaveStatus('idle');
         }, 2000);
-      } catch (err) {
+      } catch {
         setAutoSaveStatus('idle');
       }
     }, 800);
@@ -108,9 +107,8 @@ export default function BusinessDetailsPage() {
 
   const handleShowExample = () => {
     const example =
-      "We specialize in marriage visas, retirement visas, and business visas for Thailand. With 10+ years of experience and a 98% success rate, we've helped over 500 families successfully navigate the Thai immigration process. Our team speaks English, Thai, and Chinese fluently.";
+      "We specialize in marriage visas, retirement visas, and business visas for Thailand. With 10+ years of experience and a 98% success rate, we&rsquo;ve helped over 500 families successfully navigate the Thai immigration process. Our team speaks English, Thai, and Chinese fluently.";
     setDescription(example);
-    setShowExample(true);
     triggerAutoSave();
   };
 
@@ -139,15 +137,18 @@ export default function BusinessDetailsPage() {
       console.log('[BusinessDetailsPage] Provider created successfully:', result);
 
       router.push('/onboarding/provider/services');
-    } catch (err: any) {
-      console.error('[BusinessDetailsPage] Provider creation failed:', err);
+    } catch (error: unknown) {
+      const apiError = isApiError(error) ? error : null;
+      console.error('[BusinessDetailsPage] Provider creation failed:', error);
       
-      if (err?.status === 401) {
+      if (apiError?.status === 401) {
         setError('You must be logged in to continue. Please sign in.');
-      } else if (err?.status === 403) {
+      } else if (apiError?.status === 403) {
         setError('You must have a PROVIDER role to create a provider profile.');
       } else {
-        setError(err?.body?.message || 'An error occurred. Please try again.');
+        setError(
+          apiError ? getApiErrorMessage(apiError, 'An error occurred. Please try again.') : 'An error occurred. Please try again.',
+        );
       }
       setIsLoading(false);
     }
@@ -354,7 +355,7 @@ export default function BusinessDetailsPage() {
                 />
                 <span className="text-xs text-primary bg-primary/5 border border-primary/10 px-3 py-1.5 rounded-md flex items-center gap-1.5">
                   <Lightbulb className="w-3.5 h-3.5" aria-hidden="true" />
-                  Providers with 5+ years get a "Verified Expert" badge
+                  Providers with 5+ years get a &ldquo;Verified Expert&rdquo; badge
                 </span>
               </div>
 
@@ -482,12 +483,6 @@ export default function BusinessDetailsPage() {
             <button
               type="submit"
               disabled={isLoading}
-              onKeyDown={(e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !isLoading) {
-                  e.preventDefault();
-                  handleSubmit(e as any);
-                }
-              }}
               aria-label={isLoading ? 'Saving business details' : 'Continue to next step'}
               aria-disabled={isLoading}
               className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-150 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${

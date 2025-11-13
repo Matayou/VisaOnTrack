@@ -57,8 +57,6 @@ export default function CredentialsPage() {
   const handleFileUpload = async (
     files: FileList | null,
     setFiles: React.Dispatch<React.SetStateAction<FileUpload[]>>,
-    existingFiles: FileUpload[],
-    isRequired: boolean
   ) => {
     if (!files || files.length === 0) return;
 
@@ -84,18 +82,17 @@ export default function CredentialsPage() {
       status: 'uploading' as const,
     }));
 
-    setFiles([...existingFiles, ...newFiles]);
+    setFiles((prev) => [...prev, ...newFiles]);
 
     // Simulate upload progress
     for (const fileUpload of newFiles) {
-      simulateUpload(fileUpload, setFiles, existingFiles);
+      simulateUpload(fileUpload, setFiles);
     }
   };
 
   const simulateUpload = (
     fileUpload: FileUpload,
     setFiles: React.Dispatch<React.SetStateAction<FileUpload[]>>,
-    existingFiles: FileUpload[]
   ) => {
     let progress = 0;
     const interval = setInterval(() => {
@@ -103,7 +100,7 @@ export default function CredentialsPage() {
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
-        completeUpload(fileUpload, setFiles, existingFiles);
+        completeUpload(fileUpload, setFiles);
       }
 
       setFiles((prev) =>
@@ -115,7 +112,6 @@ export default function CredentialsPage() {
   const completeUpload = (
     fileUpload: FileUpload,
     setFiles: React.Dispatch<React.SetStateAction<FileUpload[]>>,
-    existingFiles: FileUpload[]
   ) => {
     setFiles((prev) =>
       prev.map((f) =>
@@ -140,19 +136,15 @@ export default function CredentialsPage() {
   const handleDrop = (
     e: React.DragEvent,
     setFiles: React.Dispatch<React.SetStateAction<FileUpload[]>>,
-    existingFiles: FileUpload[],
-    isRequired: boolean
   ) => {
     e.preventDefault();
     setIsDragging(false);
-    handleFileUpload(e.dataTransfer.files, setFiles, existingFiles, isRequired);
+    handleFileUpload(e.dataTransfer.files, setFiles);
   };
 
   const handleKeyDown = (
     e: React.KeyboardEvent,
     setFiles: React.Dispatch<React.SetStateAction<FileUpload[]>>,
-    existingFiles: FileUpload[],
-    isRequired: boolean,
     inputRef: React.RefObject<HTMLInputElement>
   ) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -192,8 +184,12 @@ export default function CredentialsPage() {
       }
 
       router.push('/onboarding/provider/credentials/complete');
-    } catch (err: any) {
-      setError(err?.body?.message || 'An error occurred. Please try again.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message || 'An error occurred. Please try again.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
       setIsLoading(false);
     }
   };
@@ -256,9 +252,9 @@ export default function CredentialsPage() {
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              onDrop={(e) => handleDrop(e, setLicenseFiles, licenseFiles, true)}
+              onDrop={(e) => handleDrop(e, setLicenseFiles)}
               onClick={() => licenseInputRef.current?.click()}
-              onKeyDown={(e) => handleKeyDown(e, setLicenseFiles, licenseFiles, true, licenseInputRef)}
+              onKeyDown={(e) => handleKeyDown(e, setLicenseFiles, licenseInputRef)}
             >
               <div className="w-12 h-12 bg-primary/10 rounded-base flex items-center justify-center mb-4 mx-auto transition-transform duration-150">
                 <Upload className="w-6 h-6 text-primary" aria-hidden="true" />
@@ -272,7 +268,7 @@ export default function CredentialsPage() {
                 type="file"
                 accept=".pdf,.png,.jpg,.jpeg"
                 className="hidden"
-                onChange={(e) => handleFileUpload(e.target.files, setLicenseFiles, licenseFiles, true)}
+                onChange={(e) => handleFileUpload(e.target.files, setLicenseFiles)}
               />
             </div>
 
@@ -360,9 +356,9 @@ export default function CredentialsPage() {
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              onDrop={(e) => handleDrop(e, setCertFiles, certFiles, false)}
+              onDrop={(e) => handleDrop(e, setCertFiles)}
               onClick={() => certInputRef.current?.click()}
-              onKeyDown={(e) => handleKeyDown(e, setCertFiles, certFiles, false, certInputRef)}
+              onKeyDown={(e) => handleKeyDown(e, setCertFiles, certInputRef)}
             >
               <div className="w-12 h-12 bg-primary/10 rounded-base flex items-center justify-center mb-4 mx-auto transition-transform duration-150">
                 <Upload className="w-6 h-6 text-primary" aria-hidden="true" />
@@ -377,7 +373,7 @@ export default function CredentialsPage() {
                 accept=".pdf,.png,.jpg,.jpeg"
                 multiple
                 className="hidden"
-                onChange={(e) => handleFileUpload(e.target.files, setCertFiles, certFiles, false)}
+                onChange={(e) => handleFileUpload(e.target.files, setCertFiles)}
               />
             </div>
 
@@ -468,12 +464,6 @@ export default function CredentialsPage() {
             <button
               type="submit"
               disabled={isLoading || licenseFiles.length === 0 || licenseFiles.some((f) => f.status !== 'complete')}
-              onKeyDown={(e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !isLoading && licenseFiles.length > 0 && !licenseFiles.some((f) => f.status !== 'complete')) {
-                  e.preventDefault();
-                  handleSubmit(e as any);
-                }
-              }}
               aria-label={isLoading ? 'Submitting credentials' : 'Submit credentials for review'}
               aria-disabled={isLoading || licenseFiles.length === 0 || licenseFiles.some((f) => f.status !== 'complete')}
               className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-150 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, ShieldCheck, Clock } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 
 // Email typo detection
 const commonTypos: Record<string, string> = {
@@ -169,11 +170,14 @@ export default function LoginPage() {
         // Fallback to landing page if user fetch fails
         router.push('/');
       }
-    } catch (err: any) {
-      if (err?.body?.code === 'UNAUTHORIZED' || err?.status === 401) {
+    } catch (error: unknown) {
+      if (isApiError(error) && (error.body?.code === 'UNAUTHORIZED' || error.status === 401)) {
         setError('Invalid email or password');
       } else {
-        setError(err?.body?.message || 'An error occurred. Please try again.');
+        const message = isApiError(error)
+          ? getApiErrorMessage(error, 'An error occurred. Please try again.')
+          : 'An error occurred. Please try again.';
+        setError(message);
       }
     } finally {
       setIsLoading(false);
@@ -337,7 +341,7 @@ export default function LoginPage() {
 
           {/* Sign Up Link */}
           <div className="text-center">
-            <span className="text-sm text-text-secondary">Don't have an account? </span>
+            <span className="text-sm text-text-secondary">Don&rsquo;t have an account? </span>
             <Link href="/auth/register" className="font-medium text-primary no-underline transition-colors duration-150 hover:text-primary-hover">
               Create account
             </Link>

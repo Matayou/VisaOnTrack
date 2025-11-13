@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Compass, Briefcase, Check, CheckCircle, ArrowRight, AlertCircle, LogOut } from 'lucide-react';
 import { api, type UserRole } from '@visaontrack/client';
 import { logout } from '@/lib/auth';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 
 type AccountType = 'SEEKER' | 'PROVIDER' | null;
 
@@ -44,9 +45,9 @@ export default function AccountTypePage() {
           return;
         }
         setIsCheckingVerification(false);
-      } catch (err: any) {
+      } catch (error: unknown) {
         // If not authenticated, redirect to login
-        if (err?.status === 401) {
+        if (isApiError(error) && error.status === 401) {
           router.push('/auth/login');
           return;
         }
@@ -92,15 +93,18 @@ export default function AccountTypePage() {
       } else {
         router.push('/onboarding/provider/welcome');
       }
-    } catch (err: any) {
-      if (err?.status === 401) {
+    } catch (error: unknown) {
+      const apiError = isApiError(error) ? error : null;
+      if (apiError?.status === 401) {
         setError('You must be logged in to continue. Please sign in.');
-      } else if (err?.status === 400) {
+      } else if (apiError?.status === 400) {
         setError('Invalid request. Please try again.');
-      } else if (err?.status === 404) {
+      } else if (apiError?.status === 404) {
         setError('User not found. Please try again.');
       } else {
-        setError(err?.body?.message || 'An error occurred. Please try again.');
+        setError(
+          apiError ? getApiErrorMessage(apiError, 'An error occurred. Please try again.') : 'An error occurred. Please try again.',
+        );
       }
       setIsLoading(false);
     }
@@ -146,7 +150,7 @@ export default function AccountTypePage() {
             What brings you to VisaOnTrack?
           </h1>
           <p className="text-lg text-text-secondary animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both]">
-            Choose how you'd like to use the platform
+            Choose how you&rsquo;d like to use the platform
           </p>
         </div>
 
@@ -157,7 +161,7 @@ export default function AccountTypePage() {
             role="button"
             tabIndex={0}
             aria-label="Select Visa Seeker account type"
-            aria-selected={selectedType === 'SEEKER'}
+            aria-pressed={selectedType === 'SEEKER'}
             onClick={() => handleCardClick('SEEKER')}
             onKeyDown={(e) => handleCardKeyDown(e, 'SEEKER')}
             className={`relative p-10 bg-bg-primary border-2 rounded-lg cursor-pointer transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_500ms_both] ${
@@ -196,7 +200,7 @@ export default function AccountTypePage() {
             </div>
 
             {/* Card Title */}
-            <h2 className="text-2xl font-semibold mb-3">I'm a Visa Seeker</h2>
+            <h2 className="text-2xl font-semibold mb-3">I&rsquo;m a Visa Seeker</h2>
 
             {/* Card Description */}
             <p className="text-base text-text-secondary mb-6 leading-relaxed">
@@ -224,7 +228,7 @@ export default function AccountTypePage() {
             role="button"
             tabIndex={0}
             aria-label="Select Service Provider account type"
-            aria-selected={selectedType === 'PROVIDER'}
+            aria-pressed={selectedType === 'PROVIDER'}
             onClick={() => handleCardClick('PROVIDER')}
             onKeyDown={(e) => handleCardKeyDown(e, 'PROVIDER')}
             className={`relative p-10 bg-bg-primary border-2 rounded-lg cursor-pointer transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_600ms_both] ${
@@ -263,11 +267,11 @@ export default function AccountTypePage() {
             </div>
 
             {/* Card Title */}
-            <h2 className="text-2xl font-semibold mb-3">I'm a Service Provider</h2>
+            <h2 className="text-2xl font-semibold mb-3">I&rsquo;m a Service Provider</h2>
 
             {/* Card Description */}
             <p className="text-base text-text-secondary mb-6 leading-relaxed">
-              I'm an immigration professional looking to connect with clients
+              I&rsquo;m an immigration professional looking to connect with clients
             </p>
 
             {/* Features List */}

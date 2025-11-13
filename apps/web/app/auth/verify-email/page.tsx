@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, CheckCircle, AlertCircle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { api } from '@visaontrack/client';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 
 type VerificationState = 'idle' | 'checking' | 'success' | 'error' | 'no-token';
 
@@ -68,27 +69,29 @@ export default function VerifyEmailPage() {
           router.push('/onboarding/account-type');
         }, 2000);
       })
-      .catch(async (err: any) => {
+      .catch(async (error: unknown) => {
         // If verification already succeeded, ignore this error (prevents double-render issues)
         if (verificationSucceeded.current) {
           return;
         }
-        
+
         // Log full error for debugging
+        const apiError = isApiError(error) ? error : null;
         console.error('[VerifyEmailPage] Verification error:', {
-          status: err?.status,
-          statusText: err?.statusText,
-          message: err?.message,
-          body: err?.body,
-          url: err?.url,
+          status: apiError?.status,
+          statusText: apiError?.statusText,
+          message: apiError?.message,
+          body: apiError?.body,
         });
-        
+
         // Extract error message from response body
-        const errorMessage = err?.body?.message || err?.message || 'An error occurred while verifying your email.';
-        const errorCode = err?.body?.code;
-        
+        const fallbackMessage = 'An error occurred while verifying your email.';
+        const errorMessage = apiError ? getApiErrorMessage(apiError, fallbackMessage) : fallbackMessage;
+        const normalizedMessage = errorMessage.toLowerCase();
+        const errorCode = apiError?.body?.code;
+
         // If error is "already verified", check user status and treat as success
-        if (err?.status === 400 && errorMessage.toLowerCase().includes('already verified')) {
+        if (apiError?.status === 400 && normalizedMessage.includes('already verified')) {
           try {
             // Check if user's email is actually verified
             const user = await api.users.getCurrentUser();
@@ -106,9 +109,9 @@ export default function VerifyEmailPage() {
             // If we can't check user status, fall through to error handling
           }
         }
-        
+
         // Handle 401 Unauthorized - token invalid or expired
-        if (err?.status === 401) {
+        if (apiError?.status === 401) {
           setState('error');
           // Use the actual backend error message if available, otherwise use generic message
           const message = errorCode === 'UNAUTHORIZED' && errorMessage 
@@ -120,9 +123,9 @@ export default function VerifyEmailPage() {
         
         // Handle other errors
         setState('error');
-        if (err?.status === 400) {
+        if (apiError?.status === 400) {
           // Check if it's an "already verified" error that we couldn't confirm
-          if (errorMessage.toLowerCase().includes('already verified')) {
+          if (normalizedMessage.includes('already verified')) {
             setMessage('Your email appears to be already verified. If you continue to see this error, please try logging in.');
           } else {
             setMessage(errorMessage);
@@ -131,7 +134,7 @@ export default function VerifyEmailPage() {
           setMessage(errorMessage);
         }
       });
-  }, [searchParams, router]);
+  }, [searchParams, router, state]);
 
   const handleResendVerification = async () => {
     setIsResending(true);
@@ -139,26 +142,31 @@ export default function VerifyEmailPage() {
     setResendSuccess(false);
 
     try {
-      const response = await api.auth.resendVerification();
+      const response = (await api.auth.resendVerification()) as Awaited<
+        ReturnType<typeof api.auth.resendVerification>
+      > & { verificationLink?: string };
       setResendSuccess(true);
       setResendError(null);
       
       // Update dev verification link if available in response
-      if ((response as any).verificationLink) {
-        setDevVerificationLink((response as any).verificationLink);
+      if (response.verificationLink) {
+        setDevVerificationLink(response.verificationLink);
         // Also store in sessionStorage for persistence
-        sessionStorage.setItem('devVerificationLink', (response as any).verificationLink);
+        sessionStorage.setItem('devVerificationLink', response.verificationLink);
       }
-    } catch (err: any) {
+    } catch (error: unknown) {
+      const apiError = isApiError(error) ? error : null;
       console.error('[VerifyEmailPage] Resend verification error:', {
-        status: err?.status,
-        body: err?.body,
-        message: err?.message,
+        status: apiError?.status,
+        body: apiError?.body,
+        message: apiError?.message,
       });
       
-      const errorMessage = err?.body?.message || err?.message || 'Failed to resend verification email.';
+      const errorMessage = apiError
+        ? getApiErrorMessage(apiError, 'Failed to resend verification email.')
+        : 'Failed to resend verification email.';
       
-      if (err?.status === 400) {
+      if (apiError?.status === 400) {
         if (errorMessage.toLowerCase().includes('already verified')) {
           setResendError('Your email is already verified. You can proceed to onboarding.');
           // If already verified, redirect after a moment
@@ -168,9 +176,9 @@ export default function VerifyEmailPage() {
         } else {
           setResendError(errorMessage);
         }
-      } else if (err?.status === 401) {
+      } else if (apiError?.status === 401) {
         setResendError('Please sign in to resend verification email.');
-      } else if (err?.status === 429) {
+      } else if (apiError?.status === 429) {
         setResendError('Too many requests. Please try again in a few minutes.');
       } else {
         setResendError(errorMessage);
@@ -208,7 +216,7 @@ export default function VerifyEmailPage() {
             {state === 'success'
               ? 'Redirecting to onboarding...'
               : state === 'error'
-              ? 'We couldn\'t verify your email address'
+              ? 'We couldn&rsquo;t verify your email address'
               : state === 'checking'
               ? 'Please wait while we verify your email'
               : 'We sent a verification link to your email address'}
@@ -247,7 +255,7 @@ export default function VerifyEmailPage() {
           {state === 'no-token' && (
             <div className="text-center mb-6">
               <p className="text-sm text-text-secondary mb-6">
-                We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.
+                We&rsquo;ve sent a verification link to your email address. Please check your inbox and click the link to verify your account.
               </p>
               
               {/* Dev-only: Show verification link for local development */}
@@ -282,7 +290,7 @@ export default function VerifyEmailPage() {
               )}
               
               <p className="text-xs text-text-tertiary mb-6">
-                Didn't receive the email? Check your spam folder or request a new verification email.
+                Didn&rsquo;t receive the email? Check your spam folder or request a new verification email.
               </p>
             </div>
           )}

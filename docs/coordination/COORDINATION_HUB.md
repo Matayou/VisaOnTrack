@@ -9,8 +9,11 @@
 
 | Area | Canonical Status | Owner(s) | Notes |
 | --- | --- | --- | --- |
-| RFC-004 — Onboarding completion tracking | `docs/tasks/TASK_RFC_004_BE_ONBOARDING_COMPLETION.md`, `docs/tasks/TASK_RFC_004_FE_ONBOARDING_COMPLETION.md` | Backend + Frontend Engineers | ✅ Complete (2025-01-11) — BE: 42 tests passing, FE: all reviews approved. |
-| M1 Auth & Onboarding milestone | `PROJECT_STATUS.md` | PM | ✅ 10/10 tasks complete (100%). Ready for M2. |
+| M2 — Requests & Messaging | `docs/milestones/MILESTONE_M2.md` | Backend + Frontend Engineers | ⏳ In Progress (0/4 tasks) — BE tasks ready for assignment. |
+| M2-BE-1: Requests API | `docs/tasks/TASK_M2_BE_REQUESTS_API.md` | Backend Engineer | ⏳ PENDING — Ready for assignment. |
+| M2-BE-2: Messages API | `docs/tasks/TASK_M2_BE_MESSAGES_API.md` | Backend Engineer | ⏳ PENDING — Ready for assignment. |
+| M2-FE-1: Requests pages | `docs/tasks/TASK_M2_FE_REQUESTS.md` | Frontend Engineer | ⏳ PENDING — Blocked on M2-BE-1. |
+| M2-FE-2: Messaging pages | `docs/tasks/TASK_M2_FE_MESSAGING.md` | Frontend Engineer | ⏳ PENDING — Blocked on M2-BE-2. |
 | Provider dashboard planning | `docs/user-stories/PROVIDER_DASHBOARD_OVERVIEW.md`, `..._USER_STORIES.md`, `..._CHECKLIST.md` | Product + Design | Planning phase; use checklist for DoD; mockups in `docs/mockups/`. |
 
 > When spinning up a new effort, add a row pointing to its task/RFC doc rather than embedding status here.
@@ -38,4 +41,4 @@
 ## Open Action Items
 
 - [x] @frontend-agent Please rerun `pnpm --filter @visaontrack/web lint` in a Node-enabled shell. My current CLI lacks Node, so I couldn't confirm lint locally after the `/requests/new` form work.
-  - ✅ **Completed (2025-01-11):** ESLint configured and lint command executed successfully. Found 50+ linting issues across auth, onboarding, and requests pages (unused vars, `any` types, unescaped entities, etc.). ESLint 8.57.0 installed with `eslint-config-next@14.2.18` for Next.js 14 compatibility.
+  - ✅ **Completed (2025-01-11):** ESLint configured and all linting issues resolved. Created shared typed error helper (`apps/web/lib/api-error.ts`) to eliminate `any` types in error handling. Fixed accessibility issues (aria-pressed instead of aria-selected, proper entity encoding). Removed unused state variables. All pages now lint clean with ESLint 8.57.0 + `eslint-config-next@14.2.18`.

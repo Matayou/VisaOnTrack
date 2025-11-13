@@ -1,21 +1,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { api, UserRole } from '@visaontrack/client';
 import { CheckCircle, Clock, ShieldCheck, Info, ArrowRight } from 'lucide-react';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 
 export default function CredentialsCompletePage() {
   const router = useRouter();
-  const [isCompletingOnboarding, setIsCompletingOnboarding] = useState(false);
-  const [onboardingError, setOnboardingError] = useState<string | null>(null);
 
   // Complete onboarding when page loads
   useEffect(() => {
     const completeOnboarding = async () => {
-      setIsCompletingOnboarding(true);
-      setOnboardingError(null);
-
       try {
         await api.users.completeOnboarding({
           requestBody: {
@@ -23,14 +19,17 @@ export default function CredentialsCompletePage() {
           },
         });
         // Onboarding completed successfully (silent success)
-      } catch (err: any) {
+      } catch (error: unknown) {
         // Log error but don't block user experience
-        console.error('[CredentialsComplete] Error completing onboarding:', err);
-        setOnboardingError(
-          err?.body?.message || 'Failed to mark onboarding as complete. You can continue using the app.'
-        );
-      } finally {
-        setIsCompletingOnboarding(false);
+        const apiError = isApiError(error) ? error : null;
+        console.error('[CredentialsComplete] Error completing onboarding:', error);
+        const message = apiError
+          ? getApiErrorMessage(
+              apiError,
+              'Failed to mark onboarding as complete. You can continue using the app.',
+            )
+          : 'Failed to mark onboarding as complete. You can continue using the app.';
+        console.warn(message);
       }
     };
 
@@ -53,7 +52,7 @@ export default function CredentialsCompletePage() {
             Credentials Submitted!
           </h1>
           <p className="text-lg text-text-secondary leading-relaxed animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both]">
-            Thank you for submitting your credentials. We'll review them and notify you once approved.
+            Thank you for submitting your credentials. We&rsquo;ll review them and notify you once approved.
           </p>
         </div>
 
@@ -73,14 +72,14 @@ export default function CredentialsCompletePage() {
                 icon: Clock,
                 status: 'pending',
                 title: 'Under Review',
-                description: "Our team typically reviews submissions within 1-2 business days. We'll email you with any questions.",
+                description: 'Our team typically reviews submissions within 1-2 business days. We&rsquo;ll email you with any questions.',
                 delay: 600,
               },
               {
                 icon: ShieldCheck,
                 status: 'pending',
                 title: 'Approval & Activation',
-                description: "Once approved, you'll receive an email and can start accepting clients immediately.",
+                description: 'Once approved, you&rsquo;ll receive an email and can start accepting clients immediately.',
                 delay: 700,
               },
             ].map((step, index) => (

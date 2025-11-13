@@ -1,7 +1,7 @@
 # VisaOnTrack v2 — Project Status
 
-**Last Updated:** 2025-01-11 (PM Coordination Sweep — RFC-004 Complete, M1 100% Complete)
-**Current Milestone:** M1 — Auth & Onboarding (✅ COMPLETE — 10/10 tasks)
+**Last Updated:** 2025-01-11 (PM Coordination Sweep — M2 Kickoff, M1 100% Complete)
+**Current Milestone:** M2 — Requests & Messaging (⏳ IN PROGRESS — 0/4 tasks)
 **Phase:** Implementation Ready — All Prerequisites Complete
 **Agent Team:** ✅ All agents created and ready
 **Current Task:** M1 Task Assignments Complete ✅ | Ready for Engineer Execution
@@ -157,9 +157,18 @@
   - ✅ **Security Guard Re-Review:** `docs/reviews/SECURITY_GUARD_REVIEW_M1_BE_7_SECURITY_FIXES.md` ✅ APPROVED
   - ✅ **PM Final Approval:** `docs/approvals/PM_FINAL_APPROVAL_M1_BE_7_AUTH_API_SECURITY_FIXES.md` ✅ APPROVED
 
-### 📋 M2 — Requests & Messaging (5–6d) — **PENDING**
-- [ ] Post request/list/thread
-- [ ] Attachments (base caps)
+### 📋 M2 — Requests & Messaging (5–6d) — **IN PROGRESS** (0/4 tasks)
+**Unblocked:** M1 complete (100% — all prerequisites met)
+- [ ] Requests API endpoints (M2-BE-1) — ⏳ PENDING
+- [ ] Messages API endpoints (M2-BE-2) — ⏳ PENDING
+- [ ] Requests list & detail pages (M2-FE-1) — ⏳ PENDING (blocked on M2-BE-1)
+- [ ] Messaging thread & attachments (M2-FE-2) — ⏳ PENDING (blocked on M2-BE-2)
+
+**Current Status:**
+- ⏳ **Backend Engineer:** Requests API (M2-BE-1 — ready for assignment)
+- ⏳ **Backend Engineer:** Messages API (M2-BE-2 — ready for assignment)
+- ⏳ **Frontend Engineer:** Requests pages (M2-FE-1 — blocked on M2-BE-1)
+- ⏳ **Frontend Engineer:** Messaging pages (M2-FE-2 — blocked on M2-BE-2)
 
 ### 📋 M3 — Quotes & Checkout (6–7d) — **PENDING**
 - [ ] Quote composer

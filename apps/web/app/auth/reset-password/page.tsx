@@ -5,6 +5,20 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { api } from '@visaontrack/client';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
+
+type ResetPasswordParams = {
+  requestBody: {
+    token: string;
+    newPassword: string;
+  };
+};
+
+type AuthWithResetPassword = typeof api.auth & {
+  resetPassword: (params: ResetPasswordParams) => Promise<unknown>;
+};
+
+const authApi = api.auth as AuthWithResetPassword;
 
 type PasswordStrength = 0 | 1 | 2 | 3 | 4;
 type PasswordLevel = 'empty' | 'weak' | 'fair' | 'good' | 'strong';
@@ -139,8 +153,7 @@ export default function ResetPasswordPage() {
     setIsLoading(true);
 
     try {
-      // Note: API method may need to be generated - using expected signature
-      await (api.auth as any).resetPassword({
+      await authApi.resetPassword({
         requestBody: {
           token,
           newPassword,
@@ -149,24 +162,26 @@ export default function ResetPasswordPage() {
 
       // Success - redirect to login page
       router.push('/auth/login');
-    } catch (err: any) {
+    } catch (error: unknown) {
+      const apiError = isApiError(error) ? error : null;
       // Handle different error types
-      if (err?.status === 400) {
-        if (err?.body?.code === 'VALIDATION_ERROR') {
+      if (apiError?.status === 400) {
+        if (apiError.body?.code === 'VALIDATION_ERROR') {
           setError('Password does not meet requirements. Please check all criteria.');
         } else {
-          setError(err?.body?.message || 'Invalid reset token or password.');
+          setError(getApiErrorMessage(apiError, 'Invalid reset token or password.'));
         }
-      } else if (err?.status === 401) {
-        if (err?.body?.code === 'UNAUTHORIZED') {
+      } else if (apiError?.status === 401) {
+        if (apiError.body?.code === 'UNAUTHORIZED') {
           setTokenError('Reset token is invalid or has expired. Please request a new password reset link.');
         } else {
           setError('Reset token has expired. Please request a new password reset link.');
         }
-      } else if (err?.status === 429) {
+      } else if (apiError?.status === 429) {
         setError('Too many requests. Please try again in a few minutes.');
       } else {
-        setError(err?.body?.message || 'An error occurred. Please try again.');
+        const fallback = 'An error occurred. Please try again.';
+        setError(apiError ? getApiErrorMessage(apiError, fallback) : fallback);
       }
     } finally {
       setIsLoading(false);

@@ -7,7 +7,8 @@ This directory contains milestone planning and tracking documents.
 ## Contents
 
 - **`MILESTONE_M0.md`** — M0 milestone: Contracts & Skeletons (complete)
-- **`MILESTONE_M1.md`** — M1 milestone: Auth & Onboarding (in progress)
+- **`MILESTONE_M1.md`** — M1 milestone: Auth & Onboarding (complete)
+- **`MILESTONE_M2.md`** — M2 milestone: Requests & Messaging (in progress)
 
 ## Purpose
 

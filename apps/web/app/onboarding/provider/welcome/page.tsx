@@ -6,6 +6,7 @@ import { Briefcase, Clock, ArrowRight, LogOut } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { logout } from '@/lib/auth';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
+import { isApiError } from '@/lib/api-error';
 
 export default function ProviderWelcomePage() {
   const router = useRouter();
@@ -36,9 +37,9 @@ export default function ProviderWelcomePage() {
         }
 
         setIsCheckingVerification(false);
-      } catch (err: any) {
+      } catch (error: unknown) {
         // If not authenticated, redirect to login
-        if (err?.status === 401) {
+        if (isApiError(error) && error.status === 401) {
           router.push('/auth/login');
           return;
         }
@@ -118,7 +119,7 @@ export default function ProviderWelcomePage() {
             Welcome to VisaOnTrack!
           </h1>
           <p className="text-lg text-text-secondary max-w-[42rem] mx-auto animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
-            Let's get your profile set up so you can start connecting with clients
+            Let&rsquo;s get your profile set up so you can start connecting with clients
           </p>
         </div>
 

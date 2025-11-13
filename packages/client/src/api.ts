@@ -70,4 +70,5 @@ export type * from './index';
 
 // Re-export enums as values (not types)
 export { UserRole } from './models/UserRole';
+export { RequestStatus } from './models/RequestStatus';
 

@@ -83,8 +83,12 @@ export default function ServicesPricingPage() {
       }
 
       router.push('/onboarding/provider/credentials');
-    } catch (err: any) {
-      setError(err?.body?.message || 'An error occurred. Please try again.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message || 'An error occurred. Please try again.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
       setIsLoading(false);
     }
   };
@@ -253,12 +257,6 @@ export default function ServicesPricingPage() {
             <button
               type="submit"
               disabled={isLoading}
-              onKeyDown={(e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !isLoading) {
-                  e.preventDefault();
-                  handleSubmit(e as any);
-                }
-              }}
               aria-label={isLoading ? 'Saving services' : 'Continue to next step'}
               aria-disabled={isLoading}
               className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-150 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${

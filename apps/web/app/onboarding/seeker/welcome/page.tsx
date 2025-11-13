@@ -14,6 +14,7 @@ import {
   LogOut,
 } from 'lucide-react';
 import { logout } from '@/lib/auth';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 
 interface Benefit {
   icon: React.ReactNode;
@@ -63,9 +64,9 @@ export default function SeekerWelcomePage() {
           return;
         }
         setIsCheckingVerification(false);
-      } catch (err: any) {
+      } catch (error: unknown) {
         // If not authenticated, redirect to login
-        if (err?.status === 401) {
+        if (isApiError(error) && error.status === 401) {
           router.push('/auth/login');
           return;
         }
@@ -77,15 +78,9 @@ export default function SeekerWelcomePage() {
     checkEmailVerification();
   }, [router]);
 
-  const [isCompletingOnboarding, setIsCompletingOnboarding] = useState(false);
-  const [onboardingError, setOnboardingError] = useState<string | null>(null);
-
   // Complete onboarding when page loads
   useEffect(() => {
     const completeOnboarding = async () => {
-      setIsCompletingOnboarding(true);
-      setOnboardingError(null);
-
       try {
         await api.users.completeOnboarding({
           requestBody: {
@@ -93,14 +88,18 @@ export default function SeekerWelcomePage() {
           },
         });
         // Onboarding completed successfully (silent success)
-      } catch (err: any) {
+      } catch (error: unknown) {
         // Log error but don't block user experience
-        console.error('[SeekerWelcome] Error completing onboarding:', err);
-        setOnboardingError(
-          err?.body?.message || 'Failed to mark onboarding as complete. You can continue using the app.'
+        const apiError = isApiError(error) ? error : null;
+        console.error('[SeekerWelcome] Error completing onboarding:', error);
+        console.warn(
+          apiError
+            ? getApiErrorMessage(
+                apiError,
+                'Failed to mark onboarding as complete. You can continue using the app.',
+              )
+            : 'Failed to mark onboarding as complete. You can continue using the app.',
         );
-      } finally {
-        setIsCompletingOnboarding(false);
       }
     };
 
@@ -161,14 +160,14 @@ export default function SeekerWelcomePage() {
             Welcome to VisaOnTrack!
           </h1>
           <p className="text-base sm:text-lg text-text-secondary animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
-            Let's find the perfect immigration professional for your needs
+            Let&rsquo;s find the perfect immigration professional for your needs
           </p>
         </div>
 
         {/* Content */}
         <div className="px-6 pt-6 pb-6 sm:px-12 sm:pt-10 sm:pb-10">
           <h2 className="text-base font-semibold mb-6 text-text-secondary uppercase tracking-wider text-xs">
-            Here's what you can do
+            Here&rsquo;s what you can do
           </h2>
 
           {/* Benefits Grid */}

@@ -28,20 +28,22 @@
 
 ## 🚀 Backend Engineer
 
-**Current Status:** ✅ Task Complete — Ready for Next Assignment  
-**Active Tasks:** None (task complete, ready for next assignment)
+**Current Status:** ⏳ Task Assigned — Ready to Start  
+**Active Tasks:** M2-BE-1: Requests API Endpoints
 
-**Current Task:** RFC-004-BE: Onboarding Completion Tracking
-- **Task Document:** `docs/tasks/TASK_RFC_004_BE_ONBOARDING_COMPLETION.md`
-- **Assignment Document:** `docs/coordination/BACKEND_ENGINEER_ASSIGNMENT_RFC_004.md`
-- **Status Update:** `docs/coordination/RFC_004_BE_STATUS_UPDATE_2025-01-11.md`
-- **Implementation Summary:** `docs/coordination/RFC_004_BE_COMPLETE_SUMMARY.md`
-- **RFC:** `RFCs/RFC-004-onboarding-completion-tracking.md`
-- **Priority:** 🔴 HIGH — Required for provider gating (RFC-005)
-- **Duration:** 1 day (5.5-7.5 hours)
-- **Status:** ✅ COMPLETE — Implementation & Tests Complete
-- **Dependencies:** None (standalone feature)
-- **Implementation Status:** ✅ Complete (42 tests passing, all code changes verified)
+**Current Task:** M2-BE-1: Requests API Endpoints
+- **Task Document:** `docs/tasks/TASK_M2_BE_REQUESTS_API.md`
+- **Assignment Document:** `docs/coordination/BACKEND_ENGINEER_ASSIGNMENT_M2_BE_1.md`
+- **Priority:** 🔴 HIGH — Core request functionality
+- **Duration:** 2–2.5 days
+- **Status:** ⏳ ASSIGNED — Ready to start
+
+**Next Task:** M2-BE-2: Messages API Endpoints
+- **Task Document:** `docs/tasks/TASK_M2_BE_MESSAGES_API.md`
+- **Assignment Document:** `docs/coordination/BACKEND_ENGINEER_ASSIGNMENT_M2_BE_2.md`
+- **Priority:** 🔴 HIGH — Core messaging functionality
+- **Duration:** 1.5–2 days
+- **Status:** ⏳ ASSIGNED — Ready to start (after M2-BE-1)
 
 **Completed Test Suite:**
 - ✅ auth.service.spec.ts (20+ test cases)
@@ -93,14 +95,20 @@
 
 ## 💻 Frontend Engineer
 
-**Current Status:** ✅ Task Complete — PM Final Approval Granted  
-**Active Tasks:** None (task complete, ready for next assignment)
+**Current Status:** ⏳ Task Assigned — Blocked on Backend  
+**Active Tasks:** M2-FE-1: Requests pages (blocked on M2-BE-1), M2-FE-2: Messaging pages (blocked on M2-BE-2)
 
-**Current Task:** RFC-004-FE: Onboarding Completion Tracking
-- **Status:** ✅ COMPLETE — All reviews approved, PM final approval granted (2025-01-11)
-- **Task Document:** `docs/tasks/TASK_RFC_004_FE_ONBOARDING_COMPLETION.md` (canonical status)
-- **Review Coordination:** `docs/coordination/COORDINATION_RFC_004_FE_REVIEW.md` (archived)
-- **Completion Summary:** `docs/coordination/FRONTEND_ENGINEER_RFC_004_FE_COMPLETE.md` (archived)
+**Current Task:** M2-FE-1: Requests List & Detail Pages
+- **Task Document:** `docs/tasks/TASK_M2_FE_REQUESTS.md`
+- **Priority:** 🔴 HIGH — Core request functionality
+- **Duration:** 1.5–2 days
+- **Status:** ⏳ PENDING — Blocked on M2-BE-1
+
+**Next Task:** M2-FE-2: Messaging Thread & Attachments
+- **Task Document:** `docs/tasks/TASK_M2_FE_MESSAGING.md`
+- **Priority:** 🔴 HIGH — Core messaging functionality
+- **Duration:** 1.5–2 days
+- **Status:** ⏳ PENDING — Blocked on M2-BE-2
 
 **Previous Task:** M1-FE-6 Provider Onboarding
 - **Implementation:** ✅ Complete (5 pages in onboarding flow, 1 page deferred + all fixes)
@@ -135,9 +143,8 @@
 - ✅ M1-FE-1: Landing Page
 
 **Next Tasks:**
-- ✅ RFC-004-FE: Onboarding Completion Tracking (COMPLETE ✅ — All reviews approved, PM final approval granted)
-- ⏳ RFC-005-FE: Implement provider verification gating (BLOCKED — Waiting for RFC-005-BE)
-- ⏳ RFC-003-FE: Implement email verification flow (BLOCKED — Waiting for RFC-003-BE)
+- ⏳ M2-FE-1: Requests List & Detail Pages (BLOCKED — Waiting for M2-BE-1)
+- ⏳ M2-FE-2: Messaging Thread & Attachments (BLOCKED — Waiting for M2-BE-2)
 
 **Blockers:** None (All blockers resolved — Security Guard approved)
 

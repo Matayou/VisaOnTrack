@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Lock, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { api } from '@visaontrack/client';
+import { isApiError } from '@/lib/api-error';
 
 // Email typo detection
 const commonTypos: Record<string, string> = {
@@ -72,8 +72,19 @@ function validateEmail(email: string): ValidationResult {
   };
 }
 
+type ForgotPasswordParams = {
+  requestBody: {
+    email: string;
+  };
+};
+
+type AuthWithForgotPassword = typeof api.auth & {
+  forgotPassword: (params: ForgotPasswordParams) => Promise<unknown>;
+};
+
+const authApi = api.auth as AuthWithForgotPassword;
+
 export default function ForgotPasswordPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [emailValidation, setEmailValidation] = useState<ValidationResult>({ status: 'empty', message: '' });
   const [isLoading, setIsLoading] = useState(false);
@@ -103,8 +114,7 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      // Note: API method may need to be generated - using expected signature
-      await (api.auth as any).forgotPassword({
+      await authApi.forgotPassword({
         requestBody: {
           email,
         },
@@ -112,10 +122,10 @@ export default function ForgotPasswordPage() {
 
       // Always show success message (no user enumeration per RFC-002)
       setIsSuccess(true);
-    } catch (err: any) {
+    } catch (error: unknown) {
       // Even on error, show success message (no user enumeration)
       // Only show error for network issues or rate limiting
-      if (err?.status === 429) {
+      if (isApiError(error) && error.status === 429) {
         setError('Too many requests. Please try again in a few minutes.');
       } else {
         // Still show success to prevent user enumeration

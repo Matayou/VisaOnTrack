@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, ShieldCheck, Clock } from 'lucide-react';
 import { api } from '@visaontrack/client';
+import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 
 // Email typo detection
 const commonTypos: Record<string, string> = {
@@ -223,38 +224,39 @@ export default function RegisterPage() {
       // Combine firstName and lastName into name field (as per API spec)
       const fullName = `${firstName} ${lastName}`.trim();
       
-      const response = await api.auth.register({
+      const response = (await api.auth.register({
         requestBody: {
           email,
           password,
           name: fullName || undefined,
         },
-      });
+      })) as Awaited<ReturnType<typeof api.auth.register>> & { verificationLink?: string };
 
       // Dev-only: Store verification link for local development
       // In production, users would receive this via email
-      if ((response as any).verificationLink) {
-        sessionStorage.setItem('devVerificationLink', (response as any).verificationLink);
+      if (response.verificationLink) {
+        sessionStorage.setItem('devVerificationLink', response.verificationLink);
       }
 
       // Redirect to email verification page after successful registration
       // Email verification is REQUIRED before proceeding to onboarding
       router.push('/auth/verify-email');
-    } catch (err: any) {
-      console.error('[RegisterPage] Registration error:', err);
+    } catch (error: unknown) {
+      const apiError = isApiError(error) ? error : null;
+      console.error('[RegisterPage] Registration error:', error);
       
-      if (err?.status === 400) {
-        if (err?.body?.code === 'BAD_REQUEST') {
-          setError(err.body.message || 'Invalid input. Please check your information.');
-        } else if (err?.body?.code === 'VALIDATION_ERROR') {
-          setError(err.body.message || 'Please check your password requirements.');
+      if (apiError?.status === 400) {
+        if (apiError.body?.code === 'BAD_REQUEST') {
+          setError(apiError.body?.message || 'Invalid input. Please check your information.');
+        } else if (apiError.body?.code === 'VALIDATION_ERROR') {
+          setError(apiError.body?.message || 'Please check your password requirements.');
         } else {
-          setError(err?.body?.message || 'Invalid input. Please check your information.');
+          setError(apiError.body?.message || 'Invalid input. Please check your information.');
         }
-      } else if (err?.status === 429) {
+      } else if (apiError?.status === 429) {
         setError('Too many registration attempts. Please try again later.');
       } else {
-        setError(err?.body?.message || 'An error occurred. Please try again.');
+        setError(apiError ? getApiErrorMessage(apiError, 'An error occurred. Please try again.') : 'An error occurred. Please try again.');
       }
     } finally {
       setIsLoading(false);

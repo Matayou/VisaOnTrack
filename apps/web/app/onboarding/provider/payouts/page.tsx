@@ -60,7 +60,7 @@ export default function PaymentSetupPage() {
               Connect your Stripe account
             </h2>
             <p className="text-base text-text-secondary leading-relaxed mb-6 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
-              We use Stripe Connect to ensure your payments are secure and timely. You'll be redirected to Stripe to complete a quick setup (takes ~2 minutes).
+              We use Stripe Connect to ensure your payments are secure and timely. You&rsquo;ll be redirected to Stripe to complete a quick setup (takes ~2 minutes).
             </p>
             <button
               type="button"

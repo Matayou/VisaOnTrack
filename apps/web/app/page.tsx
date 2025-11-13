@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
+import { isApiError } from '@/lib/api-error';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -66,14 +67,14 @@ export default function LandingPage() {
         // (or redirect to dashboard when it exists)
         console.log('[LandingPage] User authenticated, showing landing page (role:', user.role, ')');
         setIsCheckingAuth(false);
-      } catch (err: any) {
+      } catch (error: unknown) {
         // User is not authenticated - show landing page
-        if (err?.status === 401) {
+        if (isApiError(error) && error.status === 401) {
           console.log('[LandingPage] User not authenticated (401), showing landing page');
           setIsCheckingAuth(false);
         } else {
           // Other errors - show landing page anyway
-          console.error('[LandingPage] Error checking auth:', err);
+          console.error('[LandingPage] Error checking auth:', error);
           setIsCheckingAuth(false);
         }
       }
@@ -283,7 +284,7 @@ export default function LandingPage() {
               Ready to Start Your Visa Journey?
             </h2>
             <p className="text-lg opacity-95 mb-8">
-              Join thousands who've successfully navigated their visa process with VisaOnTrack
+              Join thousands who&rsquo;ve successfully navigated their visa process with VisaOnTrack
             </p>
             <Link
               href="/auth/register"

@@ -126,13 +126,12 @@ export default function SimpleRegisterPage() {
       // Redirect to email verification page after successful registration
       // Email verification is REQUIRED before proceeding to onboarding
       router.push('/auth/verify-email');
-    } catch (err: any) {
-      if (err?.body?.code === 'BAD_REQUEST') {
-        setError(err.body.message || 'Invalid input. Please check your information.');
-      } else if (err?.body?.code === 'VALIDATION_ERROR') {
-        setError(err.body.message || 'Please check your password requirements.');
+    } catch (error: unknown) {
+      console.error('[SimpleRegisterPage] Registration error:', error);
+      if (error instanceof Error) {
+        setError(error.message || 'An error occurred. Please try again.');
       } else {
-        setError(err?.body?.message || 'An error occurred. Please try again.');
+        setError('An error occurred. Please try again.');
       }
     } finally {
       setIsLoading(false);
@@ -190,7 +189,7 @@ export default function SimpleRegisterPage() {
                   </div>
                 )}
               </div>
-              <div className="text-xs text-text-tertiary opacity-100">We'll send you a verification email</div>
+              <div className="text-xs text-text-tertiary opacity-100">We&rsquo;ll send you a verification email</div>
               {emailValidation.status !== 'empty' && (
                 <div
                   className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${

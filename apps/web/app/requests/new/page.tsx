@@ -13,9 +13,11 @@ import {
   CheckCircle2,
   ClipboardList,
   FileText,
+  Globe,
+  Home,
   Loader,
   LogOut,
-  MapPin,
+  Plane,
   Plus,
   Shield,
   Sparkles,
@@ -28,6 +30,11 @@ type DocumentStatus = 'ready' | 'in-progress' | 'need-help';
 interface FormState {
   title: string;
   summary: string;
+  ageRange: string;
+  nationality: string;
+  currentLocation: string;
+  currentVisaExpiry: string;
+  currentVisaType: string;
   visaType: string;
   location: string;
   locationDetail: string;
@@ -42,6 +49,11 @@ type FormField = keyof FormState;
 interface FormErrors {
   title?: string;
   summary?: string;
+  ageRange?: string;
+  nationality?: string;
+  currentLocation?: string;
+  currentVisaExpiry?: string;
+  currentVisaType?: string;
   visaType?: string;
   location?: string;
   locationDetail?: string;
@@ -89,6 +101,169 @@ const documentChecklist = [
   { key: 'family', label: 'Marriage / birth certificates' },
 ];
 
+const nationalityOptions = [
+  { value: 'Afghanistan', label: 'Afghanistan' },
+  { value: 'Albania', label: 'Albania' },
+  { value: 'Algeria', label: 'Algeria' },
+  { value: 'Andorra', label: 'Andorra' },
+  { value: 'Angola', label: 'Angola' },
+  { value: 'Argentina', label: 'Argentina' },
+  { value: 'Armenia', label: 'Armenia' },
+  { value: 'Australia', label: 'Australia' },
+  { value: 'Austria', label: 'Austria' },
+  { value: 'Azerbaijan', label: 'Azerbaijan' },
+  { value: 'Bahamas', label: 'Bahamas' },
+  { value: 'Bahrain', label: 'Bahrain' },
+  { value: 'Bangladesh', label: 'Bangladesh' },
+  { value: 'Belarus', label: 'Belarus' },
+  { value: 'Belgium', label: 'Belgium' },
+  { value: 'Belize', label: 'Belize' },
+  { value: 'Benin', label: 'Benin' },
+  { value: 'Bhutan', label: 'Bhutan' },
+  { value: 'Bolivia', label: 'Bolivia' },
+  { value: 'Bosnia and Herzegovina', label: 'Bosnia and Herzegovina' },
+  { value: 'Botswana', label: 'Botswana' },
+  { value: 'Brazil', label: 'Brazil' },
+  { value: 'Brunei', label: 'Brunei' },
+  { value: 'Bulgaria', label: 'Bulgaria' },
+  { value: 'Cambodia', label: 'Cambodia' },
+  { value: 'Cameroon', label: 'Cameroon' },
+  { value: 'Canada', label: 'Canada' },
+  { value: 'Chile', label: 'Chile' },
+  { value: 'China', label: 'China' },
+  { value: 'Colombia', label: 'Colombia' },
+  { value: 'Costa Rica', label: 'Costa Rica' },
+  { value: 'Croatia', label: 'Croatia' },
+  { value: 'Cuba', label: 'Cuba' },
+  { value: 'Cyprus', label: 'Cyprus' },
+  { value: 'Czech Republic', label: 'Czech Republic' },
+  { value: 'Denmark', label: 'Denmark' },
+  { value: 'Dominican Republic', label: 'Dominican Republic' },
+  { value: 'Ecuador', label: 'Ecuador' },
+  { value: 'Egypt', label: 'Egypt' },
+  { value: 'El Salvador', label: 'El Salvador' },
+  { value: 'Estonia', label: 'Estonia' },
+  { value: 'Ethiopia', label: 'Ethiopia' },
+  { value: 'Fiji', label: 'Fiji' },
+  { value: 'Finland', label: 'Finland' },
+  { value: 'France', label: 'France' },
+  { value: 'Georgia', label: 'Georgia' },
+  { value: 'Germany', label: 'Germany' },
+  { value: 'Ghana', label: 'Ghana' },
+  { value: 'Greece', label: 'Greece' },
+  { value: 'Guatemala', label: 'Guatemala' },
+  { value: 'Honduras', label: 'Honduras' },
+  { value: 'Hong Kong', label: 'Hong Kong' },
+  { value: 'Hungary', label: 'Hungary' },
+  { value: 'Iceland', label: 'Iceland' },
+  { value: 'India', label: 'India' },
+  { value: 'Indonesia', label: 'Indonesia' },
+  { value: 'Iran', label: 'Iran' },
+  { value: 'Iraq', label: 'Iraq' },
+  { value: 'Ireland', label: 'Ireland' },
+  { value: 'Israel', label: 'Israel' },
+  { value: 'Italy', label: 'Italy' },
+  { value: 'Jamaica', label: 'Jamaica' },
+  { value: 'Japan', label: 'Japan' },
+  { value: 'Jordan', label: 'Jordan' },
+  { value: 'Kazakhstan', label: 'Kazakhstan' },
+  { value: 'Kenya', label: 'Kenya' },
+  { value: 'Kuwait', label: 'Kuwait' },
+  { value: 'Kyrgyzstan', label: 'Kyrgyzstan' },
+  { value: 'Laos', label: 'Laos' },
+  { value: 'Latvia', label: 'Latvia' },
+  { value: 'Lebanon', label: 'Lebanon' },
+  { value: 'Lithuania', label: 'Lithuania' },
+  { value: 'Luxembourg', label: 'Luxembourg' },
+  { value: 'Macau', label: 'Macau' },
+  { value: 'Malaysia', label: 'Malaysia' },
+  { value: 'Maldives', label: 'Maldives' },
+  { value: 'Malta', label: 'Malta' },
+  { value: 'Mauritius', label: 'Mauritius' },
+  { value: 'Mexico', label: 'Mexico' },
+  { value: 'Moldova', label: 'Moldova' },
+  { value: 'Mongolia', label: 'Mongolia' },
+  { value: 'Montenegro', label: 'Montenegro' },
+  { value: 'Morocco', label: 'Morocco' },
+  { value: 'Myanmar', label: 'Myanmar' },
+  { value: 'Namibia', label: 'Namibia' },
+  { value: 'Nepal', label: 'Nepal' },
+  { value: 'Netherlands', label: 'Netherlands' },
+  { value: 'New Zealand', label: 'New Zealand' },
+  { value: 'Nigeria', label: 'Nigeria' },
+  { value: 'North Macedonia', label: 'North Macedonia' },
+  { value: 'Norway', label: 'Norway' },
+  { value: 'Oman', label: 'Oman' },
+  { value: 'Pakistan', label: 'Pakistan' },
+  { value: 'Panama', label: 'Panama' },
+  { value: 'Paraguay', label: 'Paraguay' },
+  { value: 'Peru', label: 'Peru' },
+  { value: 'Philippines', label: 'Philippines' },
+  { value: 'Poland', label: 'Poland' },
+  { value: 'Portugal', label: 'Portugal' },
+  { value: 'Qatar', label: 'Qatar' },
+  { value: 'Romania', label: 'Romania' },
+  { value: 'Russia', label: 'Russia' },
+  { value: 'Saudi Arabia', label: 'Saudi Arabia' },
+  { value: 'Serbia', label: 'Serbia' },
+  { value: 'Singapore', label: 'Singapore' },
+  { value: 'Slovakia', label: 'Slovakia' },
+  { value: 'Slovenia', label: 'Slovenia' },
+  { value: 'South Africa', label: 'South Africa' },
+  { value: 'South Korea', label: 'South Korea' },
+  { value: 'Spain', label: 'Spain' },
+  { value: 'Sri Lanka', label: 'Sri Lanka' },
+  { value: 'Sweden', label: 'Sweden' },
+  { value: 'Switzerland', label: 'Switzerland' },
+  { value: 'Taiwan', label: 'Taiwan' },
+  { value: 'Tanzania', label: 'Tanzania' },
+  { value: 'Thailand', label: 'Thailand' },
+  { value: 'Tunisia', label: 'Tunisia' },
+  { value: 'Turkey', label: 'Turkey' },
+  { value: 'Uganda', label: 'Uganda' },
+  { value: 'Ukraine', label: 'Ukraine' },
+  { value: 'United Arab Emirates', label: 'United Arab Emirates' },
+  { value: 'United Kingdom', label: 'United Kingdom' },
+  { value: 'United States', label: 'United States' },
+  { value: 'Uruguay', label: 'Uruguay' },
+  { value: 'Uzbekistan', label: 'Uzbekistan' },
+  { value: 'Venezuela', label: 'Venezuela' },
+  { value: 'Vietnam', label: 'Vietnam' },
+  { value: 'Zambia', label: 'Zambia' },
+  { value: 'Zimbabwe', label: 'Zimbabwe' },
+  { value: 'Other / Not listed', label: 'Other / Not listed' },
+];
+
+const inThailandVisaOptions = [
+  { value: 'TOURIST', label: 'Tourist visa (TR)' },
+  { value: 'NON-IMM-B', label: 'Non-Immigrant B (Work)' },
+  { value: 'NON-IMM-O', label: 'Non-Immigrant O (Marriage/Guardian)' },
+  { value: 'NON-IMM-ED', label: 'Non-Immigrant ED (Education)' },
+  { value: 'RETIREMENT', label: 'Retirement visa' },
+  { value: 'DTV', label: 'Digital nomad (DTV)' },
+  { value: 'OTHER', label: 'Other / Not sure' },
+];
+
+const ageRangeOptions = [
+  { value: '18-49', label: '18 - 49 years' },
+  { value: '50+', label: '50+ years' },
+];
+
+const residencyOptions = [
+  {
+    value: 'IN_THAILAND',
+    label: 'I am currently in Thailand',
+    description: 'Great for extensions or conversions',
+    icon: Home,
+  },
+  {
+    value: 'OUTSIDE_THAILAND',
+    label: 'I am outside Thailand',
+    description: 'Preparing before arriving',
+    icon: Plane,
+  },
+];
+
 const budgetPresets = [
   { label: 'THB 5k - 10k', min: 5000, max: 10000 },
   { label: 'THB 10k - 20k', min: 10000, max: 20000 },
@@ -128,9 +303,14 @@ const createTimelineShortcuts = () => {
 
 const formSteps = [
   {
+    id: 'personal',
+    title: 'Identity basics',
+    subtitle: 'Age range, nationality, and where you are right now.',
+  },
+  {
     id: 'mission',
-    title: 'Share your mission',
-    subtitle: 'Give providers context before they reply.',
+    title: 'Mission headline',
+    subtitle: 'Give providers the title and optional context.',
   },
   {
     id: 'intent',
@@ -152,6 +332,11 @@ const formSteps = [
 const createInitialFormState = (): FormState => ({
   title: '',
   summary: '',
+  ageRange: '',
+  nationality: '',
+  currentLocation: '',
+  currentVisaExpiry: '',
+  currentVisaType: '',
   visaType: '',
   location: '',
   locationDetail: '',
@@ -188,6 +373,36 @@ const computeFormErrors = (state: FormState): FormErrors => {
     errors.summary = 'Describe your situation in at least 40 characters.';
   }
 
+  if (!state.ageRange) {
+    errors.ageRange = 'Select your age range.';
+  }
+
+  if (!state.nationality.trim()) {
+    errors.nationality = 'Let providers know your nationality.';
+  }
+
+  if (!state.currentLocation.trim()) {
+    errors.currentLocation = 'Tell us if you are inside or outside Thailand.';
+  } else if (state.currentLocation === 'IN_THAILAND') {
+    if (!state.currentVisaExpiry) {
+      errors.currentVisaExpiry = 'Share when your current visa expires.';
+    } else {
+      const expiry = new Date(state.currentVisaExpiry);
+      if (Number.isNaN(expiry.getTime())) {
+        errors.currentVisaExpiry = 'Enter a valid expiration date.';
+      } else {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (expiry < today) {
+          errors.currentVisaExpiry = 'Expiration date cannot be in the past.';
+        }
+      }
+    }
+    if (!state.currentVisaType.trim()) {
+      errors.currentVisaType = 'Select the visa you are currently on.';
+    }
+  }
+
   if (!state.visaType) {
     errors.visaType = 'Select the visa type you are pursuing.';
   }
@@ -215,10 +430,11 @@ const computeFormErrors = (state: FormState): FormErrors => {
 };
 
 const stepFieldMap: Record<number, FormField[]> = {
-  0: ['title', 'summary'],
-  1: ['visaType', 'location', 'locationDetail'],
-  2: ['budgetMin', 'budgetMax'],
-  3: ['additionalNotes'],
+  0: ['ageRange', 'nationality', 'currentLocation', 'currentVisaExpiry', 'currentVisaType'],
+  1: ['title', 'summary'],
+  2: ['visaType', 'location', 'locationDetail'],
+  3: ['budgetMin', 'budgetMax'],
+  4: ['additionalNotes'],
 };
 
 type DirectErrorField = Exclude<FormField, 'budgetMin' | 'budgetMax'>;
@@ -226,6 +442,11 @@ type DirectErrorField = Exclude<FormField, 'budgetMin' | 'budgetMax'>;
 const fieldErrorKeyMap: Record<DirectErrorField, keyof FormErrors> = {
   title: 'title',
   summary: 'summary',
+  ageRange: 'ageRange',
+  nationality: 'nationality',
+  currentLocation: 'currentLocation',
+  currentVisaExpiry: 'currentVisaExpiry',
+  currentVisaType: 'currentVisaType',
   visaType: 'visaType',
   location: 'location',
   locationDetail: 'locationDetail',
@@ -244,7 +465,6 @@ const getErrorForField = (field: FormField, errors: FormErrors) => {
 
 const baseCardClass = 'bg-bg-primary border border-border-light rounded-base shadow-sm';
 const sectionCardClass = `${baseCardClass} p-8`;
-const compactCardClass = `${baseCardClass} p-6`;
 const primaryButtonClass =
   'inline-flex items-center justify-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-6 py-3 text-sm font-semibold text-white shadow-xs transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60';
 const outlineButtonClass =
@@ -393,31 +613,6 @@ export default function CreateRequestPage() {
     return sections.join('\n\n').trim();
   }, [documentStatuses, formState, selectedNeeds]);
 
-  const checklistItems = useMemo(
-    () => [
-      {
-        id: 'title',
-        label: 'Title states visa type and timing',
-        complete: !!formState.title && !formErrors.title,
-      },
-      {
-        id: 'summary',
-        label: 'Description covers dependents and status',
-        complete: !!formState.summary && !formErrors.summary,
-      },
-      {
-        id: 'budget',
-        label: 'Budget range reflects service expectations',
-        complete: !!formState.budgetMin && !!formState.budgetMax && !formErrors.budget,
-      },
-      {
-        id: 'documents',
-        label: 'Document readiness shows where help is needed',
-        complete: Object.values(documentStatuses).some((status) => status !== 'in-progress'),
-      },
-    ],
-    [documentStatuses, formErrors, formState],
-  );
   const resetForm = () => {
     setFormState(createInitialFormState());
     setTouchedFields(createInitialTouchedState());
@@ -472,6 +667,12 @@ export default function CreateRequestPage() {
     const requiredFields = stepFieldMap[stepIndex] || [];
     return requiredFields.every((field) => {
       if (field === 'locationDetail' && formState.location !== 'OTHER') {
+        return true;
+      }
+      if (field === 'currentVisaExpiry' && formState.currentLocation !== 'IN_THAILAND') {
+        return true;
+      }
+      if (field === 'currentVisaType' && formState.currentLocation !== 'IN_THAILAND') {
         return true;
       }
       if (field === 'additionalNotes') {
@@ -695,6 +896,26 @@ export default function CreateRequestPage() {
     updateField('summary', next);
   };
 
+  const handleAgeRangeSelect = (value: string) => {
+    updateField('ageRange', value);
+    markFieldTouched('ageRange');
+  };
+
+  const handleResidencySelect = (value: string) => {
+    updateField('currentLocation', value);
+    markFieldTouched('currentLocation');
+    if (value !== 'IN_THAILAND') {
+      setFormState((prev) => ({ ...prev, currentVisaExpiry: '', currentVisaType: '' }));
+      setTouchedFields((prev) => ({ ...prev, currentVisaExpiry: false, currentVisaType: false }));
+      setFormErrors((prev) => {
+        const next = { ...prev };
+        delete next.currentVisaExpiry;
+        delete next.currentVisaType;
+        return next;
+      });
+    }
+  };
+
   const handleVisaSelect = (value: string) => {
     updateField('visaType', value);
     markFieldTouched('visaType');
@@ -724,7 +945,7 @@ export default function CreateRequestPage() {
     markFieldTouched('timeline');
   };
 
-  const renderMissionStep = () => (
+  const renderPersonalStep = () => (
     <section className={sectionCardClass}>
       <div className="flex items-center gap-4 mb-6">
         <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white">
@@ -733,6 +954,184 @@ export default function CreateRequestPage() {
         <div>
           <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
             Step 1
+          </p>
+          <h2 className="text-2xl font-semibold tracking-tight">Tell us about you</h2>
+          <p className="text-text-secondary">Nationality details help providers assess eligibility.</p>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-secondary">Age range</label>
+            <div className="flex flex-wrap gap-3">
+              {ageRangeOptions.map((option) => {
+                const isActive = formState.ageRange === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleAgeRangeSelect(option.value)}
+                    className={`flex-1 min-w-[150px] h-12 rounded-base border px-4 text-base font-semibold transition focus-visible:ring-2 focus-visible:ring-primary/40 flex items-center justify-center ${
+                      isActive
+                        ? 'border-primary bg-primary/5 text-text-primary shadow-xs'
+                        : 'border-border-light text-text-secondary hover:border-primary/40 hover:text-primary'
+                    }`}
+                    aria-pressed={isActive}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-text-tertiary">Requesters must be at least 18 years old.</p>
+            {renderValidationFeedback('ageRange')}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="nationality" className="text-sm font-medium text-text-secondary">
+              Nationality
+            </label>
+            <div
+              className={`relative flex h-12 items-center gap-3 rounded-base border bg-transparent px-4 ${getInputClasses('nationality')}`}
+            >
+              <Globe className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+              <select
+                id="nationality"
+                name="nationality"
+                value={formState.nationality}
+                onChange={(event) => updateField('nationality', event.target.value)}
+                onBlur={() => markFieldTouched('nationality')}
+                className="w-full bg-transparent text-base focus:outline-none appearance-none pr-6 h-full"
+                aria-invalid={Boolean(formErrors.nationality)}
+              >
+                <option value="">Select nationality</option>
+                {nationalityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-4 h-4 text-text-tertiary absolute right-4 pointer-events-none" aria-hidden="true" />
+            </div>
+            {renderValidationFeedback('nationality')}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="rounded-base border border-border-light p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm font-medium text-text-secondary">Current location</p>
+                <p className="text-xs text-text-tertiary">Let providers know where you are starting from.</p>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {residencyOptions.map((option) => {
+                const isActive = formState.currentLocation === option.value;
+                const Icon = option.icon;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleResidencySelect(option.value)}
+                    className={`rounded-base border px-4 py-3 text-left transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                      isActive
+                        ? 'border-primary bg-primary/5 text-text-primary shadow-xs'
+                        : 'border-border-light text-text-secondary hover:border-primary/40 hover:text-primary'
+                    }`}
+                    aria-pressed={isActive}
+                    aria-label={option.label}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span
+                        className={`inline-flex h-10 w-10 items-center justify-center rounded-base ${
+                          isActive ? 'bg-primary/10 text-primary' : 'bg-bg-secondary text-text-tertiary'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" aria-hidden="true" />
+                      </span>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold">{option.label}</p>
+                        <p className="text-xs text-text-tertiary">{option.description}</p>
+                      </div>
+                      {isActive && <Check className="w-4 h-4 text-primary mt-1" aria-hidden="true" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          {renderValidationFeedback('currentLocation')}
+        </div>
+
+        {formState.currentLocation === 'IN_THAILAND' && (
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label htmlFor="currentVisaType" className="text-sm font-medium text-text-secondary">
+                Current visa type
+              </label>
+              <div
+                className={`relative flex items-center gap-3 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('currentVisaType')}`}
+              >
+                <FileText className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+                <select
+                  id="currentVisaType"
+                  name="currentVisaType"
+                  value={formState.currentVisaType}
+                  onChange={(event) => updateField('currentVisaType', event.target.value)}
+                  onBlur={() => markFieldTouched('currentVisaType')}
+                  className="w-full bg-transparent text-base focus:outline-none appearance-none pr-6"
+                  aria-invalid={Boolean(formErrors.currentVisaType)}
+                >
+                  <option value="">Select visa type</option>
+                  {inThailandVisaOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-4 h-4 text-text-tertiary absolute right-4 pointer-events-none" aria-hidden="true" />
+              </div>
+              {renderValidationFeedback('currentVisaType')}
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="currentVisaExpiry" className="text-sm font-medium text-text-secondary">
+                Current visa expiry date
+              </label>
+              <div
+                className={`flex items-center gap-3 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('currentVisaExpiry')}`}
+              >
+                <Calendar className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+                <input
+                  id="currentVisaExpiry"
+                  name="currentVisaExpiry"
+                  type="date"
+                  value={formState.currentVisaExpiry}
+                  onChange={(event) => updateField('currentVisaExpiry', event.target.value)}
+                  onBlur={() => markFieldTouched('currentVisaExpiry')}
+                  className="w-full bg-transparent text-base focus:outline-none"
+                  aria-invalid={Boolean(formErrors.currentVisaExpiry)}
+                />
+              </div>
+              {renderValidationFeedback('currentVisaExpiry')}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+
+  const renderMissionStep = () => (
+    <section className={sectionCardClass}>
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white">
+          <Sparkles className="w-6 h-6" aria-hidden="true" />
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
+            Step 2
           </p>
           <h2 className="text-2xl font-semibold tracking-tight">Share your mission</h2>
           <p className="text-text-secondary">Kick off with a clear title, add context only if needed.</p>
@@ -852,7 +1251,7 @@ export default function CreateRequestPage() {
         </div>
         <div>
           <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
-            Step 2
+            Step 3
           </p>
           <h2 className="text-2xl font-semibold tracking-tight">Visa intent & location</h2>
           <p className="text-text-secondary">
@@ -862,138 +1261,138 @@ export default function CreateRequestPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-base border border-border-light p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-text-secondary">Target visa</p>
-              <p className="text-xs text-text-tertiary">Providers filter by visa class</p>
+          <div className="rounded-base border border-border-light p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-secondary">Target visa</p>
+                <p className="text-xs text-text-tertiary">Providers filter by visa class</p>
+              </div>
+              {formState.visaType && (
+                <span className="text-xs text-primary font-medium">
+                  {visaTypeOptions.find((opt) => opt.value === formState.visaType)?.label}
+                </span>
+              )}
             </div>
-            {formState.visaType && (
-              <span className="text-xs text-primary font-medium">
-                {visaTypeOptions.find((opt) => opt.value === formState.visaType)?.label}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {visaTypeOptions
-              .filter((option) => featuredVisaOptions.includes(option.value))
-              .map((option) => {
-                const isActive = formState.visaType === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                      isActive
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-                    }`}
-                    onClick={() => handleVisaSelect(option.value)}
-                  >
-                    {option.label.replace(/ \(.+\)/, '')}
-                  </button>
-                );
-              })}
-            <button
-              type="button"
-              className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                formState.visaType && !featuredVisaOptions.includes(formState.visaType)
-                  ? 'border-primary text-primary bg-primary/10'
-                  : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-              }`}
-              onClick={() => setIsVisaSelectOpen((prev) => !prev)}
-            >
-              Browse all
-            </button>
-          </div>
-          {isVisaSelectOpen && (
-            <select
-              className="w-full rounded-base border border-border-light bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              value={formState.visaType}
-              onChange={(event) => handleVisaSelect(event.target.value)}
-            >
-              <option value="">Select a visa</option>
-              {visaTypeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          )}
-          {renderValidationFeedback('visaType')}
-        </div>
-
-        <div className="rounded-base border border-border-light p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-text-secondary">Processing location</p>
-              <p className="text-xs text-text-tertiary">Route to specialists in that region</p>
+            <div className="flex flex-wrap gap-2">
+              {visaTypeOptions
+                .filter((option) => featuredVisaOptions.includes(option.value))
+                .map((option) => {
+                  const isActive = formState.visaType === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                        isActive
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                      }`}
+                      onClick={() => handleVisaSelect(option.value)}
+                    >
+                      {option.label.replace(/ \(.+\)/, '')}
+                    </button>
+                  );
+                })}
+              <button
+                type="button"
+                className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                  formState.visaType && !featuredVisaOptions.includes(formState.visaType)
+                    ? 'border-primary text-primary bg-primary/10'
+                    : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                }`}
+                onClick={() => setIsVisaSelectOpen((prev) => !prev)}
+              >
+                Browse all
+              </button>
             </div>
-            {formState.location && (
-              <span className="text-xs text-primary font-medium">
-                {locationOptions.find((opt) => opt.value === formState.location)?.label}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {locationOptions
-              .filter((option) => featuredLocationOptions.includes(option.value))
-              .map((option) => {
-                const isActive = formState.location === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                      isActive
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-                    }`}
-                    onClick={() => handleLocationSelect(option.value)}
-                  >
+            {isVisaSelectOpen && (
+              <select
+                className="w-full rounded-base border border-border-light bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                value={formState.visaType}
+                onChange={(event) => handleVisaSelect(event.target.value)}
+              >
+                <option value="">Select a visa</option>
+                {visaTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
                     {option.label}
-                  </button>
-                );
-              })}
-            <button
-              type="button"
-              className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                formState.location && !featuredLocationOptions.includes(formState.location)
-                  ? 'border-primary text-primary bg-primary/10'
-                  : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-              }`}
-              onClick={() => setIsLocationSelectOpen((prev) => !prev)}
-            >
-              Somewhere else
-            </button>
+                  </option>
+                ))}
+              </select>
+            )}
+            {renderValidationFeedback('visaType')}
           </div>
-          {isLocationSelectOpen && (
-            <select
-              className="w-full rounded-base border border-border-light bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              value={formState.location}
-              onChange={(event) => handleLocationSelect(event.target.value)}
-            >
-              <option value="">Where will you apply?</option>
-              {locationOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          )}
-          {formState.location === 'OTHER' && (
-            <input
-              type="text"
-              className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('locationDetail')}`}
-              placeholder="Share the city or embassy"
-              value={formState.locationDetail}
-              onChange={(event) => updateField('locationDetail', event.target.value)}
-              onBlur={() => markFieldTouched('locationDetail')}
-            />
-          )}
-          {renderValidationFeedback('location')}
+
+          <div className="rounded-base border border-border-light p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-secondary">Processing location</p>
+                <p className="text-xs text-text-tertiary">Route to specialists in that region</p>
+              </div>
+              {formState.location && (
+                <span className="text-xs text-primary font-medium">
+                  {locationOptions.find((opt) => opt.value === formState.location)?.label}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {locationOptions
+                .filter((option) => featuredLocationOptions.includes(option.value))
+                .map((option) => {
+                  const isActive = formState.location === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                        isActive
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                      }`}
+                      onClick={() => handleLocationSelect(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              <button
+                type="button"
+                className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                  formState.location && !featuredLocationOptions.includes(formState.location)
+                    ? 'border-primary text-primary bg-primary/10'
+                    : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                }`}
+                onClick={() => setIsLocationSelectOpen((prev) => !prev)}
+              >
+                Somewhere else
+              </button>
+            </div>
+            {isLocationSelectOpen && (
+              <select
+                className="w-full rounded-base border border-border-light bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                value={formState.location}
+                onChange={(event) => handleLocationSelect(event.target.value)}
+              >
+                <option value="">Where will you apply?</option>
+                {locationOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            )}
+            {formState.location === 'OTHER' && (
+              <input
+                type="text"
+                className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('locationDetail')}`}
+                placeholder="Share the city or embassy"
+                value={formState.locationDetail}
+                onChange={(event) => updateField('locationDetail', event.target.value)}
+                onBlur={() => markFieldTouched('locationDetail')}
+              />
+            )}
+            {renderValidationFeedback('location')}
+          </div>
         </div>
-      </div>
     </section>
   );
 
@@ -1005,7 +1404,7 @@ export default function CreateRequestPage() {
         </div>
         <div>
           <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
-            Step 3
+            Step 4
           </p>
           <h2 className="text-2xl font-semibold tracking-tight">Budget & timing</h2>
           <p className="text-text-secondary">Pick a range or set a custom number. Timeline defaults help.</p>
@@ -1161,196 +1560,200 @@ export default function CreateRequestPage() {
   const documentHelpCount = Object.values(documentStatuses).filter((status) => status === 'need-help').length;
 
   const renderSupportStep = () => (
-  <section className={sectionCardClass}>
-    <div className="flex items-center gap-4 mb-6">
-      <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-white">
-        <Shield className="w-6 h-6" aria-hidden="true" />
+    <section className={sectionCardClass}>
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-white">
+          <Shield className="w-6 h-6" aria-hidden="true" />
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
+            Step 5
+          </p>
+          <h2 className="text-2xl font-semibold tracking-tight">How can experts help?</h2>
+          <p className="text-text-secondary">Collapse sections to keep the main action visible.</p>
+        </div>
       </div>
-      <div>
-        <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
-          Step 4
-        </p>
-        <h2 className="text-2xl font-semibold tracking-tight">How can experts help?</h2>
-        <p className="text-text-secondary">Collapse sections to keep the main action visible.</p>
-      </div>
-    </div>
 
-    <div className="space-y-6">
-      <div className="rounded-base border border-border-light">
-        <button
-          type="button"
-          className="w-full flex items-center justify-between px-4 py-3"
-          onClick={() => setIsAssistanceOpen((prev) => !prev)}
-        >
-          <div>
-            <p className="text-sm font-medium text-text-secondary">Assistance areas</p>
-            <p className="text-xs text-text-tertiary">{selectedNeeds.length} selected</p>
-          </div>
-          <ChevronDown
-            className={`w-4 h-4 text-text-tertiary transition-transform ${isAssistanceOpen ? 'rotate-180' : ''}`}
-          />
-        </button>
-        {isAssistanceOpen && (
-          <div className="border-t border-border-light p-4">
-            <div className="flex flex-wrap gap-3" role="group" aria-label="Select assistance areas">
-              {assistanceNeeds.map((need) => {
-                const isSelected = selectedNeeds.includes(need);
-                return (
-                  <button
-                    key={need}
-                    type="button"
-                    onClick={() => toggleNeed(need)}
-                    className={`px-4 py-2 rounded-base border text-sm transition flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                      isSelected
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border text-text-secondary hover:border-primary/40 hover:text-primary'
-                    }`}
-                    aria-pressed={isSelected}
-                    aria-label={`${need}${isSelected ? ' selected' : ''}`}
-                  >
-                    {isSelected && <Check className="w-4 h-4" aria-hidden="true" />}
-                    {need}
-                  </button>
-                );
-              })}
+      <div className="space-y-6">
+        <div className="rounded-base border border-border-light">
+          <button
+            type="button"
+            className="w-full flex items-center justify-between px-4 py-3"
+            onClick={() => setIsAssistanceOpen((prev) => !prev)}
+          >
+            <div>
+              <p className="text-sm font-medium text-text-secondary">Assistance areas</p>
+              <p className="text-xs text-text-tertiary">{selectedNeeds.length} selected</p>
             </div>
-          </div>
-        )}
-      </div>
+            <ChevronDown
+              className={`w-4 h-4 text-text-tertiary transition-transform ${isAssistanceOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+          {isAssistanceOpen && (
+            <div className="border-t border-border-light p-4">
+              <div className="flex flex-wrap gap-3" role="group" aria-label="Select assistance areas">
+                {assistanceNeeds.map((need) => {
+                  const isSelected = selectedNeeds.includes(need);
+                  return (
+                    <button
+                      key={need}
+                      type="button"
+                      onClick={() => toggleNeed(need)}
+                      className={`px-4 py-2 rounded-base border text-sm transition flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                        isSelected
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border text-text-secondary hover:border-primary/40 hover:text-primary'
+                      }`}
+                      aria-pressed={isSelected}
+                      aria-label={`${need}${isSelected ? ' selected' : ''}`}
+                    >
+                      {isSelected && <Check className="w-4 h-4" aria-hidden="true" />}
+                      {need}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
 
-      <div className="rounded-base border border-border-light">
-        <button
-          type="button"
-          className="w-full flex items-center justify-between px-4 py-3"
-          onClick={() => setIsDocumentsOpen((prev) => !prev)}
-        >
-          <div>
-            <p className="text-sm font-medium text-text-secondary">Document readiness</p>
-            <p className="text-xs text-text-tertiary">
-              {documentReadyCount} ready · {documentHelpCount} need help
-            </p>
-          </div>
-          <ChevronDown
-            className={`w-4 h-4 text-text-tertiary transition-transform ${isDocumentsOpen ? 'rotate-180' : ''}`}
-          />
-        </button>
-        {isDocumentsOpen && (
-          <div className="border-t border-border-light p-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              {documentChecklist.map((doc) => (
-                <div key={doc.key} className="rounded-base border border-border-light p-4">
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-base bg-primary/10 flex items-center justify-center">
-                      <ClipboardList className="w-5 h-5 text-primary" aria-hidden="true" />
+        <div className="rounded-base border border-border-light">
+          <button
+            type="button"
+            className="w-full flex items-center justify-between px-4 py-3"
+            onClick={() => setIsDocumentsOpen((prev) => !prev)}
+          >
+            <div>
+              <p className="text-sm font-medium text-text-secondary">Document readiness</p>
+              <p className="text-xs text-text-tertiary">
+                {documentReadyCount} ready · {documentHelpCount} need help
+              </p>
+            </div>
+            <ChevronDown
+              className={`w-4 h-4 text-text-tertiary transition-transform ${isDocumentsOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+          {isDocumentsOpen && (
+            <div className="border-t border-border-light p-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                {documentChecklist.map((doc) => (
+                  <div key={doc.key} className="rounded-base border border-border-light p-4">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-base bg-primary/10 flex items-center justify-center">
+                        <ClipboardList className="w-5 h-5 text-primary" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{doc.label}</p>
+                        <p className="text-sm text-text-tertiary">
+                          Tell providers if you need help gathering it.
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">{doc.label}</p>
-                      <p className="text-sm text-text-tertiary">
-                        Tell providers if you need help gathering it.
-                      </p>
+                    <div className="flex gap-2" role="group" aria-label={`${doc.label} status`}>
+                      {(['ready', 'in-progress', 'need-help'] as DocumentStatus[]).map((status) => {
+                        const isActive = documentStatuses[doc.key] === status;
+                        const badgeLabel =
+                          status === 'ready' ? 'Ready' : status === 'in-progress' ? 'In progress' : 'Need help';
+
+                        return (
+                          <button
+                            key={status}
+                            type="button"
+                            className={`flex-1 rounded-base border px-3 py-2 text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                              isActive
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border-light text-text-tertiary hover:border-primary/40 hover:text-primary'
+                            }`}
+                            onClick={() => setDocumentStatus(doc.key, status)}
+                            aria-pressed={isActive}
+                            aria-label={`${doc.label}: ${badgeLabel}`}
+                          >
+                            {badgeLabel}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                  <div className="flex gap-2" role="group" aria-label={`${doc.label} status`}>
-                    {(['ready', 'in-progress', 'need-help'] as DocumentStatus[]).map((status) => {
-                      const isActive = documentStatuses[doc.key] === status;
-                      const badgeLabel =
-                        status === 'ready' ? 'Ready' : status === 'in-progress' ? 'In progress' : 'Need help';
-
-                      return (
-                        <button
-                          key={status}
-                          type="button"
-                          className={`flex-1 rounded-base border px-3 py-2 text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                            isActive
-                              ? 'border-primary bg-primary/10 text-primary'
-                              : 'border-border-light text-text-tertiary hover:border-primary/40 hover:text-primary'
-                          }`}
-                          onClick={() => setDocumentStatus(doc.key, status)}
-                          aria-pressed={isActive}
-                          aria-label={`${doc.label}: ${badgeLabel}`}
-                        >
-                          {badgeLabel}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      <div>
-        <label htmlFor="additionalNotes" className="block text-sm font-medium text-text-secondary mb-2">
-          Anything else we should know?
-        </label>
-        <textarea
-          id="additionalNotes"
-          name="additionalNotes"
-          value={formState.additionalNotes}
-          onChange={(event) => updateField('additionalNotes', event.target.value)}
-          onBlur={() => markFieldTouched('additionalNotes')}
-          placeholder="Dependent details, recent visa history, employer information..."
-          className="w-full rounded-base border border-border bg-transparent px-4 py-3 text-base min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary transition"
-          maxLength={2000}
-        />
+        <div>
+          <label htmlFor="additionalNotes" className="block text-sm font-medium text-text-secondary mb-2">
+            Anything else we should know?
+          </label>
+          <textarea
+            id="additionalNotes"
+            name="additionalNotes"
+            value={formState.additionalNotes}
+            onChange={(event) => updateField('additionalNotes', event.target.value)}
+            onBlur={() => markFieldTouched('additionalNotes')}
+            placeholder="Dependent details, recent visa history, employer information..."
+            className="w-full rounded-base border border-border bg-transparent px-4 py-3 text-base min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary transition"
+            maxLength={2000}
+          />
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
-        return renderMissionStep();
+        return renderPersonalStep();
       case 1:
-        return renderIntentStep();
+        return renderMissionStep();
       case 2:
-        return renderBudgetStep();
+        return renderIntentStep();
       case 3:
+        return renderBudgetStep();
+      case 4:
       default:
         return renderSupportStep();
     }
   };
 
   const isSubmitDisabled = isSubmitting || Boolean(createdRequest);
-  const progressPercentage = ((currentStep + 1) / formSteps.length) * 100;
+  const progressPercentage = Math.min(((currentStep + 1) / formSteps.length) * 100, 100);
 
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4" />
-          <p className="text-text-secondary">Checking your account...</p>
+        <div className="text-center space-y-3">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary" aria-hidden="true" />
+          <p className="text-text-secondary text-sm">Checking your account...</p>
         </div>
       </div>
     );
   }
+
   if (createdRequest) {
     return (
       <div className="min-h-screen bg-bg-secondary p-6 lg:p-10 relative">
         <button
           onClick={() => logout(router)}
-          className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 hover:border-border hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition duration-150 hover:border-border focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="Logout"
         >
           <LogOut className="w-4 h-4" aria-hidden="true" />
           <span>Logout</span>
         </button>
 
-        <div className="max-w-4xl mx-auto">
-        <div className={`${baseCardClass} p-10 text-center space-y-6`}>
+        <div className="max-w-3xl mx-auto">
+          <div className={`${baseCardClass} p-10 text-center space-y-6`}>
             <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center text-primary">
               <CheckCircle2 className="w-8 h-8" aria-hidden="true" />
             </div>
-            <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-text-tertiary font-semibold mb-2">
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">
                 Request published
               </p>
-              <h1 className="text-3xl font-semibold mb-4">{createdRequest.title}</h1>
-              <p className="text-text-secondary max-w-2xl mx-auto">
-                Your visa request is live in the marketplace. We are redirecting you to the request detail
-                so you can monitor responses. This will happen automatically in {redirectCountdown}s.
+              <h1 className="text-3xl font-semibold">{createdRequest.title}</h1>
+              <p className="text-text-secondary">
+                Your visa brief is live. We will redirect you automatically in {redirectCountdown}s so you can
+                monitor responses.
               </p>
             </div>
 
@@ -1358,23 +1761,15 @@ export default function CreateRequestPage() {
               <button
                 type="button"
                 onClick={() => router.push(`/requests/${createdRequest.id}`)}
-                className={`${primaryButtonClass}`}
+                className={primaryButtonClass}
               >
                 View request now
                 <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </button>
-              <button
-                type="button"
-                onClick={() => router.push('/requests')}
-                className={`${outlineButtonClass}`}
-              >
+              <button type="button" onClick={() => router.push('/requests')} className={outlineButtonClass}>
                 View all requests
               </button>
-              <button
-                type="button"
-                onClick={resetForm}
-                className={`${ghostButtonClass}`}
-              >
+              <button type="button" onClick={resetForm} className={ghostButtonClass}>
                 Post another request
               </button>
             </div>
@@ -1388,230 +1783,149 @@ export default function CreateRequestPage() {
     <div className="min-h-screen bg-bg-secondary p-6 lg:p-10 relative">
       <button
         onClick={() => logout(router)}
-        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 hover:border-border hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition duration-150 hover:border-border focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="Logout"
       >
         <LogOut className="w-4 h-4" aria-hidden="true" />
         <span>Logout</span>
       </button>
 
-      <div className="max-w-6xl mx-auto space-y-8">
-        <header className={`${baseCardClass} px-8 py-10`}>
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold mb-3">
-                Visa seeker workspace
-              </p>
-              <h1 className="text-3xl lg:text-[2.65rem] font-semibold leading-tight tracking-tight">
-                Design your visa request like a pro
-              </h1>
-              <p className="mt-4 text-lg text-text-secondary max-w-3xl">
-                Provide clarity once, get curated proposals from vetted Thai immigration specialists.
-                Every step mirrors what providers see in the marketplace.
-              </p>
-            </div>
-            <div className={`${compactCardClass} w-full max-w-sm`}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white shadow-[0_8px_20px_rgba(37,99,235,0.35)]">
-                  <Shield className="w-5 h-5" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Human-reviewed</p>
-                  <p className="text-xs text-text-tertiary">Requests go live in less than 5 minutes</p>
-                </div>
-              </div>
-              <ul className="space-y-2 text-sm text-text-secondary">
-                <li>- Providers only see what you share below</li>
-                <li>- Messaging unlocks after you accept a quote</li>
-                <li>- Escrow protects both sides from surprises</li>
-              </ul>
-            </div>
+      <div className="max-w-4xl mx-auto space-y-6">
+        <header className={`${baseCardClass} px-6 py-8 md:px-10`}>
+          <div className="space-y-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">
+              Visa seeker workspace
+            </p>
+            <h1 className="text-3xl md:text-[2.4rem] font-semibold leading-tight tracking-tight text-text-primary">
+              Start with the essentials, unlock curated help
+            </h1>
+            <p className="text-text-secondary text-base md:text-lg max-w-2xl">
+              We collect identity, intent, and timing in a focused flow so immigration partners can respond with
+              confidence. Everything else hides behind accordions until you need it.
+            </p>
           </div>
+          <ul className="mt-6 grid gap-3 text-sm text-text-secondary sm:grid-cols-2">
+            <li className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+              Personal details first to pre-qualify you.
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+              Presets for budget & timelines reduce typing.
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+              Collapsible extras keep “Continue” in view.
+            </li>
+          </ul>
         </header>
 
-        <div className="grid gap-8 xl:grid-cols-[3fr_2fr]">
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className={`${compactCardClass} p-6`}>
-                <div className="flex items-center justify-between gap-4 mb-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.4em] text-text-tertiary font-semibold">
-                      Step {currentStep + 1} of {formSteps.length}
-                    </p>
-                    <h3 className="text-xl font-semibold">{formSteps[currentStep].title}</h3>
-                    <p className="text-sm text-text-secondary">{formSteps[currentStep].subtitle}</p>
-                  </div>
-                  <span className="text-sm text-text-tertiary hidden md:inline">
-                    {Math.round(progressPercentage)}% complete
-                  </span>
-                </div>
-                <div className="h-2 w-full bg-border/40 rounded-full overflow-hidden" aria-hidden="true">
-                  <div
-                    className="h-full bg-primary transition-all duration-300"
-                    style={{ width: `${progressPercentage}%` }}
-                  />
-                </div>
-
-                <ol className="mt-6 grid gap-3 sm:grid-cols-4" aria-label="Request builder progress">
-                  {formSteps.map((step, index) => {
-                    const stepComplete = index < currentStep && isStepValid(index);
-                    const isActive = index === currentStep;
-                    return (
-                      <li key={step.id}>
-                        <button
-                          type="button"
-                          onClick={() => handleStepIndicatorClick(index)}
-                          className={`w-full rounded-base border px-4 py-3 text-left transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                            isActive
-                              ? 'border-primary bg-primary/5 text-text-primary'
-                              : stepComplete
-                              ? 'border-success/50 bg-success/5 text-text-secondary'
-                              : 'border-border-light bg-bg-secondary/40 text-text-tertiary'
-                          }`}
-                          aria-current={isActive ? 'step' : undefined}
-                          aria-label={`Step ${index + 1}: ${step.title}`}
-                          disabled={index > currentStep + 1}
-                        >
-                          <div className="flex items-center gap-2 text-sm font-medium">
-                            {stepComplete ? (
-                              <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
-                            ) : (
-                              <span className="text-xs text-text-tertiary">{index + 1}</span>
-                            )}
-                            <span className="truncate">{step.title}</span>
-                          </div>
-                          <p className="text-xs text-text-tertiary mt-1 line-clamp-2">{step.subtitle}</p>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
-
-              {renderCurrentStep()}
-
-              <div className="sticky bottom-4 z-10">
-                <div className="bg-bg-secondary/95 border border-border-light rounded-base px-4 py-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between shadow-sm">
-                {stepError && (
-                  <p className="text-error text-sm flex items-center gap-2" role="alert">
-                    <AlertCircle className="w-4 h-4" aria-hidden="true" />
-                    {stepError}
-                  </p>
-                )}
-
-                <div className="flex flex-wrap gap-3 md:ml-auto">
-                  <button
-                    type="button"
-                    onClick={() => router.push('/requests')}
-                    className={outlineButtonClass}
-                  >
-                    <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-                    Cancel
-                  </button>
-
-                  {currentStep > 0 && (
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <section className={`${baseCardClass} p-6 md:p-8 space-y-6`}>
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">
+                Step {currentStep + 1} of {formSteps.length}
+              </p>
+              <h2 className="text-2xl font-semibold text-text-primary">{formSteps[currentStep]?.title}</h2>
+              <p className="text-sm text-text-secondary">{formSteps[currentStep]?.subtitle}</p>
+            </div>
+            <div className="h-2 w-full bg-border/30 rounded-full overflow-hidden" aria-hidden="true">
+              <div
+                className="h-full bg-primary transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+            <ol className="grid gap-2 sm:grid-cols-5" aria-label="Request builder progress">
+              {formSteps.map((step, index) => {
+                const stepComplete = index < currentStep && isStepValid(index);
+                const isActive = index === currentStep;
+                const canJump = index <= currentStep + 1;
+                return (
+                  <li key={step.id}>
                     <button
                       type="button"
-                      onClick={handleBack}
-                      className={outlineButtonClass}
+                      onClick={() => handleStepIndicatorClick(index)}
+                      className={`w-full rounded-base border px-3 py-2 text-left text-xs sm:text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                        isActive
+                          ? 'border-primary bg-primary/5 text-text-primary'
+                          : stepComplete
+                          ? 'border-success/50 bg-success/5 text-text-secondary'
+                          : 'border-border-light bg-bg-secondary/60 text-text-tertiary'
+                      }`}
+                      aria-current={isActive ? 'step' : undefined}
+                      aria-label={`Step ${index + 1}: ${step.title}`}
+                      disabled={!canJump}
                     >
-                      <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-                      Back
+                      <div className="flex items-center gap-2 font-medium">
+                        {stepComplete ? (
+                          <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+                        ) : (
+                          <span className="text-xs text-text-tertiary">{index + 1}</span>
+                        )}
+                        <span className="truncate">{step.title}</span>
+                      </div>
+                      <p className="text-[0.7rem] text-text-tertiary mt-1 line-clamp-2">{step.subtitle}</p>
                     </button>
-                  )}
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
 
-                  {currentStep < formSteps.length - 1 && (
-                    <button
-                      type="button"
-                      onClick={handleContinue}
-                      className={primaryButtonClass}
-                    >
-                      Continue
-                      <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                    </button>
-                  )}
+          {renderCurrentStep()}
 
-                  {currentStep === formSteps.length - 1 && (
-                    <button
-                      type="submit"
-                      disabled={isSubmitDisabled}
-                      className={primaryButtonClass}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader className="w-4 h-4 animate-spin" aria-hidden="true" />
-                          Publishing request...
-                        </>
-                      ) : (
-                        <>
-                          Publish request
-                          <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
-                        </>
-                      )}
-                    </button>
-                  )}
-                </div>
-                </div>
-              </div>
-
-              {submitError && (
+          <div className="sticky bottom-4 z-10">
+            <div className="bg-bg-primary/95 border border-border-light rounded-base px-4 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between shadow-sm backdrop-blur">
+              {stepError && (
                 <p className="text-error text-sm flex items-center gap-2" role="alert">
                   <AlertCircle className="w-4 h-4" aria-hidden="true" />
-                  {submitError}
+                  {stepError}
                 </p>
               )}
-            </form>
+              <div className="flex flex-wrap gap-3 md:ml-auto">
+                <button type="button" onClick={() => router.push('/requests')} className={outlineButtonClass}>
+                  <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+                  Cancel
+                </button>
+                {currentStep > 0 && (
+                  <button type="button" onClick={handleBack} className={outlineButtonClass}>
+                    <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+                    Back
+                  </button>
+                )}
+                {currentStep < formSteps.length - 1 && (
+                  <button type="button" onClick={handleContinue} className={primaryButtonClass}>
+                    Continue
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  </button>
+                )}
+                {currentStep === formSteps.length - 1 && (
+                  <button type="submit" disabled={isSubmitDisabled} className={primaryButtonClass}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader className="w-4 h-4 animate-spin" aria-hidden="true" />
+                        Publishing request...
+                      </>
+                    ) : (
+                      <>
+                        Publish request
+                        <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
-          <aside className="space-y-6 xl:sticky xl:top-10">
-            <div className={compactCardClass}>
-              <p className="text-xs uppercase tracking-[0.4em] text-text-tertiary font-semibold mb-3">
-                Live summary
-              </p>
-              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-primary" aria-hidden="true" />
-                Provider snapshot
-              </h3>
-              <div className="rounded-base border border-border-light bg-bg-secondary p-4 text-sm leading-relaxed whitespace-pre-line text-text-secondary min-h-[220px]">
-                {composedDescription || 'Your live brief will appear here as you fill in the form.'}
-              </div>
-              <p className="mt-4 text-xs text-text-tertiary">
-                Providers receive this snapshot in their marketplace feed before choosing to respond.
-              </p>
-            </div>
-
-            <div className={compactCardClass}>
-              <div className="flex items-center gap-3 mb-4">
-                <Shield className="w-5 h-5 text-primary" aria-hidden="true" />
-                <h3 className="text-lg font-semibold">Quality checklist</h3>
-              </div>
-              <ul className="space-y-3 text-sm text-text-secondary">
-                {checklistItems.map((item) => (
-                  <li key={item.id} className="flex items-start gap-3">
-                    {item.complete ? (
-                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" aria-hidden="true" />
-                    ) : (
-                      <AlertCircle className="w-4 h-4 text-text-tertiary mt-0.5" aria-hidden="true" />
-                    )}
-                    <span className={item.complete ? 'text-text-primary' : 'text-text-secondary'}>
-                      {item.label}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary-hover"
-              >
-                Review from the top
-              </button>
-            </div>
-          </aside>
-        </div>
+          {submitError && (
+            <p className="text-error text-sm flex items-center gap-2" role="alert">
+              <AlertCircle className="w-4 h-4" aria-hidden="true" />
+              {submitError}
+            </p>
+          )}
+        </form>
       </div>
     </div>
   );
 }
-
-

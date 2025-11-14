@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, type Request, RequestStatus } from '@visaontrack/client';
+import { api, type Request } from '@visaontrack/client';
 import {
   AlertCircle,
   ArrowLeft,
@@ -18,7 +18,6 @@ import {
   Loader,
   LogOut,
   Plane,
-  Plus,
   Shield,
   Sparkles,
   Wallet,
@@ -29,7 +28,6 @@ type DocumentStatus = 'ready' | 'in-progress' | 'need-help';
 
 interface FormState {
   title: string;
-  summary: string;
   ageRange: string;
   nationality: string;
   currentLocation: string;
@@ -48,7 +46,6 @@ type FormField = keyof FormState;
 
 interface FormErrors {
   title?: string;
-  summary?: string;
   ageRange?: string;
   nationality?: string;
   currentLocation?: string;
@@ -79,6 +76,8 @@ const locationOptions = [
   { value: 'PHUKET', label: 'Phuket' },
   { value: 'PATTAYA', label: 'Pattaya / Chonburi' },
   { value: 'SAMUI', label: 'Koh Samui / Surat Thani' },
+  { value: 'HUA_HIN', label: 'Hua Hin / Cha-Am' },
+  { value: 'KRABI', label: 'Krabi / Phang Nga' },
   { value: 'ABROAD', label: 'Applying from outside Thailand' },
   { value: 'OTHER', label: 'Somewhere else' },
 ];
@@ -271,35 +270,98 @@ const budgetPresets = [
   { label: 'THB 35k+', min: 35000, max: 60000 },
 ];
 
-const summaryPresets = [
-  'Relocating to Thailand for a long-term role, need LTR visa support for myself and spouse.',
-  'Currently on tourist visa, aiming to convert to Non-Immigrant B with tight timelines.',
+const missionVisaOptions: Array<{
+  value: string;
+  label: string;
+  description: string;
+  badge?: string;
+  details: string[];
+}> = [
+  {
+    value: 'NON-IMM-B',
+    label: 'Non-Immigrant B',
+    description: 'Employer-sponsored work visa.',
+    badge: 'Work',
+    details: ['Thai employer + work permit', 'Salary ≥ THB 50k/mo', 'Company capital ≥ THB 2M'],
+  },
+  {
+    value: 'NON-IMM-O',
+    label: 'Non-Immigrant O',
+    description: 'Marriage or guardian route.',
+    badge: 'Family',
+    details: ['Married to Thai citizen or dependents', 'THB 400k banked or THB 40k monthly income'],
+  },
+  {
+    value: 'NON-IMM-ED',
+    label: 'Non-Immigrant ED',
+    description: 'Study or training programs.',
+    badge: 'Study',
+    details: ['Enrollment & tuition receipt', 'Show ~THB 200k living funds/insurance'],
+  },
+  {
+    value: 'LTR',
+    label: 'Long-Term Resident (LTR)',
+    description: '10-year visa for high-skill talent.',
+    badge: 'Premium',
+    details: ['Income ≥ USD 80k/year (40k for eligible STEM)', 'USD 50k insurance or deposit'],
+  },
+  {
+    value: 'RETIREMENT',
+    label: 'Retirement visa',
+    description: 'Non-Immigrant O/A or O/X.',
+    badge: '50+',
+    details: ['Age 50+', 'THB 800k in bank or THB 65k/month income', 'Thai health insurance'],
+  },
+  {
+    value: 'DTV',
+    label: 'Digital Nomad (DTV)',
+    description: 'Remote professionals on flexible stays.',
+    badge: 'Remote',
+    details: ['Foreign employment contract', 'THB 500k savings proof', 'USD 100k health coverage'],
+  },
+  {
+    value: 'OTHER',
+    label: 'Other / Not sure',
+    description: 'Need help deciding.',
+    details: ['Providers can recommend eligibility path', 'Share current situation to start'],
+  },
 ];
 
-const summaryTips = [
-  'Mention dependents',
-  'Share current visa status',
-  'Call out employer or sponsor details',
-];
+const resolveVisaLabel = (value: string) => {
+  const missionMatch = missionVisaOptions.find((option) => option.value === value);
+  if (missionMatch) {
+    return missionMatch.label;
+  }
 
-const featuredVisaOptions = ['NON-IMM-B', 'LTR', 'DTV', 'NON-IMM-O'];
-const featuredLocationOptions = ['BANGKOK', 'CHIANG_MAI', 'PHUKET', 'ABROAD'];
-
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
-
-const createTimelineShortcuts = () => {
-  const now = new Date();
-  const offsets = [14, 30, 60];
-  return offsets.map((days) => {
-    const target = new Date(now);
-    target.setDate(target.getDate() + days);
-    return {
-      label: `Need approval by ${formatDate(target)}`,
-      value: `Need approval by ${formatDate(target)}`,
-    };
-  });
+  const formMatch = visaTypeOptions.find((option) => option.value === value);
+  return formMatch ? formMatch.label : '';
 };
+
+const createTitleFromVisa = (value: string) => {
+  if (!value) {
+    return '';
+  }
+
+  if (value === 'OTHER') {
+    return 'Need help choosing the right Thai visa';
+  }
+
+  const label = resolveVisaLabel(value);
+  if (!label) {
+    return '';
+  }
+
+  const shortLabel = label.replace(/\s*\(.*?\)/, '');
+  return `${shortLabel} visa support in Thailand`;
+};
+
+const featuredLocationOptions = ['BANGKOK', 'CHIANG_MAI', 'PHUKET', 'PATTAYA', 'SAMUI', 'HUA_HIN'];
+
+const createTimelineShortcuts = () => [
+  { label: 'Need approval within 2 weeks', value: 'Need approval within 2 weeks' },
+  { label: 'Need approval within 1 month', value: 'Need approval within 1 month' },
+  { label: 'Need approval within 3 months', value: 'Need approval within 3 months' },
+];
 
 const formSteps = [
   {
@@ -314,8 +376,8 @@ const formSteps = [
   },
   {
     id: 'intent',
-    title: 'Visa intent & location',
-    subtitle: 'Match with specialists covering your visa class and region.',
+    title: 'Preferred location',
+    subtitle: 'Where do you prefer to settle or spend most of your time?',
   },
   {
     id: 'budget',
@@ -331,7 +393,6 @@ const formSteps = [
 
 const createInitialFormState = (): FormState => ({
   title: '',
-  summary: '',
   ageRange: '',
   nationality: '',
   currentLocation: '',
@@ -360,17 +421,12 @@ const createInitialTouchedState = (): Record<FormField, boolean> =>
     },
     {} as Record<FormField, boolean>,
   );
-const REQUEST_STATUS_OPEN: RequestStatus = RequestStatus.OPEN;
 
 const computeFormErrors = (state: FormState): FormErrors => {
   const errors: FormErrors = {};
 
   if (!state.title.trim() || state.title.trim().length < 6) {
     errors.title = 'Give your request a descriptive title (min 6 characters).';
-  }
-
-  if (!state.summary.trim() || state.summary.trim().length < 40) {
-    errors.summary = 'Describe your situation in at least 40 characters.';
   }
 
   if (!state.ageRange) {
@@ -431,8 +487,8 @@ const computeFormErrors = (state: FormState): FormErrors => {
 
 const stepFieldMap: Record<number, FormField[]> = {
   0: ['ageRange', 'nationality', 'currentLocation', 'currentVisaExpiry', 'currentVisaType'],
-  1: ['title', 'summary'],
-  2: ['visaType', 'location', 'locationDetail'],
+  1: ['title', 'visaType'],
+  2: ['location', 'locationDetail'],
   3: ['budgetMin', 'budgetMax'],
   4: ['additionalNotes'],
 };
@@ -441,7 +497,6 @@ type DirectErrorField = Exclude<FormField, 'budgetMin' | 'budgetMax'>;
 
 const fieldErrorKeyMap: Record<DirectErrorField, keyof FormErrors> = {
   title: 'title',
-  summary: 'summary',
   ageRange: 'ageRange',
   nationality: 'nationality',
   currentLocation: 'currentLocation',
@@ -492,15 +547,13 @@ export default function CreateRequestPage() {
   const [redirectCountdown, setRedirectCountdown] = useState(4);
   const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [showSummaryField, setShowSummaryField] = useState(false);
   const [focusedField, setFocusedField] = useState<FormField | null>(null);
-  const [isVisaSelectOpen, setIsVisaSelectOpen] = useState(false);
   const [isLocationSelectOpen, setIsLocationSelectOpen] = useState(false);
-  const [budgetMode, setBudgetMode] = useState<'preset' | 'custom'>('preset');
   const [timelineShortcuts] = useState(() => createTimelineShortcuts());
   const [isCustomTimeline, setIsCustomTimeline] = useState(false);
   const [isAssistanceOpen, setIsAssistanceOpen] = useState(false);
   const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
+  const [hasCustomTitle, setHasCustomTitle] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -570,18 +623,8 @@ export default function CreateRequestPage() {
     }
   }, [formState.timeline, timelineShortcuts]);
 
-  useEffect(() => {
-    if (formState.budgetMin && formState.budgetMax) {
-      setBudgetMode('custom');
-    }
-  }, [formState.budgetMin, formState.budgetMax]);
-
   const composedDescription = useMemo(() => {
     const sections: string[] = [];
-
-    if (formState.summary.trim()) {
-      sections.push(`Overview:\n${formState.summary.trim()}`);
-    }
 
     if (selectedNeeds.length) {
       sections.push(`Support Needed:\n${selectedNeeds.map((need) => `- ${need}`).join('\n')}`);
@@ -623,6 +666,7 @@ export default function CreateRequestPage() {
     setSubmitError(null);
     setCreatedRequest(null);
     setCurrentStep(0);
+    setHasCustomTitle(false);
   };
 
   const markFieldTouched = (field: FormField) => {
@@ -749,12 +793,11 @@ export default function CreateRequestPage() {
     try {
       const requestPayload = {
         title: formState.title.trim(),
-        description: composedDescription || formState.summary.trim(),
+        description: composedDescription,
         visaType: formState.visaType === 'OTHER' ? 'Other / Requires guidance' : formState.visaType,
         budgetMin,
         budgetMax,
         location: composedLocation,
-        status: REQUEST_STATUS_OPEN,
       };
 
       const response = await api.requests.createRequest({
@@ -882,20 +925,6 @@ export default function CreateRequestPage() {
 
     return null;
   };
-  const handleSummaryPreset = (text: string) => {
-    setShowSummaryField(true);
-    updateField('summary', text);
-    markFieldTouched('summary');
-  };
-
-  const appendSummaryTip = (tip: string) => {
-    if (formState.summary.includes(tip)) {
-      return;
-    }
-    const next = formState.summary ? `${formState.summary}\n${tip}` : tip;
-    updateField('summary', next);
-  };
-
   const handleAgeRangeSelect = (value: string) => {
     updateField('ageRange', value);
     markFieldTouched('ageRange');
@@ -919,7 +948,12 @@ export default function CreateRequestPage() {
   const handleVisaSelect = (value: string) => {
     updateField('visaType', value);
     markFieldTouched('visaType');
-    setIsVisaSelectOpen(false);
+    if (!hasCustomTitle) {
+      const suggestedTitle = createTitleFromVisa(value);
+      if (suggestedTitle) {
+        updateField('title', suggestedTitle);
+      }
+    }
   };
 
   const handleLocationSelect = (value: string) => {
@@ -932,7 +966,6 @@ export default function CreateRequestPage() {
   };
 
   const handleBudgetPreset = (preset: (typeof budgetPresets)[number]) => {
-    setBudgetMode('preset');
     updateField('budgetMin', String(preset.min));
     updateField('budgetMax', String(preset.max));
     markFieldTouched('budgetMin');
@@ -1123,276 +1156,208 @@ export default function CreateRequestPage() {
     </section>
   );
 
-  const renderMissionStep = () => (
-    <section className={sectionCardClass}>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white">
-          <Sparkles className="w-6 h-6" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
-            Step 2
-          </p>
-          <h2 className="text-2xl font-semibold tracking-tight">Share your mission</h2>
-          <p className="text-text-secondary">Kick off with a clear title, add context only if needed.</p>
-        </div>
-      </div>
+  const renderMissionStep = () => {
+    const selectedMissionVisa = missionVisaOptions.find((option) => option.value === formState.visaType);
 
-      <div className="space-y-6">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-text-secondary mb-2">
-            Request title
-          </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            value={formState.title}
-            onChange={(event) => updateField('title', event.target.value)}
-            onFocus={() => setFocusedField('title')}
-            onBlur={() => {
-              markFieldTouched('title');
-              setFocusedField(null);
-            }}
-            placeholder="e.g. LTR visa with dependents arriving Q2 2025"
-            className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('title')}`}
-            maxLength={200}
-            aria-invalid={Boolean(formErrors.title)}
-          />
-          {focusedField === 'title' && !formState.title && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {['Call out visa class', 'Mention timing', 'Highlight dependents'].map((tip) => (
-                <span
-                  key={tip}
-                  className="text-xs px-3 py-1 rounded-full border border-border-light text-text-secondary"
-                >
-                  {tip}
-                </span>
-              ))}
-            </div>
-          )}
-          {renderValidationFeedback('title', 'Title looks descriptive.')}
-        </div>
-
-        {!showSummaryField && !formState.summary ? (
-          <div className="rounded-base border border-border-light bg-bg-secondary/40 p-5 space-y-3">
-            <p className="text-sm font-medium text-text-secondary">Need help describing your case?</p>
-            <div className="flex flex-wrap gap-2">
-              {summaryPresets.map((preset) => (
-                <button
-                  key={preset}
-                  type="button"
-                  className="px-3 py-2 text-sm rounded-base border border-border-light text-left hover:border-primary hover:text-primary transition"
-                  onClick={() => handleSummaryPreset(preset)}
-                >
-                  {preset}
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="text-sm font-medium text-primary hover:text-primary-hover inline-flex items-center gap-2"
-              onClick={() => setShowSummaryField(true)}
-            >
-              <Plus className="w-4 h-4" aria-hidden="true" />
-              Add more context
-            </button>
+    return (
+      <section className={sectionCardClass}>
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white">
+            <Sparkles className="w-6 h-6" aria-hidden="true" />
           </div>
-        ) : (
-          <div className="relative">
-            <label htmlFor="summary" className="block text-sm font-medium text-text-secondary mb-2">
-              Additional context
+          <div>
+            <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
+              Step 2
+            </p>
+            <h2 className="text-2xl font-semibold tracking-tight">Share your mission</h2>
+            <p className="text-text-secondary">Kick off with a clear title, add context only if needed.</p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-text-secondary mb-2">
+              Request title
             </label>
-            <textarea
-              id="summary"
-              name="summary"
-              value={formState.summary}
-              onChange={(event) => updateField('summary', event.target.value)}
-              onFocus={() => setFocusedField('summary')}
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value={formState.title}
+            onChange={(event) => {
+              const nextValue = event.target.value;
+              setHasCustomTitle(nextValue.trim().length > 0);
+              updateField('title', nextValue);
+            }}
+              onFocus={() => setFocusedField('title')}
               onBlur={() => {
-                markFieldTouched('summary');
+                markFieldTouched('title');
                 setFocusedField(null);
               }}
-              placeholder="Explain current status, dependents, constraints."
-              className={`w-full rounded-base border bg-transparent px-4 py-3 text-base min-h-[140px] focus:outline-none focus:ring-2 transition ${getInputClasses('summary')}`}
-              maxLength={5000}
-              aria-invalid={Boolean(formErrors.summary)}
+              placeholder="e.g. LTR visa with dependents arriving Q2 2025"
+              className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('title')}`}
+              maxLength={200}
+              aria-invalid={Boolean(formErrors.title)}
             />
-            <div className="mt-2 flex items-center justify-between text-sm text-text-tertiary">
-              <span>Give providers enough detail to pre-qualify themselves.</span>
-              <span>{formState.summary.length}/5000</span>
-            </div>
-            {focusedField === 'summary' && !formState.summary && (
+            {focusedField === 'title' && !formState.title && (
               <div className="mt-3 flex flex-wrap gap-2">
-                {summaryTips.map((tip) => (
-                  <button
+                {['Call out visa class', 'Mention timing', 'Highlight dependents'].map((tip) => (
+                  <span
                     key={tip}
-                    type="button"
-                    className="text-xs px-3 py-1 rounded-full border border-border-light text-text-secondary hover:border-primary hover:text-primary transition"
-                    onClick={() => appendSummaryTip(tip)}
+                    className="text-xs px-3 py-1 rounded-full border border-border-light text-text-secondary"
                   >
                     {tip}
-                  </button>
+                  </span>
                 ))}
               </div>
             )}
-            {renderValidationFeedback('summary', 'Great context—providers will appreciate the detail.')}
+            {renderValidationFeedback('title', 'Title looks descriptive.')}
           </div>
-        )}
-      </div>
-    </section>
-  );
+
+          <div className="rounded-base border border-border-light bg-bg-secondary/40 p-5 space-y-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-text-secondary">Which visa feels right?</p>
+                <p className="text-xs text-text-tertiary">Pick what you are leaning toward right now.</p>
+              </div>
+              {selectedMissionVisa && <span className="text-xs text-primary font-medium">{selectedMissionVisa.label}</span>}
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              {missionVisaOptions.map((option) => {
+                const isActive = formState.visaType === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    className={`rounded-2xl border px-4 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                      isActive
+                        ? 'border-primary bg-primary/5 shadow-sm'
+                        : 'border-border-light bg-white/80 hover:border-primary/50'
+                    }`}
+                    onClick={() => handleVisaSelect(option.value)}
+                    aria-pressed={isActive}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className={`text-sm font-semibold ${isActive ? 'text-primary' : 'text-text-secondary'}`}>{option.label}</p>
+                        <p className="text-xs text-text-tertiary mt-0.5">{option.description}</p>
+                      </div>
+                      {option.badge && (
+                        <span
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${
+                            isActive ? 'bg-primary text-white' : 'bg-border-light/60 text-text-tertiary'
+                          }`}
+                        >
+                          {option.badge}
+                        </span>
+                      )}
+                    </div>
+                    {option.details.length > 0 && (
+                      <ul className="mt-3 space-y-1 text-xs text-text-tertiary">
+                        {option.details.map((detail) => (
+                          <li key={detail} className="flex items-start gap-2">
+                            <Check className={`w-3.5 h-3.5 mt-0.5 ${isActive ? 'text-primary' : 'text-border'}`} aria-hidden="true" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            {renderValidationFeedback('visaType')}
+          </div>
+
+        </div>
+      </section>
+    );
+  };
 
   const renderIntentStep = () => (
     <section className={sectionCardClass}>
       <div className="flex items-center gap-4 mb-6">
         <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-white">
-          <FileText className="w-6 h-6" aria-hidden="true" />
+          <Globe className="w-6 h-6" aria-hidden="true" />
         </div>
         <div>
           <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">
             Step 3
           </p>
-          <h2 className="text-2xl font-semibold tracking-tight">Visa intent & location</h2>
-          <p className="text-text-secondary">
-            Pick quick options or open the full list when you need something else.
-          </p>
+          <h2 className="text-2xl font-semibold tracking-tight">Preferred location</h2>
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-base border border-border-light p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-text-secondary">Target visa</p>
-                <p className="text-xs text-text-tertiary">Providers filter by visa class</p>
-              </div>
-              {formState.visaType && (
-                <span className="text-xs text-primary font-medium">
-                  {visaTypeOptions.find((opt) => opt.value === formState.visaType)?.label}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {visaTypeOptions
-                .filter((option) => featuredVisaOptions.includes(option.value))
-                .map((option) => {
-                  const isActive = formState.visaType === option.value;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                        isActive
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-                      }`}
-                      onClick={() => handleVisaSelect(option.value)}
-                    >
-                      {option.label.replace(/ \(.+\)/, '')}
-                    </button>
-                  );
-                })}
-              <button
-                type="button"
-                className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                  formState.visaType && !featuredVisaOptions.includes(formState.visaType)
-                    ? 'border-primary text-primary bg-primary/10'
-                    : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-                }`}
-                onClick={() => setIsVisaSelectOpen((prev) => !prev)}
-              >
-                Browse all
-              </button>
-            </div>
-            {isVisaSelectOpen && (
-              <select
-                className="w-full rounded-base border border-border-light bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                value={formState.visaType}
-                onChange={(event) => handleVisaSelect(event.target.value)}
-              >
-                <option value="">Select a visa</option>
-                {visaTypeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            )}
-            {renderValidationFeedback('visaType')}
+      <div className="rounded-base border border-border-light p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-text-secondary">Preferred location</p>
+            <p className="text-xs text-text-tertiary">Where do you prefer to settle or spend most of your time?</p>
           </div>
-
-          <div className="rounded-base border border-border-light p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-text-secondary">Processing location</p>
-                <p className="text-xs text-text-tertiary">Route to specialists in that region</p>
-              </div>
-              {formState.location && (
-                <span className="text-xs text-primary font-medium">
-                  {locationOptions.find((opt) => opt.value === formState.location)?.label}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {locationOptions
-                .filter((option) => featuredLocationOptions.includes(option.value))
-                .map((option) => {
-                  const isActive = formState.location === option.value;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                        isActive
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-                      }`}
-                      onClick={() => handleLocationSelect(option.value)}
-                    >
-                      {option.label}
-                    </button>
-                  );
-                })}
-              <button
-                type="button"
-                className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                  formState.location && !featuredLocationOptions.includes(formState.location)
-                    ? 'border-primary text-primary bg-primary/10'
-                    : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-                }`}
-                onClick={() => setIsLocationSelectOpen((prev) => !prev)}
-              >
-                Somewhere else
-              </button>
-            </div>
-            {isLocationSelectOpen && (
-              <select
-                className="w-full rounded-base border border-border-light bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                value={formState.location}
-                onChange={(event) => handleLocationSelect(event.target.value)}
-              >
-                <option value="">Where will you apply?</option>
-                {locationOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            )}
-            {formState.location === 'OTHER' && (
-              <input
-                type="text"
-                className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('locationDetail')}`}
-                placeholder="Share the city or embassy"
-                value={formState.locationDetail}
-                onChange={(event) => updateField('locationDetail', event.target.value)}
-                onBlur={() => markFieldTouched('locationDetail')}
-              />
-            )}
-            {renderValidationFeedback('location')}
-          </div>
+          {formState.location && (
+            <span className="text-xs text-primary font-medium">
+              {locationOptions.find((opt) => opt.value === formState.location)?.label}
+            </span>
+          )}
         </div>
+        <div className="flex flex-wrap gap-2">
+          {locationOptions
+            .filter((option) => featuredLocationOptions.includes(option.value))
+            .map((option) => {
+              const isActive = formState.location === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                    isActive
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                  }`}
+                  onClick={() => handleLocationSelect(option.value)}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          <button
+            type="button"
+            className={`px-3 py-1.5 rounded-base border text-sm transition ${
+              formState.location && !featuredLocationOptions.includes(formState.location)
+                ? 'border-primary text-primary bg-primary/10'
+                : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+            }`}
+            onClick={() => setIsLocationSelectOpen((prev) => !prev)}
+          >
+            Somewhere else
+          </button>
+        </div>
+        {isLocationSelectOpen && (
+          <select
+            className="w-full rounded-base border border-border-light bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            value={formState.location}
+            onChange={(event) => handleLocationSelect(event.target.value)}
+          >
+            <option value="">Where do you see yourself living?</option>
+            {locationOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        )}
+        {formState.location === 'OTHER' && (
+          <input
+            type="text"
+            className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('locationDetail')}`}
+            placeholder="Share the city or embassy"
+            value={formState.locationDetail}
+            onChange={(event) => updateField('locationDetail', event.target.value)}
+            onBlur={() => markFieldTouched('locationDetail')}
+          />
+        )}
+        {renderValidationFeedback('location')}
+      </div>
     </section>
   );
 
@@ -1420,9 +1385,7 @@ export default function CreateRequestPage() {
           <div className="flex flex-wrap gap-2">
             {budgetPresets.map((preset) => {
               const isActive =
-                budgetMode === 'preset' &&
-                Number(formState.budgetMin) === preset.min &&
-                Number(formState.budgetMax) === preset.max;
+                Number(formState.budgetMin) === preset.min && Number(formState.budgetMax) === preset.max;
               return (
                 <button
                   key={preset.label}
@@ -1438,69 +1401,8 @@ export default function CreateRequestPage() {
                 </button>
               );
             })}
-            <button
-              type="button"
-              className={`px-3 py-1.5 rounded-base border text-sm transition ${
-                budgetMode === 'custom'
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
-              }`}
-              onClick={() => setBudgetMode('custom')}
-            >
-              Custom
-            </button>
           </div>
 
-          {budgetMode === 'custom' && (
-            <div className="mt-4 grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="budgetMin" className="sr-only">
-                  Minimum budget
-                </label>
-                <div
-                  className={`flex items-center gap-2 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('budgetMin')}`}
-                >
-                  <span className="text-text-tertiary text-sm">Min</span>
-                  <input
-                    id="budgetMin"
-                    name="budgetMin"
-                    type="number"
-                    min={0}
-                    step={500}
-                    value={formState.budgetMin}
-                    onChange={(event) => updateField('budgetMin', event.target.value)}
-                    onBlur={() => markFieldTouched('budgetMin')}
-                    className="w-full bg-transparent focus:outline-none"
-                    placeholder="10,000"
-                    aria-invalid={Boolean(formErrors.budget)}
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="budgetMax" className="sr-only">
-                  Maximum budget
-                </label>
-                <div
-                  className={`flex items-center gap-2 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('budgetMax')}`}
-                >
-                  <span className="text-text-tertiary text-sm">Max</span>
-                  <input
-                    id="budgetMax"
-                    name="budgetMax"
-                    type="number"
-                    min={0}
-                    step={500}
-                    value={formState.budgetMax}
-                    onChange={(event) => updateField('budgetMax', event.target.value)}
-                    onBlur={() => markFieldTouched('budgetMax')}
-                    className="w-full bg-transparent focus:outline-none"
-                    placeholder="25,000"
-                    aria-invalid={Boolean(formErrors.budget)}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
           {renderValidationFeedback('budgetMin')}
         </div>
 

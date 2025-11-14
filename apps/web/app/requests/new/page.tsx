@@ -1794,47 +1794,51 @@ export default function CreateRequestPage() {
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
-            <ol
-              className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 sm:grid sm:grid-cols-5 sm:overflow-visible sm:snap-none"
-              aria-label="Request builder progress"
-            >
-              {formSteps.map((step, index) => {
-                const stepComplete = index < currentStep && isStepValid(index);
-                const isActive = index === currentStep;
-                const canJump = index <= currentStep + 1;
-                return (
-                  <li key={step.id} className="snap-start flex-shrink-0 w-[80%] sm:w-auto">
-                    <button
-                      type="button"
-                      onClick={() => handleStepIndicatorClick(index)}
-                      ref={(element) => {
-                        stepButtonRefs.current[index] = element;
-                      }}
-                      className={`w-full rounded-base border px-3 py-2 text-left text-xs sm:text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                        isActive
-                          ? 'border-primary bg-primary/5 text-text-primary'
-                          : stepComplete
-                          ? 'border-success/50 bg-success/5 text-text-secondary'
-                          : 'border-border-light bg-bg-secondary/60 text-text-tertiary'
-                      }`}
-                      aria-current={isActive ? 'step' : undefined}
-                      aria-label={`Step ${index + 1}: ${step.title}`}
-                      disabled={!canJump}
-                    >
-                      <div className="flex items-center gap-2 font-medium">
-                        {stepComplete ? (
-                          <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
-                        ) : (
-                          <span className="text-xs text-text-tertiary">{index + 1}</span>
-                        )}
-                        <span className="truncate">{step.title}</span>
-                      </div>
-                      <p className="text-[0.7rem] text-text-tertiary mt-1 line-clamp-2">{step.subtitle}</p>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
+            <div className="relative">
+              <ol
+                className="no-scrollbar flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 sm:grid sm:grid-cols-5 sm:overflow-visible sm:snap-none"
+                aria-label="Request builder progress"
+              >
+                {formSteps.map((step, index) => {
+                  const stepComplete = index < currentStep && isStepValid(index);
+                  const isActive = index === currentStep;
+                  const canJump = index <= currentStep + 1;
+                  return (
+                    <li key={step.id} className="snap-center flex-shrink-0 min-w-[72vw] sm:min-w-0 sm:w-auto">
+                      <button
+                        type="button"
+                        onClick={() => handleStepIndicatorClick(index)}
+                        ref={(element) => {
+                          stepButtonRefs.current[index] = element;
+                        }}
+                        className={`w-full rounded-2xl border px-4 py-3 text-left text-xs sm:text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                          isActive
+                            ? 'border-primary bg-primary/5 text-text-primary shadow-sm'
+                            : stepComplete
+                            ? 'border-success/50 bg-success/5 text-text-secondary'
+                            : 'border-border-light bg-bg-secondary/60 text-text-tertiary'
+                        }`}
+                        aria-current={isActive ? 'step' : undefined}
+                        aria-label={`Step ${index + 1}: ${step.title}`}
+                        disabled={!canJump}
+                      >
+                        <div className="flex items-center gap-2 font-semibold text-text-primary">
+                          {stepComplete ? (
+                            <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+                          ) : (
+                            <span className="text-xs text-text-tertiary">{index + 1}</span>
+                          )}
+                          <span className="truncate">{step.title}</span>
+                        </div>
+                        <p className="text-[0.7rem] text-text-tertiary mt-1 line-clamp-2">{step.subtitle}</p>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+              <div className="pointer-events-none absolute inset-y-2 left-0 w-10 bg-gradient-to-r from-bg-primary to-transparent sm:hidden" />
+              <div className="pointer-events-none absolute inset-y-2 right-0 w-10 bg-gradient-to-l from-bg-primary to-transparent sm:hidden" />
+            </div>
           </section>
 
           <div

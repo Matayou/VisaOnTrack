@@ -554,6 +554,9 @@ export default function CreateRequestPage() {
   const [isAssistanceOpen, setIsAssistanceOpen] = useState(false);
   const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
   const [hasCustomTitle, setHasCustomTitle] = useState(false);
+  const stepButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchCurrentXRef = useRef<number | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -622,6 +625,17 @@ export default function CreateRequestPage() {
       setFormState((prev) => ({ ...prev, timeline: timelineShortcuts[0].value }));
     }
   }, [formState.timeline, timelineShortcuts]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    if (window.innerWidth >= 640) {
+      return;
+    }
+    const targetButton = stepButtonRefs.current[currentStep];
+    targetButton?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, [currentStep]);
 
   const composedDescription = useMemo(() => {
     const sections: string[] = [];
@@ -976,6 +990,49 @@ export default function CreateRequestPage() {
     setIsCustomTimeline(false);
     updateField('timeline', value);
     markFieldTouched('timeline');
+  };
+
+  const handleStepSwipeStart = (event: React.TouchEvent) => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+      return;
+    }
+    const touchX = event.touches[0]?.clientX ?? null;
+    touchStartXRef.current = touchX;
+    touchCurrentXRef.current = touchX;
+  };
+
+  const handleStepSwipeMove = (event: React.TouchEvent) => {
+    if (touchStartXRef.current === null) {
+      return;
+    }
+    touchCurrentXRef.current = event.touches[0]?.clientX ?? touchCurrentXRef.current;
+  };
+
+  const resetSwipeTracking = () => {
+    touchStartXRef.current = null;
+    touchCurrentXRef.current = null;
+  };
+
+  const handleStepSwipeEnd = () => {
+    if (touchStartXRef.current === null || touchCurrentXRef.current === null) {
+      resetSwipeTracking();
+      return;
+    }
+
+    const delta = touchStartXRef.current - touchCurrentXRef.current;
+    const threshold = 50;
+
+    if (delta > threshold && currentStep < formSteps.length - 1) {
+      handleContinue();
+    } else if (delta < -threshold && currentStep > 0) {
+      handleBack();
+    }
+
+    resetSwipeTracking();
+  };
+
+  const handleStepSwipeCancel = () => {
+    resetSwipeTracking();
   };
 
   const renderPersonalStep = () => (
@@ -1737,16 +1794,22 @@ export default function CreateRequestPage() {
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
-            <ol className="grid gap-2 sm:grid-cols-5" aria-label="Request builder progress">
+            <ol
+              className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 sm:grid sm:grid-cols-5 sm:overflow-visible sm:snap-none"
+              aria-label="Request builder progress"
+            >
               {formSteps.map((step, index) => {
                 const stepComplete = index < currentStep && isStepValid(index);
                 const isActive = index === currentStep;
                 const canJump = index <= currentStep + 1;
                 return (
-                  <li key={step.id}>
+                  <li key={step.id} className="snap-start flex-shrink-0 w-[80%] sm:w-auto">
                     <button
                       type="button"
                       onClick={() => handleStepIndicatorClick(index)}
+                      ref={(element) => {
+                        stepButtonRefs.current[index] = element;
+                      }}
                       className={`w-full rounded-base border px-3 py-2 text-left text-xs sm:text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
                         isActive
                           ? 'border-primary bg-primary/5 text-text-primary'
@@ -1774,7 +1837,14 @@ export default function CreateRequestPage() {
             </ol>
           </section>
 
-          {renderCurrentStep()}
+          <div
+            onTouchStart={handleStepSwipeStart}
+            onTouchMove={handleStepSwipeMove}
+            onTouchEnd={handleStepSwipeEnd}
+            onTouchCancel={handleStepSwipeCancel}
+          >
+            {renderCurrentStep()}
+          </div>
 
           <div className="sticky bottom-4 z-10">
             <div className="bg-bg-primary/95 border border-border-light rounded-base px-4 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between shadow-sm backdrop-blur">

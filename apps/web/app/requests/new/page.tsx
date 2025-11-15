@@ -23,6 +23,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { logout } from '@/lib/auth';
+import { defaultReadiness, visaRequirements, visaRequirementsMap } from '@/config/visaRequirements';
 
 type DocumentStatus = 'ready' | 'in-progress' | 'need-help';
 
@@ -270,137 +271,15 @@ const budgetPresets = [
   { label: 'THB 35k+', min: 35000, max: 60000, description: 'Complex cases with concierge handling' },
 ];
 
-const readinessConfig: Record<
-  string,
-  Array<{
-    key: string;
-    label: string;
-    description: string;
-  }>
-> = {
-  default: [
-    {
-      key: 'passport_valid',
-      label: 'Passport valid 6+ months',
-      description: 'Most visa entries require at least half a year of validity remaining.',
-    },
-    {
-      key: 'appointment_ready',
-      label: 'Embassy / immigration appointment scheduled',
-      description: 'Share if you already have a slot or need help booking one.',
-    },
-  ],
-  'NON-IMM-B': [
-    {
-      key: 'employer_docs',
-      label: 'Employer documents in hand',
-      description: 'Company letter, registration, and tax filings prepared.',
-    },
-    {
-      key: 'work_history',
-      label: 'Work history updated',
-      description: 'CV or supporting portfolio ready for submission.',
-    },
-  ],
-  'NON-IMM-O': [
-    {
-      key: 'marriage_docs',
-      label: 'Marriage / guardian proof',
-      description: 'Marriage certificate or custody documents certified.',
-    },
-    {
-      key: 'financial_requirements',
-      label: 'THB 400k / THB 40k income proof',
-      description: 'Bank letter or income statement ready to show support.',
-    },
-  ],
-  'RETIREMENT': [
-    {
-      key: 'bank_balance',
-      label: 'THB 800k seasoned funds',
-      description: 'Funds deposited in a Thai bank for the required period.',
-    },
-    {
-      key: 'insurance',
-      label: 'Health insurance coverage',
-      description: 'Meets minimum inpatient/outpatient requirements.',
-    },
-  ],
-  LTR: [
-    {
-      key: 'income_proof',
-      label: 'USD 80k+ income proof',
-      description: 'Salary slips or tax returns ready to upload.',
-    },
-    {
-      key: 'employment_contract',
-      label: 'Employment or expertise confirmation',
-      description: 'Employer letter or evidence of specialized skills.',
-    },
-  ],
-  DTV: [
-    {
-      key: 'remote_contract',
-      label: 'Remote contract / gig proof',
-      description: 'Agreement showing engagement with foreign employer(s).',
-    },
-    {
-      key: 'savings_buffer',
-      label: 'THB 500k savings proof',
-      description: 'Bank statement capturing minimum balance.',
-    },
-  ],
-};
 
-const missionVisaOptions: Array<{
-  value: string;
-  label: string;
-  description: string;
-  badge?: string;
-  details: string[];
-}> = [
-  {
-    value: 'NON-IMM-B',
-    label: 'Non-Immigrant B',
-    description: 'Employer-sponsored work visa.',
-    badge: 'Work',
-    details: ['Thai employer + work permit', 'Salary ≥ THB 50k/mo', 'Company capital ≥ THB 2M'],
-  },
-  {
-    value: 'NON-IMM-O',
-    label: 'Non-Immigrant O',
-    description: 'Marriage or guardian route.',
-    badge: 'Family',
-    details: ['Married to Thai citizen or dependents', 'THB 400k banked or THB 40k monthly income'],
-  },
-  {
-    value: 'NON-IMM-ED',
-    label: 'Non-Immigrant ED',
-    description: 'Study or training programs.',
-    badge: 'Study',
-    details: ['Enrollment & tuition receipt', 'Show ~THB 200k living funds/insurance'],
-  },
-  {
-    value: 'LTR',
-    label: 'Long-Term Resident (LTR)',
-    description: '10-year visa for high-skill talent.',
-    badge: 'Premium',
-    details: ['Income ≥ USD 80k/year (40k for eligible STEM)', 'USD 50k insurance or deposit'],
-  },
-  {
-    value: 'RETIREMENT',
-    label: 'Retirement visa',
-    description: 'Non-Immigrant O/A or O/X.',
-    badge: '50+',
-    details: ['Age 50+', 'THB 800k in bank or THB 65k/month income', 'Thai health insurance'],
-  },
-  {
-    value: 'DTV',
-    label: 'Digital Nomad (DTV)',
-    description: 'Remote professionals on flexible stays.',
-    badge: 'Remote',
-    details: ['Foreign employment contract', 'THB 500k savings proof', 'USD 100k health coverage'],
-  },
+const missionVisaOptions = [
+  ...visaRequirements.map((requirement) => ({
+    value: requirement.id,
+    label: requirement.label,
+    description: requirement.summary,
+    badge: requirement.badge,
+    details: requirement.highlights,
+  })),
   {
     value: 'OTHER',
     label: 'Other / Not sure',
@@ -410,13 +289,19 @@ const missionVisaOptions: Array<{
 ];
 
 const resolveVisaLabel = (value: string) => {
+  if (!value) {
+    return '';
+  }
+  const configMatch = visaRequirementsMap[value];
+  if (configMatch) {
+    return configMatch.label;
+  }
   const missionMatch = missionVisaOptions.find((option) => option.value === value);
   if (missionMatch) {
     return missionMatch.label;
   }
-
   const formMatch = visaTypeOptions.find((option) => option.value === value);
-  return formMatch ? formMatch.label : '';
+  return formMatch ? formMatch.label : value;
 };
 
 const createTitleFromVisa = (value: string) => {
@@ -614,6 +499,15 @@ const getErrorForField = (field: FormField, errors: FormErrors) => {
 
 const baseCardClass = 'bg-bg-primary border border-border-light rounded-base shadow-sm';
 const sectionCardClass = `${baseCardClass} p-8`;
+const panelClass = 'rounded-2xl bg-white/90 p-5 shadow-sm';
+const mutedPanelClass = 'rounded-2xl bg-bg-secondary/70 p-5 shadow-sm';
+
+const formatDateDisplay = (value: string) => {
+  if (!value) {
+    return 'Pick a date';
+  }
+  return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(value));
+};
 const primaryButtonClass =
   'inline-flex items-center justify-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-6 py-3 text-sm font-semibold text-white shadow-xs transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60';
 const outlineButtonClass =
@@ -642,11 +536,16 @@ export default function CreateRequestPage() {
   const [redirectCountdown, setRedirectCountdown] = useState(4);
   const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const currentVisaExpiryInputRef = useRef<HTMLInputElement | null>(null);
   const [focusedField, setFocusedField] = useState<FormField | null>(null);
   const [isLocationSelectOpen, setIsLocationSelectOpen] = useState(false);
   const [timelineShortcuts] = useState(() => createTimelineShortcuts());
   const [isCustomTimeline, setIsCustomTimeline] = useState(false);
   const [hasCustomTitle, setHasCustomTitle] = useState(false);
+  const [isNationalityDropdownOpen, setIsNationalityDropdownOpen] = useState(false);
+  const [isCurrentVisaDropdownOpen, setIsCurrentVisaDropdownOpen] = useState(false);
+  const nationalityDropdownRef = useRef<HTMLDivElement | null>(null);
+  const currentVisaDropdownRef = useRef<HTMLDivElement | null>(null);
   const stepButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const touchStartXRef = useRef<number | null>(null);
   const touchCurrentXRef = useRef<number | null>(null);
@@ -680,6 +579,32 @@ export default function CreateRequestPage() {
 
     checkAuth();
   }, [router]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (nationalityDropdownRef.current && !nationalityDropdownRef.current.contains(target)) {
+        setIsNationalityDropdownOpen(false);
+      }
+      if (currentVisaDropdownRef.current && !currentVisaDropdownRef.current.contains(target)) {
+        setIsCurrentVisaDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setFormState((prev) => {
+      if (prev.currentVisaExpiry) {
+        return prev;
+      }
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok' });
+      const today = formatter.format(now);
+      return { ...prev, currentVisaExpiry: today };
+    });
+  }, []);
 
   useEffect(() => {
     if (!createdRequest) {
@@ -764,9 +689,8 @@ export default function CreateRequestPage() {
   }, [documentStatuses, formState, selectedNeeds]);
 
   const readinessItems = useMemo(() => {
-    const specific = readinessConfig[formState.visaType] ?? [];
-    const defaults = readinessConfig.default;
-    const combined = specific.length ? [...specific, ...defaults] : defaults;
+    const specific = visaRequirementsMap[formState.visaType]?.readiness ?? [];
+    const combined = specific.length ? [...specific, ...defaultReadiness] : defaultReadiness;
     const seen = new Set<string>();
     return combined.filter((item) => {
       if (seen.has(item.key)) {
@@ -818,6 +742,12 @@ export default function CreateRequestPage() {
 
   const toggleNeed = (need: string) => {
     setSelectedNeeds((prev) => (prev.includes(need) ? prev.filter((item) => item !== need) : [...prev, need]));
+  };
+
+  const handleNationalitySelect = (value: string) => {
+    updateField('nationality', value);
+    markFieldTouched('nationality');
+    setIsNationalityDropdownOpen(false);
   };
 
   const setDocumentStatus = (key: string, status: DocumentStatus) => {
@@ -990,7 +920,7 @@ export default function CreateRequestPage() {
         return 'border-error focus:ring-error/40';
       }
       if (state === 'success' && !formErrors.budget && formState.budgetMin && formState.budgetMax) {
-        return 'border-success/70 bg-success/5 focus:ring-success/30';
+        return 'border-primary focus:ring-primary/30 bg-primary/5 text-primary';
       }
     }
 
@@ -999,7 +929,7 @@ export default function CreateRequestPage() {
     }
 
     if (state === 'success') {
-      return 'border-success/70 bg-success/5 focus:ring-success/30';
+      return 'border-primary focus:ring-primary/30 bg-primary/5 text-primary';
     }
 
     return 'border-border focus:ring-primary/40';
@@ -1194,35 +1124,52 @@ export default function CreateRequestPage() {
             <label htmlFor="nationality" className="text-sm font-medium text-text-secondary">
               Nationality
             </label>
-            <div
-              className={`relative flex h-12 items-center gap-3 rounded-base border bg-transparent px-4 ${getInputClasses('nationality')}`}
-            >
-              <Globe className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
-              <select
-                id="nationality"
-                name="nationality"
-                value={formState.nationality}
-                onChange={(event) => updateField('nationality', event.target.value)}
-                onBlur={() => markFieldTouched('nationality')}
-                className="w-full bg-transparent text-base focus:outline-none appearance-none pr-6 h-full"
-                aria-invalid={Boolean(formErrors.nationality)}
+            <div ref={nationalityDropdownRef} className="relative">
+              <button
+                type="button"
+                className={`w-full h-12 rounded-base border px-4 flex items-center justify-between text-base transition focus-visible:ring-2 focus-visible:ring-primary/40 ${getInputClasses('nationality')}`}
+                onClick={() => setIsNationalityDropdownOpen((prev) => !prev)}
+                aria-haspopup="listbox"
+                aria-expanded={isNationalityDropdownOpen}
               >
-                <option value="">Select nationality</option>
-                {nationalityOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-text-tertiary absolute right-4 pointer-events-none" aria-hidden="true" />
+                <span className="flex items-center gap-2 text-left">
+                  <Globe className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+                  <span>{nationalityOptions.find((option) => option.value === formState.nationality)?.label || 'Select nationality'}</span>
+                </span>
+                <ChevronDown className={`w-4 h-4 text-text-tertiary transition ${isNationalityDropdownOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+              </button>
+              {isNationalityDropdownOpen && (
+                <div
+                  role="listbox"
+                  className="absolute z-20 mt-2 max-h-64 w-full overflow-y-auto rounded-2xl border border-border-light bg-white shadow-lg"
+                >
+                  {nationalityOptions.map((option) => {
+                    const isActive = formState.nationality === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleNationalitySelect(option.value)}
+                        className={`w-full px-4 py-2 text-left text-sm transition ${
+                          isActive ? 'bg-primary/5 text-primary font-semibold' : 'text-text-secondary hover:bg-bg-secondary/60'
+                        }`}
+                        role="option"
+                        aria-selected={isActive}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             {renderValidationFeedback('nationality')}
           </div>
         </div>
 
         <div className="space-y-3">
-          <div className="rounded-base border border-border-light p-4">
-            <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="flex items-center justify-between mb-2">
               <div>
                 <p className="text-sm font-medium text-text-secondary">Current location</p>
                 <p className="text-xs text-text-tertiary">Let providers know where you are starting from.</p>
@@ -1270,30 +1217,53 @@ export default function CreateRequestPage() {
         {formState.currentLocation === 'IN_THAILAND' && (
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label htmlFor="currentVisaType" className="text-sm font-medium text-text-secondary">
+              <label className="text-sm font-medium text-text-secondary">
                 Current visa type
               </label>
-              <div
-                className={`relative flex items-center gap-3 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('currentVisaType')}`}
-              >
-                <FileText className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
-                <select
-                  id="currentVisaType"
-                  name="currentVisaType"
-                  value={formState.currentVisaType}
-                  onChange={(event) => updateField('currentVisaType', event.target.value)}
-                  onBlur={() => markFieldTouched('currentVisaType')}
-                  className="w-full bg-transparent text-base focus:outline-none appearance-none pr-6"
-                  aria-invalid={Boolean(formErrors.currentVisaType)}
+              <div ref={currentVisaDropdownRef} className="relative">
+                <button
+                  type="button"
+                  className={`w-full h-12 rounded-base border px-4 flex items-center justify-between text-base transition focus-visible:ring-2 focus-visible:ring-primary/40 ${getInputClasses('currentVisaType')}`}
+                  onClick={() => setIsCurrentVisaDropdownOpen((prev) => !prev)}
+                  aria-haspopup="listbox"
+                  aria-expanded={isCurrentVisaDropdownOpen}
                 >
-                  <option value="">Select visa type</option>
-                  {inThailandVisaOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 text-text-tertiary absolute right-4 pointer-events-none" aria-hidden="true" />
+                  <span className="flex items-center gap-3 text-left">
+                    <FileText className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+                    <span className={formState.currentVisaType ? 'text-text-primary' : 'text-text-tertiary'}>
+                      {inThailandVisaOptions.find((option) => option.value === formState.currentVisaType)?.label ||
+                        'Select visa type'}
+                    </span>
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-text-tertiary transition ${isCurrentVisaDropdownOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                </button>
+                {isCurrentVisaDropdownOpen && (
+                  <div
+                    role="listbox"
+                    className="absolute z-20 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl border border-border-light bg-white shadow-lg"
+                  >
+                    {inThailandVisaOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => {
+                          updateField('currentVisaType', option.value);
+                          markFieldTouched('currentVisaType');
+                          setIsCurrentVisaDropdownOpen(false);
+                        }}
+                        className={`w-full px-4 py-2 text-left text-sm transition ${
+                          formState.currentVisaType === option.value
+                            ? 'bg-primary/5 text-primary font-semibold'
+                            : 'text-text-secondary hover:bg-bg-secondary/60'
+                        }`}
+                        role="option"
+                        aria-selected={formState.currentVisaType === option.value}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               {renderValidationFeedback('currentVisaType')}
             </div>
@@ -1302,19 +1272,43 @@ export default function CreateRequestPage() {
               <label htmlFor="currentVisaExpiry" className="text-sm font-medium text-text-secondary">
                 Current visa expiry date
               </label>
-              <div
-                className={`flex items-center gap-3 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('currentVisaExpiry')}`}
-              >
-                <Calendar className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+              <div className="relative">
+                <button
+                  type="button"
+                  className={`w-full h-12 rounded-base border px-4 flex items-center justify-between text-base transition focus-visible:ring-2 focus-visible:ring-primary/40 ${getInputClasses('currentVisaExpiry')}`}
+                  onClick={() => {
+                    const input = currentVisaExpiryInputRef.current;
+                    if (!input) {
+                      return;
+                    }
+                    if (typeof input.showPicker === 'function') {
+                      input.showPicker();
+                    } else {
+                      input.click();
+                    }
+                  }}
+                  aria-controls="currentVisaExpiry"
+                  aria-haspopup="dialog"
+                  aria-expanded="false"
+                  aria-invalid={Boolean(formErrors.currentVisaExpiry)}
+                >
+                  <span className="flex items-center gap-3 text-left">
+                    <Calendar className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+                    <span className={formState.currentVisaExpiry ? 'text-text-primary' : 'text-text-tertiary'}>
+                      {formatDateDisplay(formState.currentVisaExpiry)}
+                    </span>
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+                </button>
                 <input
+                  ref={currentVisaExpiryInputRef}
                   id="currentVisaExpiry"
                   name="currentVisaExpiry"
                   type="date"
                   value={formState.currentVisaExpiry}
                   onChange={(event) => updateField('currentVisaExpiry', event.target.value)}
                   onBlur={() => markFieldTouched('currentVisaExpiry')}
-                  className="w-full bg-transparent text-base focus:outline-none"
-                  aria-invalid={Boolean(formErrors.currentVisaExpiry)}
+                  className="sr-only"
                 />
               </div>
               {renderValidationFeedback('currentVisaExpiry')}
@@ -1383,11 +1377,11 @@ export default function CreateRequestPage() {
             {renderValidationFeedback('title', 'Title looks descriptive.')}
           </div>
 
-          <div className="rounded-base border border-border-light bg-bg-secondary/40 p-5 space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-text-secondary">Which visa feels right?</p>
-                <p className="text-xs text-text-tertiary">Pick what you are leaning toward right now.</p>
+                <p className="text-xs text-text-tertiary">Pick what you are leaning toward.</p>
               </div>
               {selectedMissionVisa && <span className="text-xs text-primary font-medium">{selectedMissionVisa.label}</span>}
             </div>
@@ -1457,7 +1451,7 @@ export default function CreateRequestPage() {
         </div>
       </div>
 
-      <div className="rounded-base border border-border-light p-5 space-y-4">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-text-secondary">Preferred location</p>
@@ -1546,7 +1540,7 @@ export default function CreateRequestPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-base border border-border-light p-5 space-y-5">
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-text-secondary">Budget range (THB)</p>
@@ -1577,60 +1571,10 @@ export default function CreateRequestPage() {
               );
             })}
           </div>
-          <div className="rounded-base border border-dashed border-border-light p-4 space-y-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">Need a different range?</p>
-              <p className="text-sm text-text-secondary">Fine-tune the numbers below and we’ll keep them private.</p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="text-sm text-text-secondary">
-                Minimum
-                <div
-                  className={`mt-1 flex items-center gap-2 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('budgetMin')}`}
-                >
-                  <span className="text-xs text-text-tertiary">THB</span>
-                  <input
-                    id="budgetMin"
-                    name="budgetMin"
-                    type="number"
-                    min={0}
-                    step={500}
-                    value={formState.budgetMin}
-                    onChange={(event) => updateField('budgetMin', event.target.value)}
-                    onBlur={() => markFieldTouched('budgetMin')}
-                    className="w-full bg-transparent focus:outline-none"
-                    placeholder="10,000"
-                    aria-invalid={Boolean(formErrors.budget)}
-                  />
-                </div>
-              </label>
-              <label className="text-sm text-text-secondary">
-                Maximum
-                <div
-                  className={`mt-1 flex items-center gap-2 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('budgetMax')}`}
-                >
-                  <span className="text-xs text-text-tertiary">THB</span>
-                  <input
-                    id="budgetMax"
-                    name="budgetMax"
-                    type="number"
-                    min={0}
-                    step={500}
-                    value={formState.budgetMax}
-                    onChange={(event) => updateField('budgetMax', event.target.value)}
-                    onBlur={() => markFieldTouched('budgetMax')}
-                    className="w-full bg-transparent focus:outline-none"
-                    placeholder="25,000"
-                    aria-invalid={Boolean(formErrors.budget)}
-                  />
-                </div>
-              </label>
-            </div>
-          </div>
           {renderValidationFeedback('budgetMin')}
         </div>
 
-        <div className="rounded-base border border-border-light p-5 space-y-4">
+        <div className="space-y-3">
           <div>
             <p className="text-sm font-medium text-text-secondary">Ideal submission timeline</p>
             <p className="text-xs text-text-tertiary">This helps agents prioritize and flag feasibility early.</p>
@@ -1706,8 +1650,8 @@ export default function CreateRequestPage() {
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="rounded-base border border-border-light p-6 space-y-6 bg-gradient-to-b from-bg-secondary/40 to-bg-primary">
+        <div className="space-y-6">
+          <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-text-tertiary font-semibold">Request preview</p>
@@ -1717,7 +1661,7 @@ export default function CreateRequestPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
+            <div className="space-y-2">
               <p className="text-sm font-semibold text-text-secondary">Personal snapshot</p>
               <dl className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
@@ -1743,7 +1687,7 @@ export default function CreateRequestPage() {
               </dl>
             </div>
 
-            <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
+            <div className="space-y-2">
               <p className="text-sm font-semibold text-text-secondary">Intent & logistics</p>
               <dl className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
@@ -1769,57 +1713,8 @@ export default function CreateRequestPage() {
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-text-secondary">Assistance areas</p>
-              <span className="text-xs text-text-tertiary">{selectedNeeds.length} selected</span>
-            </div>
-            {selectedNeeds.length ? (
-              <ul className="space-y-1 text-sm text-text-secondary">
-                {selectedNeeds.map((need) => (
-                  <li key={need} className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-                    {need}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-text-tertiary">No extra support listed.</p>
-            )}
-          </div>
-
-          <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-text-secondary">Document readiness</p>
-              <span className="text-xs text-text-tertiary">
-                {documentReadyCount} ready · {documentHelpCount} need help
-              </span>
-            </div>
-            <ul className="space-y-2 text-sm">
-              {documentChecklist.map((doc) => {
-                const status = documentStatuses[doc.key];
-                const label =
-                  status === 'ready' ? 'Ready' : status === 'in-progress' ? 'In progress' : 'Needs help';
-                const badgeClass =
-                  status === 'ready'
-                    ? 'bg-success/10 text-success'
-                    : status === 'need-help'
-                    ? 'bg-error/10 text-error'
-                    : 'bg-border/60 text-text-tertiary';
-                return (
-                  <li key={doc.key} className="flex items-center justify-between">
-                    <span>{doc.label}</span>
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badgeClass}`}>{label}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-
         {readinessItems.length > 0 && (
-          <div className="rounded-base border border-border-light bg-white p-4 space-y-4">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-text-secondary">Application readiness</p>
               <span className="text-xs text-text-tertiary">

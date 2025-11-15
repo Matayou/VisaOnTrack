@@ -264,11 +264,93 @@ const residencyOptions = [
 ];
 
 const budgetPresets = [
-  { label: 'THB 5k - 10k', min: 5000, max: 10000 },
-  { label: 'THB 10k - 20k', min: 10000, max: 20000 },
-  { label: 'THB 20k - 35k', min: 20000, max: 35000 },
-  { label: 'THB 35k+', min: 35000, max: 60000 },
+  { label: 'THB 5k - 10k', min: 5000, max: 10000, description: 'Straightforward extensions & tourist help' },
+  { label: 'THB 10k - 20k', min: 10000, max: 20000, description: 'Most Non-Imm B / O conversions' },
+  { label: 'THB 20k - 35k', min: 20000, max: 35000, description: 'LTR, families, and multi-step support' },
+  { label: 'THB 35k+', min: 35000, max: 60000, description: 'Complex cases with concierge handling' },
 ];
+
+const readinessConfig: Record<
+  string,
+  Array<{
+    key: string;
+    label: string;
+    description: string;
+  }>
+> = {
+  default: [
+    {
+      key: 'passport_valid',
+      label: 'Passport valid 6+ months',
+      description: 'Most visa entries require at least half a year of validity remaining.',
+    },
+    {
+      key: 'appointment_ready',
+      label: 'Embassy / immigration appointment scheduled',
+      description: 'Share if you already have a slot or need help booking one.',
+    },
+  ],
+  'NON-IMM-B': [
+    {
+      key: 'employer_docs',
+      label: 'Employer documents in hand',
+      description: 'Company letter, registration, and tax filings prepared.',
+    },
+    {
+      key: 'work_history',
+      label: 'Work history updated',
+      description: 'CV or supporting portfolio ready for submission.',
+    },
+  ],
+  'NON-IMM-O': [
+    {
+      key: 'marriage_docs',
+      label: 'Marriage / guardian proof',
+      description: 'Marriage certificate or custody documents certified.',
+    },
+    {
+      key: 'financial_requirements',
+      label: 'THB 400k / THB 40k income proof',
+      description: 'Bank letter or income statement ready to show support.',
+    },
+  ],
+  'RETIREMENT': [
+    {
+      key: 'bank_balance',
+      label: 'THB 800k seasoned funds',
+      description: 'Funds deposited in a Thai bank for the required period.',
+    },
+    {
+      key: 'insurance',
+      label: 'Health insurance coverage',
+      description: 'Meets minimum inpatient/outpatient requirements.',
+    },
+  ],
+  LTR: [
+    {
+      key: 'income_proof',
+      label: 'USD 80k+ income proof',
+      description: 'Salary slips or tax returns ready to upload.',
+    },
+    {
+      key: 'employment_contract',
+      label: 'Employment or expertise confirmation',
+      description: 'Employer letter or evidence of specialized skills.',
+    },
+  ],
+  DTV: [
+    {
+      key: 'remote_contract',
+      label: 'Remote contract / gig proof',
+      description: 'Agreement showing engagement with foreign employer(s).',
+    },
+    {
+      key: 'savings_buffer',
+      label: 'THB 500k savings proof',
+      description: 'Bank statement capturing minimum balance.',
+    },
+  ],
+};
 
 const missionVisaOptions: Array<{
   value: string;
@@ -358,9 +440,21 @@ const createTitleFromVisa = (value: string) => {
 const featuredLocationOptions = ['BANGKOK', 'CHIANG_MAI', 'PHUKET', 'PATTAYA', 'SAMUI', 'HUA_HIN'];
 
 const createTimelineShortcuts = () => [
-  { label: 'Need approval within 2 weeks', value: 'Need approval within 2 weeks' },
-  { label: 'Need approval within 1 month', value: 'Need approval within 1 month' },
-  { label: 'Need approval within 3 months', value: 'Need approval within 3 months' },
+  {
+    label: 'Within 2 weeks',
+    value: 'Need approval within 2 weeks',
+    description: 'Emergency conversions or looming expirations',
+  },
+  {
+    label: 'Within 1 month',
+    value: 'Need approval within 1 month',
+    description: 'Standard processing with some buffer',
+  },
+  {
+    label: 'Within 3 months',
+    value: 'Need approval within 3 months',
+    description: 'Planning ahead for new relocations',
+  },
 ];
 
 const formSteps = [
@@ -539,6 +633,7 @@ export default function CreateRequestPage() {
   const [documentStatuses, setDocumentStatuses] = useState<Record<string, DocumentStatus>>(
     () => createInitialDocumentState(),
   );
+  const [readinessStatus, setReadinessStatus] = useState<Record<string, DocumentStatus>>({});
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [stepError, setStepError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -551,8 +646,6 @@ export default function CreateRequestPage() {
   const [isLocationSelectOpen, setIsLocationSelectOpen] = useState(false);
   const [timelineShortcuts] = useState(() => createTimelineShortcuts());
   const [isCustomTimeline, setIsCustomTimeline] = useState(false);
-  const [isAssistanceOpen, setIsAssistanceOpen] = useState(false);
-  const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
   const [hasCustomTitle, setHasCustomTitle] = useState(false);
   const stepButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const touchStartXRef = useRef<number | null>(null);
@@ -670,12 +763,27 @@ export default function CreateRequestPage() {
     return sections.join('\n\n').trim();
   }, [documentStatuses, formState, selectedNeeds]);
 
+  const readinessItems = useMemo(() => {
+    const specific = readinessConfig[formState.visaType] ?? [];
+    const defaults = readinessConfig.default;
+    const combined = specific.length ? [...specific, ...defaults] : defaults;
+    const seen = new Set<string>();
+    return combined.filter((item) => {
+      if (seen.has(item.key)) {
+        return false;
+      }
+      seen.add(item.key);
+      return true;
+    });
+  }, [formState.visaType]);
+
   const resetForm = () => {
     setFormState(createInitialFormState());
     setTouchedFields(createInitialTouchedState());
     setSelectedNeeds(['Visa strategy & eligibility']);
     setDocumentStatuses(createInitialDocumentState());
-    setFormErrors({});
+      setFormErrors({});
+      setReadinessStatus({});
     setStepError(null);
     setSubmitError(null);
     setCreatedRequest(null);
@@ -714,6 +822,10 @@ export default function CreateRequestPage() {
 
   const setDocumentStatus = (key: string, status: DocumentStatus) => {
     setDocumentStatuses((prev) => ({ ...prev, [key]: status }));
+  };
+
+  const handleReadinessStatus = (key: string, status: DocumentStatus) => {
+    setReadinessStatus((prev) => ({ ...prev, [key]: status }));
   };
 
   const resolveLocationLabel = (value: string) => {
@@ -1429,17 +1541,22 @@ export default function CreateRequestPage() {
             Step 4
           </p>
           <h2 className="text-2xl font-semibold tracking-tight">Budget & timing</h2>
-          <p className="text-text-secondary">Pick a range or set a custom number. Timeline defaults help.</p>
+          <p className="text-text-secondary">Highlight expectations so providers can self-qualify instantly.</p>
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-medium text-text-secondary">Budget range (THB)</p>
-            <span className="text-xs text-text-tertiary uppercase tracking-wide">Private</span>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-base border border-border-light p-5 space-y-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-text-secondary">Budget range (THB)</p>
+              <p className="text-xs text-text-tertiary">Shared privately with vetted providers only</p>
+            </div>
+            <span className="text-[10px] uppercase tracking-wide text-text-tertiary border border-border-light px-2 py-0.5 rounded-full">
+              Private
+            </span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {budgetPresets.map((preset) => {
               const isActive =
                 Number(formState.budgetMin) === preset.min && Number(formState.budgetMax) === preset.max;
@@ -1447,56 +1564,110 @@ export default function CreateRequestPage() {
                 <button
                   key={preset.label}
                   type="button"
-                  className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                  className={`text-left rounded-2xl border px-4 py-3 transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
                     isActive
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                      ? 'border-primary bg-primary/5 text-primary shadow-sm'
+                      : 'border-border-light bg-bg-secondary/60 text-text-secondary hover:border-primary/40 hover:text-primary'
                   }`}
                   onClick={() => handleBudgetPreset(preset)}
                 >
-                  {preset.label}
+                  <p className="text-sm font-semibold">{preset.label}</p>
+                  <p className="text-xs text-text-tertiary mt-1">{preset.description}</p>
                 </button>
               );
             })}
           </div>
-
+          <div className="rounded-base border border-dashed border-border-light p-4 space-y-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">Need a different range?</p>
+              <p className="text-sm text-text-secondary">Fine-tune the numbers below and we’ll keep them private.</p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="text-sm text-text-secondary">
+                Minimum
+                <div
+                  className={`mt-1 flex items-center gap-2 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('budgetMin')}`}
+                >
+                  <span className="text-xs text-text-tertiary">THB</span>
+                  <input
+                    id="budgetMin"
+                    name="budgetMin"
+                    type="number"
+                    min={0}
+                    step={500}
+                    value={formState.budgetMin}
+                    onChange={(event) => updateField('budgetMin', event.target.value)}
+                    onBlur={() => markFieldTouched('budgetMin')}
+                    className="w-full bg-transparent focus:outline-none"
+                    placeholder="10,000"
+                    aria-invalid={Boolean(formErrors.budget)}
+                  />
+                </div>
+              </label>
+              <label className="text-sm text-text-secondary">
+                Maximum
+                <div
+                  className={`mt-1 flex items-center gap-2 rounded-base border bg-transparent px-4 py-3 ${getInputClasses('budgetMax')}`}
+                >
+                  <span className="text-xs text-text-tertiary">THB</span>
+                  <input
+                    id="budgetMax"
+                    name="budgetMax"
+                    type="number"
+                    min={0}
+                    step={500}
+                    value={formState.budgetMax}
+                    onChange={(event) => updateField('budgetMax', event.target.value)}
+                    onBlur={() => markFieldTouched('budgetMax')}
+                    className="w-full bg-transparent focus:outline-none"
+                    placeholder="25,000"
+                    aria-invalid={Boolean(formErrors.budget)}
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
           {renderValidationFeedback('budgetMin')}
         </div>
 
-        <div>
-          <p className="text-sm font-medium text-text-secondary mb-3">Ideal submission timeline</p>
-          <div className="flex flex-wrap gap-2">
+        <div className="rounded-base border border-border-light p-5 space-y-4">
+          <div>
+            <p className="text-sm font-medium text-text-secondary">Ideal submission timeline</p>
+            <p className="text-xs text-text-tertiary">This helps agents prioritize and flag feasibility early.</p>
+          </div>
+          <div className="flex flex-col gap-3">
             {timelineShortcuts.map((shortcut) => {
               const isActive = formState.timeline === shortcut.value && !isCustomTimeline;
               return (
                 <button
                   key={shortcut.value}
                   type="button"
-                  className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                  className={`w-full rounded-2xl border px-4 py-3 text-left transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
                     isActive
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                      ? 'border-primary bg-primary/5 text-primary shadow-sm'
+                      : 'border-border-light bg-bg-secondary/60 text-text-secondary hover:border-primary/40 hover:text-primary'
                   }`}
                   onClick={() => handleTimelineShortcut(shortcut.value)}
                 >
-                  {shortcut.label}
+                  <p className="text-sm font-semibold">{shortcut.label}</p>
+                  <p className="text-xs text-text-tertiary mt-1">{shortcut.description}</p>
                 </button>
               );
             })}
             <button
               type="button"
-              className={`px-3 py-1.5 rounded-base border text-sm transition ${
+              className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
                 isCustomTimeline
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                  ? 'border-primary bg-primary/5 text-primary shadow-sm'
+                  : 'border-dashed border-border-light bg-bg-secondary/60 text-text-secondary hover:border-primary/40 hover:text-primary'
               }`}
               onClick={() => setIsCustomTimeline(true)}
             >
-              Custom
+              Set a custom note
             </button>
           </div>
           {isCustomTimeline && (
-            <div className="mt-3 rounded-base border border-border bg-transparent px-4 py-3 flex gap-3 items-center focus-within:ring-2 focus-within:ring-primary/30">
+            <div className="rounded-base border border-border bg-transparent px-4 py-3 flex gap-3 items-center focus-within:ring-2 focus-within:ring-primary/30">
               <Calendar className="w-5 h-5 text-text-tertiary" aria-hidden="true" />
               <input
                 id="timeline"
@@ -1505,7 +1676,7 @@ export default function CreateRequestPage() {
                 value={formState.timeline}
                 onChange={(event) => updateField('timeline', event.target.value)}
                 onBlur={() => markFieldTouched('timeline')}
-                placeholder="e.g. Need visa stamped before 30 April 2025"
+                placeholder="e.g. Need passport stamped before 30 April 2025"
                 className="w-full bg-transparent focus:outline-none"
               />
             </div>
@@ -1517,6 +1688,8 @@ export default function CreateRequestPage() {
 
   const documentReadyCount = Object.values(documentStatuses).filter((status) => status === 'ready').length;
   const documentHelpCount = Object.values(documentStatuses).filter((status) => status === 'need-help').length;
+  const readinessReadyCount = readinessItems.filter((item) => readinessStatus[item.key] === 'ready').length;
+  const readinessHelpCount = readinessItems.filter((item) => readinessStatus[item.key] === 'need-help').length;
 
   const renderSupportStep = () => (
     <section className={sectionCardClass}>
@@ -1534,98 +1707,152 @@ export default function CreateRequestPage() {
       </div>
 
       <div className="space-y-6">
-        <div className="rounded-base border border-border-light">
-          <button
-            type="button"
-            className="w-full flex items-center justify-between px-4 py-3"
-            onClick={() => setIsAssistanceOpen((prev) => !prev)}
-          >
+        <div className="rounded-base border border-border-light p-6 space-y-6 bg-gradient-to-b from-bg-secondary/40 to-bg-primary">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-text-secondary">Assistance areas</p>
-              <p className="text-xs text-text-tertiary">{selectedNeeds.length} selected</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-text-tertiary font-semibold">Request preview</p>
+              <h3 className="text-xl font-semibold text-text-primary">{formState.title || 'Untitled request'}</h3>
             </div>
-            <ChevronDown
-              className={`w-4 h-4 text-text-tertiary transition-transform ${isAssistanceOpen ? 'rotate-180' : ''}`}
-            />
-          </button>
-          {isAssistanceOpen && (
-            <div className="border-t border-border-light p-4">
-              <div className="flex flex-wrap gap-3" role="group" aria-label="Select assistance areas">
-                {assistanceNeeds.map((need) => {
-                  const isSelected = selectedNeeds.includes(need);
-                  return (
-                    <button
-                      key={need}
-                      type="button"
-                      onClick={() => toggleNeed(need)}
-                      className={`px-4 py-2 rounded-base border text-sm transition flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                        isSelected
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border text-text-secondary hover:border-primary/40 hover:text-primary'
-                      }`}
-                      aria-pressed={isSelected}
-                      aria-label={`${need}${isSelected ? ' selected' : ''}`}
-                    >
-                      {isSelected && <Check className="w-4 h-4" aria-hidden="true" />}
-                      {need}
-                    </button>
-                  );
-                })}
-              </div>
+            <span className="text-xs text-text-tertiary">{new Intl.DateTimeFormat('en-US').format(new Date())}</span>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
+              <p className="text-sm font-semibold text-text-secondary">Personal snapshot</p>
+              <dl className="space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <dt className="text-text-tertiary">Age range</dt>
+                  <dd className="font-medium text-text-primary">{formState.ageRange || '—'}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-text-tertiary">Nationality</dt>
+                  <dd className="font-medium text-text-primary">{formState.nationality || '—'}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-text-tertiary">Current status</dt>
+                  <dd className="font-medium text-text-primary">
+                    {formState.currentLocation === 'IN_THAILAND' ? 'Inside Thailand' : 'Outside Thailand'}
+                  </dd>
+                </div>
+                {formState.currentLocation === 'IN_THAILAND' && (
+                  <div className="flex items-center justify-between">
+                    <dt className="text-text-tertiary">Current visa</dt>
+                    <dd className="font-medium text-text-primary">{formState.currentVisaType || '—'}</dd>
+                  </div>
+                )}
+              </dl>
             </div>
-          )}
+
+            <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
+              <p className="text-sm font-semibold text-text-secondary">Intent & logistics</p>
+              <dl className="space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <dt className="text-text-tertiary">Target visa</dt>
+                  <dd className="font-medium text-text-primary">{resolveVisaLabel(formState.visaType) || '—'}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-text-tertiary">Preferred location</dt>
+                  <dd className="font-medium text-text-primary">{resolveLocationLabel(formState.location) || '—'}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-text-tertiary">Budget range</dt>
+                  <dd className="font-medium text-text-primary">
+                    {formState.budgetMin && formState.budgetMax ? `THB ${formState.budgetMin} - ${formState.budgetMax}` : '—'}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-text-tertiary">Timeline</dt>
+                  <dd className="font-medium text-text-primary">{formState.timeline || '—'}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
         </div>
 
-        <div className="rounded-base border border-border-light">
-          <button
-            type="button"
-            className="w-full flex items-center justify-between px-4 py-3"
-            onClick={() => setIsDocumentsOpen((prev) => !prev)}
-          >
-            <div>
-              <p className="text-sm font-medium text-text-secondary">Document readiness</p>
-              <p className="text-xs text-text-tertiary">
-                {documentReadyCount} ready · {documentHelpCount} need help
-              </p>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-text-secondary">Assistance areas</p>
+              <span className="text-xs text-text-tertiary">{selectedNeeds.length} selected</span>
             </div>
-            <ChevronDown
-              className={`w-4 h-4 text-text-tertiary transition-transform ${isDocumentsOpen ? 'rotate-180' : ''}`}
-            />
-          </button>
-          {isDocumentsOpen && (
-            <div className="border-t border-border-light p-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                {documentChecklist.map((doc) => (
-                  <div key={doc.key} className="rounded-base border border-border-light p-4">
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-base bg-primary/10 flex items-center justify-center">
-                        <ClipboardList className="w-5 h-5 text-primary" aria-hidden="true" />
-                      </div>
+            {selectedNeeds.length ? (
+              <ul className="space-y-1 text-sm text-text-secondary">
+                {selectedNeeds.map((need) => (
+                  <li key={need} className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+                    {need}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-text-tertiary">No extra support listed.</p>
+            )}
+          </div>
+
+          <div className="rounded-base border border-border-light bg-white p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-text-secondary">Document readiness</p>
+              <span className="text-xs text-text-tertiary">
+                {documentReadyCount} ready · {documentHelpCount} need help
+              </span>
+            </div>
+            <ul className="space-y-2 text-sm">
+              {documentChecklist.map((doc) => {
+                const status = documentStatuses[doc.key];
+                const label =
+                  status === 'ready' ? 'Ready' : status === 'in-progress' ? 'In progress' : 'Needs help';
+                const badgeClass =
+                  status === 'ready'
+                    ? 'bg-success/10 text-success'
+                    : status === 'need-help'
+                    ? 'bg-error/10 text-error'
+                    : 'bg-border/60 text-text-tertiary';
+                return (
+                  <li key={doc.key} className="flex items-center justify-between">
+                    <span>{doc.label}</span>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badgeClass}`}>{label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+
+        {readinessItems.length > 0 && (
+          <div className="rounded-base border border-border-light bg-white p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-text-secondary">Application readiness</p>
+              <span className="text-xs text-text-tertiary">
+                {readinessReadyCount} ready · {readinessHelpCount} need help
+              </span>
+            </div>
+            <div className="space-y-3">
+              {readinessItems.map((item) => {
+                const status = readinessStatus[item.key] ?? 'in-progress';
+                return (
+                  <div key={item.key} className="border border-border-light rounded-base p-3 space-y-2">
+                    <div className="flex items-center justify-between gap-3">
                       <div>
-                        <p className="font-medium">{doc.label}</p>
-                        <p className="text-sm text-text-tertiary">
-                          Tell providers if you need help gathering it.
-                        </p>
+                        <p className="text-sm font-semibold text-text-primary">{item.label}</p>
+                        <p className="text-xs text-text-tertiary">{item.description}</p>
                       </div>
                     </div>
-                    <div className="flex gap-2" role="group" aria-label={`${doc.label} status`}>
-                      {(['ready', 'in-progress', 'need-help'] as DocumentStatus[]).map((status) => {
-                        const isActive = documentStatuses[doc.key] === status;
+                    <div className="flex gap-2" role="group" aria-label={`${item.label} readiness`}>
+                      {(['ready', 'in-progress', 'need-help'] as DocumentStatus[]).map((option) => {
                         const badgeLabel =
-                          status === 'ready' ? 'Ready' : status === 'in-progress' ? 'In progress' : 'Need help';
-
+                          option === 'ready' ? 'Ready' : option === 'need-help' ? 'Need help' : 'In progress';
+                        const isActive = status === option;
                         return (
                           <button
-                            key={status}
+                            key={option}
                             type="button"
                             className={`flex-1 rounded-base border px-3 py-2 text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
                               isActive
                                 ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border-light text-text-tertiary hover:border-primary/40 hover:text-primary'
+                                : 'border-border-light text-text-secondary hover:border-primary/40 hover:text-primary'
                             }`}
-                            onClick={() => setDocumentStatus(doc.key, status)}
+                            onClick={() => handleReadinessStatus(item.key, option)}
                             aria-pressed={isActive}
-                            aria-label={`${doc.label}: ${badgeLabel}`}
                           >
                             {badgeLabel}
                           </button>
@@ -1633,15 +1860,15 @@ export default function CreateRequestPage() {
                       })}
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div>
           <label htmlFor="additionalNotes" className="block text-sm font-medium text-text-secondary mb-2">
-            Anything else we should know?
+            Last notes (optional)
           </label>
           <textarea
             id="additionalNotes"
@@ -1649,7 +1876,7 @@ export default function CreateRequestPage() {
             value={formState.additionalNotes}
             onChange={(event) => updateField('additionalNotes', event.target.value)}
             onBlur={() => markFieldTouched('additionalNotes')}
-            placeholder="Dependent details, recent visa history, employer information..."
+            placeholder="Dependent details, employer info, anything else providers should know."
             className="w-full rounded-base border border-border bg-transparent px-4 py-3 text-base min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary transition"
             maxLength={2000}
           />

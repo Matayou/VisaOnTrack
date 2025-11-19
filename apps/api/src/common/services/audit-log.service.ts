@@ -267,5 +267,49 @@ export class AuditLogService {
       },
     });
   }
+
+  /**
+   * Log request creation event (per Section 11)
+   * Action performed by SEEKER role
+   */
+  async logRequestCreated(requestId: string, seekerId: string, ip?: string, ua?: string): Promise<void> {
+    await this.prisma.auditLog.create({
+      data: {
+        actorUserId: seekerId,
+        actorRole: 'SEEKER',
+        action: 'REQUEST_CREATED',
+        entityType: 'Request',
+        entityId: requestId,
+        diff: { requestId },
+        ip: ip || null,
+        ua: ua || null,
+      },
+    });
+  }
+
+  /**
+   * Log request update event (per Section 11)
+   */
+  async logRequestUpdated(
+    requestId: string,
+    actorUserId: string,
+    actorRole: string,
+    changes: Prisma.InputJsonValue,
+    ip?: string,
+    ua?: string,
+  ): Promise<void> {
+    await this.prisma.auditLog.create({
+      data: {
+        actorUserId,
+        actorRole,
+        action: 'REQUEST_UPDATED',
+        entityType: 'Request',
+        entityId: requestId,
+        diff: changes,
+        ip: ip || null,
+        ua: ua || null,
+      },
+    });
+  }
 }
 

@@ -384,5 +384,27 @@ export class AuthController {
       message: 'Registration rate limits cleared. You can now register again.',
     };
   }
-}
 
+  /**
+   * POST /auth/dev/clear-login-rate-limits
+   * Clear login rate limits (development only)
+   * This endpoint is only available in development mode
+   */
+  @Post('dev/clear-login-rate-limits')
+  @HttpCode(HttpStatus.OK)
+  clearLoginRateLimits(@Req() req: Request): { message: string } {
+    if (process.env.NODE_ENV === 'production') {
+      throw new BadRequestException({
+        code: 'BAD_REQUEST',
+        message: 'This endpoint is not available in production',
+      });
+    }
+
+    const ip = req.ip || (req.headers['x-forwarded-for'] as string) || undefined;
+    this.rateLimitService.clearLoginRateLimit(ip);
+    
+    return {
+      message: 'Login rate limits cleared. You can now try signing in again.',
+    };
+  }
+}

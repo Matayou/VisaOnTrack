@@ -254,5 +254,23 @@ export class RateLimitService {
       console.log('[RateLimitService] Cleared all registration rate limits');
     }
   }
-}
 
+  /**
+   * Clear login rate limits for a specific IP or all (development only)
+   */
+  clearLoginRateLimit(ip?: string): void {
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('[RateLimitService] clearLoginRateLimit called in production - ignoring');
+      return;
+    }
+
+    if (ip) {
+      const key = `login:${ip}`;
+      this.loginLimits.delete(key);
+      console.log(`[RateLimitService] Cleared login rate limit for IP: ${ip}`);
+    } else {
+      this.loginLimits.clear();
+      console.log('[RateLimitService] Cleared all login rate limits');
+    }
+  }
+}

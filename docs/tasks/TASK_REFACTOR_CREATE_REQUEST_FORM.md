@@ -24,3 +24,10 @@
 - Individual step files stay under ~200 lines.
 - No duplicated data/config across files.
 - Lint/test suite continues to pass.
+
+## Captured UX Behavior
+- Custom dropdown buttons (nationality, current visa) show inline icons, close on outside click, and rely on contextual validation classes so the same styling rules apply across the flow.
+- The date picker trigger always seeds `currentVisaExpiry` with “today” in the Asia/Bangkok timezone so in-country seekers never see an empty control; the trigger simply opens the native `<input type="date">`.
+- Timeline shortcuts preselect the first preset on mount, but toggling “Set a custom note” should persist whenever the stored timeline string no longer matches a preset.
+- The readiness section merges visa-specific requirements with the default readiness list and deduplicates keys, exposing the three-state buttons (`Ready`, `In progress`, `Need help`) for every item.
+- Request previews must continue to summarize personal info, mission, budget, and timeline exactly as composed today so the API payload and confirmation screen stay consistent.

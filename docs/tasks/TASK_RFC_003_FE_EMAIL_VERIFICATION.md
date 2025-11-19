@@ -60,7 +60,7 @@ Create email verification page (`/auth/verify-email`) that handles token verific
 ### Stack Requirements (Per Spec Section 1)
 - **Framework:** Next.js App Router
 - **Language:** TypeScript
-- **Styling:** Tailwind CSS
+- **Styling:** Tailwind CSS 
 - **Icons:** Lucide Icons
 - **API Client:** Generated from OpenAPI spec
 

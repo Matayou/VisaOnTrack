@@ -1,7 +1,7 @@
 # M2 — Requests & Messaging
 
 **Duration:** 5–6 days  
-**Status:** ⏳ READY TO START  
+**Status:** ⏳ IN PROGRESS  
 **Prerequisites:** ✅ M1 complete (Auth & Onboarding)
 
 ---
@@ -78,7 +78,7 @@ Implement the core request posting and messaging system, enabling Seekers to pos
 
 #### Task 1: Requests List & Detail Pages
 **Duration:** 1.5–2 days  
-**Status:** ⏳ PENDING
+**Status:** ⏳ IN PROGRESS (refactoring `/requests/new` into step components + shared form context; lint/test blocked until Node runtime is available)
 
 **Pages to Implement:**
 - `/requests` — Request list page (with filters)

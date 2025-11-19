@@ -109,7 +109,7 @@ export default function ProviderWelcomePage() {
         <span>Logout</span>
       </button>
 
-      <div className="w-full max-w-[56rem] bg-bg-primary border border-border-light rounded-lg shadow-md animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="w-full max-w-6xl bg-bg-primary border border-border-light rounded-lg shadow-md animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-12 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary-hover rounded-md mb-6 shadow-[0_4px_12px_rgba(37,99,235,0.2)] animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)]">
@@ -228,7 +228,7 @@ export default function ProviderWelcomePage() {
               }
             }}
             aria-label="Start provider onboarding setup"
-            className="flex-1 h-12 px-8 text-base font-medium text-white rounded-base transition-all duration-150 shadow-[0_2px_8px_rgba(37,99,235,0.2)] inline-flex items-center justify-center gap-3 bg-gradient-to-b from-primary to-primary-hover hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(37,99,235,0.3)] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="flex-1 h-12 px-8 text-base font-medium text-white rounded-base transition-all duration-200 shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center justify-center gap-3 bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             <span>Start Setup</span>
             <ArrowRight className="w-4.5 h-4.5" aria-hidden="true" />

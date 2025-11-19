@@ -27,7 +27,7 @@ export default function PaymentSetupPage() {
 
   return (
     <div className="min-h-screen bg-bg-secondary p-6">
-      <div className="max-w-[52rem] mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="max-w-6xl mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-8 border-b border-border-light">
           <div className="flex gap-2 mb-6">
@@ -72,7 +72,7 @@ export default function PaymentSetupPage() {
                 }
               }}
               aria-label="Connect with Stripe to set up payments"
-              className="w-full h-12 px-6 text-base font-semibold text-white rounded-base transition-all duration-150 shadow-[0_4px_12px_rgba(99,91,255,0.3)] inline-flex items-center justify-center gap-3 bg-gradient-to-br from-[#635BFF] to-[#5850EC] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(99,91,255,0.4)] active:translate-y-0 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_400ms_both] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="w-full h-12 px-6 text-base font-semibold text-white rounded-base transition-all duration-200 shadow-[0_4px_12px_rgba(99,91,255,0.25)] inline-flex items-center justify-center gap-3 bg-gradient-to-br from-[#635BFF] to-[#5850EC] hover:shadow-md hover:shadow-[#635BFF]/20 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_400ms_both] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <ExternalLink className="w-5 h-5" aria-hidden="true" />
               Connect with Stripe
@@ -134,11 +134,11 @@ export default function PaymentSetupPage() {
         <div className="p-6 border-t border-border-light flex justify-between gap-4">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push('/onboarding/provider/credentials')}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                router.back();
+                router.push('/onboarding/provider/credentials');
               }
             }}
             aria-label="Go back to previous step"

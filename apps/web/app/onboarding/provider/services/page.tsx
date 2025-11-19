@@ -95,7 +95,7 @@ export default function ServicesPricingPage() {
 
   return (
     <div className="min-h-screen bg-bg-secondary p-6">
-      <div className="max-w-[56rem] mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="max-w-6xl mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-8 border-b border-border-light">
           <div className="flex gap-2 mb-6">
@@ -126,7 +126,7 @@ export default function ServicesPricingPage() {
             {services.map((service, index) => (
               <div
                 key={service.id}
-                className="p-6 bg-bg-secondary border border-border-light rounded-base transition-all duration-150 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_both] hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+                className="p-6 bg-bg-secondary border border-border-light rounded-base transition-colors duration-150 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_both] hover:border-border-medium"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex justify-between items-start mb-6">
@@ -241,14 +241,14 @@ export default function ServicesPricingPage() {
           <div className="pt-6 mt-8 border-t border-border-light flex justify-between gap-4">
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => router.push('/onboarding/provider/business')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  router.back();
+                  router.push('/onboarding/provider/business');
                 }
               }}
-              aria-label="Go back to previous step"
+              aria-label="Go back to business details step"
               className="h-11 px-6 text-base font-medium text-text-primary bg-bg-secondary border border-border-light rounded-base cursor-pointer transition-all duration-150 inline-flex items-center gap-2 hover:bg-bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <ArrowLeft className="w-4.5 h-4.5" aria-hidden="true" />
@@ -259,10 +259,10 @@ export default function ServicesPricingPage() {
               disabled={isLoading}
               aria-label={isLoading ? 'Saving services' : 'Continue to next step'}
               aria-disabled={isLoading}
-              className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-150 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+              className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-200 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isLoading
                   ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(37,99,235,0.2)] active:translate-y-0'
+                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
               }`}
             >
               {isLoading ? (

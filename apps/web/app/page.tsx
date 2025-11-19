@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Compass,
   ShieldCheck,
@@ -12,6 +13,8 @@ import {
   FileText,
   Star,
   ArrowRight,
+  Menu,
+  X,
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
@@ -21,6 +24,7 @@ export default function LandingPage() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Check if user is authenticated and redirect accordingly
   useEffect(() => {
@@ -158,7 +162,7 @@ export default function LandingPage() {
             : 'bg-white/80 backdrop-blur-xl border-b border-border-light'
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between" aria-label="Site header">
+        <nav className="max-w-7xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between" aria-label="Site header">
           <Link 
             href="/" 
             className="flex items-center gap-3 text-lg font-bold text-text-primary hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
@@ -170,6 +174,7 @@ export default function LandingPage() {
             <span>VisaOnTrack</span>
           </Link>
 
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
             <a
               href="#features"
@@ -205,64 +210,160 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/auth/register"
-              className="px-5 py-2 min-h-[44px] text-sm font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20 transition-all duration-150 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary"
+              className="px-5 py-2 min-h-[44px] text-sm font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:shadow-md hover:shadow-primary/15 transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary"
               aria-label="Get started with a free account"
             >
               Get Started
             </Link>
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
+            aria-label="Toggle mobile menu"
+            aria-expanded={isMobileMenuOpen}
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" aria-hidden="true" />
+            ) : (
+              <Menu className="w-6 h-6" aria-hidden="true" />
+            )}
+          </button>
         </nav>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-border-light bg-white">
+            <nav className="max-w-7xl mx-auto px-6 py-4 space-y-3" aria-label="Mobile navigation">
+              <a
+                href="#features"
+                onClick={(e) => {
+                  handleAnchorClick(e, '#features');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+                aria-label="View features"
+              >
+                Features
+              </a>
+              <a
+                href="#"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+                aria-label="How it works"
+              >
+                How it Works
+              </a>
+              <a
+                href="#"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+                aria-label="View pricing"
+              >
+                Pricing
+              </a>
+              <div className="pt-2 space-y-2 border-t border-border-light">
+                <Link
+                  href="/auth/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+                  aria-label="Sign in to your account"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full px-4 py-3 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:shadow-md hover:shadow-primary/15 transition-all duration-200 text-center"
+                  aria-label="Get started with a free account"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       <main>
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-8 py-24 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-success-light to-green-200 border border-green-300 rounded-full text-sm font-semibold text-success mb-8 animate-[slideDown_600ms_ease-out]">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Trusted by 1,000+ verified providers</span>
-          </div>
+        <section className="max-w-7xl mx-auto px-6 sm:px-8 py-12 md:py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-center">
+            {/* Left Column: Text Content */}
+            <div className="text-center space-y-5">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-success-light to-green-200 border border-green-300 rounded-full text-sm font-semibold text-success">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Trusted by 1,000+ verified providers</span>
+              </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6 animate-[fadeInUp_800ms_ease-out_100ms_both]">
-            Navigate Your Visa Journey with Confidence
-          </h1>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
+                Navigate Your Visa Journey with Confidence
+              </h1>
 
-          <p className="text-xl text-text-secondary max-w-3xl mx-auto mb-10 animate-[fadeInUp_800ms_ease-out_200ms_both]">
-            Connect with verified immigration professionals in Thailand.{' '}
-            Secure payments, transparent pricing, and milestone-based progress tracking.
-          </p>
+              {/* Hero Image - Mobile: After heading, Desktop: Right column */}
+              <div className="relative w-full h-[280px] sm:h-[320px] lg:hidden">
+                <Image
+                  src="/images/illustrations/hero.png"
+                  alt="Visa journey illustration"
+                  fill
+                  className="object-contain"
+                  priority
+                  sizes="100vw"
+                />
+              </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-[fadeInUp_800ms_ease-out_300ms_both]">
-            <Link
-              href="/auth/register"
-              className="px-8 py-3.5 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/20 transition-all duration-150 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[44px]"
-              aria-label="Get started with a free account"
-            >
-              Get Started Free
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
-            </Link>
-            <a
-              href="#features"
-              onClick={(e) => handleAnchorClick(e, '#features')}
-              className="px-8 py-3.5 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 min-h-[44px] flex items-center justify-center"
-              aria-label="Learn more about features"
-            >
-              Learn More
-            </a>
+              <p className="text-lg md:text-xl text-text-secondary max-w-xl lg:max-w-lg">
+                Connect with verified immigration professionals in Thailand.{' '}
+                Secure payments, transparent pricing, and milestone-based progress tracking.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  href="/auth/register"
+                  className="px-8 py-3.5 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:shadow-md hover:shadow-primary/15 transition-all duration-200 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[44px]"
+                  aria-label="Get started with a free account"
+                >
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                </Link>
+                <a
+                  href="#features"
+                  onClick={(e) => handleAnchorClick(e, '#features')}
+                  className="px-8 py-3.5 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 min-h-[44px] flex items-center justify-center"
+                  aria-label="Learn more about features"
+                >
+                  Learn More
+                </a>
+              </div>
+            </div>
+
+            {/* Right Column: Hero Image - Desktop only */}
+            <div className="hidden lg:block relative w-full h-[450px] xl:h-[500px]">
+              <Image
+                src="/images/illustrations/hero.png"
+                alt="Visa journey illustration"
+                fill
+                className="object-contain"
+                priority
+                sizes="(max-width: 1200px) 50vw, 600px"
+              />
+            </div>
           </div>
         </section>
 
         {/* Features Grid */}
         <section id="features" className="max-w-7xl mx-auto px-8 py-16 bg-bg-secondary">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
+            {features.map((feature) => {
               const Icon = feature.icon;
               return (
                 <div
                   key={feature.title}
-                  className="p-8 bg-bg-primary border border-border-light rounded-xl transition-all duration-150 hover:-translate-y-1 hover:shadow-xl hover:border-primary/20 animate-[fadeInUp_600ms_ease-out_both]"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  className="p-8 bg-bg-primary border border-border-light rounded-xl transition-colors duration-150 hover:border-border-medium"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-5 transition-transform duration-150 group-hover:scale-110" aria-hidden="true">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-5" aria-hidden="true">
                     <Icon className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold mb-3">{feature.title}</h3>
@@ -274,7 +375,7 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="max-w-7xl mx-auto my-16 px-8 py-16 bg-gradient-to-br from-primary to-primary-hover rounded-2xl text-center text-white relative overflow-hidden">
+        <section className="max-w-7xl mx-auto my-16 px-6 sm:px-8 py-16 bg-gradient-to-br from-primary to-primary-hover rounded-xl text-center text-white relative overflow-hidden">
           <div className="absolute inset-0 opacity-40" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             animation: 'patternMove 20s linear infinite',
@@ -288,7 +389,7 @@ export default function LandingPage() {
             </p>
             <Link
               href="/auth/register"
-              className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-medium text-primary bg-white rounded-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[44px]"
+              className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-medium text-primary bg-white rounded-lg hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[44px]"
               aria-label="Create a free account"
             >
               Create Free Account
@@ -324,28 +425,6 @@ export default function LandingPage() {
       </footer>
 
       <style jsx>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(24px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
         @keyframes patternMove {
           from {
             transform: translate(0, 0);

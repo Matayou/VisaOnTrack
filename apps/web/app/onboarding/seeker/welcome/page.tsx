@@ -147,19 +147,19 @@ export default function SeekerWelcomePage() {
         <span>Logout</span>
       </button>
 
-      <div className="w-full max-w-[48rem] bg-bg-primary border border-border-light rounded-lg shadow-md animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="w-full max-w-4xl bg-bg-primary border border-border-light rounded-lg shadow-md">
         {/* Header */}
         <div className="px-6 pt-8 pb-6 sm:px-12 sm:pt-12 sm:pb-8 text-center bg-gradient-to-br from-primary/2 to-primary/5 rounded-t-lg">
-          <div className="w-16 h-16 bg-gradient-to-br from-success-light to-success-light/60 rounded-full inline-flex items-center justify-center mb-6 animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)]">
+          <div className="w-16 h-16 bg-gradient-to-br from-success-light to-success-light/60 rounded-full inline-flex items-center justify-center mb-6">
             <CheckCircle
-              className="w-8 h-8 text-success animate-[checkDraw_600ms_cubic-bezier(0.16,1,0.3,1)_200ms_both]"
+              className="w-8 h-8 text-success"
               aria-hidden="true"
             />
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_200ms_both]">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-3">
             Welcome to VisaOnTrack!
           </h1>
-          <p className="text-base sm:text-lg text-text-secondary animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
+          <p className="text-base sm:text-lg text-text-secondary">
             Let&rsquo;s find the perfect immigration professional for your needs
           </p>
         </div>
@@ -175,12 +175,9 @@ export default function SeekerWelcomePage() {
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="group p-6 bg-bg-secondary border border-border-light rounded-md flex gap-5 transition-all duration-150 hover:-translate-y-1 hover:translate-x-1 hover:shadow-lg hover:border-primary/20 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]"
-                style={{
-                  animationDelay: `${400 + index * 100}ms`,
-                }}
+                className="p-6 bg-bg-secondary border border-border-light rounded-md flex gap-5 transition-colors duration-150 hover:border-border-medium"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-base flex items-center justify-center flex-shrink-0 transition-transform duration-150 group-hover:scale-110 group-hover:rotate-[5deg]">
+                <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-base flex items-center justify-center flex-shrink-0">
                   {benefit.icon}
                 </div>
                 <div className="flex-1">
@@ -195,12 +192,12 @@ export default function SeekerWelcomePage() {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 px-6 pb-6 sm:px-12 sm:pb-12 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_800ms_both]">
+        <div className="flex flex-col sm:flex-row gap-4 px-6 pb-6 sm:px-12 sm:pb-12">
           <button
             type="button"
             onClick={handleCompleteProfile}
             onKeyDown={(e) => handleKeyDown(e, handleCompleteProfile)}
-            className="flex-1 h-12 px-8 text-base font-medium text-text-primary bg-bg-secondary border border-border-light rounded-base transition-all duration-150 hover:bg-bg-primary hover:-translate-y-0.5 inline-flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="flex-1 h-12 px-8 text-base font-medium text-text-primary bg-bg-secondary border border-border-light rounded-base transition-colors duration-150 hover:bg-bg-primary inline-flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             aria-label="Complete your profile"
           >
             <Settings className="w-[18px] h-[18px]" aria-hidden="true" />
@@ -210,7 +207,7 @@ export default function SeekerWelcomePage() {
             type="button"
             onClick={handleBrowseProviders}
             onKeyDown={(e) => handleKeyDown(e, handleBrowseProviders)}
-            className="flex-1 h-12 px-8 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-base transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(37,99,235,0.3)] shadow-[0_2px_8px_rgba(37,99,235,0.2)] inline-flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 active:translate-y-0"
+            className="flex-1 h-12 px-8 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-base transition-all duration-200 hover:shadow-[0_4px_12px_rgba(37,99,235,0.25)] shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             aria-label="Browse providers"
           >
             <span>Browse Providers</span>
@@ -219,45 +216,6 @@ export default function SeekerWelcomePage() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(24px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes scaleIn {
-          0% {
-            transform: scale(0);
-            opacity: 0;
-          }
-          50% {
-            transform: scale(1.1);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-
-        @keyframes checkDraw {
-          from {
-            opacity: 0;
-            transform: scale(0) rotate(-45deg);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-          }
-        }
-
-      `}</style>
     </div>
   );
 }

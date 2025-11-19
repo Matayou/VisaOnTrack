@@ -140,7 +140,7 @@ export default function AccountTypePage() {
         <span>Logout</span>
       </button>
 
-      <div className="w-full max-w-[56rem] animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="w-full max-w-4xl animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-md mb-6 shadow-[0_4px_12px_rgba(37,99,235,0.2)] animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both]">
@@ -167,7 +167,7 @@ export default function AccountTypePage() {
             className={`relative p-10 bg-bg-primary border-2 rounded-lg cursor-pointer transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_500ms_both] ${
               selectedType === 'SEEKER'
                 ? 'border-primary bg-gradient-to-br from-primary/2 to-primary/5 shadow-[0_8px_24px_rgba(37,99,235,0.15)]'
-                : 'border-border-light hover:-translate-y-2 hover:scale-[1.02] hover:border-primary/30 hover:shadow-[0_12px_32px_rgba(0,0,0,0.1)]'
+                : 'border-border-light hover:border-primary/30 hover:shadow-md'
             } focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
           >
             {/* Selection Indicator */}
@@ -234,7 +234,7 @@ export default function AccountTypePage() {
             className={`relative p-10 bg-bg-primary border-2 rounded-lg cursor-pointer transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_600ms_both] ${
               selectedType === 'PROVIDER'
                 ? 'border-primary bg-gradient-to-br from-primary/2 to-primary/5 shadow-[0_8px_24px_rgba(37,99,235,0.15)]'
-                : 'border-border-light hover:-translate-y-2 hover:scale-[1.02] hover:border-primary/30 hover:shadow-[0_12px_32px_rgba(0,0,0,0.1)]'
+                : 'border-border-light hover:border-primary/30 hover:shadow-md'
             } focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
           >
             {/* Selection Indicator */}
@@ -310,10 +310,10 @@ export default function AccountTypePage() {
             onKeyDown={handleKeyDown}
             disabled={!selectedType || isLoading}
             aria-disabled={!selectedType || isLoading}
-            className={`h-12 px-10 text-base font-medium text-white rounded-base transition-all duration-150 shadow-[0_2px_8px_rgba(37,99,235,0.2)] inline-flex items-center gap-3 ${
+            className={`h-12 px-10 text-base font-medium text-white rounded-base transition-all duration-200 shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center gap-3 ${
               !selectedType || isLoading
                 ? 'opacity-50 cursor-not-allowed'
-                : 'bg-gradient-to-b from-primary to-primary-hover hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(37,99,235,0.3)] active:translate-y-0'
+                : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
             } focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
           >
             {isLoading ? (

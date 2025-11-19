@@ -361,10 +361,10 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading || !token || !!tokenError || passwordStrength.strength < 4 || passwordMatch !== true}
-              className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-150 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
+              className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
                 isLoading || !token || !!tokenError || passwordStrength.strength < 4 || passwordMatch !== true
                   ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(37,99,235,0.2)] active:translate-y-0'
+                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
               }`}
             >
               {isLoading && (

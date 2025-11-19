@@ -19,18 +19,7 @@ export function getNextProviderOnboardingStep(user: User | null): string | null 
 
   // Determine next step based on completion status
   // Handle undefined/null as false (not completed)
-  
-  // If no steps are completed, user should start at welcome page
-  const hasStartedOnboarding = 
-    user.providerBusinessStepCompleted || 
-    user.providerServicesStepCompleted || 
-    user.providerCredentialsStepCompleted;
-  
-  if (!hasStartedOnboarding) {
-    return '/onboarding/provider/welcome';
-  }
-  
-  // User has started onboarding - find next incomplete step
+  // Start new providers directly at the first step instead of looping on welcome
   if (!user.providerBusinessStepCompleted) {
     return '/onboarding/provider/business';
   }

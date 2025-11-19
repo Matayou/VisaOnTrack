@@ -81,7 +81,7 @@ function CreateRequestForm() {
       <div className="min-h-screen bg-bg-secondary">
         <SeekerHeader />
         <div className="p-6 lg:p-10 relative">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-6xl mx-auto">
             <div className={`${baseCardClass} p-10 text-center space-y-6`}>
               <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center text-primary">
                 <CheckCircle2 className="w-8 h-8" aria-hidden="true" />
@@ -117,7 +117,7 @@ function CreateRequestForm() {
     <div className="min-h-screen bg-bg-secondary">
       <SeekerHeader />
       <div className="p-6 lg:p-10 relative">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-6">
           <header className={`${baseCardClass} px-6 py-8 md:px-10 md:py-10`}>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-16 lg:items-center">
               {/* Left Column: Heading & Description */}
@@ -149,7 +149,7 @@ function CreateRequestForm() {
                       <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden="true" />
                     </div>
                     <span className="text-sm text-text-secondary leading-relaxed">
-                      One private brief powers accurate quotes (never public).
+                      One private brief powers accurate offers (never public).
                     </span>
                   </li>
                   <li className="flex items-start gap-3">

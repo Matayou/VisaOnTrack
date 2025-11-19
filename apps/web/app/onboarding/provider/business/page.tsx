@@ -122,6 +122,23 @@ export default function BusinessDetailsPage() {
           return 'Please enter a valid Thai phone number';
         }
         return null;
+      case 'website':
+        // Optional field - only validate if user has entered something
+        if (value && typeof value === 'string' && value.trim().length > 0) {
+          const urlValue = value.trim();
+          // Basic URL validation - must start with http:// or https://
+          const urlPattern = /^https?:\/\/.+/i;
+          if (!urlPattern.test(urlValue)) {
+            return 'Please enter a valid URL starting with http:// or https://';
+          }
+          // Additional validation: try to create a URL object
+          try {
+            new URL(urlValue);
+          } catch {
+            return 'Please enter a valid website URL';
+          }
+        }
+        return null;
       default:
         return null;
     }
@@ -872,12 +889,14 @@ export default function BusinessDetailsPage() {
                       type="url"
                       id="website"
                       value={website}
-                      onChange={handleInputChange(setWebsite)}
-                      className="w-full h-11 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      onChange={handleInputChange(setWebsite, 'website')}
+                      onBlur={() => handleBlur('website', website)}
+                      className={`w-full h-11 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('website')}`}
                       placeholder="https://yourwebsite.com"
                     />
                   </div>
                   <span className="text-xs text-text-tertiary">Optional: Your business website</span>
+                  {renderValidationFeedback('website', website.trim().length > 0 ? 'Website URL looks valid.' : undefined)}
                 </div>
               </div>
             </div>

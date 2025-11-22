@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Lock, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { isApiError } from '@/lib/api-error';
+import { Button, Spinner } from '@/components/ui';
 
 // Email typo detection
 const commonTypos: Record<string, string> = {
@@ -137,25 +138,25 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6 sm:p-8">
+      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
         {/* Header */}
-        <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-base mb-5 shadow-[0_2px_8px_rgba(37,99,235,0.2)]">
-            <Lock className="w-6 h-6 text-white" aria-hidden="true" />
+        <div className="p-8 sm:p-10 pb-6 text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-6 shadow-md shadow-primary/20">
+            <Lock className="w-7 h-7 text-white" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">Reset your password</h1>
-          <p className="text-sm text-text-secondary">Enter your email and we&apos;ll send you a reset link</p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight text-text-primary">Reset your password</h1>
+          <p className="text-base text-text-secondary leading-relaxed">Enter your email and we&apos;ll send you a reset link</p>
         </div>
 
         {/* Form */}
-        <div className="px-8 pb-8">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="px-8 sm:px-10 pb-8 sm:pb-10">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Success Message - Always shown after submission (no user enumeration) */}
             {isSuccess && (
               <div
                 role="alert"
-                className="p-5 bg-gradient-to-br from-success-light to-green-50 border border-green-200 rounded-base animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)]"
+                className="p-5 bg-gradient-to-br from-success-light to-green-50 border border-green-200 rounded-lg"
               >
                 <div className="flex gap-3 items-start">
                   <CheckCircle className="w-6 h-6 text-success flex-shrink-0 mt-0.5" aria-hidden="true" />
@@ -186,7 +187,7 @@ export default function ForgotPasswordPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
                     emailValidation.status === 'success'
                       ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                       : emailValidation.status === 'error'
@@ -227,29 +228,21 @@ export default function ForgotPasswordPage() {
             </div>
 
             {/* Submit Button */}
-            <button
+            <Button
               type="submit"
               disabled={isLoading || isSuccess}
-              className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
-                isLoading || isSuccess
-                  ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
-              }`}
+              loading={isLoading}
+              fullWidth
             >
-              {isLoading && (
-                <div className="absolute w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              )}
-              <span className={isLoading ? 'opacity-70' : ''}>
-                {isLoading ? 'Sending...' : isSuccess ? 'Reset link sent' : 'Send reset link'}
-              </span>
-            </button>
+              {isLoading ? 'Sending...' : isSuccess ? 'Reset link sent' : 'Send reset link'}
+            </Button>
           </form>
 
           {/* Back to Login Link */}
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link
               href="/auth/login"
-              className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary no-underline transition-colors duration-150 hover:text-primary"
+              className="inline-flex items-center gap-2 text-base font-semibold text-text-secondary no-underline transition-colors duration-200 hover:text-primary"
             >
               <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Back to sign in
@@ -257,30 +250,6 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

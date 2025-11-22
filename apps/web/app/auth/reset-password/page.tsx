@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getApiErrorMessage, isApiError } from '@/lib/api-error';
+import { Button, Spinner } from '@/components/ui';
 
 type ResetPasswordParams = {
   requestBody: {
@@ -358,20 +359,14 @@ export default function ResetPasswordPage() {
             </div>
 
             {/* Submit Button */}
-            <button
+            <Button
               type="submit"
               disabled={isLoading || !token || !!tokenError || passwordStrength.strength < 4 || passwordMatch !== true}
-              className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
-                isLoading || !token || !!tokenError || passwordStrength.strength < 4 || passwordMatch !== true
-                  ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
-              }`}
+              loading={isLoading}
+              fullWidth
             >
-              {isLoading && (
-                <div className="absolute w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              )}
-              <span className={isLoading ? 'opacity-70' : ''}>{isLoading ? 'Resetting password...' : 'Reset password'}</span>
-            </button>
+              {isLoading ? 'Resetting password...' : 'Reset password'}
+            </Button>
           </form>
 
           {/* Back to Login Link */}

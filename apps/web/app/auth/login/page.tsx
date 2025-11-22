@@ -7,6 +7,7 @@ import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, ShieldCheck, Clock } fr
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
 import { getApiErrorMessage, isApiError } from '@/lib/api-error';
+import { Button, Spinner } from '@/components/ui';
 
 // Email typo detection
 const commonTypos: Record<string, string> = {
@@ -185,20 +186,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6 sm:p-8">
+      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
         {/* Header */}
-        <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-base mb-5 shadow-[0_2px_8px_rgba(37,99,235,0.2)]">
-            <Compass className="w-6 h-6 text-white" aria-hidden="true" />
+        <div className="p-8 sm:p-10 pb-6 text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-6 shadow-md shadow-primary/20">
+            <Compass className="w-7 h-7 text-white" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">Welcome back</h1>
-          <p className="text-sm text-text-secondary">Sign in to your VisaOnTrack account</p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight text-text-primary">Welcome back</h1>
+          <p className="text-base text-text-secondary leading-relaxed">Sign in to your VisaOnTrack account</p>
         </div>
 
         {/* Form */}
-        <div className="px-8 pb-8">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="px-8 sm:px-10 pb-8 sm:pb-10">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Email Input */}
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="text-sm font-medium tracking-normal flex items-center gap-2">
@@ -210,7 +211,7 @@ export default function LoginPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
                     emailValidation.status === 'success'
                       ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                       : emailValidation.status === 'error'
@@ -265,7 +266,7 @@ export default function LoginPage() {
                     setPassword(e.target.value);
                     setError(null);
                   }}
-                  className="w-full h-11 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
+                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-lg transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
                   placeholder="Enter your password"
                   required
                   autoComplete="current-password"
@@ -316,65 +317,32 @@ export default function LoginPage() {
             )}
 
             {/* Submit Button */}
-            <button
+            <Button
               type="submit"
               disabled={isLoading}
-              className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
-                isLoading
-                  ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
-              }`}
+              loading={isLoading}
+              fullWidth
             >
-              {isLoading && (
-                <div className="absolute w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              )}
-              <span className={isLoading ? 'opacity-70' : ''}>{isLoading ? 'Signing in...' : 'Sign in'}</span>
-            </button>
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </Button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-6">
+          <div className="flex items-center gap-4 my-8">
             <div className="flex-1 h-px bg-border-light"></div>
-            <span className="text-xs text-text-tertiary">New to VisaOnTrack?</span>
+            <span className="text-sm text-text-tertiary">New to VisaOnTrack?</span>
             <div className="flex-1 h-px bg-border-light"></div>
           </div>
 
           {/* Sign Up Link */}
           <div className="text-center">
-            <span className="text-sm text-text-secondary">Don&rsquo;t have an account? </span>
-            <Link href="/auth/register" className="font-medium text-primary no-underline transition-colors duration-150 hover:text-primary-hover">
+            <span className="text-base text-text-secondary">Don&rsquo;t have an account? </span>
+            <Link href="/auth/register" className="font-semibold text-primary no-underline transition-colors duration-200 hover:text-primary-hover">
               Create account
             </Link>
           </div>
         </div>
-
-        {/* Trust Badges */}
-        <div className="px-8 pb-8">
-          <div className="flex items-center justify-center gap-6 pt-8">
-            <div className="flex items-center gap-2 text-xs text-text-tertiary">
-              <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-              <span>Secure & encrypted</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-text-tertiary">
-              <Clock className="w-4 h-4" aria-hidden="true" />
-              <span>24/7 support</span>
-            </div>
-          </div>
-        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

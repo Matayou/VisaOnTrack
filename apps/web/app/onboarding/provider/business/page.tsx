@@ -126,14 +126,29 @@ export default function BusinessDetailsPage() {
         // Optional field - only validate if user has entered something
         if (value && typeof value === 'string' && value.trim().length > 0) {
           const urlValue = value.trim();
-          // Basic URL validation - must start with http:// or https://
-          const urlPattern = /^https?:\/\/.+/i;
-          if (!urlPattern.test(urlValue)) {
+          
+          // Must start with http:// or https://
+          if (!/^https?:\/\//i.test(urlValue)) {
             return 'Please enter a valid URL starting with http:// or https://';
           }
-          // Additional validation: try to create a URL object
+          
+          // Must have at least a domain name (not just protocol)
+          // Pattern: https:// + at least one character that's not a slash
+          if (!/^https?:\/\/[^\/\s]+/i.test(urlValue)) {
+            return 'Please enter a complete URL with a domain name';
+          }
+          
+          // Use URL constructor for strict validation
           try {
-            new URL(urlValue);
+            const url = new URL(urlValue);
+            // Ensure it has a valid hostname (not empty, not just dots)
+            if (!url.hostname || url.hostname.length < 3 || !url.hostname.includes('.')) {
+              return 'Please enter a complete URL with a valid domain name';
+            }
+            // Ensure hostname doesn't end with a dot
+            if (url.hostname.endsWith('.')) {
+              return 'Please enter a valid domain name';
+            }
           } catch {
             return 'Please enter a valid website URL';
           }
@@ -163,6 +178,7 @@ export default function BusinessDetailsPage() {
   };
 
   const renderValidationFeedback = (field: FieldName, fallbackSuccess?: string): React.ReactNode => {
+    // Only show feedback if field has been touched (user has interacted with it)
     if (!touchedFields[field]) {
       return null;
     }
@@ -177,7 +193,22 @@ export default function BusinessDetailsPage() {
       );
     }
 
+    // Only show success message if there's no error AND we have a value (for optional fields)
+    // For website field, only show success if URL is actually valid
     if (fallbackSuccess) {
+      // For website field, check if it's actually valid before showing success
+      if (field === 'website') {
+        const websiteValue = typeof website === 'string' ? website.trim() : '';
+        if (websiteValue.length === 0) {
+          return null; // Don't show success for empty optional field
+        }
+        // Double-check validation before showing success
+        const validationError = validateField('website', websiteValue);
+        if (validationError) {
+          return null; // Don't show success if there's actually an error
+        }
+      }
+      
       return (
         <p className="mt-2 text-sm text-success flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
@@ -392,9 +423,17 @@ export default function BusinessDetailsPage() {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const value = e.target.value;
       setter(value);
-      if (field) {
-        markFieldTouched(field);
-        validateAndSetError(field, value);
+      // Only clear errors on change, don't validate until blur
+      // This allows users to type freely without seeing errors mid-typing
+      if (field && touchedFields[field] && formErrors[field]) {
+        // Clear error if field was previously in error state and user is typing
+        const error = validateField(field, value);
+        if (!error) {
+          setFormErrors((prev) => {
+            const { [field]: _, ...rest } = prev;
+            return rest;
+          });
+        }
       }
       triggerAutoSave();
     };

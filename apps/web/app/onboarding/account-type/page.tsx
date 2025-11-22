@@ -6,6 +6,7 @@ import { Compass, Briefcase, Check, CheckCircle, ArrowRight, AlertCircle, LogOut
 import { api, type UserRole } from '@visaontrack/client';
 import { logout } from '@/lib/auth';
 import { getApiErrorMessage, isApiError } from '@/lib/api-error';
+import { Button, Spinner } from '@/components/ui';
 
 type AccountType = 'SEEKER' | 'PROVIDER' | null;
 
@@ -121,7 +122,7 @@ export default function AccountTypePage() {
     return (
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+          <Spinner size="lg" className="mb-4" />
           <p className="text-text-secondary">Checking verification status...</p>
         </div>
       </div>
@@ -304,30 +305,17 @@ export default function AccountTypePage() {
 
         {/* Continue Button */}
         <div className="text-center animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_700ms_both]">
-          <button
+          <Button
             type="button"
             onClick={handleContinue}
             onKeyDown={handleKeyDown}
             disabled={!selectedType || isLoading}
-            aria-disabled={!selectedType || isLoading}
-            className={`h-12 px-10 text-base font-medium text-white rounded-base transition-all duration-200 shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center gap-3 ${
-              !selectedType || isLoading
-                ? 'opacity-50 cursor-not-allowed'
-                : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
-            } focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
+            loading={isLoading}
+            icon={!isLoading ? <ArrowRight className="w-5 h-5" /> : undefined}
+            iconPosition="right"
           >
-            {isLoading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Updating...</span>
-              </>
-            ) : (
-              <>
-                <span>Continue</span>
-                <ArrowRight className="w-5 h-5" aria-hidden="true" />
-              </>
-            )}
-          </button>
+            {isLoading ? 'Updating...' : 'Continue'}
+          </Button>
         </div>
       </div>
 

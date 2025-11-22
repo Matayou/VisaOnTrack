@@ -7,6 +7,7 @@ import { api } from '@visaontrack/client';
 import { logout } from '@/lib/auth';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
 import { isApiError } from '@/lib/api-error';
+import { Button, Spinner } from '@/components/ui';
 
 export default function ProviderWelcomePage() {
   const router = useRouter();
@@ -90,7 +91,7 @@ export default function ProviderWelcomePage() {
     return (
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+          <Spinner size="lg" className="mb-4" />
           <p className="text-text-secondary">Checking verification status...</p>
         </div>
       </div>
@@ -203,36 +204,25 @@ export default function ProviderWelcomePage() {
 
         {/* Actions */}
         <div className="px-12 pb-12 flex gap-4 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_900ms_both]">
-          <button
+          <Button
             type="button"
             onClick={handleCompleteLater}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleCompleteLater();
-              }
-            }}
-            aria-label="Complete onboarding later and return to dashboard"
-            className="flex-1 h-12 px-8 text-base font-medium text-text-primary bg-bg-secondary border border-border-light rounded-base cursor-pointer transition-all duration-150 inline-flex items-center justify-center gap-3 hover:bg-bg-primary hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            variant="secondary"
+            className="flex-1"
+            icon={<LogOut className="w-4.5 h-4.5" />}
+            iconPosition="left"
           >
-            <LogOut className="w-4.5 h-4.5" aria-hidden="true" />
-            <span>Complete Later</span>
-          </button>
-          <button
+            Complete Later
+          </Button>
+          <Button
             type="button"
             onClick={handleStartSetup}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleStartSetup();
-              }
-            }}
-            aria-label="Start provider onboarding setup"
-            className="flex-1 h-12 px-8 text-base font-medium text-white rounded-base transition-all duration-200 shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center justify-center gap-3 bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="flex-1"
+            icon={<ArrowRight className="w-4.5 h-4.5" />}
+            iconPosition="right"
           >
-            <span>Start Setup</span>
-            <ArrowRight className="w-4.5 h-4.5" aria-hidden="true" />
-          </button>
+            Start Setup
+          </Button>
         </div>
       </div>
 

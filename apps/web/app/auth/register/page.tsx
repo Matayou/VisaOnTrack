@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, ShieldCheck, Clock } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getApiErrorMessage, isApiError } from '@/lib/api-error';
+import { Button, Spinner } from '@/components/ui';
 
 // Email typo detection
 const commonTypos: Record<string, string> = {
@@ -264,22 +265,22 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
         {/* Header */}
-        <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-base mb-5 shadow-[0_2px_8px_rgba(37,99,235,0.2)]">
+        <div className="p-6 sm:p-8 pb-4 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-4 shadow-md shadow-primary/20">
             <Compass className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">Create your account</h1>
-          <p className="text-sm text-text-secondary">Start your visa journey with VisaOnTrack</p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight text-text-primary">Create your account</h1>
+          <p className="text-base text-text-secondary leading-relaxed">Start your visa journey with VisaOnTrack</p>
         </div>
 
         {/* Form */}
-        <div className="px-8 pb-8">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="px-6 sm:px-8 pb-6 sm:pb-8">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Name Fields */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-2">
                 <label htmlFor="firstName" className="text-sm font-medium flex items-center gap-2">
                   First name
@@ -290,7 +291,7 @@ export default function RegisterPage() {
                     id="firstName"
                     value={firstName}
                     onChange={(e) => handleFirstNameChange(e.target.value)}
-                    className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
                       firstNameValidation.status === 'success'
                         ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                         : firstNameValidation.status === 'error'
@@ -336,7 +337,7 @@ export default function RegisterPage() {
                     id="lastName"
                     value={lastName}
                     onChange={(e) => handleLastNameChange(e.target.value)}
-                    className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
                       lastNameValidation.status === 'success'
                         ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                         : lastNameValidation.status === 'error'
@@ -431,7 +432,7 @@ export default function RegisterPage() {
                   id="password"
                   value={password}
                   onChange={(e) => handlePasswordChange(e.target.value)}
-                  className="w-full h-11 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
+                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-lg transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
                   placeholder="At least 8 characters"
                   required
                   autoComplete="new-password"
@@ -453,7 +454,7 @@ export default function RegisterPage() {
               {/* Password Strength Meter */}
               {password && (
                 <div aria-live="polite" aria-atomic="true">
-                  <div className="flex gap-1 h-1 mt-2 transition-opacity duration-150 opacity-100">
+                  <div className="flex gap-1 h-1 mt-1.5 transition-opacity duration-150 opacity-100">
                     {[1, 2, 3, 4].map((bar) => (
                       <div
                         key={bar}
@@ -485,13 +486,13 @@ export default function RegisterPage() {
                     >
                       {passwordStrength.message}
                     </strong>
-                    {passwordStrength.hint && (
+                    {passwordStrength.hint && passwordStrength.level !== 'strong' && (
                       <span className="text-text-tertiary">— {passwordStrength.hint}</span>
                     )}
                   </div>
                 </div>
               )}
-              <div className="text-xs text-text-tertiary mt-1">
+              <div className="text-xs text-text-tertiary">
                 Use 8+ characters with a mix of letters, numbers & symbols
               </div>
             </div>
@@ -521,24 +522,18 @@ export default function RegisterPage() {
             )}
 
             {/* Submit Button */}
-            <button
+            <Button
               type="submit"
               disabled={isLoading}
-              className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
-                isLoading
-                  ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
-              }`}
+              loading={isLoading}
+              fullWidth
             >
-              {isLoading && (
-                <div className="absolute w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              )}
-              <span className={isLoading ? 'opacity-70' : ''}>{isLoading ? 'Creating account...' : 'Create account'}</span>
-            </button>
+              {isLoading ? 'Creating account...' : 'Create account'}
+            </Button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-6">
+          <div className="flex items-center gap-4 my-5">
             <div className="flex-1 h-px bg-border-light"></div>
             <span className="text-xs text-text-tertiary">Already have an account?</span>
             <div className="flex-1 h-px bg-border-light"></div>
@@ -546,39 +541,12 @@ export default function RegisterPage() {
 
           {/* Sign In Link */}
           <div className="text-center">
-            <Link href="/auth/login" className="font-medium text-primary no-underline transition-colors duration-150 hover:text-primary-hover">
+            <Link href="/auth/login" className="text-sm font-semibold text-primary no-underline transition-colors duration-200 hover:text-primary-hover">
               Sign in instead
             </Link>
           </div>
         </div>
-
-        {/* Trust Badges */}
-        <div className="px-8 pb-8">
-          <div className="flex items-center justify-center gap-6 pt-8">
-            <div className="flex items-center gap-2 text-xs text-text-tertiary">
-              <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-              <span>Secure & encrypted</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-text-tertiary">
-              <Clock className="w-4 h-4" aria-hidden="true" />
-              <span>Free to join</span>
-            </div>
-          </div>
-        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

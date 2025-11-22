@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import {
   AlertCircle,
   ArrowLeft,
@@ -14,24 +15,31 @@ import { PersonalStep } from '@/app/requests/new/components/steps/PersonalStep';
 import { MissionStep } from '@/app/requests/new/components/steps/MissionStep';
 import { BudgetStep } from '@/app/requests/new/components/steps/BudgetStep';
 import { SupportStep } from '@/app/requests/new/components/steps/SupportStep';
-import {
-  baseCardClass,
-  ghostButtonClass,
-  outlineButtonClass,
-  primaryButtonClass,
-} from '@/app/requests/new/constants';
+import { baseCardClass } from '@/app/requests/new/constants';
 import { RequestFormProvider, useRequestForm } from '@/app/requests/new/context/RequestFormContext';
 import { formSteps } from '@/config/requestForm';
 import { logout } from '@/lib/auth';
 import { SeekerHeader } from '@/components/SeekerHeader';
+import { Button, Spinner } from '@/components/ui';
 
 const stepComponents = [PersonalStep, MissionStep, BudgetStep, SupportStep];
 
 export default function CreateRequestPage() {
   return (
-    <RequestFormProvider>
-      <CreateRequestForm />
-    </RequestFormProvider>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+          <div className="text-center space-y-3">
+            <Spinner size="lg" />
+            <p className="text-text-secondary text-sm">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <RequestFormProvider>
+        <CreateRequestForm />
+      </RequestFormProvider>
+    </Suspense>
   );
 }
 
@@ -58,6 +66,7 @@ function CreateRequestForm() {
     submitError,
     isSubmitDisabled,
     isSubmitting,
+    isPreFilledFromEligibility,
   } = useRequestForm();
 
   const renderCurrentStep = () => {
@@ -69,7 +78,7 @@ function CreateRequestForm() {
     return (
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
         <div className="text-center space-y-3">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary" aria-hidden="true" />
+          <Spinner size="lg" />
           <p className="text-text-secondary text-sm">Checking your account...</p>
         </div>
       </div>
@@ -95,16 +104,28 @@ function CreateRequestForm() {
               </div>
 
               <div className="flex flex-wrap gap-3 justify-center">
-                <button type="button" onClick={() => router.push(`/requests/${createdRequest.id}`)} className={primaryButtonClass}>
+                <Button 
+                  type="button" 
+                  onClick={() => router.push(`/requests/${createdRequest.id}`)}
+                  icon={<ArrowRight className="w-4 h-4" />}
+                  iconPosition="right"
+                >
                   View request now
-                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </button>
-                <button type="button" onClick={() => router.push('/requests')} className={outlineButtonClass}>
+                </Button>
+                <Button 
+                  type="button" 
+                  onClick={() => router.push('/requests')}
+                  variant="outline"
+                >
                   View all requests
-                </button>
-                <button type="button" onClick={resetForm} className={ghostButtonClass}>
+                </Button>
+                <Button 
+                  type="button" 
+                  onClick={resetForm}
+                  variant="ghost"
+                >
                   Post another request
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -118,6 +139,16 @@ function CreateRequestForm() {
       <SeekerHeader />
       <div className="p-6 lg:p-10 relative">
         <div className="max-w-6xl mx-auto space-y-6">
+          {isPreFilledFromEligibility && (
+            <div className={`${baseCardClass} p-4 bg-primary/5 border-primary/20`}>
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                <p className="text-sm text-text-primary">
+                  <span className="font-semibold">Your form was pre-filled</span> based on your eligibility check. You can edit any field as needed.
+                </p>
+              </div>
+            </div>
+          )}
           <header className={`${baseCardClass} px-6 py-8 md:px-10 md:py-10`}>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-16 lg:items-center">
               {/* Left Column: Heading & Description */}
@@ -238,36 +269,46 @@ function CreateRequestForm() {
                   </p>
                 )}
                 <div className="flex flex-wrap gap-3 md:ml-auto">
-                  <button type="button" onClick={() => router.push('/dashboard')} className={outlineButtonClass}>
-                    <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+                  <Button 
+                    type="button" 
+                    onClick={() => router.push('/dashboard')}
+                    variant="outline"
+                    icon={<ArrowLeft className="w-4 h-4" />}
+                    iconPosition="left"
+                  >
                     Cancel
-                  </button>
+                  </Button>
                   {currentStep > 0 && (
-                    <button type="button" onClick={handleBack} className={outlineButtonClass}>
-                      <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+                    <Button 
+                      type="button" 
+                      onClick={handleBack}
+                      variant="outline"
+                      icon={<ArrowLeft className="w-4 h-4" />}
+                      iconPosition="left"
+                    >
                       Back
-                    </button>
+                    </Button>
                   )}
                   {currentStep < formSteps.length - 1 && (
-                    <button type="button" onClick={handleContinue} className={primaryButtonClass}>
+                    <Button 
+                      type="button" 
+                      onClick={handleContinue}
+                      icon={<ArrowRight className="w-4 h-4" />}
+                      iconPosition="right"
+                    >
                       Continue
-                      <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                    </button>
+                    </Button>
                   )}
                   {currentStep === formSteps.length - 1 && (
-                    <button type="submit" disabled={isSubmitDisabled} className={primaryButtonClass}>
-                      {isSubmitting ? (
-                        <>
-                          <Loader className="w-4 h-4 animate-spin" aria-hidden="true" />
-                          Publishing request...
-                        </>
-                      ) : (
-                        <>
-                          Publish request
-                          <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
-                        </>
-                      )}
-                    </button>
+                    <Button 
+                      type="submit" 
+                      disabled={isSubmitDisabled}
+                      loading={isSubmitting}
+                      icon={!isSubmitting ? <CheckCircle2 className="w-4 h-4" /> : undefined}
+                      iconPosition="right"
+                    >
+                      {isSubmitting ? 'Publishing request...' : 'Publish request'}
+                    </Button>
                   )}
                 </div>
               </div>

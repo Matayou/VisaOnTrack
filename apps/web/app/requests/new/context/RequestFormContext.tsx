@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { api, type Request, type User } from '@visaontrack/client';
 
 import type {
@@ -28,6 +28,7 @@ import {
   documentChecklist,
   formSteps,
   timelineShortcuts,
+  missionVisaOptions,
 } from '@/config/requestForm';
 import {
   computeFormErrors,
@@ -71,6 +72,7 @@ interface RequestFormContextValue {
   stepButtonRefs: React.MutableRefObject<Array<HTMLButtonElement | null>>;
   isLocationSelectOpen: boolean;
   setIsLocationSelectOpen: (value: boolean | ((prev: boolean) => boolean)) => void;
+  isPreFilledFromEligibility: boolean;
 
   updateField: (field: FormField, value: string) => void;
   markFieldTouched: (field: FormField) => void;
@@ -128,8 +130,10 @@ let cachedUser: User | null = null;
 const useRequestFormController = (): RequestFormContextValue => {
   // TODO: Cover the happy-path and validation edge cases with Playwright once the seeker E2E suite is restored.
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isPreFilledFromEligibility, setIsPreFilledFromEligibility] = useState(false);
   const [formState, setFormState] = useState<FormState>(() => createInitialFormState());
   const [touchedFields, setTouchedFields] = useState<Record<FormField, boolean>>(() =>
     createInitialTouchedState(),
@@ -184,6 +188,89 @@ const useRequestFormController = (): RequestFormContextValue => {
 
     checkAuth();
   }, [router]);
+
+  // Pre-fill form from eligibility data (after auth check)
+  useEffect(() => {
+    if (isCheckingAuth) return;
+
+    const eligibility = searchParams.get('eligibility');
+    if (eligibility !== 'true') return;
+
+    setIsPreFilledFromEligibility(true);
+
+    // Read and map eligibility data from query params
+    const ageRange = searchParams.get('ageRange');
+    const nationality = searchParams.get('nationality');
+    const visaType = searchParams.get('visaType');
+    const currentLocation = searchParams.get('currentLocation');
+    const timeline = searchParams.get('timeline');
+    const budgetMin = searchParams.get('budgetMin');
+    const budgetMax = searchParams.get('budgetMax');
+
+    setFormState((prev) => {
+      const updates: Partial<FormState> = {};
+      
+      if (ageRange && !prev.ageRange) {
+        updates.ageRange = ageRange;
+      }
+      if (nationality && !prev.nationality) {
+        updates.nationality = nationality;
+      }
+      if (visaType && !prev.visaType) {
+        updates.visaType = visaType;
+      }
+      if (currentLocation && !prev.currentLocation) {
+        // Map INSIDE_THAILAND/OUTSIDE_THAILAND to IN_THAILAND/OUTSIDE_THAILAND if needed
+        if (currentLocation === 'INSIDE_THAILAND') {
+          updates.currentLocation = 'IN_THAILAND';
+        } else if (currentLocation === 'OUTSIDE_THAILAND') {
+          updates.currentLocation = 'OUTSIDE_THAILAND';
+        } else {
+          updates.currentLocation = currentLocation;
+        }
+      }
+      if (timeline && !prev.timeline) {
+        updates.timeline = timeline;
+      }
+      if (budgetMin && !prev.budgetMin) {
+        updates.budgetMin = budgetMin;
+      }
+      if (budgetMax && !prev.budgetMax) {
+        updates.budgetMax = budgetMax;
+      }
+
+      // Auto-generate title from visa type if available
+      if (updates.visaType && !prev.title) {
+        const visaOption = missionVisaOptions.find((opt) => opt.value === updates.visaType);
+        if (visaOption) {
+          updates.title = `Visa application for ${visaOption.label}`;
+        }
+      }
+
+      return { ...prev, ...updates };
+    });
+
+    // Mark relevant fields as touched so validation feedback shows
+    const fieldsToTouch: FormField[] = [];
+    if (ageRange) fieldsToTouch.push('ageRange');
+    if (nationality) fieldsToTouch.push('nationality');
+    if (visaType) fieldsToTouch.push('visaType');
+    if (currentLocation) fieldsToTouch.push('currentLocation');
+    if (timeline) fieldsToTouch.push('timeline');
+    if (budgetMin || budgetMax) {
+      fieldsToTouch.push('budgetMin', 'budgetMax');
+    }
+
+    if (fieldsToTouch.length > 0) {
+      setTouchedFields((prev) => {
+        const updated = { ...prev };
+        fieldsToTouch.forEach((field) => {
+          updated[field] = true;
+        });
+        return updated;
+      });
+    }
+  }, [isCheckingAuth, searchParams]);
 
   useEffect(() => {
     setFormState((prev) => {
@@ -683,6 +770,7 @@ const useRequestFormController = (): RequestFormContextValue => {
     stepButtonRefs,
     isLocationSelectOpen,
     setIsLocationSelectOpen,
+    isPreFilledFromEligibility,
     updateField,
     markFieldTouched,
     markFieldsTouched,

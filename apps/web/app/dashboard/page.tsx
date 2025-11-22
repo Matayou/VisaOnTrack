@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { api, type Request, type RequestStatus } from '@visaontrack/client';
+import { Button, Spinner } from '@/components/ui';
 
 const statusLabels: Record<RequestStatus, string> = {
   DRAFT: 'Draft',
@@ -223,30 +224,31 @@ export default function DashboardPage() {
             You can keep one request active or in draft. Publish to connect with providers or close it when you are done.
           </p>
           <div className="mt-4 flex gap-3">
-            <button
+            <Button
               type="button"
-              className="inline-flex items-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-5 py-3 text-sm font-semibold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               onClick={() => router.push('/requests/new')}
+              icon={<PlusCircle className="w-4 h-4" />}
+              iconPosition="left"
             >
-              <PlusCircle className="w-4 h-4" aria-hidden="true" />
               Start new request
-            </button>
+            </Button>
             {requests[0] && (
-              <button
+              <Button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-base border border-border-light px-5 py-3 text-sm font-medium text-text-secondary hover:text-text-primary hover:border-border transition"
+                variant="outline"
                 onClick={() => router.push(`/requests/${requests[0].id}`)}
+                icon={<ArrowRight className="w-4 h-4" />}
+                iconPosition="right"
               >
                 View latest
-                <ArrowRight className="w-4 h-4" aria-hidden="true" />
-              </button>
+              </Button>
             )}
           </div>
         </header>
 
         {isLoadingUser || isLoadingRequests ? (
           <div className="bg-bg-primary border border-border-light rounded-base p-6 flex items-center gap-3 text-text-secondary">
-            <Loader className="w-5 h-5 animate-spin" aria-hidden="true" />
+            <Spinner size="sm" />
             <span>Loading your requests...</span>
           </div>
         ) : null}
@@ -295,14 +297,14 @@ export default function DashboardPage() {
                           {request.title}
                         </h2>
                         <p className="text-sm text-text-secondary line-clamp-2 leading-relaxed">{request.description}</p>
-                      </div>
-                      <span
+                  </div>
+                  <span
                         className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold border flex-shrink-0 ${statusStyles[request.status]}`}
-                      >
+                  >
                         <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
-                        {statusLabels[request.status]}
-                      </span>
-                    </div>
+                    {statusLabels[request.status]}
+                  </span>
+                </div>
 
                     {/* Metadata Section */}
                     {hasMetadata && (
@@ -335,26 +337,28 @@ export default function DashboardPage() {
 
                     {/* Actions */}
                     <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-light">
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-base border border-border-light px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:border-border transition-colors duration-150"
-                        onClick={() => router.push(`/requests/${request.id}`)}
-                      >
-                        View
-                      </button>
-                      {(request.status === 'DRAFT' || request.status === 'OPEN') && (
-                        <button
-                          type="button"
-                          className="inline-flex items-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                          onClick={() => router.push(`/requests/${request.id}`)}
-                        >
-                          {request.status === 'DRAFT' ? 'Continue' : 'View details'}
-                          <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                        </button>
-                      )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => router.push(`/requests/${request.id}`)}
+                  >
+                    View
+                  </Button>
+                  {(request.status === 'DRAFT' || request.status === 'OPEN') && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => router.push(`/requests/${request.id}`)}
+                      icon={<ArrowRight className="w-4 h-4" />}
+                      iconPosition="right"
+                    >
+                      {request.status === 'DRAFT' ? 'Continue' : 'View details'}
+                    </Button>
+                  )}
                     </div>
-                  </div>
-                </article>
+                </div>
+              </article>
               );
             })}
           </div>

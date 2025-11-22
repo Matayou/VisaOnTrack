@@ -1150,14 +1150,14 @@ export default function GetStartedPage() {
               Features
               <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
             </Link>
-            <a
-              href="#"
+            <Link
+              href="/how-it-works"
               className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
               aria-label="How it works"
             >
               How it Works
               <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-            </a>
+            </Link>
             <a
               href="#"
               className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
@@ -1218,14 +1218,14 @@ export default function GetStartedPage() {
               >
                 Features
               </Link>
-              <a
-                href="#"
+              <Link
+                href="/how-it-works"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
                 aria-label="How it works"
               >
                 How it Works
-              </a>
+              </Link>
               <a
                 href="#"
                 onClick={() => setIsMobileMenuOpen(false)}

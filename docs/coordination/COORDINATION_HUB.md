@@ -14,7 +14,7 @@
 | M2-BE-2: Messages API | `docs/tasks/TASK_M2_BE_MESSAGES_API.md` | Backend Engineer | ⏳ PENDING — Ready for assignment. |
 | M2-FE-1: Requests pages | `docs/tasks/TASK_M2_FE_REQUESTS.md` | Frontend Engineer | ⏳ PENDING — Blocked on M2-BE-1. |
 | M2-FE-2: Messaging pages | `docs/tasks/TASK_M2_FE_MESSAGING.md` | Frontend Engineer | ⏳ PENDING — Blocked on M2-BE-2. |
-| Provider dashboard planning | `docs/user-stories/PROVIDER_DASHBOARD_OVERVIEW.md`, `..._USER_STORIES.md`, `..._CHECKLIST.md` | Product + Design | Planning phase; use checklist for DoD; mockups in `docs/mockups/`. |
+| Provider dashboard planning | `docs/user-stories/PROVIDER_DASHBOARD_OVERVIEW.md`, `..._USER_STORIES.md`, `..._CHECKLIST.md` | Product + Design | Planning phase; use checklist for DoD. |
 
 > When spinning up a new effort, add a row pointing to its task/RFC doc rather than embedding status here.
 
@@ -26,7 +26,7 @@
 - **Status dashboard:** `PROJECT_STATUS.md`
 - **Task directory:** `docs/tasks/`
 - **Coordination docs:** `docs/coordination/` (each file should reference its task doc)
-- **Mockup gallery:** `docs/mockups/README.md`
+- **Design documentation:** `docs/design/` (to be created)
 
 ---
 

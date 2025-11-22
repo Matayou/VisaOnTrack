@@ -7,7 +7,7 @@ import { api } from '@visaontrack/client';
 import { logout } from '@/lib/auth';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
 import { isApiError } from '@/lib/api-error';
-import { Button, Spinner } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
 
 export default function ProviderWelcomePage() {
   const router = useRouter();
@@ -99,7 +99,8 @@ export default function ProviderWelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6 relative">
+    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6">
+      <PageBackground />
       {/* Logout Button - Top Right */}
       <button
         onClick={() => logout(router)}
@@ -110,14 +111,15 @@ export default function ProviderWelcomePage() {
         <span>Logout</span>
       </button>
 
-      <div className="w-full max-w-6xl bg-bg-primary border border-border-light rounded-lg shadow-md animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="relative z-10 w-full max-w-6xl bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-lg shadow-lg shadow-primary/5 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
         {/* Header */}
         <div className="p-12 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary-hover rounded-md mb-6 shadow-[0_4px_12px_rgba(37,99,235,0.2)] animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)]">
             <Briefcase className="w-8 h-8 text-white" aria-hidden="true" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_200ms_both]">
-            Welcome to VisaOnTrack!
+            <GradientText>Welcome to VisaOnTrack!</GradientText>
           </h1>
           <p className="text-lg text-text-secondary max-w-[42rem] mx-auto animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
             Let&rsquo;s get your profile set up so you can start connecting with clients

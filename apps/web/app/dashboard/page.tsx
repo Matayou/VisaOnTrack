@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { api, type Request, type RequestStatus } from '@visaontrack/client';
-import { Button, Spinner } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
 
 const statusLabels: Record<RequestStatus, string> = {
   DRAFT: 'Draft',
@@ -214,12 +214,18 @@ export default function DashboardPage() {
   const activeCategory = faqData.find((cat) => cat.id === activeTab) || faqData[0];
 
   return (
-    <div className="min-h-screen bg-bg-secondary">
+    <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
+      <PageBackground />
       <SeekerHeader />
-      <div className="max-w-6xl mx-auto space-y-6 p-6 lg:p-10">
-        <header className="bg-bg-primary border border-border-light rounded-base px-6 py-8 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">Your requests</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-text-primary">Manage your visa request</h1>
+      <div className="relative z-10 max-w-6xl mx-auto space-y-6 p-6 lg:p-10">
+        <header className="relative bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-base px-6 py-8 shadow-lg shadow-primary/5 overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
+          <div className="relative">
+            <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">Your requests</p>
+            <h1 className="text-3xl font-semibold tracking-tight">
+              <GradientText>Manage your visa request</GradientText>
+            </h1>
+          </div>
           <p className="text-text-secondary">
             You can keep one request active or in draft. Publish to connect with providers or close it when you are done.
           </p>
@@ -287,8 +293,9 @@ export default function DashboardPage() {
               return (
                 <article
                   key={request.id}
-                  className={`bg-bg-primary border border-border-light rounded-base shadow-sm transition-all duration-200 hover:shadow-md hover:border-border-medium ${statusBorderColors[request.status]} border-l-4`}
+                  className={`relative bg-gradient-to-br from-primary/5 to-white border-2 border-primary/20 rounded-base shadow-md shadow-primary/5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-0.5 hover:border-primary/40 ${statusBorderColors[request.status]} border-l-4 overflow-hidden`}
                 >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full"></div>
                   <div className="p-6 md:p-8">
                     {/* Header: Title and Status */}
                     <div className="flex items-start justify-between gap-4 mb-4">

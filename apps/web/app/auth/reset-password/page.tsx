@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getApiErrorMessage, isApiError } from '@/lib/api-error';
-import { Button, Spinner } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
 
 type ResetPasswordParams = {
   requestBody: {
@@ -190,14 +190,18 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6">
+      <PageBackground />
+      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-md shadow-lg shadow-primary/5 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
         {/* Header */}
         <div className="p-8 pb-6 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-base mb-5 shadow-[0_2px_8px_rgba(37,99,235,0.2)]">
             <Lock className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">Reset your password</h1>
+          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">
+            <GradientText>Reset your password</GradientText>
+          </h1>
           <p className="text-sm text-text-secondary">Enter your new password below</p>
         </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, Plus, Trash2, Loader } from 'lucide-react';
 import { api } from '@visaontrack/client';
+import { ProviderHeader } from '@/components/ProviderHeader';
 
 interface Service {
   id: string;
@@ -94,8 +95,10 @@ export default function ServicesPricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary p-6">
-      <div className="max-w-6xl mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+    <div className="min-h-screen bg-bg-secondary">
+      <ProviderHeader />
+      <div className="p-6">
+        <div className="max-w-6xl mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-8 border-b border-border-light">
           <div className="flex gap-2 mb-6">
@@ -279,6 +282,7 @@ export default function ServicesPricingPage() {
             </button>
           </div>
         </form>
+        </div>
       </div>
 
       <style jsx>{`

@@ -7,7 +7,7 @@ import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, ShieldCheck, Clock } fr
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
 import { getApiErrorMessage, isApiError } from '@/lib/api-error';
-import { Button, Spinner } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
 
 // Email typo detection
 const commonTypos: Record<string, string> = {
@@ -186,14 +186,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6 sm:p-8">
-      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
+    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6 sm:p-8">
+      <PageBackground />
+      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
         {/* Header */}
-        <div className="p-8 sm:p-10 pb-6 text-center">
+        <div className="relative p-8 sm:p-10 pb-6 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-6 shadow-md shadow-primary/20">
             <Compass className="w-7 h-7 text-white" aria-hidden="true" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight text-text-primary">Welcome back</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight">
+            <GradientText>Welcome back</GradientText>
+          </h1>
           <p className="text-base text-text-secondary leading-relaxed">Sign in to your VisaOnTrack account</p>
         </div>
 

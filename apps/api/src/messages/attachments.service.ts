@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, PayloadTooLargeException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  PayloadTooLargeException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../common/services/prisma.service';
 import { PlanCode } from '@prisma/client';
 import * as fs from 'fs/promises';
@@ -78,6 +84,13 @@ export class AttachmentsService {
     ip?: string,
     ua?: string,
   ): Promise<AttachmentResponseDto> {
+    if (!requestId && !orderId) {
+      throw new BadRequestException({
+        code: 'BAD_REQUEST',
+        message: 'Either requestId or orderId is required for attachment context',
+      });
+    }
+
     // Validate file exists
     if (!file) {
       throw new BadRequestException({
@@ -92,6 +105,15 @@ export class AttachmentsService {
         code: 'BAD_REQUEST',
         message: `Invalid file type. Allowed types: PDF, JPEG, PNG, WebP, DOCX, XLSX`,
       });
+    }
+
+    // Validate entity existence/ownership before persisting
+    if (requestId) {
+      await this.assertRequestAccess(userId, requestId);
+    }
+
+    if (orderId) {
+      await this.assertOrderAccess(userId, orderId, requestId);
     }
 
     // Get user's plan to check file size limit
@@ -212,5 +234,88 @@ export class AttachmentsService {
       console.error('[AttachmentsService] Failed to create upload directory:', error);
     }
   }
-}
 
+  /**
+   * Ensure the request exists and the caller is allowed to attach to it.
+   * Allowed: seeker who owns the request, or provider with a quote on that request.
+   */
+  private async assertRequestAccess(userId: string, requestId: string): Promise<void> {
+    const [request, providerProfile] = await Promise.all([
+      this.prisma.request.findUnique({
+        where: { id: requestId },
+        select: {
+          id: true,
+          seekerId: true,
+          quotes: {
+            select: { providerId: true },
+          },
+        },
+      }),
+      this.prisma.providerProfile.findUnique({
+        where: { userId },
+        select: { id: true },
+      }),
+    ]);
+
+    if (!request) {
+      throw new NotFoundException({
+        code: 'NOT_FOUND',
+        message: 'Request not found',
+      });
+    }
+
+    const isSeeker = request.seekerId === userId;
+    const isQuotedProvider =
+      providerProfile && request.quotes.some((quote) => quote.providerId === providerProfile.id);
+
+    if (!isSeeker && !isQuotedProvider) {
+      throw new ForbiddenException({
+        code: 'FORBIDDEN',
+        message: 'You do not have permission to attach files to this request',
+      });
+    }
+  }
+
+  /**
+   * Ensure the order exists and the caller is part of it.
+   * Allowed: seeker who owns the underlying request, or provider who owns the quote.
+   * If a requestId is also provided, ensure it matches the order's request.
+   */
+  private async assertOrderAccess(userId: string, orderId: string, requestId?: string): Promise<void> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        quote: {
+          select: {
+            provider: { select: { userId: true, id: true } },
+            request: { select: { id: true, seekerId: true } },
+          },
+        },
+      },
+    });
+
+    if (!order || !order.quote) {
+      throw new NotFoundException({
+        code: 'NOT_FOUND',
+        message: 'Order not found',
+      });
+    }
+
+    if (requestId && order.quote.request?.id && order.quote.request.id !== requestId) {
+      throw new BadRequestException({
+        code: 'BAD_REQUEST',
+        message: 'orderId does not belong to the provided requestId',
+      });
+    }
+
+    const seekerId = order.quote.request?.seekerId;
+    const providerUserId = order.quote.provider?.userId;
+
+    if (userId !== seekerId && userId !== providerUserId) {
+      throw new ForbiddenException({
+        code: 'FORBIDDEN',
+        message: 'You do not have permission to attach files to this order',
+      });
+    }
+  }
+}

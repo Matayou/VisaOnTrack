@@ -6,7 +6,7 @@ import { Compass, Briefcase, Check, CheckCircle, ArrowRight, AlertCircle, LogOut
 import { api, type UserRole } from '@visaontrack/client';
 import { logout } from '@/lib/auth';
 import { getApiErrorMessage, isApiError } from '@/lib/api-error';
-import { Button, Spinner } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
 
 type AccountType = 'SEEKER' | 'PROVIDER' | null;
 
@@ -130,7 +130,8 @@ export default function AccountTypePage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6 relative">
+    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6">
+      <PageBackground />
       {/* Logout Button - Top Right */}
       <button
         onClick={() => logout(router)}
@@ -141,14 +142,14 @@ export default function AccountTypePage() {
         <span>Logout</span>
       </button>
 
-      <div className="w-full max-w-4xl animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="relative z-10 w-full max-w-4xl animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-md mb-6 shadow-[0_4px_12px_rgba(37,99,235,0.2)] animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both]">
             <Compass className="w-8 h-8 text-white" aria-hidden="true" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
-            What brings you to VisaOnTrack?
+            <GradientText>What brings you to VisaOnTrack?</GradientText>
           </h1>
           <p className="text-lg text-text-secondary animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both]">
             Choose how you&rsquo;d like to use the platform

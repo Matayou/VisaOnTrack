@@ -348,60 +348,13 @@ export default function BusinessDetailsPage() {
         languages: languages.length > 0 ? languages : undefined,
       };
 
-      // Try to create first
-      try {
-        const result = await api.providers.createProvider({
-          requestBody: updateData,
-        });
-        console.log('[BusinessDetailsPage] Provider created successfully:', result);
-        router.push('/onboarding/provider/services');
-        return;
-      } catch (createError: unknown) {
-        const createApiError = isApiError(createError) ? createError : null;
-        
-        // If provider already exists, try to find and update it
-        if (createApiError?.body?.message?.includes('already exists') || createApiError?.status === 409) {
-          console.log('[BusinessDetailsPage] Provider already exists, searching for existing profile...');
-          
-          try {
-            // Get current user and search for their provider profile
-            const user = await api.users.getCurrentUser();
-            const providersList = await api.providers.searchProviders({ page: 1, limit: 100 });
-            
-            // Find provider that belongs to the current user
-            const userProvider = providersList.data?.find((p) => p.userId === user.id);
-            
-            if (userProvider) {
-              console.log('[BusinessDetailsPage] Found existing provider, updating:', userProvider.id);
-              const result = await api.providers.updateProvider({
-                id: userProvider.id,
-                requestBody: updateData,
-              });
-              console.log('[BusinessDetailsPage] Provider updated successfully:', result);
-              router.push('/onboarding/provider/services');
-              return;
-            }
-            
-            // If we still can't find it, show a helpful error
-            setError('Provider profile exists but could not be found. Please contact support.');
-            setIsLoading(false);
-            return;
-          } catch (updateError: unknown) {
-            console.error('[BusinessDetailsPage] Error updating provider:', updateError);
-            const updateApiError = isApiError(updateError) ? updateError : null;
-            setError(
-              updateApiError
-                ? getApiErrorMessage(updateApiError, 'Failed to update provider profile. Please try again.')
-                : 'Failed to update provider profile. Please try again.',
-            );
-            setIsLoading(false);
-            return;
-          }
-        }
-        
-        // Re-throw if it's not an "already exists" error
-        throw createError;
-      }
+      // Create or update provider profile (backend handles upsert automatically)
+      const result = await api.providers.createProvider({
+        requestBody: updateData,
+      });
+      console.log('[BusinessDetailsPage] Provider profile saved successfully:', result);
+      router.push('/onboarding/provider/services');
+      return;
     } catch (error: unknown) {
       const apiError = isApiError(error) ? error : null;
       console.error('[BusinessDetailsPage] Provider operation failed:', error);

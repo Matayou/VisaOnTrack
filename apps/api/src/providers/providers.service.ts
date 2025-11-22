@@ -34,11 +34,9 @@ export class ProvidersService {
       where: { userId },
     });
 
+    // If profile exists, update it instead of creating a new one (upsert behavior)
     if (existingProfile) {
-      throw new BadRequestException({
-        code: 'BAD_REQUEST',
-        message: 'Provider profile already exists. Use PATCH /providers/{id} to update.',
-      });
+      return await this.updateProvider(existingProfile.id, userId, createData, ip, ua);
     }
 
     // Verify user role is PROVIDER
@@ -172,6 +170,13 @@ export class ProvidersService {
         location: updateData.location !== undefined ? updateData.location : undefined,
         languages: updateData.languages !== undefined ? updateData.languages : undefined,
       },
+    });
+
+    // Mark Step 1 (Business Details) as complete when updating business details
+    // This ensures the step is marked complete even when updating an existing profile
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { providerBusinessStepCompleted: true },
     });
 
     // Audit logging (only if changes were made)

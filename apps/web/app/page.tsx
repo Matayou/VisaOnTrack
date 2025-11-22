@@ -19,7 +19,7 @@ import {
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
 import { isApiError } from '@/lib/api-error';
-import { Spinner } from '@/components/ui';
+import { Spinner, PageBackground, GradientText } from '@/components/ui';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -154,7 +154,8 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-bg-primary">
+    <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
+      <PageBackground />
       {/* Sticky Header */}
       <header
         className={`sticky top-0 z-50 transition-all duration-200 ${
@@ -186,14 +187,14 @@ export default function LandingPage() {
               Features
               <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
             </a>
-            <a
-              href="#"
+            <Link
+              href="/how-it-works"
               className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
               aria-label="How it works"
             >
               How it Works
               <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-            </a>
+            </Link>
             <a
               href="#"
               className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
@@ -257,14 +258,14 @@ export default function LandingPage() {
               >
                 Features
               </a>
-              <a
-                href="#"
+              <Link
+                href="/how-it-works"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
                 aria-label="How it works"
               >
                 How it Works
-              </a>
+              </Link>
               <a
                 href="#"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -304,7 +305,7 @@ export default function LandingPage() {
         )}
       </header>
 
-      <main>
+      <main className="relative z-10">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-6 sm:px-8 pt-8 md:pt-12 lg:pt-16 pb-16 md:pb-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-center">
@@ -319,9 +320,7 @@ export default function LandingPage() {
               {/* Main Heading - Display size (48-72px) */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-text-primary">
                 Navigate Your Visa Journey with{' '}
-                <span className="bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
-                  Confidence
-                </span>
+                <GradientText>Confidence</GradientText>
               </h1>
 
               {/* Hero Image - Mobile: After heading */}
@@ -339,7 +338,7 @@ export default function LandingPage() {
               {/* Description - Body text (16-18px) */}
               <p className="text-lg md:text-xl text-text-secondary max-w-xl lg:max-w-lg mx-auto lg:mx-0 leading-relaxed">
                 Connect with verified immigration professionals in Thailand.{' '}
-                Secure payments, transparent pricing, and milestone-based progress tracking.
+                100% free platform for visa seekers. Secure payments and milestone-based progress tracking.
               </p>
 
               {/* Primary CTA - Eligibility Check */}
@@ -373,8 +372,8 @@ export default function LandingPage() {
         {/* Features Grid */}
         <section id="features" className="max-w-7xl mx-auto px-6 sm:px-8 py-20 md:py-24 bg-bg-secondary">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-text-primary mb-4">
-              Everything You Need to Succeed
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              <GradientText>Everything You Need to Succeed</GradientText>
             </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
               A complete platform designed to make your visa journey smooth, secure, and transparent.
@@ -386,8 +385,9 @@ export default function LandingPage() {
               return (
                 <div
                   key={feature.title}
-                  className="group p-8 bg-bg-primary border border-border-light rounded-xl transition-all duration-200 hover:border-border-medium hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1"
+                  className="group relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 overflow-hidden"
                 >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
                   <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200" aria-hidden="true">
                     <Icon className="w-7 h-7 text-primary" />
                   </div>
@@ -444,7 +444,7 @@ export default function LandingPage() {
               <span>VisaOnTrack</span>
             </Link>
             <p className="text-base text-text-secondary max-w-md leading-relaxed">
-              Connect with verified immigration professionals. Secure payments, transparent pricing, and milestone-based progress tracking.
+              Connect with verified immigration professionals. 100% free platform for visa seekers. Secure payments and milestone-based progress tracking.
             </p>
           </div>
           
@@ -455,9 +455,9 @@ export default function LandingPage() {
               <a href="#features" onClick={(e) => handleAnchorClick(e, '#features')} className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
                 Features
               </a>
-              <a href="#" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
+              <Link href="/how-it-works" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
                 How it Works
-              </a>
+              </Link>
               <a href="#" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
                 Pricing
               </a>

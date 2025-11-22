@@ -125,8 +125,6 @@ export const useRequestForm = () => {
 
 const defaultSelectedNeeds = assistanceNeeds.length ? [assistanceNeeds[0]] : [];
 
-let cachedUser: User | null = null;
-
 const useRequestFormController = (): RequestFormContextValue => {
   // TODO: Cover the happy-path and validation edge cases with Playwright once the seeker E2E suite is restored.
   const router = useRouter();
@@ -160,9 +158,9 @@ const useRequestFormController = (): RequestFormContextValue => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      setIsCheckingAuth(true);
       try {
-        const user = cachedUser ?? (await api.users.getCurrentUser());
-        cachedUser = user;
+        const user = await api.users.getCurrentUser();
 
         if (!user.emailVerified) {
           router.push('/auth/verify-email');
@@ -183,6 +181,9 @@ const useRequestFormController = (): RequestFormContextValue => {
         }
         console.error('[CreateRequestPage] Error checking auth:', err);
         router.push('/auth/login');
+        return;
+      } finally {
+        setIsCheckingAuth(false);
       }
     };
 

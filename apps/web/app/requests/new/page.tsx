@@ -20,7 +20,7 @@ import { RequestFormProvider, useRequestForm } from '@/app/requests/new/context/
 import { formSteps } from '@/config/requestForm';
 import { logout } from '@/lib/auth';
 import { SeekerHeader } from '@/components/SeekerHeader';
-import { Button, Spinner } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
 
 const stepComponents = [PersonalStep, MissionStep, BudgetStep, SupportStep];
 
@@ -87,9 +87,10 @@ function CreateRequestForm() {
 
   if (createdRequest) {
     return (
-      <div className="min-h-screen bg-bg-secondary">
+      <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
+        <PageBackground />
         <SeekerHeader />
-        <div className="p-6 lg:p-10 relative">
+        <div className="relative z-10 p-6 lg:p-10">
         <div className="max-w-6xl mx-auto">
             <div className={`${baseCardClass} p-10 text-center space-y-6`}>
               <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center text-primary">

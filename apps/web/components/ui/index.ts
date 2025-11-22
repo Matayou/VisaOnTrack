@@ -10,3 +10,6 @@ export type { SpinnerProps, SpinnerSize, SpinnerColor } from './Spinner';
 export { Button } from './Button';
 export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
 
+export { PageBackground } from './PageBackground';
+export { GradientText } from './GradientText';
+

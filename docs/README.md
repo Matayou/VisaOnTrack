@@ -14,11 +14,8 @@ Use this map to find the canonical source for each type of information. When cre
 - `docs/user-stories/PROVIDER_DASHBOARD_USER_STORIES.md` — acceptance criteria.
 - `docs/user-stories/PROVIDER_DASHBOARD_CHECKLIST.md` — implementation checklist (acts as DoD for the module).
 
-## Mockups & Visuals
-- `docs/mockups/README.md` — gallery + quick links.
-- `docs/mockups/projects/PROVIDER_PAGES_COMPLETE.md` — canonical provider-page summary. Older “status” snapshots were archived to `docs/mockups/archive/provider-pages/`.
-- `docs/mockups/projects/*.html` — current polished mockups.
-- `docs/mockups/archive/` — historical versions; don’t edit for new work.
+## Design & Visuals
+- Design system documentation will be created in `docs/design/` directory.
 
 ## Setup & Ops References
 - `docs/setup/TEAM_SETUP_INSTRUCTIONS_M1_BE_7.md` — latest backend environment steps.

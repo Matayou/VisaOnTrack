@@ -35,6 +35,20 @@ export function ProviderHeader() {
     load();
   }, []);
 
+  // Determine where the logo should link based on onboarding status
+  const getLogoHref = () => {
+    // If user is not loaded yet or during onboarding, link to first onboarding step
+    if (!user || (user.role === 'PROVIDER' && !user.providerOnboardingCompleted)) {
+      return '/onboarding/provider/business';
+    }
+    // If provider onboarding is complete, link to dashboard
+    if (user.role === 'PROVIDER') {
+      return '/dashboard';
+    }
+    // Default fallback
+    return '/';
+  };
+
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -57,7 +71,7 @@ export function ProviderHeader() {
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-border-light shadow-sm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href={getLogoHref()} className="flex items-center gap-2">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <Briefcase className="w-5 h-5" aria-hidden="true" />
             </span>

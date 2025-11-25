@@ -5,8 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { api } from '@visaontrack/client';
-import { getApiErrorMessage, isApiError } from '@/lib/api-error';
-import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
+import { Button, GradientText } from '@/components/ui';
+import { AuthPageShell } from '@/components/AuthPageShell';
+import { checkPasswordStrength, type PasswordStrengthResult } from '@/lib/validation';
+import { isApiError } from '@/lib/api-error';
+import { getErrorDisplayMessage, getRateLimitMessage, isRateLimitError } from '@/lib/error-handling';
 
 type ResetPasswordParams = {
   requestBody: {
@@ -20,69 +23,6 @@ type AuthWithResetPassword = typeof api.auth & {
 };
 
 const authApi = api.auth as AuthWithResetPassword;
-
-type PasswordStrength = 0 | 1 | 2 | 3 | 4;
-type PasswordLevel = 'empty' | 'weak' | 'fair' | 'good' | 'strong';
-
-interface PasswordStrengthResult {
-  strength: PasswordStrength;
-  level: PasswordLevel;
-  message: string;
-  hint: string;
-}
-
-function checkPasswordStrength(password: string): PasswordStrengthResult {
-  if (!password) {
-    return { strength: 0, level: 'empty', message: '', hint: '' };
-  }
-
-  let count = 0;
-  const feedback: string[] = [];
-
-  // Length (8+)
-  if (password.length >= 8) count++;
-  else feedback.push('Use 8+ characters');
-
-  // Lowercase (required)
-  if (/[a-z]/.test(password)) count++;
-  else feedback.push('add lowercase letters');
-
-  // Uppercase (required)
-  if (/[A-Z]/.test(password)) count++;
-  else feedback.push('add uppercase letters');
-
-  // Number (required)
-  if (/[0-9]/.test(password)) count++;
-  else feedback.push('add numbers');
-
-  // Special character (required)
-  if (/[^A-Za-z0-9]/.test(password)) count++;
-  else feedback.push('add symbols (!@#$)');
-
-  // Map 5 criteria to 4 strength levels (0-4)
-  let strength: PasswordStrength;
-  if (count >= 5) {
-    strength = 4; // Strong - all criteria met
-  } else if (count === 4) {
-    strength = 3; // Good - 4 criteria met
-  } else if (count === 3) {
-    strength = 2; // Fair - 3 criteria met
-  } else if (count >= 1) {
-    strength = 1; // Weak - 1-2 criteria met
-  } else {
-    strength = 0; // Empty
-  }
-
-  const levels: Record<PasswordStrength, { level: PasswordLevel; message: string; hint: string }> = {
-    0: { level: 'empty', message: '', hint: '' },
-    1: { level: 'weak', message: 'Weak password', hint: feedback.join(', ') },
-    2: { level: 'fair', message: 'Fair password', hint: feedback.join(', ') },
-    3: { level: 'good', message: 'Good password', hint: feedback.join(', ') },
-    4: { level: 'strong', message: 'Strong password!', hint: 'Excellent choice' },
-  };
-
-  return { strength, ...levels[strength] };
-}
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -164,34 +104,28 @@ export default function ResetPasswordPage() {
       // Success - redirect to login page
       router.push('/auth/login');
     } catch (error: unknown) {
-      const apiError = isApiError(error) ? error : null;
-      // Handle different error types
-      if (apiError?.status === 400) {
-        if (apiError.body?.code === 'VALIDATION_ERROR') {
-          setError('Password does not meet requirements. Please check all criteria.');
-        } else {
-          setError(getApiErrorMessage(apiError, 'Invalid reset token or password.'));
-        }
-      } else if (apiError?.status === 401) {
-        if (apiError.body?.code === 'UNAUTHORIZED') {
-          setTokenError('Reset token is invalid or has expired. Please request a new password reset link.');
-        } else {
-          setError('Reset token has expired. Please request a new password reset link.');
-        }
-      } else if (apiError?.status === 429) {
-        setError('Too many requests. Please try again in a few minutes.');
-      } else {
-        const fallback = 'An error occurred. Please try again.';
-        setError(apiError ? getApiErrorMessage(apiError, fallback) : fallback);
+      // Handle rate limit errors
+      if (isRateLimitError(error)) {
+        setError(getRateLimitMessage(error));
+        return;
       }
+
+      // Handle token errors (401)
+      if (isApiError(error) && error.status === 401) {
+        setTokenError('Reset token is invalid or has expired. Please request a new password reset link.');
+        return;
+      }
+
+      // Use standardized error handling for all other errors
+      const message = getErrorDisplayMessage(error, 'reset password');
+      setError(message);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6">
-      <PageBackground />
+    <AuthPageShell>
       <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-md shadow-lg shadow-primary/5 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
         {/* Header */}
@@ -240,7 +174,7 @@ export default function ResetPasswordPage() {
                   id="newPassword"
                   value={newPassword}
                   onChange={(e) => handleNewPasswordChange(e.target.value)}
-                  className="w-full h-11 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
+                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
                   placeholder="At least 8 characters"
                   required
                   disabled={!token || !!tokenError || isLoading}
@@ -318,12 +252,12 @@ export default function ResetPasswordPage() {
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => handleConfirmPasswordChange(e.target.value)}
-                  className={`w-full h-11 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none ${
+                  className={`w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none ${
                     passwordMatch === true
                       ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                       : passwordMatch === false
                       ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
                   }`}
                   placeholder="Re-enter your password"
                   required
@@ -409,7 +343,7 @@ export default function ResetPasswordPage() {
           }
         }
       `}</style>
-    </div>
+    </AuthPageShell>
   );
 }
 

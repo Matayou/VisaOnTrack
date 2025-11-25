@@ -66,6 +66,9 @@ export class ProvidersService {
         description: createData.description || null,
         location: createData.location || null,
         languages: createData.languages || [],
+        website: createData.website || null,
+        contactPhone: createData.contactPhone || null,
+        yearsExperience: createData.yearsExperience || null,
       },
     });
 
@@ -97,6 +100,28 @@ export class ProvidersService {
       throw new NotFoundException({
         code: 'NOT_FOUND',
         message: 'Provider profile not found',
+      });
+    }
+
+    return this.mapToResponseDto(provider);
+  }
+
+  /**
+   * Get provider profile by User ID
+   * Internal helper or for /providers/me
+   * 
+   * @param userId - User ID
+   * @returns Provider profile
+   */
+  async getProviderByUserId(userId: string): Promise<ProviderResponseDto> {
+    const provider = await this.prisma.providerProfile.findUnique({
+      where: { userId },
+    });
+
+    if (!provider) {
+      throw new NotFoundException({
+        code: 'NOT_FOUND',
+        message: 'Provider profile not found for this user',
       });
     }
 
@@ -153,6 +178,15 @@ export class ProvidersService {
     if (updateData.location !== undefined && updateData.location !== provider.location) {
       (changes as Record<string, unknown>).location = { from: provider.location, to: updateData.location };
     }
+    if (updateData.website !== undefined && updateData.website !== provider.website) {
+      (changes as Record<string, unknown>).website = { from: provider.website, to: updateData.website };
+    }
+    if (updateData.contactPhone !== undefined && updateData.contactPhone !== provider.contactPhone) {
+      (changes as Record<string, unknown>).contactPhone = { from: provider.contactPhone, to: updateData.contactPhone };
+    }
+    if (updateData.yearsExperience !== undefined && updateData.yearsExperience !== provider.yearsExperience) {
+      (changes as Record<string, unknown>).yearsExperience = { from: provider.yearsExperience, to: updateData.yearsExperience };
+    }
     if (updateData.languages !== undefined) {
       const oldLanguages = Array.isArray(provider.languages) ? provider.languages : [];
       const newLanguages = updateData.languages;
@@ -169,6 +203,9 @@ export class ProvidersService {
         description: updateData.description !== undefined ? updateData.description : undefined,
         location: updateData.location !== undefined ? updateData.location : undefined,
         languages: updateData.languages !== undefined ? updateData.languages : undefined,
+        website: updateData.website !== undefined ? updateData.website : undefined,
+        contactPhone: updateData.contactPhone !== undefined ? updateData.contactPhone : undefined,
+        yearsExperience: updateData.yearsExperience !== undefined ? updateData.yearsExperience : undefined,
       },
     });
 
@@ -198,9 +235,11 @@ export class ProvidersService {
       description: provider.description || undefined,
       location: provider.location || undefined,
       languages: Array.isArray(provider.languages) ? provider.languages : [],
+      website: provider.website || undefined,
+      contactPhone: provider.contactPhone || undefined,
+      yearsExperience: provider.yearsExperience || undefined,
       verifiedAt: provider.verifiedAt || undefined,
       createdAt: provider.createdAt,
     };
   }
 }
-

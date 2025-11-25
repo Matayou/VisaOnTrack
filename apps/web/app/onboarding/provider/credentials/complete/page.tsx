@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { api, UserRole } from '@visaontrack/client';
 import { CheckCircle, Clock, ShieldCheck, Info, ArrowRight } from 'lucide-react';
-import { getApiErrorMessage, isApiError } from '@/lib/api-error';
+import { Footer } from '@/components/ui';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
 
 export default function CredentialsCompletePage() {
   const router = useRouter();
@@ -21,15 +22,8 @@ export default function CredentialsCompletePage() {
         // Onboarding completed successfully (silent success)
       } catch (error: unknown) {
         // Log error but don't block user experience
-        const apiError = isApiError(error) ? error : null;
         console.error('[CredentialsComplete] Error completing onboarding:', error);
-        const message = apiError
-          ? getApiErrorMessage(
-              apiError,
-              'Failed to mark onboarding as complete. You can continue using the app.',
-            )
-          : 'Failed to mark onboarding as complete. You can continue using the app.';
-        console.warn(message);
+        console.warn(getErrorDisplayMessage(error, 'complete onboarding'));
       }
     };
 
@@ -41,8 +35,9 @@ export default function CredentialsCompletePage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-      <div className="w-full max-w-6xl bg-bg-primary border border-border-light rounded-lg shadow-md overflow-hidden animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
+    <div className="min-h-screen bg-bg-secondary flex flex-col">
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-6xl bg-bg-primary border border-border-light rounded-lg shadow-md overflow-hidden animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-12 text-center bg-gradient-to-br from-success/5 to-success/2">
           <div className="w-20 h-20 bg-gradient-to-br from-success-light to-success/20 rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_8px_32px_rgba(22,163,74,0.2)] animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)]">
@@ -139,13 +134,16 @@ export default function CredentialsCompletePage() {
               }
             }}
             aria-label="Go to dashboard"
-            className="h-11 px-8 text-base font-medium text-white rounded-base transition-all duration-200 shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center justify-center gap-2 bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="h-11 px-8 text-base font-medium text-white rounded-base transition-all duration-200 shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center justify-center gap-2 bg-gradient-to-b from-primary to-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             <span>Go to Dashboard</span>
             <ArrowRight className="w-4.5 h-4.5" aria-hidden="true" />
           </button>
         </div>
+        </div>
       </div>
+
+      <Footer />
 
       <style jsx>{`
         @keyframes fadeInUp {

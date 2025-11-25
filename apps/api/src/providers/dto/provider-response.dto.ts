@@ -9,7 +9,9 @@ export class ProviderResponseDto {
   description?: string;
   location?: string;
   languages: string[];
+  website?: string;
+  contactPhone?: string;
+  yearsExperience?: number;
   verifiedAt?: Date;
   createdAt: Date;
 }
-

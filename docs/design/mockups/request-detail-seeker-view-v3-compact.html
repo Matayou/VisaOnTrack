@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Detail V3 - Compact Dashboard | SawadeePass</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: 'hsl(239, 84%, 67%)',
+              hover: 'hsl(239, 84%, 60%)',
+            },
+            border: {
+              light: 'hsl(210, 40%, 90%)',
+              DEFAULT: 'hsl(210, 40%, 80%)',
+            },
+            bg: {
+              primary: 'hsl(0, 0%, 100%)',
+              secondary: 'hsl(210, 40%, 98%)',
+            },
+            text: {
+              primary: 'hsl(222, 47%, 11%)',
+              secondary: 'hsl(215, 16%, 47%)',
+              tertiary: 'hsl(215, 16%, 65%)',
+            }
+          },
+          borderRadius: {
+            base: '8px',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .tab-active {
+      border-bottom: 2px solid hsl(239, 84%, 67%);
+      color: hsl(239, 84%, 67%);
+    }
+    .tab-inactive {
+      color: hsl(215, 16%, 47%);
+      border-bottom: 2px solid transparent;
+    }
+  </style>
+  <script>
+    function switchTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('[data-tab-content]').forEach(el => el.classList.add('hidden'));
+      // Show selected tab content
+      document.querySelector(`[data-tab-content="${tabName}"]`).classList.remove('hidden');
+
+      // Update tab button styles
+      document.querySelectorAll('[data-tab-button]').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('tab-inactive');
+      });
+      document.querySelector(`[data-tab-button="${tabName}"]`).classList.add('tab-active');
+      document.querySelector(`[data-tab-button="${tabName}"]`).classList.remove('tab-inactive');
+    }
+  </script>
+</head>
+<body class="bg-bg-secondary min-h-screen">
+
+  <!-- Compact Header -->
+  <header class="bg-white border-b border-border-light sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14">
+        <div class="flex items-center gap-4">
+          <div class="w-7 h-7 bg-primary rounded-lg"></div>
+          <span class="font-bold text-text-primary">SawadeePass</span>
+          <span class="text-text-tertiary text-sm">/</span>
+          <span class="text-sm text-text-secondary">Request #REQ-2847</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="px-3 py-1.5 text-sm text-text-secondary hover:text-text-primary flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit
+          </button>
+          <button class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded transition-colors">
+            Publish
+          </button>
+          <button class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+
+    <!-- Status Bar -->
+    <div class="bg-amber-50 border-l-4 border-amber-500 rounded p-3 mb-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span class="text-sm font-semibold text-amber-900">Draft Mode</span>
+        <span class="text-sm text-amber-700">• Not visible to providers</span>
+      </div>
+      <button class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded transition-colors">
+        Publish Now
+      </button>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid lg:grid-cols-4 gap-4">
+
+      <!-- Left Column - Stats & Info -->
+      <div class="space-y-4">
+
+        <!-- Stats Cards -->
+        <div class="bg-white rounded-lg border border-border-light p-4">
+          <div class="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-semibold">Engagement</div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-sm text-text-secondary">Views</span>
+              </div>
+              <span class="text-lg font-bold text-text-primary">12</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="text-sm text-text-secondary">Proposals</span>
+              </div>
+              <span class="text-lg font-bold text-emerald-600">3</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <span class="text-sm text-text-secondary">Messages</span>
+              </div>
+              <span class="text-lg font-bold text-purple-600">5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Request Info -->
+        <div class="bg-white rounded-lg border border-border-light p-4">
+          <div class="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-semibold">Details</div>
+          <div class="space-y-3">
+            <div>
+              <div class="text-xs text-text-tertiary mb-1">Visa Type</div>
+              <div class="text-sm font-semibold text-text-primary">Digital Nomad (DTV)</div>
+            </div>
+            <div>
+              <div class="text-xs text-text-tertiary mb-1">Location</div>
+              <div class="text-sm font-semibold text-text-primary">Bangkok</div>
+            </div>
+            <div>
+              <div class="text-xs text-text-tertiary mb-1">Budget</div>
+              <div class="text-sm font-semibold text-text-primary">฿25K - ฿40K</div>
+            </div>
+            <div>
+              <div class="text-xs text-text-tertiary mb-1">Created</div>
+              <div class="text-sm font-semibold text-text-primary">Dec 15, 2024</div>
+            </div>
+            <div>
+              <div class="text-xs text-text-tertiary mb-1">Status</div>
+              <span class="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-amber-100 text-amber-800">Draft</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="bg-white rounded-lg border border-border-light p-4">
+          <div class="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-semibold">Recent Activity</div>
+          <div class="space-y-2 text-xs">
+            <div class="flex gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0"></div>
+              <div>
+                <div class="text-text-primary font-medium">New proposal</div>
+                <div class="text-text-tertiary">2h ago</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
+              <div>
+                <div class="text-text-primary font-medium">Message received</div>
+                <div class="text-text-tertiary">4h ago</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0"></div>
+              <div>
+                <div class="text-text-primary font-medium">New proposal</div>
+                <div class="text-text-tertiary">5h ago</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></div>
+              <div>
+                <div class="text-text-primary font-medium">7 views</div>
+                <div class="text-text-tertiary">Yesterday</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Main Content Area (3 columns) -->
+      <div class="lg:col-span-3 space-y-4">
+
+        <!-- Request Header -->
+        <div class="bg-white rounded-lg border border-border-light p-6">
+          <h1 class="text-2xl font-bold text-text-primary mb-2">
+            Need help obtaining a Digital Nomad Visa (DTV) for Thailand
+          </h1>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            Looking for experienced assistance with the DTV application process. I'm a software developer currently outside Thailand and planning to relocate within the next 3 months.
+          </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="bg-white rounded-lg border border-border-light">
+          <div class="border-b border-border-light px-4">
+            <div class="flex gap-6">
+              <button
+                data-tab-button="overview"
+                onclick="switchTab('overview')"
+                class="px-2 py-3 text-sm font-semibold tab-active transition-colors"
+              >
+                Overview
+              </button>
+              <button
+                data-tab-button="proposals"
+                onclick="switchTab('proposals')"
+                class="px-2 py-3 text-sm font-semibold tab-inactive hover:text-text-primary transition-colors relative"
+              >
+                Proposals
+                <span class="absolute -top-1 -right-3 w-5 h-5 bg-emerald-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+              </button>
+              <button
+                data-tab-button="messages"
+                onclick="switchTab('messages')"
+                class="px-2 py-3 text-sm font-semibold tab-inactive hover:text-text-primary transition-colors relative"
+              >
+                Messages
+                <span class="absolute -top-1 -right-3 w-5 h-5 bg-purple-500 text-white text-xs rounded-full flex items-center justify-center">5</span>
+              </button>
+              <button
+                data-tab-button="activity"
+                onclick="switchTab('activity')"
+                class="px-2 py-3 text-sm font-semibold tab-inactive hover:text-text-primary transition-colors"
+              >
+                Activity
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Content: Overview -->
+          <div data-tab-content="overview" class="p-6">
+            <h2 class="text-lg font-bold text-text-primary mb-4">Full Request Details</h2>
+            <div class="prose prose-sm max-w-none text-text-secondary space-y-3 text-sm leading-relaxed">
+              <p>
+                I'm a UK citizen currently working as a software developer for a US-based company. I've been working remotely for the past 3 years and would like to relocate to Thailand under the new Digital Nomad Visa program.
+              </p>
+              <p>
+                <strong class="text-text-primary">What I need help with:</strong><br>
+                • Understanding the complete DTV application requirements<br>
+                • Document preparation and notarization<br>
+                • Embassy appointment scheduling<br>
+                • Translation services (if needed)<br>
+                • Timeline estimation and process guidance
+              </p>
+              <p>
+                <strong class="text-text-primary">My situation:</strong><br>
+                • Currently outside Thailand (UK)<br>
+                • Annual income: $85,000 USD<br>
+                • Employment letter available<br>
+                • Looking to move within 3 months<br>
+                • First time applying for Thai visa
+              </p>
+            </div>
+          </div>
+
+          <!-- Tab Content: Proposals -->
+          <div data-tab-content="proposals" class="p-6 hidden">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-text-primary">Proposals Received</h2>
+              <select class="px-3 py-1.5 text-sm border border-border-light rounded">
+                <option>Sort by: Most Recent</option>
+                <option>Sort by: Price (Low to High)</option>
+                <option>Sort by: Price (High to Low)</option>
+                <option>Sort by: Rating</option>
+              </select>
+            </div>
+
+            <div class="space-y-3">
+              <!-- Compact Proposal Cards -->
+              <div class="border border-border-light rounded-lg p-4 hover:border-primary/40 transition-colors">
+                <div class="flex items-start gap-4">
+                  <img src="https://ui-avatars.com/api/?name=Visa+Expert&background=6366f1&color=fff&size=48" alt="Provider" class="w-12 h-12 rounded-full flex-shrink-0">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 mb-2">
+                      <div>
+                        <h3 class="font-bold text-text-primary">Bangkok Visa Specialists</h3>
+                        <div class="flex items-center gap-2 text-sm mt-1">
+                          <span class="text-amber-500 font-semibold">★ 4.9</span>
+                          <span class="text-text-tertiary text-xs">(127)</span>
+                          <span class="inline-flex items-center px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded">Verified</span>
+                        </div>
+                      </div>
+                      <div class="text-right flex-shrink-0">
+                        <div class="text-xl font-bold text-text-primary">฿32,000</div>
+                        <div class="text-xs text-text-tertiary">All-inclusive</div>
+                      </div>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-3">98% success rate. Full service including documents, translation, embassy. 4-6 weeks.</p>
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs text-text-tertiary">Sent 2 hours ago</span>
+                      <div class="flex gap-2">
+                        <button class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded transition-colors">View</button>
+                        <button class="px-4 py-1.5 border border-border-light hover:border-border text-text-secondary text-sm font-medium rounded transition-colors">Message</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border border-border-light rounded-lg p-4 hover:border-primary/40 transition-colors">
+                <div class="flex items-start gap-4">
+                  <img src="https://ui-avatars.com/api/?name=Thai+Visa&background=8b5cf6&color=fff&size=48" alt="Provider" class="w-12 h-12 rounded-full flex-shrink-0">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 mb-2">
+                      <div>
+                        <h3 class="font-bold text-text-primary">Thai Visa Solutions</h3>
+                        <div class="flex items-center gap-2 text-sm mt-1">
+                          <span class="text-amber-500 font-semibold">★ 4.8</span>
+                          <span class="text-text-tertiary text-xs">(89)</span>
+                          <span class="inline-flex items-center px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded">Verified</span>
+                        </div>
+                      </div>
+                      <div class="text-right flex-shrink-0">
+                        <div class="text-xl font-bold text-text-primary">฿28,500</div>
+                        <div class="text-xs text-text-tertiary">Base package</div>
+                      </div>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-3">UK passport specialist. Fast track available. 3-4 weeks completion.</p>
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs text-text-tertiary">Sent 5 hours ago</span>
+                      <div class="flex gap-2">
+                        <button class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded transition-colors">View</button>
+                        <button class="px-4 py-1.5 border border-border-light hover:border-border text-text-secondary text-sm font-medium rounded transition-colors">Message</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border border-border-light rounded-lg p-4 hover:border-primary/40 transition-colors">
+                <div class="flex items-start gap-4">
+                  <img src="https://ui-avatars.com/api/?name=Digital+Nomad&background=ec4899&color=fff&size=48" alt="Provider" class="w-12 h-12 rounded-full flex-shrink-0">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 mb-2">
+                      <div>
+                        <h3 class="font-bold text-text-primary">Nomad Visa Consultants</h3>
+                        <div class="flex items-center gap-2 text-sm mt-1">
+                          <span class="text-amber-500 font-semibold">★ 5.0</span>
+                          <span class="text-text-tertiary text-xs">(43)</span>
+                          <span class="inline-flex items-center px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded">Verified</span>
+                        </div>
+                      </div>
+                      <div class="text-right flex-shrink-0">
+                        <div class="text-xl font-bold text-text-primary">฿38,000</div>
+                        <div class="text-xs text-text-tertiary">Premium</div>
+                      </div>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-3">White-glove service. Dedicated case manager. 2-3 weeks.</p>
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs text-text-tertiary">Sent 1 day ago</span>
+                      <div class="flex gap-2">
+                        <button class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded transition-colors">View</button>
+                        <button class="px-4 py-1.5 border border-border-light hover:border-border text-text-secondary text-sm font-medium rounded transition-colors">Message</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: Messages -->
+          <div data-tab-content="messages" class="p-6 hidden">
+            <h2 class="text-lg font-bold text-text-primary mb-4">Recent Messages</h2>
+            <div class="space-y-3">
+              <div class="border border-border-light rounded-lg p-4">
+                <div class="flex items-start gap-3">
+                  <img src="https://ui-avatars.com/api/?name=Thai+Visa&background=8b5cf6&color=fff&size=40" alt="Sender" class="w-10 h-10 rounded-full">
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="font-semibold text-text-primary text-sm">Thai Visa Solutions</span>
+                      <span class="text-xs text-text-tertiary">4 hours ago</span>
+                    </div>
+                    <p class="text-sm text-text-secondary">Hi! I noticed you're a UK citizen. We have extensive experience with UK passport holders and can fast-track your DTV application. Would you like to discuss your timeline?</p>
+                    <button class="mt-2 text-sm text-primary hover:text-primary-hover font-semibold">Reply</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border border-border-light rounded-lg p-4">
+                <div class="flex items-start gap-3">
+                  <img src="https://ui-avatars.com/api/?name=Visa+Expert&background=6366f1&color=fff&size=40" alt="Sender" class="w-10 h-10 rounded-full">
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="font-semibold text-text-primary text-sm">Bangkok Visa Specialists</span>
+                      <span class="text-xs text-text-tertiary">5 hours ago</span>
+                    </div>
+                    <p class="text-sm text-text-secondary">Thank you for your request! We've submitted a comprehensive proposal. Our team has helped 50+ digital nomads this year with 100% approval rate. Let me know if you have questions!</p>
+                    <button class="mt-2 text-sm text-primary hover:text-primary-hover font-semibold">Reply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: Activity -->
+          <div data-tab-content="activity" class="p-6 hidden">
+            <h2 class="text-lg font-bold text-text-primary mb-4">Complete Activity Log</h2>
+            <div class="space-y-4">
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="w-0.5 h-full bg-border-light mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <div class="text-sm font-semibold text-text-primary">New proposal received</div>
+                  <div class="text-sm text-text-secondary">Bangkok Visa Specialists submitted a proposal</div>
+                  <div class="text-xs text-text-tertiary mt-1">2 hours ago</div>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                  <div class="w-0.5 h-full bg-border-light mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <div class="text-sm font-semibold text-text-primary">Message received</div>
+                  <div class="text-sm text-text-secondary">Thai Visa Solutions sent you a message</div>
+                  <div class="text-xs text-text-tertiary mt-1">4 hours ago</div>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="w-0.5 h-full bg-border-light mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <div class="text-sm font-semibold text-text-primary">New proposal received</div>
+                  <div class="text-sm text-text-secondary">Thai Visa Solutions submitted a proposal</div>
+                  <div class="text-xs text-text-tertiary mt-1">5 hours ago</div>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div class="w-0.5 h-full bg-border-light mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <div class="text-sm font-semibold text-text-primary">Provider views</div>
+                  <div class="text-sm text-text-secondary">7 providers viewed your request</div>
+                  <div class="text-xs text-text-tertiary mt-1">Yesterday</div>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-semibold text-text-primary">Request created</div>
+                  <div class="text-sm text-text-secondary">You created this request</div>
+                  <div class="text-xs text-text-tertiary mt-1">Dec 15, 2024</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Compact Footer -->
+  <footer class="bg-white border-t border-border-light mt-8 py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-text-tertiary">
+      © 2024 SawadeePass. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

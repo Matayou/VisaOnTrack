@@ -21,15 +21,24 @@ import { CreateRequestDto } from './dto/create-request.dto';
 import { RequestResponseDto } from './dto/request-response.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { UserRole } from '@prisma/client';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('requests')
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 
   @Get()
-  async listRequests(@Query() query: ListRequestsQueryDto): Promise<RequestListResponseDto> {
-    return this.requestsService.listRequests(query);
+  async listRequests(
+    @Query() query: ListRequestsQueryDto,
+    @Req() req: ExpressRequest,
+  ): Promise<RequestListResponseDto> {
+    const auth = (req as any).user;
+    const userId = auth?.userId;
+    const role = auth?.role as UserRole | undefined;
+
+    return this.requestsService.listRequests(query, userId, role);
   }
 
   @Post()
@@ -82,5 +91,14 @@ export class RequestsController {
 
     return this.requestsService.updateRequest(id, userId, role, dto, ip, ua);
   }
-}
 
+  @Post(':id/unlock')
+  @Roles(UserRole.PROVIDER)
+  async unlockRequest(
+    @Param('id') id: string,
+    @Req() req: ExpressRequest,
+  ) {
+    const userId = (req as any).user?.userId;
+    return this.requestsService.unlockRequest(id, userId);
+  }
+}

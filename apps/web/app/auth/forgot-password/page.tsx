@@ -4,74 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Lock, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { api } from '@visaontrack/client';
-import { isApiError } from '@/lib/api-error';
-import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
-
-// Email typo detection
-const commonTypos: Record<string, string> = {
-  'gmial.com': 'gmail.com',
-  'gmai.com': 'gmail.com',
-  'gmil.com': 'gmail.com',
-  'yahooo.com': 'yahoo.com',
-  'yaho.com': 'yahoo.com',
-  'hotmial.com': 'hotmail.com',
-};
-
-type ValidationState = 'empty' | 'success' | 'error';
-
-interface ValidationResult {
-  status: ValidationState;
-  message: string;
-  suggestion?: string;
-}
-
-function validateEmail(email: string): ValidationResult {
-  if (!email) {
-    return { status: 'empty', message: '' };
-  }
-
-  if (!email.includes('@')) {
-    return {
-      status: 'error',
-      message: 'Email is missing @ symbol',
-    };
-  }
-
-  const parts = email.split('@');
-  if (parts.length !== 2 || !parts[0] || !parts[1]) {
-    return {
-      status: 'error',
-      message: 'Email format looks incorrect',
-    };
-  }
-
-  const domain = parts[1].toLowerCase();
-
-  // Check for common typos
-  for (const [typo, correct] of Object.entries(commonTypos)) {
-    if (domain === typo) {
-      return {
-        status: 'error',
-        message: `Did you mean ${parts[0]}@${correct}?`,
-        suggestion: `${parts[0]}@${correct}`,
-      };
-    }
-  }
-
-  // Check for basic domain format
-  if (!domain.includes('.')) {
-    return {
-      status: 'error',
-      message: 'Domain needs a dot (like .com)',
-    };
-  }
-
-  // Valid!
-  return {
-    status: 'success',
-    message: 'Looks good!',
-  };
-}
+import { Button, GradientText } from '@/components/ui';
+import { AuthPageShell } from '@/components/AuthPageShell';
+import { validateEmail, type ValidationResult } from '@/lib/validation';
+import { isRateLimitError, getRateLimitMessage } from '@/lib/error-handling';
 
 type ForgotPasswordParams = {
   requestBody: {
@@ -126,8 +62,8 @@ export default function ForgotPasswordPage() {
     } catch (error: unknown) {
       // Even on error, show success message (no user enumeration)
       // Only show error for network issues or rate limiting
-      if (isApiError(error) && error.status === 429) {
-        setError('Too many requests. Please try again in a few minutes.');
+      if (isRateLimitError(error)) {
+        setError(getRateLimitMessage(error));
       } else {
         // Still show success to prevent user enumeration
         setIsSuccess(true);
@@ -138,12 +74,11 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6 sm:p-8">
-      <PageBackground />
-      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 overflow-hidden">
+    <AuthPageShell>
+      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 transition-all duration-300 overflow-hidden p-6 sm:p-8">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
         {/* Header */}
-        <div className="p-8 sm:p-10 pb-6 text-center">
+        <div className="pb-6 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-6 shadow-md shadow-primary/20">
             <Lock className="w-7 h-7 text-white" aria-hidden="true" />
           </div>
@@ -154,7 +89,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Form */}
-        <div className="px-8 sm:px-10 pb-8 sm:pb-10">
+        <div className="px-2 sm:px-4 md:px-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Success Message - Always shown after submission (no user enumeration) */}
             {isSuccess && (
@@ -191,12 +126,12 @@ export default function ForgotPasswordPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
+                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
                     emailValidation.status === 'success'
                       ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                       : emailValidation.status === 'error'
                       ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
                   }`}
                   placeholder="you@example.com"
                   required
@@ -254,7 +189,7 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       </div>
-    </div>
+    </AuthPageShell>
   );
 }
 

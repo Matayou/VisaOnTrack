@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Compass,
@@ -17,7 +17,8 @@ import {
   FileText,
   BarChart3,
 } from 'lucide-react';
-import { PageBackground, GradientText, Button } from '@/components/ui';
+import { PageBackground, GradientText, Button, Footer } from '@/components/ui';
+import { Header } from '@/components/Header';
 
 const steps = [
   {
@@ -98,33 +99,20 @@ const faqs = [
 
 export default function HowItWorksPage() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
       <PageBackground />
-      
-      {/* Header - Reuse from landing page style */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-border-light shadow-md shadow-black/5">
-        <nav className="max-w-7xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between">
-          <Link 
-            href="/" 
-            className="flex items-center gap-3 text-lg font-bold text-text-primary hover:scale-105 transition-transform duration-150"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
-              <Compass className="w-5 h-5 text-white" />
-            </div>
-            <span>VisaOnTrack</span>
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/get-started"
-              className="px-5 py-2 min-h-[44px] text-sm font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:shadow-md hover:shadow-primary/15 transition-all duration-200 flex items-center gap-2"
-            >
-              Get Started
-            </Link>
-          </div>
-        </nav>
-      </header>
+
+      <Header variant="landing" scrolled={scrolled} />
 
       <main className="relative z-10">
         {/* Hero Section */}
@@ -147,7 +135,7 @@ export default function HowItWorksPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Link
                 href="/get-started"
-                className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-lg font-bold text-white bg-gradient-to-br from-primary via-primary to-primary-hover rounded-xl hover:shadow-2xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-offset-2 min-h-[60px] w-full sm:w-auto"
+                className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-lg font-bold text-white bg-gradient-to-br from-primary via-primary to-primary-hover rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-offset-2 min-h-[60px] w-full sm:w-auto"
               >
                 <span>Start Your Visa Request</span>
                 <ArrowRight className="w-5 h-5" />
@@ -182,13 +170,13 @@ export default function HowItWorksPage() {
                 return (
                   <div key={step.number} className="group">
                     {/* Step Card - Consistent with landing page feature cards */}
-                    <div className="h-full relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 overflow-hidden">
+                    <div className="h-full relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 overflow-hidden">
                       {/* Decorative corner accent */}
                       <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
                       
                       <div className="relative">
                         {/* Icon Container */}
-                        <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
+                        <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6">
                           <Icon className="w-7 h-7 text-primary" />
                         </div>
                         
@@ -233,14 +221,14 @@ export default function HowItWorksPage() {
               return (
                 <div
                   key={benefit.title}
-                  className="group relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 overflow-hidden"
+                  className="group relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 overflow-hidden"
                 >
                   {/* Decorative corner accent */}
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
                   
                   <div className="relative">
                     {/* Icon Container */}
-                    <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
+                    <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6">
                       <Icon className="w-7 h-7 text-primary" />
                     </div>
                     
@@ -317,7 +305,7 @@ export default function HowItWorksPage() {
             </p>
             <Link
               href="/get-started"
-              className="group inline-flex items-center gap-3 px-12 py-6 text-xl font-bold text-primary bg-white rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[64px]"
+              className="group inline-flex items-center gap-3 px-12 py-6 text-xl font-bold text-primary bg-white rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[64px]"
             >
               <span>Start Your Request Now</span>
               <ArrowRight className="w-6 h-6" />
@@ -327,30 +315,7 @@ export default function HowItWorksPage() {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-6 sm:px-8 py-12 border-t border-border-light">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-lg font-bold text-text-primary">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
-              <Compass className="w-5 h-5 text-white" />
-            </div>
-            <span>VisaOnTrack</span>
-          </div>
-          <div className="flex items-center gap-6 text-sm text-text-secondary">
-            <Link href="/how-it-works" className="hover:text-text-primary transition-colors">
-              How It Works
-            </Link>
-            <Link href="/help" className="hover:text-text-primary transition-colors">
-              Help Center
-            </Link>
-            <Link href="/terms" className="hover:text-text-primary transition-colors">
-              Terms
-            </Link>
-            <Link href="/privacy" className="hover:text-text-primary transition-colors">
-              Privacy
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

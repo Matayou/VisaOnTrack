@@ -13,6 +13,9 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
+import { LOADING_SAVING } from '@/lib/loading-messages';
+import { Footer } from '@/components/ui';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
 
 interface FileUpload {
   id: string;
@@ -185,11 +188,7 @@ export default function CredentialsPage() {
 
       router.push('/onboarding/provider/credentials/complete');
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message || 'An error occurred. Please try again.');
-      } else {
-        setError('An error occurred. Please try again.');
-      }
+      setError(getErrorDisplayMessage(error, 'submit credentials'));
       setIsLoading(false);
     }
   };
@@ -247,7 +246,7 @@ export default function CredentialsPage() {
               aria-label="Upload professional license. Click or press Enter to select file. Drag and drop also supported."
               className={`border-2 border-dashed rounded-base p-8 text-center cursor-pointer transition-all duration-150 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isDragging
-                  ? 'border-primary bg-primary/8 border-solid scale-[1.02]'
+                  ? 'border-primary bg-primary/8 border-solid'
                   : 'border-border-light hover:border-primary hover:bg-primary/2'
               }`}
               onDragOver={handleDragOver}
@@ -351,7 +350,7 @@ export default function CredentialsPage() {
               aria-label="Upload additional certifications. Click or press Enter to select files. Drag and drop also supported."
               className={`border-2 border-dashed rounded-base p-8 text-center cursor-pointer transition-all duration-150 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isDragging
-                  ? 'border-primary bg-primary/8 border-solid scale-[1.02]'
+                  ? 'border-primary bg-primary/8 border-solid'
                   : 'border-border-light hover:border-primary hover:bg-primary/2'
               }`}
               onDragOver={handleDragOver}
@@ -469,13 +468,13 @@ export default function CredentialsPage() {
               className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-200 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isLoading || licenseFiles.length === 0 || licenseFiles.some((f) => f.status !== 'complete')
                   ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
+                  : 'bg-gradient-to-b from-primary to-primary-hover'
               }`}
             >
               {isLoading ? (
                 <>
                   <Loader className="w-4.5 h-4.5 animate-spin" aria-hidden="true" />
-                  <span>Submitting...</span>
+                  <span>{LOADING_SAVING}</span>
                 </>
               ) : (
                 <>
@@ -511,6 +510,7 @@ export default function CredentialsPage() {
           }
         }
       `}</style>
+      <Footer />
     </div>
   );
 }

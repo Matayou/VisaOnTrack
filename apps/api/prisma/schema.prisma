@@ -1,6 +1,6 @@
-// VisaOnTrack v2 - Prisma Schema
+// SawadeePass v2 - Prisma Schema
 // Schema-first design per Section 3 data model
-// Generated: M0 Task 3
+// Generated: Pivot (Remove Escrow, Add Credits)
 
 generator client {
   provider = "prisma-client-js"
@@ -26,23 +26,16 @@ enum RequestStatus {
   HIRED
 }
 
-enum QuoteStatus {
+enum ProposalStatus {
+  DRAFT
   PENDING
   ACCEPTED
   DECLINED
   EXPIRED
 }
 
-enum EscrowStatus {
-  REQUIRES_PAYMENT
-  HELD
-  RELEASED
-  REFUNDED
-}
-
-enum OrderStatus {
+enum CaseStatus {
   ACTIVE
-  DELIVERED
   COMPLETED
   DISPUTED
   CANCELLED
@@ -53,11 +46,22 @@ enum MilestoneStatus {
   DONE
 }
 
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum ProviderBusinessType {
+  AGENT
+  SCHOOL
+  LAW
+}
+
 enum PlanCode {
   FREE
   PRO
-  PRO_PLUS
-  ENTERPRISE
+  AGENCY
 }
 
 enum SubscriptionStatus {
@@ -79,20 +83,14 @@ enum VerificationCaseStatus {
 enum DisputeCaseStatus {
   OPEN
   RESOLVED
-  REFUNDED
   ESCALATED
 }
 
-enum PayoutStatus {
-  PENDING
-  PAID
-  FAILED
-}
-
-enum RefundStatus {
-  PENDING
-  SUCCEEDED
-  FAILED
+enum CreditTransactionType {
+  PURCHASE
+  SPEND
+  REFUND
+  GRANT
 }
 
 enum AdminRole {
@@ -100,11 +98,6 @@ enum AdminRole {
   MODERATOR
   FINANCE
   SUPPORT
-}
-
-enum FeeScheduleType {
-  PLATFORM_FEE
-  PAYOUT_FEE
 }
 
 enum BannerType {
@@ -119,7 +112,7 @@ enum ReportStatus {
   DISMISSED
 }
 
-// ==================== CORE MODELS (11 models) ====================
+// ==================== CORE MODELS ====================
 
 model User {
   id                      String    @id @default(uuid())
@@ -128,21 +121,20 @@ model User {
   name                    String?   @db.VarChar(200)
   phone                   String?   @db.VarChar(50)
   locale                  String    @default("en") @db.VarChar(10)
-  passwordHash            String?   // Hashed password (bcrypt) - M1-BE-7: Login/Register
-  passwordResetTokenHash  String?   // Hashed reset token (bcrypt) - RFC-002: Security requirement - never store plaintext
-  passwordResetTokenHashSha256 String? // SHA-256 hash of reset token for O(1) lookup - Performance optimization
-  passwordResetTokenExpiry DateTime? // Token expiry time (RFC-002)
-  emailVerified          Boolean   @default(false) // RFC-003: Email verification status
-  emailVerificationToken String?   // Hashed verification token (bcrypt) - RFC-003: Security requirement - never store plaintext
-  emailVerificationTokenExpiry DateTime? // Verification token expiry time (RFC-003)
-  onboardingCompleted    Boolean   @default(false) // RFC-004: Onboarding completion tracking
-  onboardingCompletedAt   DateTime? // RFC-004: Onboarding completion timestamp
-  seekerOnboardingCompleted Boolean @default(false) // RFC-004: Seeker onboarding completion
-  providerOnboardingCompleted Boolean @default(false) // RFC-004: Provider onboarding completion
-  // Provider onboarding step tracking
-  providerBusinessStepCompleted Boolean @default(false) // Step 1: Business details completed
-  providerServicesStepCompleted Boolean @default(false) // Step 2: Services & pricing completed
-  providerCredentialsStepCompleted Boolean @default(false) // Step 3: Credentials upload completed
+  passwordHash            String?   // Hashed password (bcrypt)
+  passwordResetTokenHash  String?   // Hashed reset token (bcrypt)
+  passwordResetTokenHashSha256 String? // SHA-256 hash
+  passwordResetTokenExpiry DateTime?
+  emailVerified          Boolean   @default(false)
+  emailVerificationToken String?
+  emailVerificationTokenExpiry DateTime?
+  onboardingCompleted    Boolean   @default(false)
+  onboardingCompletedAt   DateTime?
+  seekerOnboardingCompleted Boolean @default(false)
+  providerOnboardingCompleted Boolean @default(false)
+  providerBusinessStepCompleted Boolean @default(false)
+  providerServicesStepCompleted Boolean @default(false)
+  providerCredentialsStepCompleted Boolean @default(false)
   createdAt               DateTime  @default(now())
 
   // Relations
@@ -163,24 +155,30 @@ model ProviderProfile {
   id           String    @id @default(uuid())
   userId       String    @unique
   businessName String    @db.VarChar(200)
+  businessType ProviderBusinessType?
   description  String?   @db.Text
   location     String?   @db.VarChar(200)
-  languages    Json      @default("[]") // Array of strings
+  languages    Json      @default("[]")
+  website      String?   @db.VarChar(500)
+  contactPhone String?   @db.VarChar(50)
+  yearsExperience Int?
   verifiedAt   DateTime?
+  credits      Int       @default(0) // Credit ledger
   createdAt    DateTime  @default(now())
 
   // Relations
   user             User               @relation(fields: [userId], references: [id], onDelete: Restrict)
   servicePackages  ServicePackage[]
-  quotes           Quote[]
+  proposals        Proposal[]
   billingCustomer  BillingCustomer?
-  entitlements     Entitlement[]
-  usageCounters    UsageCounter[]
+  subscriptions    Subscription[]
+  creditTransactions CreditTransaction[]
   verificationCase VerificationCase[]
-  payouts          Payout[]
+  cases            Case[]
 
   @@index([userId])
   @@index([businessName])
+  @@index([credits])
 }
 
 model ServicePackage {
@@ -189,7 +187,7 @@ model ServicePackage {
   title        String   @db.VarChar(200)
   description  String   @db.VarChar(2000)
   priceTHB     Decimal  @db.Decimal(10, 2)
-  deliverables Json     @default("[]") // Array of strings
+  deliverables Json     @default("[]")
   etaDays      Int
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
@@ -199,7 +197,6 @@ model ServicePackage {
   provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   @@index([providerId])
-  @@index([isActive])
 }
 
 model Request {
@@ -208,21 +205,20 @@ model Request {
   title       String        @db.VarChar(200)
   description String        @db.Text
   visaType    String?       @db.VarChar(100)
-  budgetMin   Decimal?      @db.Decimal(10, 2)
-  budgetMax   Decimal?      @db.Decimal(10, 2)
+  budget      String?       @db.VarChar(100) // e.g. "THB 50k-80k"
   location    String?       @db.VarChar(200)
   status      RequestStatus @default(DRAFT)
+  intakeData  Json?         // Raw intake form data
   createdAt   DateTime      @default(now())
 
   // Relations
   seeker      User         @relation("SeekerRequests", fields: [seekerId], references: [id], onDelete: Restrict)
   messages    Message[]
-  quotes      Quote[]
+  proposals   Proposal[]
   attachments Attachment[]
 
   @@index([seekerId])
   @@index([status])
-  @@index([createdAt])
 }
 
 model Message {
@@ -238,56 +234,51 @@ model Message {
 
   @@index([requestId])
   @@index([senderId])
-  @@index([createdAt])
 }
 
-model Quote {
+model Proposal {
   id         String      @id @default(uuid())
   requestId  String
   providerId String
-  items      Json // Array of QuoteItem objects
   totalTHB   Decimal     @db.Decimal(10, 2)
-  etaDays    Int
+  timeline   String?     @db.VarChar(200)
   terms      String?     @db.Text
-  status     QuoteStatus @default(PENDING)
-  validUntil DateTime?
+  status     ProposalStatus @default(DRAFT)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
   // Relations
   request  Request         @relation(fields: [requestId], references: [id], onDelete: Cascade)
   provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
-  order    Order?
+  case     Case?
 
   @@index([requestId])
   @@index([providerId])
-  @@index([status])
 }
 
-model Order {
-  id           String       @id @default(uuid())
-  quoteId      String       @unique
-  escrowStatus EscrowStatus @default(REQUIRES_PAYMENT)
-  status       OrderStatus  @default(ACTIVE)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+model Case {
+  id            String       @id @default(uuid())
+  proposalId    String       @unique
+  status        CaseStatus   @default(ACTIVE)
+  paymentStatus PaymentStatus @default(UNPAID)
+  providerId    String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   // Relations
-  quote       Quote        @relation(fields: [quoteId], references: [id], onDelete: Restrict)
+  proposal    Proposal        @relation(fields: [proposalId], references: [id], onDelete: Restrict)
+  provider    ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
   milestones  Milestone[]
   reviews     Review[]
-  attachments Attachment[]
   disputeCase DisputeCase?
-  refunds     Refund[]
 
-  @@index([quoteId])
+  @@index([proposalId])
   @@index([status])
-  @@index([escrowStatus])
 }
 
 model Milestone {
   id        String          @id @default(uuid())
-  orderId   String
+  caseId    String
   title     String          @db.VarChar(200)
   dueAt     DateTime
   status    MilestoneStatus @default(PENDING)
@@ -295,48 +286,41 @@ model Milestone {
   updatedAt DateTime        @updatedAt
 
   // Relations
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
 
-  @@index([orderId])
-  @@index([status])
-  @@index([dueAt])
+  @@index([caseId])
 }
 
 model Review {
   id        String   @id @default(uuid())
-  orderId   String
+  caseId    String
   rating    Int // 1-5
-  tags      Json     @default("[]") // Array of strings
   text      String?  @db.Text
   createdAt DateTime @default(now())
 
   // Relations
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
 
-  @@index([orderId])
-  @@index([rating])
-  @@index([createdAt])
+  @@index([caseId])
 }
 
 model Attachment {
   id          String   @id @default(uuid())
   ownerUserId String
   requestId   String?
-  orderId     String?
-  key         String   @db.VarChar(500) // S3/R2 object key
+  caseId      String?
+  key         String   @db.VarChar(500)
   mime        String   @db.VarChar(100)
-  size        Int // Size in bytes
+  size        Int
   createdAt   DateTime @default(now())
 
   // Relations
   owner   User     @relation("AttachmentOwner", fields: [ownerUserId], references: [id], onDelete: Restrict)
   request Request? @relation(fields: [requestId], references: [id], onDelete: SetNull)
-  order   Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
 
   @@index([ownerUserId])
   @@index([requestId])
-  @@index([orderId])
-  @@index([key])
+  @@index([caseId])
 }
 
 model Notification {
@@ -351,11 +335,9 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@index([readAt])
-  @@index([createdAt])
 }
 
-// ==================== BILLING MODELS (5 models) ====================
+// ==================== BILLING & CREDITS ====================
 
 model BillingCustomer {
   id               String   @id @default(uuid())
@@ -365,93 +347,63 @@ model BillingCustomer {
 
   // Relations
   provider      ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
-  subscriptions Subscription[]
   invoices      Invoice[]
 
   @@index([providerId])
-  @@index([stripeCustomerId])
 }
 
 model Subscription {
   id                   String             @id @default(uuid())
-  billingCustomerId    String
+  providerId           String
   stripeSubscriptionId String             @unique @db.VarChar(255)
   planCode             PlanCode
   status               SubscriptionStatus @default(INCOMPLETE)
-  currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
-  cancelAtPeriodEnd    Boolean            @default(false)
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 
   // Relations
-  billingCustomer BillingCustomer @relation(fields: [billingCustomerId], references: [id], onDelete: Cascade)
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
-  @@index([billingCustomerId])
-  @@index([stripeSubscriptionId])
+  @@index([providerId])
   @@index([status])
-  @@index([planCode])
 }
 
-model Entitlement {
-  id         String   @id @default(uuid())
+model CreditTransaction {
+  id         String                @id @default(uuid())
   providerId String
-  key        String   @db.VarChar(100)
-  value      Json
-  updatedAt  DateTime @updatedAt
+  amount     Int // Positive (purchase) or negative (spend)
+  type       CreditTransactionType
+  reason     String?               @db.VarChar(255)
+  createdAt  DateTime              @default(now())
 
   // Relations
   provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
-  @@unique([providerId, key])
   @@index([providerId])
-  @@index([key])
-}
-
-model UsageCounter {
-  id         String   @id @default(uuid())
-  providerId String
-  periodKey  String   @db.VarChar(7) // YYYY-MM format
-  metric     String   @db.VarChar(100)
-  used       Decimal  @default(0) @db.Decimal(10, 2)
-  limit      Decimal  @default(0) @db.Decimal(10, 2)
-  resetAt    DateTime
-  updatedAt  DateTime @updatedAt
-
-  // Relations
-  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
-
-  @@unique([providerId, metric, periodKey])
-  @@index([providerId, metric, periodKey])
-  @@index([providerId])
-  @@index([periodKey])
 }
 
 model Invoice {
   id                String    @id @default(uuid())
   billingCustomerId String
   stripeInvoiceId   String    @unique @db.VarChar(255)
-  total             Decimal   @db.Decimal(10, 2)
-  currency          String    @default("THB") @db.VarChar(3)
-  paidAt            DateTime?
-  hostedInvoiceUrl  String?   @db.VarChar(500)
+  amount            Decimal   @db.Decimal(10, 2)
+  status            String    @db.VarChar(50)
+  url               String?   @db.VarChar(500)
   createdAt         DateTime  @default(now())
 
   // Relations
   billingCustomer BillingCustomer @relation(fields: [billingCustomerId], references: [id], onDelete: Cascade)
 
   @@index([billingCustomerId])
-  @@index([stripeInvoiceId])
-  @@index([paidAt])
 }
 
-// ==================== ADMIN MODELS (12 models) ====================
+// ==================== ADMIN & OPS ====================
 
 model AdminUser {
   id         String    @id @default(uuid())
   email      String    @unique @db.VarChar(255)
   role       AdminRole
-  mfaEnabled Boolean   @default(false)
   createdAt  DateTime  @default(now())
 
   // Relations
@@ -459,14 +411,13 @@ model AdminUser {
   handledDisputeCases       DisputeCase[]      @relation("DisputeCaseHandler")
 
   @@index([email])
-  @@index([role])
 }
 
 model VerificationCase {
   id         String                 @id @default(uuid())
   providerId String
   status     VerificationCaseStatus @default(PENDING)
-  checklist  Json // JSON checklist
+  checklist  Json
   reviewerId String?
   decidedAt  DateTime?
   createdAt  DateTime               @default(now())
@@ -478,62 +429,23 @@ model VerificationCase {
 
   @@index([providerId])
   @@index([status])
-  @@index([reviewerId])
 }
 
 model DisputeCase {
   id         String            @id @default(uuid())
-  orderId    String            @unique
+  caseId     String            @unique
   status     DisputeCaseStatus @default(OPEN)
-  resolution Json? // JSON resolution data
+  resolution Json?
   handlerId  String?
   openedAt   DateTime          @default(now())
   closedAt   DateTime?
 
   // Relations
-  order   Order      @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  case    Case       @relation(fields: [caseId], references: [id], onDelete: Restrict)
   handler AdminUser? @relation("DisputeCaseHandler", fields: [handlerId], references: [id], onDelete: SetNull)
 
-  @@index([orderId])
+  @@index([caseId])
   @@index([status])
-  @@index([handlerId])
-}
-
-model Payout {
-  id             String       @id @default(uuid())
-  providerId     String
-  amountTHB      Decimal      @db.Decimal(10, 2)
-  stripePayoutId String?      @db.VarChar(255)
-  status         PayoutStatus @default(PENDING)
-  scheduledAt    DateTime
-  paidAt         DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  // Relations
-  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
-
-  @@index([providerId])
-  @@index([status])
-  @@index([scheduledAt])
-}
-
-model Refund {
-  id             String       @id @default(uuid())
-  orderId        String
-  amountTHB      Decimal      @db.Decimal(10, 2)
-  reason         String       @db.Text
-  stripeRefundId String?      @db.VarChar(255)
-  status         RefundStatus @default(PENDING)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  // Relations
-  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
-
-  @@index([orderId])
-  @@index([status])
-  @@index([createdAt])
 }
 
 model FeatureFlag {
@@ -541,21 +453,6 @@ model FeatureFlag {
   enabled   Boolean  @default(false)
   audience  Json     @default("{}")
   updatedAt DateTime @updatedAt
-
-  @@index([enabled])
-}
-
-model FeeSchedule {
-  id            String          @id @default(uuid())
-  type          FeeScheduleType
-  valuePct      Decimal?        @db.Decimal(5, 4) // Percentage (e.g., 0.0250 for 2.5%)
-  valueFixedTHB Decimal?        @db.Decimal(10, 2)
-  effectiveFrom DateTime        @default(now())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-
-  @@index([type])
-  @@index([effectiveFrom])
 }
 
 model Banner {
@@ -566,40 +463,23 @@ model Banner {
   activeFrom DateTime
   activeTo   DateTime?
   createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-
-  @@index([type])
-  @@index([activeFrom])
-  @@index([activeTo])
-}
-
-model EmailTemplate {
-  id        String   @id @default(uuid())
-  key       String   @unique @db.VarChar(100)
-  subject   String   @db.VarChar(500)
-  html      String   @db.Text
-  updatedAt DateTime @updatedAt
-
-  @@index([key])
 }
 
 model AuditLog {
   id          String   @id @default(uuid())
   actorUserId String?
-  actorRole   String   @db.VarChar(50) // UserRole or AdminRole
+  actorRole   String   @db.VarChar(50)
   action      String   @db.VarChar(100)
   entityType  String   @db.VarChar(100)
   entityId    String   @db.VarChar(255)
-  diff        Json? // JSON diff data
-  ip          String?  @db.VarChar(45) // IPv6 max length
-  ua          String?  @db.VarChar(500) // User agent
+  diff        Json?
+  ip          String?  @db.VarChar(45)
   createdAt   DateTime @default(now())
 
   // Relations
   actor User? @relation("AuditLogActor", fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([actorUserId])
-  @@index([entityType, entityId])
   @@index([createdAt])
 }
 
@@ -610,14 +490,11 @@ model InternalNote {
   authorId   String
   body       String   @db.Text
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 
   // Relations
   author User @relation(fields: [authorId], references: [id], onDelete: Restrict)
 
   @@index([entityType, entityId])
-  @@index([authorId])
-  @@index([createdAt])
 }
 
 model Report {
@@ -628,13 +505,9 @@ model Report {
   reason         String       @db.Text
   status         ReportStatus @default(OPEN)
   createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
 
   // Relations
   reporter User @relation("ReportReporter", fields: [reporterUserId], references: [id], onDelete: Restrict)
 
   @@index([entityType, entityId])
-  @@index([reporterUserId])
-  @@index([status])
-  @@index([createdAt])
 }

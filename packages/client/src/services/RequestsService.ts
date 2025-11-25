@@ -126,4 +126,29 @@ requestBody: UpdateRequestRequest,
         });
     }
 
+    /**
+     * Unlock request
+     * Unlock a request to view contact details and submit a proposal (PROVIDER only)
+     * @returns any Request unlocked successfully
+     * @throws ApiError
+     */
+    public static unlockRequest({
+id,
+}: {
+id: string,
+}): CancelablePromise<{ success: boolean; proposalId: string; remainingCredits: number }> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/requests/{id}/unlock',
+            path: {
+                'id': id,
+            },
+            errors: {
+                401: `Authentication required or invalid token`,
+                403: `Insufficient credits or permissions`,
+                404: `Request not found`,
+            },
+        });
+    }
+
 }

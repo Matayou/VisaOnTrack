@@ -13,7 +13,7 @@ export const mutedPanelClass = 'rounded-2xl bg-bg-secondary/70 p-5 shadow-sm';
  * New: <Button>Click me</Button>
  */
 export const primaryButtonClass =
-  'inline-flex items-center justify-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-6 py-3 text-sm font-semibold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60';
+  'inline-flex items-center justify-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-6 py-3 text-sm font-semibold text-white shadow-xs transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60';
   
 /**
  * @deprecated Use the Button component with variant="outline" from @/components/ui instead

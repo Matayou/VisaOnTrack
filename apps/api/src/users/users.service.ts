@@ -111,7 +111,6 @@ export class UsersService {
           entityId: userId,
           diff: changes as Prisma.InputJsonValue,
           ip: ip || null,
-          ua: ua || null,
         },
       });
     }

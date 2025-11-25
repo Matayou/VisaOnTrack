@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, Plus, Trash2, Loader } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { ProviderHeader } from '@/components/ProviderHeader';
+import { LOADING_SAVING } from '@/lib/loading-messages';
+import { Footer } from '@/components/ui';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
 
 interface Service {
   id: string;
@@ -85,11 +88,7 @@ export default function ServicesPricingPage() {
 
       router.push('/onboarding/provider/credentials');
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message || 'An error occurred. Please try again.');
-      } else {
-        setError('An error occurred. Please try again.');
-      }
+      setError(getErrorDisplayMessage(error, 'save services'));
       setIsLoading(false);
     }
   };
@@ -147,7 +146,7 @@ export default function ServicesPricingPage() {
                         }
                       }}
                       aria-label={`Remove service ${index + 1}: ${service.name || 'Unnamed service'}`}
-                      className="p-2 text-error bg-transparent border border-error/20 rounded-md cursor-pointer transition-all duration-150 hover:bg-error/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+                      className="p-2 text-error bg-transparent border border-error/20 rounded-md cursor-pointer transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
                     >
                       <Trash2 className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -164,7 +163,7 @@ export default function ServicesPricingPage() {
                       id={`service-name-${service.id}`}
                       value={service.name}
                       onChange={(e) => updateService(service.id, 'name', e.target.value)}
-                      className="w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.005]"
+                      className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
                       placeholder="e.g., Marriage Visa Application"
                       required
                     />
@@ -184,7 +183,7 @@ export default function ServicesPricingPage() {
                           id={`service-price-${service.id}`}
                           value={service.price}
                           onChange={(e) => updateService(service.id, 'price', e.target.value)}
-                          className="w-full h-11 pl-10 pr-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.005]"
+                          className="w-full h-12 pl-10 pr-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
                           placeholder="25,000"
                           required
                         />
@@ -200,7 +199,7 @@ export default function ServicesPricingPage() {
                         id={`service-duration-${service.id}`}
                         value={service.duration}
                         onChange={(e) => updateService(service.id, 'duration', e.target.value)}
-                        className="w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.005]"
+                        className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
                         placeholder="4-6 weeks"
                       />
                     </div>
@@ -214,7 +213,7 @@ export default function ServicesPricingPage() {
                       id={`service-description-${service.id}`}
                       value={service.description}
                       onChange={(e) => updateService(service.id, 'description', e.target.value)}
-                      className="w-full min-h-[4rem] px-4 py-3 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.005] resize-y"
+                      className="w-full min-h-[4rem] px-4 py-3 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] resize-y"
                       placeholder="Describe what's included in this service..."
                     />
                   </div>
@@ -234,7 +233,7 @@ export default function ServicesPricingPage() {
               }
             }}
             aria-label="Add another service"
-            className="w-full h-11 px-6 text-base font-medium text-primary bg-primary/5 border border-dashed border-primary rounded-base cursor-pointer transition-all duration-150 inline-flex items-center justify-center gap-2 hover:bg-primary/10 hover:scale-[1.02] animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="w-full h-11 px-6 text-base font-medium text-primary bg-primary/5 border border-dashed border-primary rounded-base cursor-pointer transition-all duration-150 inline-flex items-center justify-center gap-2 hover:bg-primary/10 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             <Plus className="w-4.5 h-4.5" aria-hidden="true" />
             Add another service
@@ -265,13 +264,13 @@ export default function ServicesPricingPage() {
               className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-200 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isLoading
                   ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
+                  : 'bg-gradient-to-b from-primary to-primary-hover'
               }`}
             >
               {isLoading ? (
                 <>
                   <Loader className="w-4.5 h-4.5 animate-spin" aria-hidden="true" />
-                  <span>Saving...</span>
+                  <span>{LOADING_SAVING}</span>
                 </>
               ) : (
                 <>
@@ -308,6 +307,7 @@ export default function ServicesPricingPage() {
           }
         }
       `}</style>
+      <Footer />
     </div>
   );
 }

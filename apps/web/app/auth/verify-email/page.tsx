@@ -1,15 +1,20 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, CheckCircle, AlertCircle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { api } from '@visaontrack/client';
-import { getApiErrorMessage, isApiError } from '@/lib/api-error';
+import { isApiError } from '@/lib/api-error';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
+import { AuthPageShell } from '@/components/AuthPageShell';
 
 type VerificationState = 'idle' | 'checking' | 'success' | 'error' | 'no-token';
 
-export default function VerifyEmailPage() {
+// Key for localStorage persistence (MUST match GetStartedPage)
+const INTAKE_DATA_KEY = 'vot_intake_data';
+
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [state, setState] = useState<VerificationState>('idle');
@@ -64,9 +69,19 @@ export default function VerifyEmailPage() {
         const newUrl = window.location.pathname;
         window.history.replaceState({}, '', newUrl);
         
-        // Redirect to onboarding after 2 seconds
+        // Determine redirect destination
+        // If user came from intake flow and has data, skip onboarding wizard
+        const hasIntakeData = typeof window !== 'undefined' && !!localStorage.getItem(INTAKE_DATA_KEY);
+        
         setTimeout(() => {
-          router.push('/onboarding/account-type');
+          if (hasIntakeData) {
+            // Redirect to dashboard which will pick up the localStorage data
+            // and auto-create the request. Authentication guard will handle login redirection if needed.
+            router.push('/dashboard');
+          } else {
+            // Normal flow
+            router.push('/onboarding/account-type');
+          }
         }, 2000);
       })
       .catch(async (error: unknown) => {
@@ -85,8 +100,7 @@ export default function VerifyEmailPage() {
         });
 
         // Extract error message from response body
-        const fallbackMessage = 'An error occurred while verifying your email.';
-        const errorMessage = apiError ? getApiErrorMessage(apiError, fallbackMessage) : fallbackMessage;
+        const errorMessage = getErrorDisplayMessage(error, 'verify your email');
         const normalizedMessage = errorMessage.toLowerCase();
         const errorCode = apiError?.body?.code;
 
@@ -99,8 +113,16 @@ export default function VerifyEmailPage() {
               // Email is already verified - treat as success
               setState('success');
               setMessage('Your email is already verified. Redirecting...');
+              
+              // Determine redirect destination
+              const hasIntakeData = typeof window !== 'undefined' && !!localStorage.getItem(INTAKE_DATA_KEY);
+              
               setTimeout(() => {
-                router.push('/onboarding/account-type');
+                 if (hasIntakeData) {
+                  router.push('/dashboard');
+                } else {
+                  router.push('/onboarding/account-type');
+                }
               }, 1500);
               return;
             }
@@ -162,16 +184,19 @@ export default function VerifyEmailPage() {
         message: apiError?.message,
       });
       
-      const errorMessage = apiError
-        ? getApiErrorMessage(apiError, 'Failed to resend verification email.')
-        : 'Failed to resend verification email.';
+      const errorMessage = getErrorDisplayMessage(error, 'resend verification email');
       
       if (apiError?.status === 400) {
         if (errorMessage.toLowerCase().includes('already verified')) {
           setResendError('Your email is already verified. You can proceed to onboarding.');
           // If already verified, redirect after a moment
           setTimeout(() => {
-            router.push('/onboarding/account-type');
+            const hasIntakeData = typeof window !== 'undefined' && !!localStorage.getItem(INTAKE_DATA_KEY);
+            if (hasIntakeData) {
+              router.push('/dashboard');
+            } else {
+              router.push('/onboarding/account-type');
+            }
           }, 2000);
         } else {
           setResendError(errorMessage);
@@ -190,7 +215,7 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+    <AuthPageShell>
       <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-8 pb-6 text-center">
@@ -214,7 +239,7 @@ export default function VerifyEmailPage() {
           </h1>
           <p className="text-sm text-text-secondary">
             {state === 'success'
-              ? 'Redirecting to onboarding...'
+              ? 'Redirecting...'
               : state === 'error'
               ? 'We couldn&rsquo;t verify your email address'
               : state === 'checking'
@@ -306,7 +331,7 @@ export default function VerifyEmailPage() {
                   className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
                     isResending
                       ? 'opacity-60 cursor-not-allowed'
-                      : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
+                      : 'bg-gradient-to-b from-primary to-primary-hover'
                   }`}
                 >
                   {isResending && (
@@ -383,8 +408,18 @@ export default function VerifyEmailPage() {
           }
         }
       `}</style>
-    </div>
+    </AuthPageShell>
   );
 }
 
-
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-bg-secondary">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
+  );
+}

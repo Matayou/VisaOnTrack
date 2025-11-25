@@ -43,8 +43,7 @@ const ALLOWED_MIME_TYPES = [
 const FILE_SIZE_LIMITS: Record<PlanCode, number> = {
   FREE: 2 * 1024 * 1024, // 2MB
   PRO: 25 * 1024 * 1024, // 25MB
-  PRO_PLUS: 100 * 1024 * 1024, // 100MB
-  ENTERPRISE: 250 * 1024 * 1024, // 250MB
+  AGENCY: 100 * 1024 * 1024, // 100MB
 };
 
 /**
@@ -70,8 +69,7 @@ export class AttachmentsService {
    * 
    * @param userId - User ID from JWT token
    * @param file - Uploaded file
-   * @param requestId - Optional request ID
-   * @param orderId - Optional order ID
+   * @param requestId - Request ID (required)
    * @param ip - Request IP for audit logging
    * @param ua - User agent for audit logging
    * @returns Created attachment
@@ -80,14 +78,13 @@ export class AttachmentsService {
     userId: string,
     file: MulterFile,
     requestId?: string,
-    orderId?: string,
     ip?: string,
     ua?: string,
   ): Promise<AttachmentResponseDto> {
-    if (!requestId && !orderId) {
+    if (!requestId) {
       throw new BadRequestException({
         code: 'BAD_REQUEST',
-        message: 'Either requestId or orderId is required for attachment context',
+        message: 'requestId is required for attachment context',
       });
     }
 
@@ -108,13 +105,7 @@ export class AttachmentsService {
     }
 
     // Validate entity existence/ownership before persisting
-    if (requestId) {
-      await this.assertRequestAccess(userId, requestId);
-    }
-
-    if (orderId) {
-      await this.assertOrderAccess(userId, orderId, requestId);
-    }
+    await this.assertRequestAccess(userId, requestId);
 
     // Get user's plan to check file size limit
     const plan = await this.getUserPlan(userId);
@@ -143,7 +134,6 @@ export class AttachmentsService {
       data: {
         ownerUserId: userId,
         requestId: requestId || null,
-        orderId: orderId || null,
         key: fileKey,
         mime: file.mimetype,
         size: file.size,
@@ -157,7 +147,6 @@ export class AttachmentsService {
       id: attachment.id,
       ownerUserId: attachment.ownerUserId,
       requestId: attachment.requestId || undefined,
-      orderId: attachment.orderId || undefined,
       key: attachment.key,
       mime: attachment.mime,
       size: attachment.size,
@@ -172,25 +161,21 @@ export class AttachmentsService {
     const providerProfile = await this.prisma.providerProfile.findUnique({
       where: { userId },
       include: {
-        billingCustomer: {
-          include: {
-            subscriptions: {
-              where: {
-                status: 'ACTIVE',
-              },
-              orderBy: {
-                createdAt: 'desc',
-              },
-              take: 1,
-            },
+        subscriptions: {
+          where: {
+            status: 'ACTIVE',
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
         },
       },
     });
 
     // If provider has active subscription, use that plan
-    if (providerProfile?.billingCustomer?.subscriptions?.[0]?.planCode) {
-      return providerProfile.billingCustomer.subscriptions[0].planCode;
+    if (providerProfile?.subscriptions?.[0]?.planCode) {
+      return providerProfile.subscriptions[0].planCode;
     }
 
     // Default to FREE plan
@@ -237,7 +222,7 @@ export class AttachmentsService {
 
   /**
    * Ensure the request exists and the caller is allowed to attach to it.
-   * Allowed: seeker who owns the request, or provider with a quote on that request.
+   * Allowed: seeker who owns the request, or provider with a proposal on that request.
    */
   private async assertRequestAccess(userId: string, requestId: string): Promise<void> {
     const [request, providerProfile] = await Promise.all([
@@ -246,7 +231,7 @@ export class AttachmentsService {
         select: {
           id: true,
           seekerId: true,
-          quotes: {
+          proposals: {
             select: { providerId: true },
           },
         },
@@ -265,56 +250,13 @@ export class AttachmentsService {
     }
 
     const isSeeker = request.seekerId === userId;
-    const isQuotedProvider =
-      providerProfile && request.quotes.some((quote) => quote.providerId === providerProfile.id);
+    const isProposalProvider =
+      providerProfile && request.proposals.some((proposal) => proposal.providerId === providerProfile.id);
 
-    if (!isSeeker && !isQuotedProvider) {
+    if (!isSeeker && !isProposalProvider) {
       throw new ForbiddenException({
         code: 'FORBIDDEN',
         message: 'You do not have permission to attach files to this request',
-      });
-    }
-  }
-
-  /**
-   * Ensure the order exists and the caller is part of it.
-   * Allowed: seeker who owns the underlying request, or provider who owns the quote.
-   * If a requestId is also provided, ensure it matches the order's request.
-   */
-  private async assertOrderAccess(userId: string, orderId: string, requestId?: string): Promise<void> {
-    const order = await this.prisma.order.findUnique({
-      where: { id: orderId },
-      include: {
-        quote: {
-          select: {
-            provider: { select: { userId: true, id: true } },
-            request: { select: { id: true, seekerId: true } },
-          },
-        },
-      },
-    });
-
-    if (!order || !order.quote) {
-      throw new NotFoundException({
-        code: 'NOT_FOUND',
-        message: 'Order not found',
-      });
-    }
-
-    if (requestId && order.quote.request?.id && order.quote.request.id !== requestId) {
-      throw new BadRequestException({
-        code: 'BAD_REQUEST',
-        message: 'orderId does not belong to the provided requestId',
-      });
-    }
-
-    const seekerId = order.quote.request?.seekerId;
-    const providerUserId = order.quote.provider?.userId;
-
-    if (userId !== seekerId && userId !== providerUserId) {
-      throw new ForbiddenException({
-        code: 'FORBIDDEN',
-        message: 'You do not have permission to attach files to this order',
       });
     }
   }

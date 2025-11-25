@@ -85,3 +85,4 @@ export { QuotesService } from './services/QuotesService';
 export { RequestsService } from './services/RequestsService';
 export { ReviewsService } from './services/ReviewsService';
 export { UsersService } from './services/UsersService';
+export { CreditsService } from './services/CreditsService';

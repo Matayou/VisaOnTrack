@@ -19,13 +19,15 @@ import {
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
 import { isApiError } from '@/lib/api-error';
-import { Spinner, PageBackground, GradientText } from '@/components/ui';
+import { Spinner, PageBackground, GradientText, Footer } from '@/components/ui';
+import { LOADING_GENERIC } from '@/lib/loading-messages';
+import { Header } from '@/components/Header';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
 
 export default function LandingPage() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Check if user is authenticated and redirect accordingly
   useEffect(() => {
@@ -68,8 +70,14 @@ export default function LandingPage() {
           return;
         }
 
-        // For completed onboarding, stay on landing page
-        // (or redirect to dashboard when it exists)
+        // PROVIDER users with completed onboarding go to provider dashboard
+        if (user.role === 'PROVIDER') {
+          console.log('[LandingPage] Provider user with completed onboarding, redirecting to provider dashboard');
+          router.push('/providers/dashboard');
+          return;
+        }
+
+        // For other roles, stay on landing page
         console.log('[LandingPage] User authenticated, showing landing page (role:', user.role, ')');
         setIsCheckingAuth(false);
       } catch (error: unknown) {
@@ -79,7 +87,7 @@ export default function LandingPage() {
           setIsCheckingAuth(false);
         } else {
           // Other errors - show landing page anyway
-          console.error('[LandingPage] Error checking auth:', error);
+          console.error('[LandingPage] Error checking auth:', getErrorDisplayMessage(error, 'check authentication'));
           setIsCheckingAuth(false);
         }
       }
@@ -103,7 +111,7 @@ export default function LandingPage() {
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center">
         <div className="text-center">
           <Spinner size="lg" className="mb-4" />
-          <p className="text-text-secondary">Loading...</p>
+          <p className="text-text-secondary">{LOADING_GENERIC}</p>
         </div>
       </div>
     );
@@ -156,154 +164,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
       <PageBackground />
-      {/* Sticky Header */}
-      <header
-        className={`sticky top-0 z-50 transition-all duration-200 ${
-          scrolled
-            ? 'bg-white/95 backdrop-blur-xl border-b border-border-light shadow-md shadow-black/5'
-            : 'bg-white/90 backdrop-blur-xl border-b border-border-light'
-        }`}
-      >
-        <nav className="max-w-7xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between" aria-label="Site header">
-          <Link 
-            href="/" 
-            className="flex items-center gap-3 text-lg font-bold text-text-primary hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-            aria-label="VisaOnTrack homepage"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center" aria-hidden="true">
-              <Compass className="w-5 h-5 text-white" />
-            </div>
-            <span>VisaOnTrack</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
-            <a
-              href="#features"
-              onClick={(e) => handleAnchorClick(e, '#features')}
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
-              aria-label="View features"
-            >
-              Features
-              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-            </a>
-            <Link
-              href="/how-it-works"
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
-              aria-label="How it works"
-            >
-              How it Works
-              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-            </Link>
-            <a
-              href="#"
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
-              aria-label="View pricing"
-            >
-              Pricing
-              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-            </a>
-            <Link
-              href="/get-started"
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
-              aria-label="Check your visa eligibility"
-            >
-              Eligibility
-              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-            </Link>
-            <Link
-              href="/auth/login"
-              className="px-5 py-2 min-h-[44px] text-sm font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center justify-center"
-              aria-label="Sign in to your account"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/get-started"
-              className="px-5 py-2 min-h-[44px] text-sm font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:shadow-md hover:shadow-primary/15 transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary"
-              aria-label="Check your visa eligibility"
-            >
-              Get Started
-            </Link>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
-            aria-label="Toggle mobile menu"
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" aria-hidden="true" />
-            ) : (
-              <Menu className="w-6 h-6" aria-hidden="true" />
-            )}
-          </button>
-        </nav>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border-light bg-white">
-            <nav className="max-w-7xl mx-auto px-6 py-4 space-y-3" aria-label="Mobile navigation">
-              <a
-                href="#features"
-                onClick={(e) => {
-                  handleAnchorClick(e, '#features');
-                  setIsMobileMenuOpen(false);
-                }}
-                className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
-                aria-label="View features"
-              >
-                Features
-              </a>
-              <Link
-                href="/how-it-works"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
-                aria-label="How it works"
-              >
-                How it Works
-              </Link>
-              <a
-                href="#"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
-                aria-label="View pricing"
-              >
-                Pricing
-              </a>
-              <div className="pt-2 space-y-2 border-t border-border-light">
-                <Link
-                  href="/get-started"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full px-4 py-3 text-base font-semibold text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors text-center"
-                  aria-label="Check your visa eligibility"
-                >
-                  Check Eligibility
-                </Link>
-                <Link
-                  href="/auth/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
-                  aria-label="Sign in to your account"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/get-started"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full px-4 py-3 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg hover:shadow-md hover:shadow-primary/15 transition-all duration-200 text-center"
-                  aria-label="Check your visa eligibility"
-                >
-                  Get Started
-                </Link>
-              </div>
-            </nav>
-          </div>
-        )}
-      </header>
+      <Header variant="landing" scrolled={scrolled} onAnchorClick={handleAnchorClick} />
 
       <main className="relative z-10">
         {/* Hero Section */}
@@ -345,12 +206,12 @@ export default function LandingPage() {
               <div className="pt-2">
                 <Link
                   href="/get-started"
-                  className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-lg font-bold text-white bg-gradient-to-br from-primary via-primary to-primary-hover rounded-xl hover:shadow-2xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-offset-2 min-h-[60px] w-full sm:w-auto"
+                  className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-lg font-bold text-white bg-gradient-to-br from-primary via-primary to-primary-hover rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-offset-2 min-h-[60px] w-full sm:w-auto"
                   aria-label="Start visa eligibility check"
                 >
                   <Compass className="w-6 h-6" aria-hidden="true" />
                   <span>Start Your Visa Journey</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" aria-hidden="true" />
+                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
               </div>
             </div>
@@ -385,10 +246,10 @@ export default function LandingPage() {
               return (
                 <div
                   key={feature.title}
-                  className="group relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 overflow-hidden"
+                  className="group relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
-                  <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200" aria-hidden="true">
+                  <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6" aria-hidden="true">
                     <Icon className="w-7 h-7 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-text-primary">{feature.title}</h3>
@@ -417,73 +278,18 @@ export default function LandingPage() {
             </p>
             <Link
               href="/get-started"
-              className="group inline-flex items-center gap-3 px-12 py-6 text-xl font-bold text-primary bg-white rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[64px]"
+              className="group inline-flex items-center gap-3 px-12 py-6 text-xl font-bold text-primary bg-white rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary min-h-[64px]"
               aria-label="Start your visa journey"
             >
               <Compass className="w-6 h-6" aria-hidden="true" />
               <span>Start Your Visa Journey</span>
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-200" aria-hidden="true" />
+              <ArrowRight className="w-6 h-6" aria-hidden="true" />
             </Link>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-6 sm:px-8 py-16 border-t border-border-light" role="contentinfo">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          {/* Brand */}
-          <div className="md:col-span-2">
-            <Link 
-              href="/" 
-              className="inline-flex items-center gap-3 text-lg font-bold text-text-primary mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-              aria-label="VisaOnTrack homepage"
-            >
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center" aria-hidden="true">
-                <Compass className="w-5 h-5 text-white" />
-              </div>
-              <span>VisaOnTrack</span>
-            </Link>
-            <p className="text-base text-text-secondary max-w-md leading-relaxed">
-              Connect with verified immigration professionals. 100% free platform for visa seekers. Secure payments and milestone-based progress tracking.
-            </p>
-          </div>
-          
-          {/* Links */}
-          <div>
-            <h3 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wide">Product</h3>
-            <nav className="space-y-3" aria-label="Product navigation">
-              <a href="#features" onClick={(e) => handleAnchorClick(e, '#features')} className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
-                Features
-              </a>
-              <Link href="/how-it-works" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
-                How it Works
-              </Link>
-              <a href="#" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
-                Pricing
-              </a>
-            </nav>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wide">Support</h3>
-            <nav className="space-y-3" aria-label="Support navigation">
-              <a href="#" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
-                Help Center
-              </a>
-              <a href="#" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
-                Terms
-              </a>
-              <a href="#" className="block text-base text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
-                Privacy
-              </a>
-            </nav>
-          </div>
-        </div>
-        
-        <div className="pt-8 border-t border-border-light text-center">
-          <p className="text-sm text-text-tertiary">© 2025 VisaOnTrack. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
 
       <style jsx>{`
         @keyframes patternMove {

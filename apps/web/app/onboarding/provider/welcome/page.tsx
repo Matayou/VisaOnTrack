@@ -7,7 +7,7 @@ import { api } from '@visaontrack/client';
 import { logout } from '@/lib/auth';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
 import { isApiError } from '@/lib/api-error';
-import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText, Footer } from '@/components/ui';
 
 export default function ProviderWelcomePage() {
   const router = useRouter();
@@ -104,7 +104,7 @@ export default function ProviderWelcomePage() {
       {/* Logout Button - Top Right */}
       <button
         onClick={() => logout(router)}
-        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 hover:border-border hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 hover:border-border focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="Logout"
       >
         <LogOut className="w-4 h-4" aria-hidden="true" />
@@ -177,7 +177,7 @@ export default function ProviderWelcomePage() {
                 role="button"
                 tabIndex={0}
                 aria-label={`Step ${step.number}: ${step.title}. ${step.description}. Estimated time: ${step.time}`}
-                className="p-6 bg-bg-secondary border border-border-light rounded-md flex gap-5 transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_both] cursor-pointer hover:translate-x-2 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="p-6 bg-bg-secondary border border-border-light rounded-md flex gap-5 transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_both] cursor-pointer hover:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 style={{ animationDelay: `${500 + index * 100}ms` }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -253,6 +253,7 @@ export default function ProviderWelcomePage() {
           transform: translateX(0) !important;
         }
       `}</style>
+      <Footer />
     </div>
   );
 }

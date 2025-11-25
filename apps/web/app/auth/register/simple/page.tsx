@@ -4,79 +4,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Zap, CheckCircle, AlertCircle, ShieldCheck, Clock } from 'lucide-react';
-
-// Email typo detection
-const commonTypos: Record<string, string> = {
-  'gmial.com': 'gmail.com',
-  'gmai.com': 'gmail.com',
-  'yahooo.com': 'yahoo.com',
-  'hotmial.com': 'hotmail.com',
-};
-
-type ValidationState = 'empty' | 'success' | 'error';
-
-interface ValidationResult {
-  status: ValidationState;
-  message: string;
-}
-
-function validateEmail(email: string): ValidationResult {
-  if (!email) return { status: 'empty', message: '' };
-
-  if (!email.includes('@')) {
-    return { status: 'error', message: 'Email is missing @ symbol' };
-  }
-
-  const parts = email.split('@');
-  if (parts.length !== 2 || !parts[0] || !parts[1]) {
-    return { status: 'error', message: 'Email format looks incorrect' };
-  }
-
-  const domain = parts[1].toLowerCase();
-  for (const [typo, correct] of Object.entries(commonTypos)) {
-    if (domain === typo) {
-      return {
-        status: 'error',
-        message: `Did you mean ${parts[0]}@${correct}?`,
-      };
-    }
-  }
-
-  if (!domain.includes('.')) {
-    return { status: 'error', message: 'Domain needs a dot (like .com)' };
-  }
-
-  return { status: 'success', message: 'Looks good!' };
-}
-
-// Password validation - matches OpenAPI requirements
-// Must have: length >= 8, uppercase, lowercase, number, special character
-function validatePassword(password: string): { valid: boolean; error?: string } {
-  if (!password || password.length < 8) {
-    return { valid: false, error: 'Password must be at least 8 characters long' };
-  }
-
-  const missing: string[] = [];
-  
-  if (!/[a-z]/.test(password)) {
-    missing.push('lowercase letter');
-  }
-  if (!/[A-Z]/.test(password)) {
-    missing.push('uppercase letter');
-  }
-  if (!/[0-9]/.test(password)) {
-    missing.push('number');
-  }
-  if (!/[^A-Za-z0-9]/.test(password)) {
-    missing.push('special character');
-  }
-
-  if (missing.length > 0) {
-    return { valid: false, error: `Password must contain: ${missing.join(', ')}` };
-  }
-
-  return { valid: true };
-}
+import { validateEmail, validatePassword, type ValidationResult } from '@/lib/validation';
+import { LOADING_CREATING_ACCOUNT } from '@/lib/loading-messages';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
+import { AuthPageShell } from '@/components/AuthPageShell';
 
 export default function SimpleRegisterPage() {
   const router = useRouter();
@@ -106,8 +37,8 @@ export default function SimpleRegisterPage() {
 
     // Validate password - must meet all OpenAPI requirements
     const passwordValidation = validatePassword(password);
-    if (!passwordValidation.valid) {
-      setError(passwordValidation.error || 'Password does not meet requirements');
+    if (passwordValidation.status !== 'success') {
+      setError(passwordValidation.message || 'Password does not meet requirements');
       return;
     }
 
@@ -128,18 +59,14 @@ export default function SimpleRegisterPage() {
       router.push('/auth/verify-email');
     } catch (error: unknown) {
       console.error('[SimpleRegisterPage] Registration error:', error);
-      if (error instanceof Error) {
-        setError(error.message || 'An error occurred. Please try again.');
-      } else {
-        setError('An error occurred. Please try again.');
-      }
+      setError(getErrorDisplayMessage(error, 'create your account'));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+    <AuthPageShell>
       <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-8 pb-6 text-center">
@@ -168,12 +95,12 @@ export default function SimpleRegisterPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
                     emailValidation.status === 'success'
                       ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                       : emailValidation.status === 'error'
                       ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
                   }`}
                   placeholder="you@company.com"
                   required
@@ -218,7 +145,7 @@ export default function SimpleRegisterPage() {
                   setPassword(e.target.value);
                   setError(null);
                 }}
-                className="w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
+                className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
                 placeholder="At least 8 characters"
                 required
                 autoComplete="new-password"
@@ -241,13 +168,13 @@ export default function SimpleRegisterPage() {
               className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
                 isLoading
                   ? 'opacity-60 cursor-not-allowed'
-                  : 'bg-gradient-to-b from-primary to-primary-hover hover:shadow-md hover:shadow-primary/15'
+                  : 'bg-gradient-to-b from-primary to-primary-hover'
               }`}
             >
               {isLoading && (
                 <div className="absolute w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               )}
-              <span className={isLoading ? 'opacity-70' : ''}>{isLoading ? 'Creating account...' : 'Create account'}</span>
+              <span className={isLoading ? 'opacity-70' : ''}>{isLoading ? LOADING_CREATING_ACCOUNT : 'Create account'}</span>
             </button>
           </form>
 
@@ -290,7 +217,7 @@ export default function SimpleRegisterPage() {
           }
         }
       `}</style>
-    </div>
+    </AuthPageShell>
   );
 }
 

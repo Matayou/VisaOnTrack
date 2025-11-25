@@ -10,27 +10,27 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2563eb',
-          hover: '#1d4ed8',
+          DEFAULT: 'var(--color-primary)',
+          hover: 'var(--color-primary-hover)',
           light: '#dbeafe',
         },
         text: {
-          primary: '#0a0a0a',
-          secondary: '#525252',
-          tertiary: '#a3a3a3',
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          tertiary: 'var(--color-text-tertiary)',
         },
         bg: {
-          primary: '#ffffff',
-          secondary: '#fafafa',
+          primary: 'var(--color-bg-primary)',
+          secondary: 'var(--color-bg-secondary)',
           tertiary: '#f5f5f5',
         },
         border: {
-          light: 'rgba(0, 0, 0, 0.06)',
+          light: 'var(--color-border-light)',
           medium: 'rgba(0, 0, 0, 0.12)',
           dark: 'rgba(0, 0, 0, 0.20)',
         },
         success: {
-          DEFAULT: '#16a34a',
+          DEFAULT: 'var(--color-success)',
           light: '#dcfce7',
         },
         error: {
@@ -43,7 +43,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: 'var(--font-family)',
+      },
+      transitionDuration: {
+        fast: 'var(--transition-fast)',
       },
       fontSize: {
         xs: ['0.8125rem', { lineHeight: '1.5' }], // 13px

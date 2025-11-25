@@ -1,29 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, ShieldCheck, Clock } from 'lucide-react';
+import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { api } from '@visaontrack/client';
-import { getApiErrorMessage, isApiError } from '@/lib/api-error';
-import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
-
-// Email typo detection
-const commonTypos: Record<string, string> = {
-  'gmial.com': 'gmail.com',
-  'gmai.com': 'gmail.com',
-  'gmil.com': 'gmail.com',
-  'yahooo.com': 'yahoo.com',
-  'yaho.com': 'yahoo.com',
-  'hotmial.com': 'hotmail.com',
-};
-
-type ValidationState = 'empty' | 'success' | 'error';
-
-interface ValidationResult {
-  status: ValidationState;
-  message: string;
-}
+import { Button, GradientText } from '@/components/ui';
+import { AuthPageShell } from '@/components/AuthPageShell';
+import { validateEmail, checkPasswordStrength, type ValidationResult, type PasswordStrengthResult } from '@/lib/validation';
+import { LOADING_CREATING_ACCOUNT } from '@/lib/loading-messages';
+import { getErrorDisplayMessage, isRateLimitError, getRateLimitMessage, isValidationError } from '@/lib/error-handling';
 
 function validateName(name: string, fieldName: string): ValidationResult {
   if (!name.trim()) {
@@ -40,114 +26,9 @@ function validateName(name: string, fieldName: string): ValidationResult {
   return { status: 'success', message: 'Looks good!' };
 }
 
-function validateEmail(email: string): ValidationResult {
-  if (!email) {
-    return { status: 'empty', message: '' };
-  }
-
-  if (!email.includes('@')) {
-    return {
-      status: 'error',
-      message: 'Email is missing @ symbol',
-    };
-  }
-
-  const parts = email.split('@');
-  if (parts.length !== 2 || !parts[0] || !parts[1]) {
-    return {
-      status: 'error',
-      message: 'Email format looks incorrect',
-    };
-  }
-
-  const domain = parts[1].toLowerCase();
-
-  // Check for common typos
-  for (const [typo, correct] of Object.entries(commonTypos)) {
-    if (domain === typo) {
-      return {
-        status: 'error',
-        message: `Did you mean ${parts[0]}@${correct}?`,
-      };
-    }
-  }
-
-  if (!domain.includes('.')) {
-    return {
-      status: 'error',
-      message: 'Domain needs a dot (like .com)',
-    };
-  }
-
-  return { status: 'success', message: 'Looks good!' };
-}
-
-type PasswordStrength = 0 | 1 | 2 | 3 | 4;
-type PasswordLevel = 'empty' | 'weak' | 'fair' | 'good' | 'strong';
-
-interface PasswordStrengthResult {
-  strength: PasswordStrength;
-  level: PasswordLevel;
-  message: string;
-  hint: string;
-}
-
-function checkPasswordStrength(password: string): PasswordStrengthResult {
-  if (!password) {
-    return { strength: 0, level: 'empty', message: '', hint: '' };
-  }
-
-  let count = 0;
-  const feedback: string[] = [];
-
-  // Length (8+)
-  if (password.length >= 8) count++;
-  else feedback.push('Use 8+ characters');
-
-  // Lowercase (required)
-  if (/[a-z]/.test(password)) count++;
-  else feedback.push('add lowercase letters');
-
-  // Uppercase (required)
-  if (/[A-Z]/.test(password)) count++;
-  else feedback.push('add uppercase letters');
-
-  // Number (required)
-  if (/[0-9]/.test(password)) count++;
-  else feedback.push('add numbers');
-
-  // Special character (required)
-  if (/[^A-Za-z0-9]/.test(password)) count++;
-  else feedback.push('add symbols (!@#$)');
-
-  // Map 5 criteria to 4 strength levels (0-4)
-  // All 5 criteria = strong (4), 4 criteria = good (3), 3 criteria = fair (2), 2 criteria = weak (1), 0-1 = empty (0)
-  let strength: PasswordStrength;
-  if (count >= 5) {
-    strength = 4; // Strong - all criteria met
-  } else if (count === 4) {
-    strength = 3; // Good - 4 criteria met
-  } else if (count === 3) {
-    strength = 2; // Fair - 3 criteria met
-  } else if (count >= 1) {
-    strength = 1; // Weak - 1-2 criteria met
-  } else {
-    strength = 0; // Empty
-  }
-
-  const levels: Record<PasswordStrength, { level: PasswordLevel; message: string; hint: string }> = {
-    0: { level: 'empty', message: '', hint: '' },
-    1: { level: 'weak', message: 'Weak password', hint: feedback.join(', ') },
-    2: { level: 'fair', message: 'Fair password', hint: feedback.join(', ') },
-    3: { level: 'good', message: 'Good password', hint: feedback.join(', ') },
-    4: { level: 'strong', message: 'Strong password!', hint: 'Excellent choice' },
-  };
-
-  return { strength, ...levels[strength] };
-}
-
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -234,40 +115,45 @@ export default function RegisterPage() {
       })) as Awaited<ReturnType<typeof api.auth.register>> & { verificationLink?: string };
 
       // Dev-only: Store verification link for local development
-      // In production, users would receive this via email
       if (response.verificationLink) {
         sessionStorage.setItem('devVerificationLink', response.verificationLink);
       }
 
-      // Redirect to email verification page after successful registration
-      // Email verification is REQUIRED before proceeding to onboarding
-      router.push('/auth/verify-email');
+      // Determine redirect logic
+      const fromIntake = searchParams.get('from') === 'intake';
+      
+      // If user came from intake, pass that context to the verification page
+      // so it can redirect appropriately after verification
+      const redirectPath = fromIntake ? '/auth/verify-email?from=intake' : '/auth/verify-email';
+      
+      router.push(redirectPath);
     } catch (error: unknown) {
-      const apiError = isApiError(error) ? error : null;
       console.error('[RegisterPage] Registration error:', error);
       
-      if (apiError?.status === 400) {
-        if (apiError.body?.code === 'BAD_REQUEST') {
-          setError(apiError.body?.message || 'Invalid input. Please check your information.');
-        } else if (apiError.body?.code === 'VALIDATION_ERROR') {
-          setError(apiError.body?.message || 'Please check your password requirements.');
-        } else {
-          setError(apiError.body?.message || 'Invalid input. Please check your information.');
-        }
-      } else if (apiError?.status === 429) {
-        setError('Too many registration attempts. Please try again later.');
-      } else {
-        setError(apiError ? getApiErrorMessage(apiError, 'An error occurred. Please try again.') : 'An error occurred. Please try again.');
+      // Handle rate limit errors
+      if (isRateLimitError(error)) {
+        setError(getRateLimitMessage(error));
+        return;
       }
+
+      // Handle validation errors with specific messages
+      if (isValidationError(error)) {
+        const message = getErrorDisplayMessage(error, 'create account');
+        setError(message);
+        return;
+      }
+
+      // Use standardized error handling for all other errors
+      const message = getErrorDisplayMessage(error, 'create account');
+      setError(message);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-4 sm:p-6">
-      <PageBackground />
-      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 overflow-hidden">
+    <AuthPageShell>
+      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 transition-all duration-300 overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
         {/* Header */}
         <div className="p-6 sm:p-8 pb-4 text-center">
@@ -295,12 +181,12 @@ export default function RegisterPage() {
                     id="firstName"
                     value={firstName}
                     onChange={(e) => handleFirstNameChange(e.target.value)}
-                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
+                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
                       firstNameValidation.status === 'success'
                         ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                         : firstNameValidation.status === 'error'
                         ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]'
+                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
                     }`}
                     placeholder="John"
                     required
@@ -341,12 +227,12 @@ export default function RegisterPage() {
                     id="lastName"
                     value={lastName}
                     onChange={(e) => handleLastNameChange(e.target.value)}
-                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
+                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
                       lastNameValidation.status === 'success'
                         ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                         : lastNameValidation.status === 'error'
                         ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]'
+                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
                     }`}
                     placeholder="Doe"
                     required
@@ -389,12 +275,12 @@ export default function RegisterPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
                     emailValidation.status === 'success'
                       ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                       : emailValidation.status === 'error'
                       ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
                   }`}
                   placeholder="you@example.com"
                   required
@@ -436,7 +322,7 @@ export default function RegisterPage() {
                   id="password"
                   value={password}
                   onChange={(e) => handlePasswordChange(e.target.value)}
-                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-lg transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
+                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
                   placeholder="At least 8 characters"
                   required
                   autoComplete="new-password"
@@ -532,7 +418,7 @@ export default function RegisterPage() {
               loading={isLoading}
               fullWidth
             >
-              {isLoading ? 'Creating account...' : 'Create account'}
+              {isLoading ? LOADING_CREATING_ACCOUNT : 'Create account'}
             </Button>
           </form>
 
@@ -551,7 +437,31 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-    </div>
+
+      <style jsx>{`
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+    </AuthPageShell>
   );
 }
 
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-bg-secondary">
+        <Loader className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    }>
+      <RegisterForm />
+    </Suspense>
+  );
+}

@@ -16,6 +16,9 @@ export type ProviderProfile = {
     description?: string | null;
     location?: string | null;
     languages?: Array<string>;
+    website?: string | null;
+    contactPhone?: string | null;
+    yearsExperience?: number | null;
     /**
      * ISO 8601 timestamp when provider was verified
      */

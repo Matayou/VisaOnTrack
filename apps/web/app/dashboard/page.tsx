@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import {
   AlertCircle,
   ArrowRight,
@@ -8,41 +8,41 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
-  Loader,
   MapPin,
   PlusCircle,
   Wallet,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { api, type Request, type RequestStatus } from '@visaontrack/client';
-import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText, Footer } from '@/components/ui';
+import { LOADING_GENERIC } from '@/lib/loading-messages';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
+import { SeekerHeader } from '@/components/SeekerHeader';
+import { estimateBudgetFromSavings, mapDurationToTimeline, mapLocation, mapEligibilityCodeToVisaType, mapAgeRange } from '@/lib/eligibilityMapping';
 
 const statusLabels: Record<RequestStatus, string> = {
   DRAFT: 'Draft',
   OPEN: 'Active',
   CLOSED: 'Closed',
-  REMOVED: 'Removed',
-  EXPIRED: 'Expired',
-  ARCHIVED: 'Archived',
+  HIRED: 'Hired',
 };
 
 const statusStyles: Record<RequestStatus, string> = {
   DRAFT: 'bg-amber-50 text-amber-800 border-amber-200',
   OPEN: 'bg-emerald-50 text-emerald-800 border-emerald-200',
   CLOSED: 'bg-gray-100 text-gray-700 border-gray-200',
-  REMOVED: 'bg-rose-50 text-rose-800 border-rose-200',
-  EXPIRED: 'bg-orange-50 text-orange-800 border-orange-200',
-  ARCHIVED: 'bg-slate-50 text-slate-700 border-slate-200',
+  HIRED: 'bg-blue-50 text-blue-800 border-blue-200',
 };
 
 const statusBorderColors: Record<RequestStatus, string> = {
   DRAFT: 'border-l-amber-400',
   OPEN: 'border-l-emerald-500',
   CLOSED: 'border-l-gray-400',
-  REMOVED: 'border-l-rose-500',
-  EXPIRED: 'border-l-orange-500',
-  ARCHIVED: 'border-l-slate-400',
+  HIRED: 'border-l-blue-500',
 };
+
+// Key for localStorage persistence (MUST match GetStartedPage)
+const INTAKE_DATA_KEY = 'vot_intake_data';
 
 // Helper function to format budget range
 const formatBudget = (min: number | null | undefined, max: number | null | undefined): string | null => {
@@ -159,25 +159,84 @@ const faqData: FAQCategory[] = [
   },
 ];
 
-export default function DashboardPage() {
+function DashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isLoadingRequests, setIsLoadingRequests] = useState(false);
+  const [isProcessingIntake, setIsProcessingIntake] = useState(false);
   const [requests, setRequests] = useState<Request[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('basics');
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
+  const autoCreateAttemptedRef = useRef(false);
 
   useEffect(() => {
     const run = async () => {
       try {
         const user = await api.users.getCurrentUser();
         if (user.role === 'PROVIDER' || user.role === 'ADMIN') {
-          router.replace('/requests');
+          router.replace('/providers/dashboard');
           return;
         }
         setIsLoadingUser(false);
         setIsLoadingRequests(true);
+
+        // Check for intake data saved from public flow (or legacy query param)
+        const intakeDataJson = typeof window !== 'undefined' ? localStorage.getItem(INTAKE_DATA_KEY) : null;
+        const hasIntakeData = Boolean(intakeDataJson);
+        const legacyAutoCreateParam = searchParams.get('autoCreate') === 'true';
+        const shouldAutoCreate = !autoCreateAttemptedRef.current && (hasIntakeData || legacyAutoCreateParam);
+
+        if (shouldAutoCreate && intakeDataJson) {
+          autoCreateAttemptedRef.current = true;
+          setIsProcessingIntake(true);
+          try {
+            const intakeData = JSON.parse(intakeDataJson);
+            
+            // Convert intake data to request payload
+            const budget = estimateBudgetFromSavings(intakeData.savings);
+            const locationLabel = intakeData.location === 'Inside Thailand' ? 'Inside Thailand' : 'Outside Thailand';
+            
+            const requestPayload = {
+              title: `Visa application for ${mapEligibilityCodeToVisaType(intakeData.selectedCode)}`,
+              description: [
+                `Age Range: ${mapAgeRange(intakeData.age)}`,
+                `Nationality: ${intakeData.nationality}`,
+                `Current Status: ${mapLocation(intakeData.location) === 'IN_THAILAND' ? 'Inside Thailand' : 'Outside Thailand'}`,
+                `Purpose: ${intakeData.purpose}`,
+                `Timeline: ${mapDurationToTimeline(intakeData.duration)}`,
+                `Income Source: ${intakeData.incomeType}`,
+                `Additional Needs: ${intakeData.fields?.join(', ') || 'None'}`
+              ].join('\n'),
+              visaType: mapEligibilityCodeToVisaType(intakeData.selectedCode),
+              budgetMin: budget.min,
+              budgetMax: budget.max,
+              location: locationLabel,
+            };
+
+            // Create the request
+            const newRequest = await api.requests.createRequest({
+              requestBody: requestPayload,
+            });
+
+            // Clear intake data so we don't re-create
+            localStorage.removeItem(INTAKE_DATA_KEY);
+            
+            // Redirect to the new request
+            router.push(`/requests/${newRequest.id}`);
+            return;
+          } catch (createErr) {
+            console.error('[SeekerDashboard] Auto-create request error:', createErr);
+            // Fallback to normal load if creation fails
+            setError('Failed to create your request automatically. Please try creating it manually.');
+          } finally {
+            setIsProcessingIntake(false);
+          }
+        } else if (shouldAutoCreate && !intakeDataJson) {
+          // Avoid retry loops if query param exists but no saved data
+          autoCreateAttemptedRef.current = true;
+        }
 
         const response = await api.requests.listRequests({ page: 1, limit: 5, seekerId: user.id });
         setRequests(response.data ?? []);
@@ -187,7 +246,7 @@ export default function DashboardPage() {
           router.replace('/auth/login');
           return;
         }
-        setError('Unable to load your account or requests right now.');
+        setError(getErrorDisplayMessage(err, 'load your account'));
         console.error('[SeekerDashboard] load error', err);
       } finally {
         setIsLoadingRequests(false);
@@ -195,9 +254,9 @@ export default function DashboardPage() {
     };
 
     run();
-  }, [router]);
+  }, [router, searchParams]);
 
-  const showEmptyState = !requests.length && !isLoadingRequests && !error;
+  const showEmptyState = !requests.length && !isLoadingRequests && !error && !isProcessingIntake;
 
   const toggleQuestion = (questionId: string) => {
     setExpandedQuestions((prev) => {
@@ -213,11 +272,25 @@ export default function DashboardPage() {
 
   const activeCategory = faqData.find((cat) => cat.id === activeTab) || faqData[0];
 
+  if (isProcessingIntake) {
+    return (
+      <div className="min-h-screen bg-bg-secondary flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Spinner size="lg" />
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Setting up your workspace</h2>
+            <p className="text-text-secondary mt-1">Creating your request from your answers...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
       <PageBackground />
       <SeekerHeader />
-      <div className="relative z-10 max-w-6xl mx-auto space-y-6 p-6 lg:p-10">
+      <div className="relative z-10 w-full mx-auto space-y-6 px-6 sm:px-8 py-6 lg:py-10 max-w-[100rem] border-2 border-red-500">
         <header className="relative bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-base px-6 py-8 shadow-lg shadow-primary/5 overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
           <div className="relative">
@@ -255,7 +328,7 @@ export default function DashboardPage() {
         {isLoadingUser || isLoadingRequests ? (
           <div className="bg-bg-primary border border-border-light rounded-base p-6 flex items-center gap-3 text-text-secondary">
             <Spinner size="sm" />
-            <span>Loading your requests...</span>
+            <span>{LOADING_GENERIC}</span>
           </div>
         ) : null}
 
@@ -293,7 +366,7 @@ export default function DashboardPage() {
               return (
                 <article
                   key={request.id}
-                  className={`relative bg-gradient-to-br from-primary/5 to-white border-2 border-primary/20 rounded-base shadow-md shadow-primary/5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-0.5 hover:border-primary/40 ${statusBorderColors[request.status]} border-l-4 overflow-hidden`}
+                  className={`relative bg-gradient-to-br from-primary/5 to-white border-2 border-primary/20 rounded-base shadow-md shadow-primary/5 transition-all duration-300 hover:border-primary/40 ${statusBorderColors[request.status]} border-l-4 overflow-hidden`}
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full"></div>
                   <div className="p-6 md:p-8">
@@ -454,7 +527,24 @@ export default function DashboardPage() {
           </div>
         </section>
       </div>
+      <Footer />
     </div>
   );
 }
-import { SeekerHeader } from '@/components/SeekerHeader';
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-bg-secondary flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Spinner size="lg" />
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Loading your dashboard...</h2>
+          </div>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
+  );
+}

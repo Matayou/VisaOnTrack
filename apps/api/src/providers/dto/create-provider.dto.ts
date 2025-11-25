@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsArray, MinLength, MaxLength, ArrayMinSize, ArrayMaxSize } from 'class-validator';
+import { IsString, IsOptional, IsArray, MinLength, MaxLength, ArrayMinSize, ArrayMaxSize, IsInt, Min, Max } from 'class-validator';
 
 /**
  * DTO for creating a provider profile
@@ -26,5 +26,20 @@ export class CreateProviderRequestDto {
   @ArrayMinSize(0)
   @ArrayMaxSize(20) // Reasonable limit
   languages?: string[];
-}
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  website?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  contactPhone?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  yearsExperience?: number;
+}

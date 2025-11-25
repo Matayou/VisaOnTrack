@@ -6,7 +6,11 @@
  * - Remember me: 7 days
  */
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+if (!process.env.JWT_SECRET) {
+  throw new Error('FATAL: JWT_SECRET is not defined in environment variables.');
+}
+
+export const JWT_SECRET = process.env.JWT_SECRET;
 export const JWT_EXPIRES_IN = '15m'; // 15 minutes for normal login
 export const JWT_REMEMBER_ME_EXPIRES_IN = '7d'; // 7 days for remember me
 

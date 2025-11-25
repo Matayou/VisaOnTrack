@@ -14,6 +14,7 @@ import {
 } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api, type Request, type User } from '@visaontrack/client';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
 
 import type {
   BudgetPreset,
@@ -104,8 +105,6 @@ interface RequestFormContextValue {
   renderValidationFeedback: (field: FormField, fallbackSuccess?: string) => React.ReactNode;
   getInputClasses: (field: FormField) => string;
   formatDateDisplay: (value: string) => string;
-  isLocationSelectOpen: boolean;
-  setIsLocationSelectOpen: (value: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 const RequestFormContext = createContext<RequestFormContextValue | null>(null);
@@ -608,10 +607,8 @@ const useRequestFormController = (): RequestFormContextValue => {
 
       if (error?.status === 429) {
         setSubmitError('You are sending requests too quickly. Please wait a moment and try again.');
-      } else if (error?.body?.message) {
-        setSubmitError(error.body.message);
       } else {
-        setSubmitError('Something went wrong while publishing your request. Please try again.');
+        setSubmitError(getErrorDisplayMessage(err, 'publish your request'));
       }
     }
   };

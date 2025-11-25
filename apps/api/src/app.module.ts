@@ -8,6 +8,7 @@ import { RequestsModule } from './requests/requests.module';
 import { CronJobsService } from './config/cron-jobs';
 import { PrismaService } from './common/services/prisma.service';
 import { RateLimitService } from './common/services/rate-limit.service';
+import { CreditsModule } from './credits/credits.module';
 
 /**
  * Global PrismaService provider
@@ -16,15 +17,20 @@ import { RateLimitService } from './common/services/rate-limit.service';
 @Global()
 @Module({
   imports: [
-    AuthModule,
+    AuthModule, // Must be imported before CronJobsService to access AuthService
     UsersModule,
     ProvidersModule,
     MessagesModule,
     RequestsModule,
-    ScheduleModule.forRoot(), // Enable cron jobs
+    ScheduleModule.forRoot(),
+    CreditsModule, // Enable cron jobs
   ],
-  providers: [CronJobsService, PrismaService, RateLimitService], // Added RateLimitService for CronJobsService
-  exports: [PrismaService], // Export so other modules can use it
+  providers: [
+    PrismaService,
+    RateLimitService,
+    CronJobsService, // Must be after AuthModule import to access AuthService
+  ],
+  exports: [PrismaService, RateLimitService], // Export so other modules can use it
 })
 export class AppModule {}
 

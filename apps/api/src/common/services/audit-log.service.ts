@@ -20,7 +20,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { email }, // No token in details
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -39,7 +38,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { success: true },
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -58,7 +56,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { role } as Prisma.InputJsonValue,
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -77,7 +74,6 @@ export class AuditLogService {
         entityId: null,
         diff: { reason }, // No token in details
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -96,7 +92,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { email, success }, // No password in details
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -114,7 +109,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { success: true },
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -133,7 +127,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { email, role }, // No password in details
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -152,7 +145,6 @@ export class AuditLogService {
         entityId: providerId,
         diff: { providerId, userId },
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -177,7 +169,6 @@ export class AuditLogService {
         entityId: providerId,
         diff: changes,
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -203,7 +194,6 @@ export class AuditLogService {
         entityId: attachmentId,
         diff: { mimeType, size }, // No file contents
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -223,7 +213,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { email, verified: true }, // No token in details
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -243,7 +232,6 @@ export class AuditLogService {
         entityId: userId,
         diff: { email }, // No token in details
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -263,7 +251,6 @@ export class AuditLogService {
         entityId: null,
         diff: { reason }, // No token in details
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -282,7 +269,6 @@ export class AuditLogService {
         entityId: requestId,
         diff: { requestId },
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }
@@ -307,7 +293,6 @@ export class AuditLogService {
         entityId: requestId,
         diff: changes,
         ip: ip || null,
-        ua: ua || null,
       },
     });
   }

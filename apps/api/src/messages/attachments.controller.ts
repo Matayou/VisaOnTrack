@@ -88,7 +88,6 @@ export class AttachmentsController {
         userId,
         file,
         body.requestId,
-        body.orderId,
         ip,
         ua,
       );

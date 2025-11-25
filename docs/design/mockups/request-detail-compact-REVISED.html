@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Detail - Compact (Data-Realistic) | SawadeePass</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: 'hsl(239, 84%, 67%)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .ios-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    /* Hide desktop sidebar on mobile */
+    @media (max-width: 1023px) {
+      .desktop-only { display: none; }
+    }
+    /* Hide mobile bottom bar on desktop */
+    @media (min-width: 1024px) {
+      .mobile-only { display: none; }
+    }
+    /* Rotate chevron when details is open */
+    details[open] > summary svg:last-child {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header - SawadeePass Seeker Variant -->
+  <header class="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-gray-200 z-50 shadow-sm">
+    <nav class="max-w-7xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="/dashboard" class="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
+        <div class="relative h-12 w-40">
+          <img src="../../../apps/web/public/images/logos/sawadeepass.png" alt="SawadeePass" class="object-contain object-left" style="max-width: 100%; height: auto;">
+        </div>
+      </a>
+
+
+      <!-- Desktop: My Request Link - REMOVED -->
+
+
+      <!-- User Menu -->
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <button type="button" class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:border-gray-300 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content - Responsive Grid -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6 pb-32 lg:pb-6">
+    <div class="lg:grid lg:grid-cols-3 lg:gap-6">
+
+      <!-- Main Column -->
+      <div class="lg:col-span-2 space-y-4 mb-4 lg:mb-0">
+
+        <!-- Smart Status Card - Refined for Coherence -->
+        <div class="ios-card p-5 lg:p-6 relative overflow-hidden">
+          <!-- Subtle background decoration -->
+          <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50/40 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none"></div>
+
+          <div class="relative flex flex-col sm:flex-row gap-4 sm:gap-5 items-start">
+            <!-- Icon -->
+            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm shadow-indigo-100 ring-4 ring-white">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0 pt-0.5">
+              <h2 class="font-bold text-gray-900 text-base lg:text-lg mb-1.5">Ready to publish!</h2>
+              <p class="text-sm text-gray-600 leading-relaxed max-w-2xl mb-4">
+                Your request is complete and looks great. Once published, verified providers can view your requirements and send you tailored proposals.
+              </p>
+              
+              <!-- Desktop Button -->
+              <button class="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-indigo-600 text-white font-medium rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 hover:shadow-md hover:-translate-y-0.5">
+                <span>Publish Request</span>
+                <svg class="w-4 h-4 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Request Overview Card - Refined for Scannability -->
+        <div class="ios-card overflow-hidden">
+          <!-- Header Section -->
+          <div class="p-5 lg:p-6 border-b border-gray-50">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2.5">
+                <span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full ring-1 ring-inset ring-amber-600/10">Draft</span>
+                <span class="text-xs text-gray-400 font-medium flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Edited just now
+                </span>
+              </div>
+              <button class="text-sm text-gray-500 hover:text-primary font-medium flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors group">
+                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Edit details
+              </button>
+            </div>
+
+            <h1 class="text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-3">
+              Visa application for Digital Nomad Visa (DTV)
+            </h1>
+            <p class="text-sm text-gray-600 leading-relaxed max-w-3xl">
+              UK national seeking Digital Nomad Visa for remote work in Thailand. Planned stay: around 1 year.
+            </p>
+          </div>
+
+          <!-- Data Grid Section -->
+          <div class="bg-gray-50/50 p-5 lg:p-6 space-y-6">
+            
+            <!-- Row 1: Key Info -->
+            <div>
+              <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                Applicant Profile
+                <div class="h-px flex-1 bg-gray-200"></div>
+              </h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
+                  <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Nationality</span>
+                  <div class="flex items-center gap-2">
+                    <img src="https://flagcdn.com/w20/gb.png" class="w-4 h-auto rounded-sm shadow-sm" alt="UK">
+                    <p class="font-semibold text-gray-900 text-sm">United Kingdom</p>
+                  </div>
+                </div>
+                <div class="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
+                  <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Age Range</span>
+                  <p class="font-semibold text-gray-900 text-sm">Under 50</p>
+                </div>
+                <div class="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
+                  <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Location</span>
+                  <p class="font-semibold text-gray-900 text-sm">Outside Thailand</p>
+                </div>
+                <div class="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
+                  <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Purpose</span>
+                  <p class="font-semibold text-gray-900 text-sm">Remote Work</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Requirements -->
+            <div>
+              <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                Visa Requirements
+                <div class="h-px flex-1 bg-gray-200"></div>
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-blue-50/50 rounded-xl p-3.5 border border-blue-100/60 shadow-sm sm:col-span-1">
+                  <span class="text-blue-600/80 text-[11px] uppercase tracking-wide block mb-1">Visa Type</span>
+                  <p class="font-bold text-blue-700 text-sm">Digital Nomad (DTV)</p>
+                </div>
+                <div class="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
+                  <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Duration</span>
+                  <p class="font-semibold text-gray-900 text-sm">Around 1 year</p>
+                </div>
+                <div class="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
+                  <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Income Source</span>
+                  <p class="font-semibold text-gray-900 text-sm">Remote/freelance</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer: Financials -->
+            <div class="bg-white rounded-xl p-4 border border-gray-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-0.5">Estimated Budget</span>
+                <div class="flex items-baseline gap-2">
+                  <p class="text-lg font-bold text-gray-900">฿20,000 - ฿35,000</p>
+                  <span class="text-xs text-gray-400 font-medium">total</span>
+                </div>
+              </div>
+              <div class="sm:text-right sm:border-l sm:border-gray-100 sm:pl-6">
+                <span class="text-gray-500 text-[11px] uppercase tracking-wide block mb-0.5">Savings Proof</span>
+                 <p class="text-sm font-medium text-gray-700">500k - 800k THB</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Proposals - Refined Empty State -->
+        <div class="ios-card p-5 lg:p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="font-bold text-gray-900 text-base lg:text-lg">Proposals</h2>
+            <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded-full">0</span>
+          </div>
+
+          <!-- Empty State -->
+          <div class="text-center py-12 relative overflow-hidden rounded-2xl bg-gray-50/50 border border-gray-100/50">
+            <!-- Decorative background elements -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="relative z-10">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center ring-4 ring-gray-50">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-gray-900 mb-2">No proposals yet</h3>
+              <p class="text-sm text-gray-500 mb-6 max-w-xs mx-auto leading-relaxed">
+                Publish your request to start receiving proposals from verified visa providers
+              </p>
+              <button class="px-6 py-2.5 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-600 font-medium rounded-xl text-sm transition-all shadow-sm hover:shadow flex items-center gap-2 mx-auto">
+                <span>Publish Request</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity - Mobile Only (Collapsible) -->
+        <details class="ios-card mobile-only">
+          <summary class="p-4 cursor-pointer flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-sm font-semibold text-gray-900">Recent Activity</span>
+            </div>
+            <svg class="w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="px-4 pb-4 space-y-3 text-sm border-t border-gray-100">
+            <div class="flex gap-3 pt-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
+              <div class="flex-1">
+                <p class="text-gray-900 font-medium">Request created</p>
+                <p class="text-gray-500 text-xs mt-0.5">Draft saved · Just now</p>
+              </div>
+            </div>
+            <div class="text-center py-3 text-xs text-gray-500 bg-gray-50 rounded-lg">
+              More activity will appear here after you publish your request
+            </div>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- Sidebar - Desktop Only -->
+      <aside class="desktop-only space-y-6">
+
+        <!-- Next Steps - Refined -->
+        <div class="ios-card p-5">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Next Steps</h3>
+          <div class="space-y-2">
+            <div class="flex gap-3.5 items-start p-3 -mx-3 rounded-xl hover:bg-gray-50 transition-colors cursor-default group">
+              <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 ring-4 ring-white group-hover:bg-blue-100 transition-colors">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900">Publish to receive proposals</p>
+                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Verified providers can view and respond to your request</p>
+              </div>
+            </div>
+            
+            <div class="flex gap-3.5 items-start p-3 -mx-3 rounded-xl bg-green-50/50 border border-green-100/50">
+              <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 ring-4 ring-white">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-green-900">Your information is complete</p>
+                <p class="text-xs text-green-700/80 mt-0.5 leading-relaxed">Ready to publish or edit for more details</p>
+              </div>
+            </div>
+
+            <div class="flex gap-3.5 items-start p-3 -mx-3 rounded-xl hover:bg-gray-50 transition-colors cursor-default group">
+              <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0 ring-4 ring-white group-hover:bg-purple-100 transition-colors">
+                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900">All information is private</p>
+                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Only you see drafts. Providers only view published requests</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity - Refined -->
+        <div class="ios-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Recent Activity</h3>
+          </div>
+          
+          <div class="relative pl-2 space-y-6">
+            <!-- Vertical Line -->
+            <div class="absolute top-2 bottom-2 left-2 w-px bg-gray-100"></div>
+
+            <div class="relative flex gap-4">
+              <div class="w-2.5 h-2.5 rounded-full bg-white border-2 border-green-500 z-10 mt-1.5 -ml-[5px]"></div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-gray-900">Request created</p>
+                <p class="text-xs text-gray-400 mt-0.5">Draft saved · Just now</p>
+              </div>
+            </div>
+            
+            <!-- Empty state message -->
+            <div class="relative flex gap-4 opacity-60">
+              <div class="w-2 h-2 rounded-full bg-gray-200 z-10 mt-2 -ml-1"></div>
+              <div class="flex-1">
+                 <p class="text-xs text-gray-400 italic">More activity will appear here after you publish</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Card - Refined -->
+        <div class="ios-card p-5">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Request Stats</h3>
+          <div class="grid grid-cols-3 gap-2 text-center mb-3">
+            <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+              <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Views</span>
+              <span class="text-lg font-bold text-gray-300">—</span>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+              <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Proposals</span>
+              <span class="text-lg font-bold text-gray-300">—</span>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+              <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Messages</span>
+              <span class="text-lg font-bold text-gray-300">—</span>
+            </div>
+          </div>
+          <p class="text-xs text-center text-gray-400">Stats available after publishing</p>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Bar - Mobile Only -->
+  <div class="mobile-only fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 safe-bottom z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+      <div class="flex items-center gap-3">
+        <button class="flex-1 py-3 bg-primary hover:bg-indigo-600 text-white font-bold rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 hover:shadow-md active:scale-[0.98] flex items-center justify-center gap-2">
+          <span>Publish Request</span>
+          <svg class="w-4 h-4 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
+        <button class="px-4 py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-colors shadow-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

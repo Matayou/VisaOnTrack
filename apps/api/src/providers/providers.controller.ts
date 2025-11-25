@@ -83,6 +83,45 @@ export class ProvidersController {
   }
 
   /**
+   * GET /providers/me
+   * Get current user's provider profile
+   * 
+   * Security: cookieAuth (JWT token required)
+   * Response: ProviderProfile schema (200 OK)
+   */
+  @Get('me')
+  async getCurrentProvider(@Req() req: Request): Promise<ProviderResponseDto> {
+    // userId is extracted by JwtAuthGuard and attached to req.user
+    const userId = (req as any).user?.userId;
+
+    if (!userId) {
+      throw new UnauthorizedException({
+        code: 'UNAUTHORIZED',
+        message: 'Authentication required',
+      });
+    }
+
+    try {
+      return await this.providersService.getProviderByUserId(userId);
+    } catch (error) {
+      // Re-throw known exceptions
+      if (error instanceof NotFoundException) {
+        // It's common for onboarding users to not have a profile yet.
+        // We re-throw, but the frontend should handle 404 gracefully.
+        throw error;
+      }
+
+      // Log unexpected errors
+      console.error('[ProvidersController] Error in getCurrentProvider:', error);
+
+      throw new BadRequestException({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An error occurred while retrieving your provider profile. Please try again later.',
+      });
+    }
+  }
+
+  /**
    * GET /providers/{id}
    * Get provider profile by ID
    * 
@@ -160,4 +199,3 @@ export class ProvidersController {
     }
   }
 }
-

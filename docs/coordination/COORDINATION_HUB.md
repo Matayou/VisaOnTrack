@@ -26,7 +26,7 @@
 - **Status dashboard:** `PROJECT_STATUS.md`
 - **Task directory:** `docs/tasks/`
 - **Coordination docs:** `docs/coordination/` (each file should reference its task doc)
-- **Design documentation:** `docs/design/` (to be created)
+- **Design documentation:** `docs/design/` — Design system, audit reports, Phase 1 completion
 
 ---
 

@@ -21,13 +21,11 @@ import {
   Briefcase,
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
-import { getApiErrorMessage, isApiError } from '@/lib/api-error';
 import { ProviderHeader } from '@/components/ProviderHeader';
-import {
-  baseCardClass,
-  primaryButtonClass,
-  outlineButtonClass,
-} from '@/app/requests/new/constants';
+import { Button } from '@/components/ui';
+import { baseCardClass } from '@/app/requests/new/constants';
+import { LOADING_SAVING } from '@/lib/loading-messages';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
 
 type AutoSaveStatus = 'idle' | 'saving' | 'saved';
 type FieldName =
@@ -67,6 +65,39 @@ export default function BusinessDetailsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch existing data on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        // We don't set full page loading state to avoid flashing, just populate fields if data exists
+        const profile = await api.providers.getCurrentProvider();
+        
+        if (profile) {
+          if (profile.businessName) setBusinessName(profile.businessName);
+          if (profile.location) setCity(profile.location);
+          if (profile.description) setDescription(profile.description);
+          if (profile.languages && profile.languages.length > 0) setLanguages(profile.languages);
+          
+          if (profile.contactPhone) setPhone(profile.contactPhone);
+          if (profile.website) setWebsite(profile.website);
+          if (profile.yearsExperience !== undefined && profile.yearsExperience !== null) {
+             setYearsExperience(profile.yearsExperience.toString());
+          }
+          
+          // Note: Registration number is not in the schema yet, ignoring for now
+        }
+      } catch (error: any) {
+        // Ignore 404 (not found) as it means new profile
+        // Ignore 401 (unauthorized) if handled by global interceptors or middleware
+        if (error?.status !== 404 && error?.status !== 401) {
+          console.error('Failed to fetch provider profile:', error);
+        }
+      }
+    };
+    
+    fetchProfile();
+  }, []);
+
   // Character counter for description
   useEffect(() => {
     setDescriptionLength(description.length);
@@ -103,7 +134,7 @@ export default function BusinessDetailsPage() {
         if (!value || (typeof value === 'string' && value.trim().length === 0)) {
           return 'Please enter years of experience';
         }
-        const numValue = typeof value === 'string' ? parseInt(value, 10) : value;
+        const numValue = typeof value === 'string' ? parseInt(value, 10) : Array.isArray(value) ? NaN : value;
         if (isNaN(numValue) || numValue < 0 || numValue > 50) {
           return 'Please enter a valid number between 0 and 50';
         }
@@ -339,6 +370,9 @@ export default function BusinessDetailsPage() {
         description,
         location: city,
         languages,
+        website,
+        contactPhone: phone,
+        yearsExperience,
       });
       
       const updateData = {
@@ -346,6 +380,9 @@ export default function BusinessDetailsPage() {
         description: description || null,
         location: city || null,
         languages: languages.length > 0 ? languages : undefined,
+        website: website || null,
+        contactPhone: phone || null,
+        yearsExperience: yearsExperience ? parseInt(yearsExperience, 10) : undefined,
       };
 
       // Create or update provider profile (backend handles upsert automatically)
@@ -356,18 +393,8 @@ export default function BusinessDetailsPage() {
       router.push('/onboarding/provider/services');
       return;
     } catch (error: unknown) {
-      const apiError = isApiError(error) ? error : null;
       console.error('[BusinessDetailsPage] Provider operation failed:', error);
-      
-      if (apiError?.status === 401) {
-        setError('You must be logged in to continue. Please sign in.');
-      } else if (apiError?.status === 403) {
-        setError('You must have a PROVIDER role to create a provider profile.');
-      } else {
-        setError(
-          apiError ? getApiErrorMessage(apiError, 'An error occurred. Please try again.') : 'An error occurred. Please try again.',
-        );
-      }
+      setError(getErrorDisplayMessage(error, 'save business details'));
       setIsLoading(false);
     }
   };
@@ -541,7 +568,7 @@ export default function BusinessDetailsPage() {
                 {autoSaveStatus === 'saving' ? (
                   <>
                     <Loader className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
-                    <span>Saving...</span>
+                    <span>{LOADING_SAVING}</span>
                   </>
                 ) : autoSaveStatus === 'saved' ? (
                   <>
@@ -582,7 +609,7 @@ export default function BusinessDetailsPage() {
                       value={businessName}
                       onChange={handleInputChange(setBusinessName, 'businessName')}
                       onBlur={() => handleBlur('businessName', businessName)}
-                      className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('businessName')}`}
+                      className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('businessName')}`}
                       placeholder="Immigration Services Co., Ltd."
                       required
                     />
@@ -600,7 +627,7 @@ export default function BusinessDetailsPage() {
                       id="registrationNumber"
                       value={registrationNumber}
                       onChange={handleInputChange(setRegistrationNumber)}
-                      className="w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 focus:ring-primary/30"
                       placeholder="0105563123456"
                     />
                     <span className="text-xs text-text-tertiary">Thai business registration number</span>
@@ -630,7 +657,7 @@ export default function BusinessDetailsPage() {
                       value={city}
                       onChange={handleInputChange(setCity, 'city')}
                       onBlur={() => handleBlur('city', city)}
-                      className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('city')}`}
+                      className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('city')}`}
                       required
                     >
                       <option value="">Select city</option>
@@ -656,7 +683,7 @@ export default function BusinessDetailsPage() {
                       value={timezone}
                       readOnly
                       disabled
-                      className="w-full h-11 px-4 text-base font-sans text-text-tertiary border border-border-light rounded-base bg-bg-tertiary cursor-not-allowed"
+                      className="w-full h-12 px-4 text-base font-sans text-text-tertiary border border-border-light rounded-base bg-bg-tertiary cursor-not-allowed"
                     />
                     <span className="text-xs text-text-tertiary">Thailand timezone (Indochina Time)</span>
                   </div>
@@ -759,7 +786,7 @@ export default function BusinessDetailsPage() {
                       value={yearsExperience}
                       onChange={handleInputChange(setYearsExperience, 'yearsExperience')}
                       onBlur={() => handleBlur('yearsExperience', yearsExperience)}
-                      className={`w-full h-11 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('yearsExperience')}`}
+                      className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('yearsExperience')}`}
                       placeholder="5"
                       min="0"
                       max="50"
@@ -861,7 +888,7 @@ export default function BusinessDetailsPage() {
                       value={phone}
                       onChange={(e) => handlePhoneChange(e.target.value)}
                       onBlur={() => handleBlur('phone', phone)}
-                      className={`w-full h-11 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('phone')}`}
+                      className={`w-full h-12 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('phone')}`}
                       placeholder="02-123-4567"
                       required
                     />
@@ -883,7 +910,7 @@ export default function BusinessDetailsPage() {
                       value={website}
                       onChange={handleInputChange(setWebsite, 'website')}
                       onBlur={() => handleBlur('website', website)}
-                      className={`w-full h-11 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('website')}`}
+                      className={`w-full h-12 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('website')}`}
                       placeholder="https://yourwebsite.com"
                     />
                   </div>
@@ -903,23 +930,23 @@ export default function BusinessDetailsPage() {
                   </p>
                 )}
                 <div className="flex flex-wrap gap-3 md:ml-auto">
-                  <button type="button" onClick={() => router.push('/onboarding/provider/welcome')} className={outlineButtonClass}>
-                    <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.push('/onboarding/provider/welcome')}
+                    icon={<ArrowLeft className="w-4 h-4" aria-hidden="true" />}
+                  >
                     Back
-                  </button>
-                  <button type="submit" disabled={isLoading} className={primaryButtonClass}>
-                    {isLoading ? (
-                      <>
-                        <Loader className="w-4 h-4 animate-spin" aria-hidden="true" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        Continue
-                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                      </>
-                    )}
-                  </button>
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    loading={isLoading}
+                    icon={<ArrowRight className="w-4 h-4" aria-hidden="true" />}
+                    iconPosition="right"
+                  >
+                    Continue
+                  </Button>
                 </div>
               </div>
             </div>
@@ -929,4 +956,3 @@ export default function BusinessDetailsPage() {
     </div>
   );
 }
-

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SawadeePass · Journey Wizard</title>
+    <style>
+      :root {
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #64748b;
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .wizard-container {
+        width: 100%;
+        max-width: 800px;
+        background: var(--surface);
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: #0f172a;
+        color: white;
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .role-selector {
+        display: flex;
+        background: rgba(255,255,255,0.1);
+        border-radius: 99px;
+        padding: 0.25rem;
+      }
+
+      .role-btn {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        padding: 0.5rem 1rem;
+        border-radius: 99px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .role-btn.active {
+        background: white;
+        color: #0f172a;
+      }
+
+      .progress-bar {
+        height: 4px;
+        background: #e2e8f0;
+        width: 100%;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .step-content {
+        padding: 2rem;
+        flex: 1;
+      }
+
+      .step-meta {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .tag {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        background: #eff6ff;
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.85rem;
+        letter-spacing: -0.02em;
+      }
+
+      .summary {
+        font-size: 1.1rem;
+        color: var(--muted);
+        margin-bottom: 2rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .panel {
+        background: #f8fafc;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+      }
+
+      .panel h4 {
+        margin: 0 0 1rem;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .sample-data dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.5rem 1rem;
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      .sample-data dt { color: var(--muted); }
+      .sample-data dd { font-weight: 500; margin: 0; }
+
+      .footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8fafc;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: white;
+        transition: all 0.2s;
+      }
+
+      .btn:hover { border-color: #cbd5e1; }
+      
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="wizard-container">
+      <header>
+        <h1>Journey Wizard</h1>
+        <div class="role-selector">
+          <button class="role-btn active" onclick="setRole('seeker')">Seeker</button>
+          <button class="role-btn" onclick="setRole('provider')">Provider</button>
+        </div>
+      </header>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+      </div>
+
+      <div class="step-content" id="content">
+        <!-- Injected via JS -->
+      </div>
+
+      <div class="footer">
+        <button class="btn" id="prevBtn" onclick="prevStep()">← Back</button>
+        <div class="step-counter" id="counter">Step 1</div>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next Step →</button>
+      </div>
+    </div>
+
+    <script>
+      const journeys = {
+        seeker: [
+          {
+            title: "Get Started Intake",
+            tags: ["Lead Capture", "No Auth"],
+            summary: "Visitor arrives and fills urgency/needs form. Designed to be completed in one sitting.",
+            actions: [
+              "Select Visa Type & Urgency",
+              "Input Budget & Dependents",
+              "Tokenize data for handoff"
+            ],
+            data: {
+              Nationality: "French",
+              Goal: "Digital Nomad Visa",
+              Budget: "THB 80,000",
+              Timeline: "45 Days"
+            }
+          },
+          {
+            title: "Register & Draft",
+            tags: ["Conversion", "Auto-Draft"],
+            summary: "User authenticates. Intake data instantly becomes a Draft Request on the dashboard.",
+            actions: [
+              "Register via Email",
+              "Auto-create Request #REQ-101",
+              "Prompt Email Verification"
+            ],
+            data: {
+              Status: "Draft",
+              Missing: "Email Verification",
+              Action: "Publish"
+            }
+          },
+          {
+            title: "Publish to Market",
+            tags: ["Activation", "Anonymity"],
+            summary: "Request goes live. Providers can see summary but not contact details until they unlock.",
+            actions: [
+              "Verify Email",
+              "Agree to Terms",
+              "Go Live (OPEN status)"
+            ],
+            data: {
+              Visibility: "Public (Anonymized)",
+              SLA: "Expect proposals in ~6h"
+            }
+          },
+          {
+            title: "Receive Proposals",
+            tags: ["Selection", "Chat"],
+            summary: "Verified providers unlock the lead and send proposals. Seeker chats to clarify.",
+            actions: [
+              "Compare Price/Timeline",
+              "Check Provider Badges",
+              "Chat securely"
+            ],
+            data: {
+              Proposals: "3 Pending",
+              TopChoice: "Bangkok Legal (Verified)"
+            }
+          },
+          {
+            title: "Log Payment (Hired)",
+            tags: ["Trust", "No Escrow"],
+            summary: "Seeker hires a provider and pays them directly (Bank/Cash). Logs it here to track status.",
+            actions: [
+              "Mark Proposal 'Hired'",
+              "Record Payment Date/Method",
+              "Unlock Milestone Tracker"
+            ],
+            data: {
+              Payment: "Direct Transfer",
+              Amount: "THB 20,000 Deposit"
+            }
+          },
+          {
+            title: "Milestones & Vault",
+            tags: ["SaaS", "Fulfillment"],
+            summary: "Use platform tools to manage the job. Secure Vault for passports, timeline for tasks.",
+            actions: [
+              "Upload Passport to Vault",
+              "Approve 'Embassy Prep' task",
+              "Receive final visa scan"
+            ],
+            data: {
+              Milestone: "Docs Submitted",
+              Next: "Embassy Interview"
+            }
+          },
+          {
+            title: "Review & Close",
+            tags: ["Reputation", "Completion"],
+            summary: "Job done. Seeker marks complete and leaves a review to build provider reputation.",
+            actions: [
+              "Confirm Delivery",
+              "Rate 5 Stars",
+              "Archive Request"
+            ],
+            data: {
+              Rating: "⭐⭐⭐⭐⭐",
+              Feedback: "Fast and clear!"
+            }
+          }
+        ],
+        provider: [
+          {
+            title: "Signup & Profile",
+            tags: ["Onboarding", "Vetting"],
+            summary: "Create account and submit business docs for the 'Verified' Badge. Trust is the currency.",
+            actions: [
+              "Select Business Type",
+              "Upload DBD/License",
+              "Await Admin Approval"
+            ],
+            data: {
+              Type: "Visa Agent",
+              Status: "Pending Verification"
+            }
+          },
+          {
+            title: "Lead Dashboard",
+            tags: ["Discovery", "Gated"],
+            summary: "Browse anonymized leads. Can see visa type/budget, but contact info is locked.",
+            actions: [
+              "Filter by Visa Type",
+              "View 'High Intent' tags",
+              "Watchlist leads"
+            ],
+            data: {
+              Leads: "12 New (Education)",
+              Locked: "Contact Details"
+            }
+          },
+          {
+            title: "Unlock Lead",
+            tags: ["Monetization", "Credits"],
+            summary: "Spend a credit (or subscription quota) to reveal seeker details and message them.",
+            actions: [
+              "Click 'Unlock Request'",
+              "Deduct 1 Credit",
+              "Open Chat Channel"
+            ],
+            data: {
+              Cost: "1 Credit (THB 500 value)",
+              Balance: "4 Credits Remaining"
+            }
+          },
+          {
+            title: "Send Proposal",
+            tags: ["Sales", "Template"],
+            summary: "Craft a professional proposal with deliverables and payment terms (Direct/Bank).",
+            actions: [
+              "Select Template",
+              "Set Milestones",
+              "Send Proposal"
+            ],
+            data: {
+              Quote: "THB 45,000",
+              Terms: "50% Deposit / 50% Final"
+            }
+          },
+          {
+            title: "Manage Case",
+            tags: ["SaaS", "CRM"],
+            summary: "Proposal accepted. Use the dashboard to track docs and deadlines.",
+            actions: [
+              "Request Documents",
+              "Mark 'Deposit Received'",
+              "Update Timeline"
+            ],
+            data: {
+              Status: "Active Case",
+              Next: "Await Passport Scan"
+            }
+          },
+          {
+            title: "Retention Loop",
+            tags: ["Growth", "Renewal"],
+            summary: "Successful delivery earns a review. High rating boosts ranking in the directory.",
+            actions: [
+              "Receive 5-Star Review",
+              "Rank increases",
+              "Buy more credits"
+            ],
+            data: {
+              Rating: "4.9 Average",
+              Badge: "Top Rated"
+            }
+          }
+        ]
+      };
+
+      let currentRole = 'seeker';
+      let stepIndex = 0;
+
+      function setRole(role) {
+        currentRole = role;
+        stepIndex = 0;
+        document.querySelectorAll('.role-btn').forEach(b => 
+          b.classList.toggle('active', b.innerText.toLowerCase().includes(role))
+        );
+        render();
+      }
+
+      function nextStep() {
+        if (stepIndex < journeys[currentRole].length - 1) {
+          stepIndex++;
+          render();
+        }
+      }
+
+      function prevStep() {
+        if (stepIndex > 0) {
+          stepIndex--;
+          render();
+        }
+      }
+
+      function render() {
+        const journey = journeys[currentRole];
+        const step = journey[stepIndex];
+        
+        // Progress
+        const pct = ((stepIndex + 1) / journey.length) * 100;
+        document.getElementById('progress').style.width = `${pct}%`;
+        document.getElementById('counter').innerText = `Step ${stepIndex + 1} of ${journey.length}`;
+        
+        // Buttons
+        document.getElementById('prevBtn').disabled = stepIndex === 0;
+        document.getElementById('nextBtn').disabled = stepIndex === journey.length - 1;
+
+        // Content
+        const html = `
+          <div class="step-meta">
+            ${step.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+          <h2>${step.title}</h2>
+          <p class="summary">${step.summary}</p>
+          
+          <div class="grid">
+            <div class="panel">
+              <h4>Key Actions</h4>
+              <ul>
+                ${step.actions.map(a => `<li>${a}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="panel sample-data">
+              <h4>Sample State</h4>
+              <dl>
+                ${Object.entries(step.data).map(([k,v]) => `
+                  <dt>${k}:</dt> <dd>${v}</dd>
+                `).join('')}
+              </dl>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('content').innerHTML = html;
+      }
+
+      // Init
+      render();
+    </script>
+  </body>
+</html>

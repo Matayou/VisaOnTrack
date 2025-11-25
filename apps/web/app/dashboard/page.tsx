@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import {
   AlertCircle,
   ArrowRight,
@@ -8,41 +8,41 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
-  Loader,
   MapPin,
   PlusCircle,
   Wallet,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { api, type Request, type RequestStatus } from '@visaontrack/client';
-import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
+import { Button, Spinner, PageBackground, GradientText, Footer } from '@/components/ui';
+import { LOADING_GENERIC } from '@/lib/loading-messages';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
+import { SeekerHeader } from '@/components/SeekerHeader';
+import { estimateBudgetFromSavings, mapDurationToTimeline, mapLocation, mapEligibilityCodeToVisaType, mapAgeRange } from '@/lib/eligibilityMapping';
 
 const statusLabels: Record<RequestStatus, string> = {
   DRAFT: 'Draft',
   OPEN: 'Active',
   CLOSED: 'Closed',
-  REMOVED: 'Removed',
-  EXPIRED: 'Expired',
-  ARCHIVED: 'Archived',
+  HIRED: 'Hired',
 };
 
 const statusStyles: Record<RequestStatus, string> = {
   DRAFT: 'bg-amber-50 text-amber-800 border-amber-200',
   OPEN: 'bg-emerald-50 text-emerald-800 border-emerald-200',
   CLOSED: 'bg-gray-100 text-gray-700 border-gray-200',
-  REMOVED: 'bg-rose-50 text-rose-800 border-rose-200',
-  EXPIRED: 'bg-orange-50 text-orange-800 border-orange-200',
-  ARCHIVED: 'bg-slate-50 text-slate-700 border-slate-200',
+  HIRED: 'bg-blue-50 text-blue-800 border-blue-200',
 };
 
 const statusBorderColors: Record<RequestStatus, string> = {
   DRAFT: 'border-l-amber-400',
   OPEN: 'border-l-emerald-500',
   CLOSED: 'border-l-gray-400',
-  REMOVED: 'border-l-rose-500',
-  EXPIRED: 'border-l-orange-500',
-  ARCHIVED: 'border-l-slate-400',
+  HIRED: 'border-l-blue-500',
 };
+
+// Key for localStorage persistence (MUST match GetStartedPage)
+const INTAKE_DATA_KEY = 'vot_intake_data';
 
 // Helper function to format budget range
 const formatBudget = (min: number | null | undefined, max: number | null | undefined): string | null => {
@@ -159,25 +159,85 @@ const faqData: FAQCategory[] = [
   },
 ];
 
-export default function DashboardPage() {
+function DashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isLoadingRequests, setIsLoadingRequests] = useState(false);
+  const [isProcessingIntake, setIsProcessingIntake] = useState(false);
   const [requests, setRequests] = useState<Request[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('basics');
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
+  const autoCreateAttemptedRef = useRef(false);
 
   useEffect(() => {
     const run = async () => {
       try {
         const user = await api.users.getCurrentUser();
         if (user.role === 'PROVIDER' || user.role === 'ADMIN') {
-          router.replace('/requests');
+          router.replace('/providers/dashboard');
           return;
         }
         setIsLoadingUser(false);
         setIsLoadingRequests(true);
+
+        // Check for intake data saved from public flow (or legacy query param)
+        const intakeDataJson = typeof window !== 'undefined' ? localStorage.getItem(INTAKE_DATA_KEY) : null;
+        const hasIntakeData = Boolean(intakeDataJson);
+        const legacyAutoCreateParam = searchParams.get('autoCreate') === 'true';
+        const shouldAutoCreate = !autoCreateAttemptedRef.current && (hasIntakeData || legacyAutoCreateParam);
+
+        if (shouldAutoCreate && intakeDataJson) {
+          autoCreateAttemptedRef.current = true;
+          setIsProcessingIntake(true);
+          try {
+            const intakeData = JSON.parse(intakeDataJson);
+            
+            // Convert intake data to request payload
+            const budget = estimateBudgetFromSavings(intakeData.savings);
+            const locationLabel = intakeData.location === 'Inside Thailand' ? 'Inside Thailand' : 'Outside Thailand';
+            
+            const requestPayload = {
+              title: `Visa application for ${mapEligibilityCodeToVisaType(intakeData.selectedCode)}`,
+              description: [
+                `Age Range: ${mapAgeRange(intakeData.age)}`,
+                `Nationality: ${intakeData.nationality}`,
+                `Current Status: ${mapLocation(intakeData.location) === 'IN_THAILAND' ? 'Inside Thailand' : 'Outside Thailand'}`,
+                `Purpose: ${intakeData.purpose}`,
+                `Timeline: ${mapDurationToTimeline(intakeData.duration)}`,
+                `Income Source: ${intakeData.incomeType}`,
+                `Additional Needs: ${intakeData.fields?.join(', ') || 'None'}`
+              ].join('\n'),
+              visaType: mapEligibilityCodeToVisaType(intakeData.selectedCode),
+              budgetMin: budget.min,
+              budgetMax: budget.max,
+              location: locationLabel,
+              intakeData: intakeData,
+            };
+
+            // Create the request
+            const newRequest = await api.requests.createRequest({
+              requestBody: requestPayload,
+            });
+
+            // Clear intake data so we don't re-create
+            localStorage.removeItem(INTAKE_DATA_KEY);
+            
+            // Redirect to the new request
+            router.push(`/requests/${newRequest.id}`);
+            return;
+          } catch (createErr) {
+            console.error('[SeekerDashboard] Auto-create request error:', createErr);
+            // Fallback to normal load if creation fails
+            setError('Failed to create your request automatically. Please try creating it manually.');
+          } finally {
+            setIsProcessingIntake(false);
+          }
+        } else if (shouldAutoCreate && !intakeDataJson) {
+          // Avoid retry loops if query param exists but no saved data
+          autoCreateAttemptedRef.current = true;
+        }
 
         const response = await api.requests.listRequests({ page: 1, limit: 5, seekerId: user.id });
         setRequests(response.data ?? []);
@@ -187,7 +247,7 @@ export default function DashboardPage() {
           router.replace('/auth/login');
           return;
         }
-        setError('Unable to load your account or requests right now.');
+        setError(getErrorDisplayMessage(err, 'load your account'));
         console.error('[SeekerDashboard] load error', err);
       } finally {
         setIsLoadingRequests(false);
@@ -195,9 +255,9 @@ export default function DashboardPage() {
     };
 
     run();
-  }, [router]);
+  }, [router, searchParams]);
 
-  const showEmptyState = !requests.length && !isLoadingRequests && !error;
+  const showEmptyState = !requests.length && !isLoadingRequests && !error && !isProcessingIntake;
 
   const toggleQuestion = (questionId: string) => {
     setExpandedQuestions((prev) => {
@@ -213,23 +273,37 @@ export default function DashboardPage() {
 
   const activeCategory = faqData.find((cat) => cat.id === activeTab) || faqData[0];
 
+  if (isProcessingIntake) {
+    return (
+      <div className="min-h-screen bg-bg-secondary flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Spinner size="lg" />
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Setting up your workspace</h2>
+            <p className="text-text-secondary mt-1">Creating your request from your answers...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
       <PageBackground />
       <SeekerHeader />
-      <div className="relative z-10 max-w-6xl mx-auto space-y-6 p-6 lg:p-10">
-        <header className="relative bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-base px-6 py-8 shadow-lg shadow-primary/5 overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
+      <div className="relative z-10 w-full mx-auto space-y-6 px-4 sm:px-6 lg:px-8 py-6 lg:py-10 max-w-7xl">
+        <header className="ios-card px-6 py-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50/40 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none"></div>
           <div className="relative">
-            <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">Your requests</p>
-            <h1 className="text-3xl font-semibold tracking-tight">
-              <GradientText>Manage your visa request</GradientText>
+            <p className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Your requests</p>
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+              Manage your visa request
             </h1>
           </div>
-          <p className="text-text-secondary">
+          <p className="text-gray-600 mt-2 max-w-2xl leading-relaxed">
             You can keep one request active or in draft. Publish to connect with providers or close it when you are done.
           </p>
-          <div className="mt-4 flex gap-3">
+          <div className="mt-6 flex gap-3">
             <Button
               type="button"
               onClick={() => router.push('/requests/new')}
@@ -255,7 +329,7 @@ export default function DashboardPage() {
         {isLoadingUser || isLoadingRequests ? (
           <div className="bg-bg-primary border border-border-light rounded-base p-6 flex items-center gap-3 text-text-secondary">
             <Spinner size="sm" />
-            <span>Loading your requests...</span>
+            <span>{LOADING_GENERIC}</span>
           </div>
         ) : null}
 
@@ -293,49 +367,58 @@ export default function DashboardPage() {
               return (
                 <article
                   key={request.id}
-                  className={`relative bg-gradient-to-br from-primary/5 to-white border-2 border-primary/20 rounded-base shadow-md shadow-primary/5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-0.5 hover:border-primary/40 ${statusBorderColors[request.status]} border-l-4 overflow-hidden`}
+                  className="ios-card group transition-all duration-300 hover:shadow-md overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full"></div>
-                  <div className="p-6 md:p-8">
+                  <div className={`h-1.5 w-full ${
+                    request.status === 'OPEN' ? 'bg-emerald-500' : 
+                    request.status === 'DRAFT' ? 'bg-amber-400' : 
+                    request.status === 'HIRED' ? 'bg-blue-500' : 'bg-gray-300'
+                  }`} />
+                  
+                  <div className="p-5 lg:p-6">
                     {/* Header: Title and Status */}
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div className="flex-1 min-w-0">
-                        <h2 className="text-xl md:text-2xl font-semibold text-text-primary tracking-tight mb-2 leading-tight">
+                        <h2 className="text-lg font-bold text-gray-900 mb-1.5 leading-tight group-hover:text-primary transition-colors">
                           {request.title}
                         </h2>
-                        <p className="text-sm text-text-secondary line-clamp-2 leading-relaxed">{request.description}</p>
-                  </div>
-                  <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold border flex-shrink-0 ${statusStyles[request.status]}`}
-                  >
+                        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">{request.description}</p>
+                      </div>
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset flex-shrink-0 ${
+                          request.status === 'DRAFT' ? 'bg-amber-50 text-amber-700 ring-amber-600/20' :
+                          request.status === 'OPEN' ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' :
+                          'bg-gray-50 text-gray-600 ring-gray-500/20'
+                        }`}
+                      >
                         <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
-                    {statusLabels[request.status]}
-                  </span>
-                </div>
+                        {statusLabels[request.status]}
+                      </span>
+                    </div>
 
                     {/* Metadata Section */}
                     {hasMetadata && (
-                      <div className="flex flex-wrap items-center gap-3 mb-5 pt-4 border-t border-border-light">
+                      <div className="flex flex-wrap items-center gap-2 mb-5">
                         {request.visaType && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg-secondary border border-border-light rounded-base text-xs font-medium text-text-secondary">
-                            <span className="text-text-tertiary">{request.visaType}</span>
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                            {request.visaType}
                           </span>
                         )}
                         {budgetText && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg-secondary border border-border-light rounded-base text-xs font-medium text-text-secondary">
-                            <Wallet className="w-3.5 h-3.5 text-text-tertiary" aria-hidden="true" />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                            <Wallet className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
                             <span>{budgetText}</span>
                           </span>
                         )}
                         {request.location && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg-secondary border border-border-light rounded-base text-xs font-medium text-text-secondary">
-                            <MapPin className="w-3.5 h-3.5 text-text-tertiary" aria-hidden="true" />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                            <MapPin className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
                             <span>{request.location}</span>
                           </span>
                         )}
                         {dateText && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg-secondary border border-border-light rounded-base text-xs font-medium text-text-secondary">
-                            <Calendar className="w-3.5 h-3.5 text-text-tertiary" aria-hidden="true" />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                            <Calendar className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
                             <span>{dateText}</span>
                           </span>
                         )}
@@ -343,44 +426,42 @@ export default function DashboardPage() {
                     )}
 
                     {/* Actions */}
-                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-light">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => router.push(`/requests/${request.id}`)}
-                  >
-                    View
-                  </Button>
-                  {(request.status === 'DRAFT' || request.status === 'OPEN') && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => router.push(`/requests/${request.id}`)}
-                      icon={<ArrowRight className="w-4 h-4" />}
-                      iconPosition="right"
-                    >
-                      {request.status === 'DRAFT' ? 'Continue' : 'View details'}
-                    </Button>
-                  )}
+                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-50">
+                      <button
+                        type="button"
+                        className="text-sm text-gray-500 hover:text-gray-900 font-medium px-3 py-1.5 transition-colors"
+                        onClick={() => router.push(`/requests/${request.id}`)}
+                      >
+                        View
+                      </button>
+                      {(request.status === 'DRAFT' || request.status === 'OPEN') && (
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                          onClick={() => router.push(`/requests/${request.id}`)}
+                        >
+                          {request.status === 'DRAFT' ? 'Continue' : 'View details'}
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
-                </div>
-              </article>
+                  </div>
+                </article>
               );
             })}
           </div>
         )}
 
         {/* FAQ Section */}
-        <section className="bg-bg-primary border border-border-light rounded-base shadow-sm" aria-label="Frequently asked questions">
+        <section className="ios-card" aria-label="Frequently asked questions">
           <div className="p-6 md:p-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-text-primary mb-2">Frequently Asked Questions</h2>
-              <p className="text-sm text-text-secondary">Find answers to common questions about using VisaOnTrack</p>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h2>
+              <p className="text-sm text-gray-500">Find answers to common questions about using VisaOnTrack</p>
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex gap-2 mb-6 border-b border-border-light" role="tablist" aria-label="FAQ categories">
+            <div className="flex gap-1 mb-8 bg-gray-50/80 p-1 rounded-xl w-fit" role="tablist" aria-label="FAQ categories">
               {faqData.map((category) => (
                 <button
                   key={category.id}
@@ -393,10 +474,10 @@ export default function DashboardPage() {
                     setActiveTab(category.id);
                     setExpandedQuestions(new Set());
                   }}
-                  className={`px-4 py-2 text-sm font-medium transition-colors duration-150 border-b-2 -mb-px ${
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                     activeTab === category.id
-                      ? 'text-primary border-primary'
-                      : 'text-text-secondary border-transparent hover:text-text-primary hover:border-border-medium'
+                      ? 'bg-white text-gray-900 shadow-sm ring-1 ring-black/5'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100/50'
                   }`}
                 >
                   {category.label}
@@ -417,7 +498,7 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={questionId}
-                    className="border border-border-light rounded-base overflow-hidden transition-all duration-150"
+                    className="border border-gray-100 rounded-xl overflow-hidden transition-all duration-200 hover:border-gray-200"
                   >
                     <button
                       type="button"
@@ -428,21 +509,21 @@ export default function DashboardPage() {
                           toggleQuestion(questionId);
                         }
                       }}
-                      className="w-full px-4 py-3 text-left flex items-center justify-between gap-4 hover:bg-bg-secondary transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+                      className="w-full px-4 py-3.5 text-left flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors duration-150 focus:outline-none"
                       aria-expanded={isExpanded}
                       aria-controls={`faq-answer-${questionId}`}
                     >
-                      <span className="font-semibold text-text-primary text-sm md:text-base pr-4">{item.question}</span>
+                      <span className="font-semibold text-gray-900 text-sm">{item.question}</span>
                       {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-text-tertiary flex-shrink-0" aria-hidden="true" />
+                        <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" aria-hidden="true" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-text-tertiary flex-shrink-0" aria-hidden="true" />
+                        <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" aria-hidden="true" />
                       )}
                     </button>
                     {isExpanded && (
                       <div
                         id={`faq-answer-${questionId}`}
-                        className="px-4 pb-4 pt-0 text-sm text-text-secondary leading-relaxed"
+                        className="px-4 pb-4 pt-0 text-sm text-gray-600 leading-relaxed"
                       >
                         {item.answer}
                       </div>
@@ -454,7 +535,24 @@ export default function DashboardPage() {
           </div>
         </section>
       </div>
+      <Footer />
     </div>
   );
 }
-import { SeekerHeader } from '@/components/SeekerHeader';
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-bg-secondary flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Spinner size="lg" />
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Loading your dashboard...</h2>
+          </div>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
+  );
+}

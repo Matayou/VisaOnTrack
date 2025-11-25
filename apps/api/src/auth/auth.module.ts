@@ -4,10 +4,11 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EmailService } from '../common/services/email.service';
 import { AuditLogService } from '../common/services/audit-log.service';
-import { RateLimitService } from '../common/services/rate-limit.service';
+// RateLimitService is provided globally in AppModule
 import { PrismaService } from '../common/services/prisma.service';
 import { JWT_SECRET, JWT_EXPIRES_IN } from './jwt.config';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [
@@ -23,11 +24,12 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     AuthService,
     EmailService,
     AuditLogService,
-    RateLimitService,
+    // RateLimitService is provided globally in AppModule
     JwtAuthGuard, // Export guard so other modules can use it
+    RolesGuard, // Export roles guard so other modules can use it
     // PrismaService is provided globally in AppModule
   ],
-  exports: [AuthService, JwtAuthGuard, JwtModule], // Export guard and JwtModule for other modules
+  exports: [AuthService, JwtAuthGuard, RolesGuard, JwtModule], // Export guards and JwtModule for other modules
 })
 export class AuthModule {}
 

@@ -1,41 +1,18 @@
 'use client';
 
-import { useEffect, useMemo, useState, type SVGProps } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { AlertCircle, ArrowLeft, ArrowRight, Calendar, Loader, MapPin, RefreshCw, Wallet } from 'lucide-react';
-import { api, type Request, type RequestStatus } from '@visaontrack/client';
-
 import { SeekerHeader } from '@/components/SeekerHeader';
-
-const statusMeta: Record<
-  RequestStatus,
-  {
-    label: string;
-    badgeClass: string;
-    description: string;
-  }
-> = {
-  DRAFT: {
-    label: 'Draft',
-    badgeClass: 'bg-amber-50 text-amber-800 border-amber-200',
-    description: 'This request is private. Publish it to invite providers to respond.',
-  },
-  OPEN: {
-    label: 'Open',
-    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    description: 'Providers can see this brief and send offers.',
-  },
-  CLOSED: {
-    label: 'Closed',
-    badgeClass: 'bg-slate-100 text-slate-700 border-slate-200',
-    description: 'This request is closed. Reopen or post another brief if you need more help.',
-  },
-  HIRED: {
-    label: 'Hired',
-    badgeClass: 'bg-primary/10 text-primary border-primary/40',
-    description: 'You selected a provider for this request.',
-  },
-};
+import { api, type Request } from '@visaontrack/client';
+import { RequestStatusCard } from './components/RequestStatusCard';
+import { RequestOverview } from './components/RequestOverview';
+import { ProposalsList } from './components/ProposalsList';
+import { ActivityTimeline, AuditLogEntry } from './components/ActivityTimeline';
+import { RequestStats } from './components/RequestStats';
+import { NextSteps } from './components/NextSteps';
+import { MobileActionSheet } from './components/MobileActionSheet';
+import { getErrorDisplayMessage } from '@/lib/error-handling';
+import { Loader, AlertCircle, ArrowLeft } from 'lucide-react';
 
 const currencyFormatter = new Intl.NumberFormat('th-TH', {
   style: 'currency',
@@ -44,261 +21,227 @@ const currencyFormatter = new Intl.NumberFormat('th-TH', {
 });
 
 export default function RequestDetailPage() {
-  const router = useRouter();
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const requestId = Array.isArray(params?.id) ? params?.id[0] : params?.id;
 
   const [request, setRequest] = useState<Request | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch Request Data
   useEffect(() => {
-    if (!requestId) {
-      setError('Request ID is missing.');
-      setIsLoading(false);
-      return;
-    }
+    if (!requestId) return;
 
     const loadRequest = async () => {
       try {
         setIsLoading(true);
-        setError(null);
         const data = await api.requests.getRequest({ id: requestId });
         setRequest(data);
-      } catch (err: unknown) {
-        const errorObj = err as { status?: number; body?: { message?: string } };
-        if (errorObj?.status === 401) {
-          router.replace('/auth/login');
-          return;
-        }
-        if (errorObj?.status === 404) {
-          setError('We could not find that request. It may have been removed or never existed.');
-        } else {
-          setError(errorObj?.body?.message ?? 'Unable to load this request right now. Please try again.');
-        }
+      } catch (err: any) {
         console.error('[RequestDetailPage] load error', err);
+        setError(getErrorDisplayMessage(err, 'load this request'));
       } finally {
         setIsLoading(false);
       }
     };
 
     loadRequest();
-  }, [requestId, router]);
+  }, [requestId]);
 
-  const descriptionBlocks = useMemo(() => {
-    if (!request?.description) {
-      return [];
+  const handlePublish = async () => {
+    if (!request) return;
+    setIsPublishing(true);
+    try {
+      // @ts-ignore - Using 'OPEN' to signify published state
+      const updated = await api.requests.updateRequest({
+        id: request.id,
+        requestBody: { status: 'OPEN' },
+      });
+      setRequest(updated);
+    } catch (err) {
+      console.error('Publish failed', err);
+      alert(getErrorDisplayMessage(err, 'publish request'));
+    } finally {
+      setIsPublishing(false);
     }
-    return request.description.split(/\n{2,}/).map((block) => block.trim());
+  };
+
+  const handleEdit = () => {
+    // Navigate to edit page (placeholder path)
+    // router.push(`/requests/${requestId}/edit`);
+    alert("Edit functionality coming soon");
+  };
+
+  // Data Mapping
+  const mappedData = useMemo(() => {
+    if (!request) return null;
+
+    const isDraft = request.status === 'DRAFT';
+    // Map OPEN/CLOSED/HIRED to PUBLISHED for UI logic
+    const uiStatus = isDraft ? 'DRAFT' : 'PUBLISHED';
+
+    // Format Budget
+    let budgetLabel = 'Not provided';
+    if (request.budgetMin != null && request.budgetMax != null) {
+      budgetLabel = `${currencyFormatter.format(request.budgetMin)} – ${currencyFormatter.format(request.budgetMax)}`;
+    } else if (request.budgetMin != null) {
+      budgetLabel = `From ${currencyFormatter.format(request.budgetMin)}`;
+    } else if (request.budgetMax != null) {
+      budgetLabel = `Up to ${currencyFormatter.format(request.budgetMax)}`;
+    }
+
+    // Extract info from intakeData if available
+    const intakeData = (request as any).intakeData;
+    
+    // Format Date
+    let updatedAtLabel = 'recently';
+    try {
+      const lastUpdate = request.updatedAt ? new Date(request.updatedAt) : new Date(request.createdAt);
+      const diffDays = -Math.round((Date.now() - lastUpdate.getTime()) / (1000 * 60 * 60 * 24));
+      if (!isNaN(diffDays)) {
+         updatedAtLabel = new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(diffDays, 'day');
+      }
+    } catch (e) {
+      console.warn('Error formatting date', e);
+    }
+
+    return {
+      id: request.id,
+      status: uiStatus,
+      title: request.title,
+      description: request.description || 'No description provided.',
+      updatedAt: updatedAtLabel === '0 days ago' ? 'today' : updatedAtLabel,
+      createdAt: new Date(request.createdAt),
+
+      applicant: {
+        nationality: intakeData?.nationality || 'See Profile',
+        ageRange: intakeData?.age || '—',
+        location: request.location || intakeData?.location || 'Not specified',
+        purpose: intakeData?.purpose || '—',
+      },
+
+      visa: {
+        type: request.visaType || 'Not specified',
+        duration: intakeData?.duration || '—',
+        incomeSource: intakeData?.incomeType || '—',
+      },
+
+      budget: {
+        range: budgetLabel,
+        savings: intakeData?.savings ? `Savings: ${intakeData.savings.replace('_', '-')}` : '—',
+      },
+
+      stats: {
+        views: null,
+        proposals: (request as any).proposals?.length || 0,
+        messages: (request as any).messages?.length || 0,
+      },
+
+      auditLogs: [], // TODO: Fetch audit logs via API when available
+      proposalsList: (request as any).proposals || [],
+    };
   }, [request]);
 
-  const meta = request ? statusMeta[request.status] : null;
-  const createdLabel = request
-    ? new Intl.DateTimeFormat('en-GB', {
-        dateStyle: 'long',
-        timeStyle: 'short',
-      }).format(new Date(request.createdAt))
-    : '';
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-gray-500">
+          <Loader className="h-5 w-5 animate-spin" />
+          <span>Loading request...</span>
+        </div>
+      </div>
+    );
+  }
 
-  const budgetLabel = useMemo(() => {
-    if (!request) {
-      return '—';
-    }
-    const { budgetMin, budgetMax } = request;
-    if (budgetMin == null && budgetMax == null) {
-      return 'Not provided';
-    }
-    if (budgetMin != null && budgetMax != null) {
-      return `${currencyFormatter.format(budgetMin)} – ${currencyFormatter.format(budgetMax)}`;
-    }
-    if (budgetMin != null) {
-      return `From ${currencyFormatter.format(budgetMin)}`;
-    }
-    return `Up to ${currencyFormatter.format(budgetMax as number)}`;
-  }, [request]);
+  if (error || !mappedData) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-xl border border-red-100 max-w-md w-full text-center">
+          <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-4" />
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Unable to load request</h2>
+          <p className="text-gray-600 mb-6">{error || 'Request not found'}</p>
+          <button 
+            onClick={() => router.push('/dashboard')}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-gray-700 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-bg-secondary">
+    <div className="min-h-screen bg-gray-50 pb-32 lg:pb-12">
       <SeekerHeader />
-      <div className="mx-auto w-full max-w-6xl px-6 py-8 lg:py-12">
-        <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-text-secondary">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="inline-flex items-center gap-2 rounded-base border border-border-light px-3 py-1.5 text-text-secondary hover:text-text-primary hover:border-border transition"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back
-          </button>
-          {request && (
-            <span className="text-xs text-text-tertiary">Request ID: {request.id}</span>
-          )}
+      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
+        <div className="lg:grid lg:grid-cols-3 lg:gap-6">
+          
+          {/* Main Column (Left) */}
+          <div className="lg:col-span-2 space-y-4 mb-4 lg:mb-0">
+            
+            <RequestStatusCard 
+              status={mappedData.status} 
+              onPublish={handlePublish} 
+            />
+
+            <RequestOverview 
+              title={mappedData.title}
+              description={mappedData.description}
+              status={mappedData.status}
+              updatedAt={mappedData.updatedAt}
+              applicant={mappedData.applicant}
+              visa={mappedData.visa}
+              budget={mappedData.budget}
+              onEdit={handleEdit}
+            />
+
+            <ProposalsList 
+              proposals={mappedData.proposalsList}
+              onPublish={handlePublish}
+            />
+
+          </div>
+
+          {/* Sidebar (Right) - Desktop Only */}
+          <aside className="hidden lg:block space-y-6">
+            
+            <NextSteps status={mappedData.status} />
+
+            <ActivityTimeline 
+              requestCreatedAt={mappedData.createdAt}
+              status={mappedData.status}
+              auditLogs={mappedData.auditLogs}
+            />
+
+            <RequestStats 
+              status={mappedData.status}
+              counts={mappedData.stats}
+            />
+
+          </aside>
+
+          {/* Mobile Activity (Below main content on mobile) */}
+          <div className="lg:hidden space-y-4">
+             <ActivityTimeline 
+              requestCreatedAt={mappedData.createdAt}
+              status={mappedData.status}
+              auditLogs={mappedData.auditLogs}
+            />
+          </div>
+
         </div>
+      </main>
 
-        {isLoading ? (
-          <div className="rounded-base border border-border-light bg-bg-primary p-6 flex items-center gap-3 text-text-secondary">
-            <Loader className="h-5 w-5 animate-spin" aria-hidden="true" />
-            <span>Loading request...</span>
-          </div>
-        ) : null}
-
-        {!isLoading && error ? (
-          <div className="rounded-base border border-error/30 bg-bg-primary p-6 text-error">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5" aria-hidden="true" />
-              <div className="space-y-3">
-                <div>
-                  <p className="text-base font-semibold text-text-primary">Something went wrong</p>
-                  <p className="text-sm">{error}</p>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-2 rounded-base border border-border-light px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:border-border transition"
-                    onClick={() => router.push('/dashboard')}
-                  >
-                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                    Return to dashboard
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-4 py-2 text-sm font-semibold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                    onClick={() => router.push('/requests/new')}
-                  >
-                    Start new request
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : null}
-
-        {!isLoading && !error && request && meta ? (
-          <div className="space-y-6">
-            <section className="rounded-base border border-border-light bg-bg-primary p-6 shadow-sm">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${meta.badgeClass}`}>
-                  <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
-                  {meta.label}
-                </span>
-                <span className="text-xs text-text-tertiary">
-                  Created {createdLabel}
-                </span>
-              </div>
-              <div className="mt-4 space-y-3">
-                <h1 className="text-3xl font-semibold text-text-primary">{request.title}</h1>
-                <p className="text-sm text-text-secondary">{meta.description}</p>
-              </div>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-base border border-border-light px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:border-border transition"
-                  onClick={() => router.push('/dashboard')}
-                >
-                  View all requests
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-5 py-2 text-sm font-semibold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:shadow-primary/15 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  onClick={() => router.push('/requests/new')}
-                >
-                  Post another request
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </button>
-              </div>
-            </section>
-
-            <section className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-base border border-border-light bg-bg-primary p-5">
-                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-text-tertiary">
-                  <FileIcon className="h-4 w-4" />
-                  Visa plan
-                </div>
-                <p className="mt-2 text-lg font-semibold text-text-primary">
-                  {request.visaType || 'Not specified'}
-                </p>
-                <p className="mt-1 text-sm text-text-secondary">
-                  The seeker selected this as their target visa. Providers can suggest alternatives if needed.
-                </p>
-              </div>
-
-              <div className="rounded-base border border-border-light bg-bg-primary p-5">
-                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-text-tertiary">
-                  <MapPin className="h-4 w-4" aria-hidden="true" />
-                  Preferred location
-                </div>
-                <p className="mt-2 text-lg font-semibold text-text-primary">
-                  {request.location || 'Not specified'}
-                </p>
-                <p className="mt-1 text-sm text-text-secondary">
-                  Location helps providers tailor offers and highlight local compliance steps.
-                </p>
-              </div>
-
-              <div className="rounded-base border border-border-light bg-bg-primary p-5">
-                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-text-tertiary">
-                  <Wallet className="h-4 w-4" aria-hidden="true" />
-                  Budget range
-                </div>
-                <p className="mt-2 text-lg font-semibold text-text-primary">{budgetLabel}</p>
-                <p className="mt-1 text-sm text-text-secondary">
-                  Shared privately with vetted providers only.
-                </p>
-              </div>
-            </section>
-
-            <section className="grid gap-4 md:grid-cols-[2fr_1fr]">
-              <article className="rounded-base border border-border-light bg-bg-primary p-6">
-                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-text-tertiary">
-                  Brief summary
-                </div>
-                <div className="mt-4 space-y-4 text-sm text-text-secondary">
-                  {descriptionBlocks.length === 0 ? (
-                    <p>No additional details were provided.</p>
-                  ) : (
-                    descriptionBlocks.map((block, index) => (
-                      <p key={index} className="whitespace-pre-wrap leading-relaxed">
-                        {block}
-                      </p>
-                    ))
-                  )}
-                </div>
-              </article>
-
-              <aside className="rounded-base border border-border-light bg-bg-primary p-6 space-y-4 text-sm text-text-secondary">
-                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-text-tertiary">
-                  Fast facts
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-xs text-text-tertiary">Status</p>
-                    <p className="text-sm font-semibold text-text-primary">{meta.label}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-text-tertiary">Created</p>
-                    <p className="text-sm font-semibold text-text-primary">{createdLabel}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-text-tertiary" aria-hidden="true" />
-                    <span>This brief updates automatically as providers respond.</span>
-                  </div>
-                </div>
-              </aside>
-            </section>
-          </div>
-        ) : null}
-      </div>
+      {/* Sticky Mobile Bottom Bar */}
+      <MobileActionSheet 
+        status={mappedData.status}
+        onPublish={handlePublish}
+        onEdit={handleEdit}
+      />
     </div>
   );
 }
-
-function FileIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" {...props}>
-      <path d="M7 3h6l4 4v14H7z" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M13 3v5h5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-

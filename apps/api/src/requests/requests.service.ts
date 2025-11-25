@@ -10,6 +10,8 @@ import {
   Request as PrismaRequest,
   RequestStatus,
   UserRole,
+  CreditTransactionType,
+  ProposalStatus,
 } from '@prisma/client';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
@@ -33,7 +35,11 @@ export class RequestsService {
    * List visa requests with pagination and optional filters
    * GET /requests
    */
-  async listRequests(query: ListRequestsQueryDto): Promise<RequestListResponseDto> {
+  async listRequests(
+    query: ListRequestsQueryDto,
+    viewerId?: string,
+    viewerRole?: UserRole | string,
+  ): Promise<RequestListResponseDto> {
     const page = query.page ?? this.DEFAULT_PAGE;
     const limit = Math.min(query.limit ?? this.DEFAULT_LIMIT, this.MAX_LIMIT);
     const skip = (page - 1) * limit;
@@ -46,12 +52,30 @@ export class RequestsService {
       where.seekerId = query.seekerId;
     }
 
+    // For Providers, we might want to know if they've unlocked/quoted
+    const include: Prisma.RequestInclude = {};
+    if (viewerRole === UserRole.PROVIDER && viewerId) {
+      // Look up the provider profile ID for the current user
+      const provider = await this.prisma.providerProfile.findUnique({
+        where: { userId: viewerId },
+        select: { id: true },
+      });
+
+      if (provider) {
+        include.proposals = {
+          where: { providerId: provider.id },
+          select: { id: true, status: true },
+        };
+      }
+    }
+
     const [requests, total] = await this.prisma.$transaction([
       this.prisma.request.findMany({
         where,
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
+        include: Object.keys(include).length > 0 ? include : undefined,
       }),
       this.prisma.request.count({ where }),
     ]);
@@ -59,7 +83,20 @@ export class RequestsService {
     const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
 
     return {
-      data: requests.map((request) => this.mapRequest(request)),
+      data: requests.map((request) => {
+        const dto = this.mapRequest(request);
+        
+        // Enhance with provider context if available
+        if (viewerRole === UserRole.PROVIDER && (request as any).proposals) {
+          const myProposals = (request as any).proposals as { status: ProposalStatus }[];
+          if (myProposals.length > 0) {
+            dto.unlockStatus = 'UNLOCKED'; // Or map specific status if needed
+          } else {
+            dto.unlockStatus = 'LOCKED';
+          }
+        }
+        return dto;
+      }),
       meta: {
         page,
         limit,
@@ -114,14 +151,14 @@ export class RequestsService {
         title: this.sanitizeRequiredString(dto.title, 'title'),
         description: this.sanitizeRequiredString(dto.description, 'description'),
         visaType: this.sanitizeNullableString(dto.visaType),
-        budgetMin: dto.budgetMin ?? null,
-        budgetMax: dto.budgetMax ?? null,
+        budget: this.formatBudget(dto.budgetMin, dto.budgetMax),
         location: this.sanitizeNullableString(dto.location),
+        intakeData: dto.intakeData ?? Prisma.DbNull,
         status: RequestStatus.DRAFT,
       },
     });
 
-    await this.auditLogService.logRequestCreated(request.id, userId, ip, ua);
+    await this.auditLogService.logRequestCreated(request.id, userId, ip, ua || 'unknown');
 
     return this.mapRequest(request);
   }
@@ -190,8 +227,7 @@ export class RequestsService {
       });
     }
 
-    const currentBudgetMin = request.budgetMin !== null ? Number(request.budgetMin) : null;
-    const currentBudgetMax = request.budgetMax !== null ? Number(request.budgetMax) : null;
+    const { budgetMin: currentBudgetMin, budgetMax: currentBudgetMax } = this.parseBudget(request.budget);
 
     const nextBudgetMin = dto.budgetMin !== undefined ? dto.budgetMin : currentBudgetMin;
     const nextBudgetMax = dto.budgetMax !== undefined ? dto.budgetMax : currentBudgetMax;
@@ -237,17 +273,14 @@ export class RequestsService {
       }
     }
 
-    if (dto.budgetMin !== undefined) {
-      data.budgetMin = dto.budgetMin ?? null;
-      if (currentBudgetMin !== dto.budgetMin) {
-        changes.budgetMin = { from: currentBudgetMin, to: dto.budgetMin ?? null };
-      }
-    }
-
-    if (dto.budgetMax !== undefined) {
-      data.budgetMax = dto.budgetMax ?? null;
-      if (currentBudgetMax !== dto.budgetMax) {
-        changes.budgetMax = { from: currentBudgetMax, to: dto.budgetMax ?? null };
+    if (dto.budgetMin !== undefined || dto.budgetMax !== undefined) {
+      const newBudget = this.formatBudget(
+        dto.budgetMin !== undefined ? dto.budgetMin : currentBudgetMin,
+        dto.budgetMax !== undefined ? dto.budgetMax : currentBudgetMax,
+      );
+      data.budget = newBudget;
+      if (newBudget !== request.budget) {
+        changes.budget = { from: request.budget, to: newBudget };
       }
     }
 
@@ -273,11 +306,74 @@ export class RequestsService {
         role ?? UserRole.SEEKER,
         changes as Prisma.InputJsonValue,
         ip,
-        ua,
+        ua || 'unknown',
       );
     }
 
     return this.mapRequest(updatedRequest);
+  }
+
+  /**
+   * Unlock a request for a provider
+   * Deducts 1 credit and creates a DRAFT proposal
+   */
+  async unlockRequest(requestId: string, providerUserId: string) {
+    const provider = await this.prisma.providerProfile.findUnique({
+      where: { userId: providerUserId },
+    });
+
+    if (!provider) {
+      throw new NotFoundException('Provider profile not found');
+    }
+
+    // Check if already unlocked (Proposal exists)
+    const existingProposal = await this.prisma.proposal.findFirst({
+      where: {
+        requestId,
+        providerId: provider.id,
+      },
+    });
+
+    if (existingProposal) {
+      throw new BadRequestException('Request already unlocked');
+    }
+
+    // Check credits
+    const COST = 1;
+    if (provider.credits < COST) {
+      throw new ForbiddenException('Insufficient credits to unlock request');
+    }
+
+    // Transaction: Deduct credit, Create Proposal, Log Transaction
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Deduct Credit
+      await tx.providerProfile.update({
+        where: { id: provider.id },
+        data: { credits: { decrement: COST } },
+      });
+
+      // 2. Create Credit Transaction
+      await tx.creditTransaction.create({
+        data: {
+          providerId: provider.id,
+          amount: -COST,
+          type: CreditTransactionType.SPEND,
+          reason: `Unlock Request: ${requestId}`,
+        },
+      });
+
+      // 3. Create Proposal (Draft)
+      const proposal = await tx.proposal.create({
+        data: {
+          requestId,
+          providerId: provider.id,
+          totalTHB: 0, // Placeholder
+          status: ProposalStatus.DRAFT,
+        },
+      });
+
+      return { success: true, proposalId: proposal.id, remainingCredits: provider.credits - COST };
+    });
   }
 
   private sanitizeRequiredString(value: string, field: string): string {
@@ -346,18 +442,78 @@ export class RequestsService {
   }
 
   private mapRequest(request: PrismaRequest): RequestResponseDto {
+    const { budgetMin, budgetMax } = this.parseBudget(request.budget);
     return {
       id: request.id,
       seekerId: request.seekerId,
       title: request.title,
       description: request.description,
       visaType: request.visaType ?? null,
-      budgetMin: request.budgetMin !== null ? Number(request.budgetMin) : null,
-      budgetMax: request.budgetMax !== null ? Number(request.budgetMax) : null,
+      budgetMin,
+      budgetMax,
       location: request.location ?? null,
       status: request.status,
       createdAt: request.createdAt,
+      intakeData: request.intakeData,
     };
   }
-}
 
+  /**
+   * Format budgetMin and budgetMax into a budget string (e.g., "THB 50k-80k")
+   */
+  private formatBudget(budgetMin?: number | null, budgetMax?: number | null): string | null {
+    if (budgetMin === null || budgetMin === undefined) {
+      if (budgetMax === null || budgetMax === undefined) {
+        return null;
+      }
+      return `THB ${this.formatBudgetValue(budgetMax)}+`;
+    }
+    if (budgetMax === null || budgetMax === undefined) {
+      return `THB ${this.formatBudgetValue(budgetMin)}+`;
+    }
+    return `THB ${this.formatBudgetValue(budgetMin)}-${this.formatBudgetValue(budgetMax)}`;
+  }
+
+  /**
+   * Format a budget value (e.g., 50000 -> "50k")
+   */
+  private formatBudgetValue(value: number): string {
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(1)}M`.replace('.0', '');
+    }
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(0)}k`;
+    }
+    return value.toString();
+  }
+
+  /**
+   * Parse budget string back to budgetMin and budgetMax
+   */
+  private parseBudget(budget: string | null): { budgetMin: number | null; budgetMax: number | null } {
+    if (!budget) {
+      return { budgetMin: null, budgetMax: null };
+    }
+
+    // Try to parse formats like "THB 50k-80k", "THB 50k+", "THB 50k"
+    const match = budget.match(/THB\s*(\d+(?:\.\d+)?[kM]?)(?:-(\d+(?:\.\d+)?[kM]?))?(\+)?/i);
+    if (!match) {
+      return { budgetMin: null, budgetMax: null };
+    }
+
+    const parseValue = (val: string): number => {
+      if (val.endsWith('M')) {
+        return parseFloat(val) * 1000000;
+      }
+      if (val.endsWith('k')) {
+        return parseFloat(val) * 1000;
+      }
+      return parseFloat(val);
+    };
+
+    const min = parseValue(match[1]);
+    const max = match[2] ? parseValue(match[2]) : match[3] ? null : min;
+
+    return { budgetMin: min, budgetMax: max };
+  }
+}

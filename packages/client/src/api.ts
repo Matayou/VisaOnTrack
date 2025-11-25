@@ -63,6 +63,7 @@ export const api = {
   reviews: Services.ReviewsService,
   billing: Services.BillingService,
   admin: Services.AdminService,
+  credits: Services.CreditsService,
 };
 
 // Re-export types and models
@@ -71,4 +72,3 @@ export type * from './index';
 // Re-export enums as values (not types)
 export { UserRole } from './models/UserRole';
 export { RequestStatus } from './models/RequestStatus';
-

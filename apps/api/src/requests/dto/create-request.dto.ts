@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min, IsObject } from 'class-validator';
 
 /**
  * DTO for creating a request (POST /requests)
@@ -39,5 +39,8 @@ export class CreateRequestDto {
   @IsString()
   @MaxLength(200)
   location?: string | null;
-}
 
+  @IsOptional()
+  @IsObject()
+  intakeData?: Record<string, any> | null;
+}

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SawadeePass · Flow Map</title>
+    <style>
+      :root {
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --primary: #2563eb;
+        --seeker: #0ea5e9;
+        --provider: #10b981;
+        --admin: #f59e0b;
+        --locked: #94a3b8;
+        --active: #22c55e;
+        --line-stroke: #cbd5e1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        background: #eff6ff;
+        color: var(--primary);
+        padding: 0.15rem 0.5rem;
+        border-radius: 99px;
+        border: 1px solid #dbeafe;
+      }
+
+      .controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .toggle-group {
+        display: flex;
+        background: #f1f5f9;
+        padding: 0.25rem;
+        border-radius: 0.5rem;
+        gap: 0.25rem;
+      }
+
+      .toggle-btn {
+        border: none;
+        background: transparent;
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .toggle-btn.active {
+        background: var(--surface);
+        color: var(--text);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+
+      .legend {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-left: 1rem;
+        padding-left: 1rem;
+        border-left: 1px solid var(--border);
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      .layout {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        overflow: hidden;
+      }
+
+      .canvas {
+        position: relative;
+        overflow: auto;
+        padding: 3rem;
+        background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+        background-size: 24px 24px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .flow-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+        padding-bottom: 4rem;
+        min-width: 800px;
+        max-width: 1200px;
+      }
+
+      .stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 2rem;
+      }
+
+      .stage-label {
+        text-align: right;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        padding-top: 1.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .stage-nodes {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .node {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        width: 240px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 2;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid transparent;
+      }
+
+      .node[data-role="seeker"] { border-left-color: var(--seeker); }
+      .node[data-role="provider"] { border-left-color: var(--provider); }
+      .node[data-role="admin"] { border-left-color: var(--admin); }
+
+      .node:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      .node.active {
+        box-shadow: 0 0 0 2px var(--primary);
+      }
+
+      .node.dimmed {
+        opacity: 0.3;
+        filter: grayscale(100%);
+      }
+
+      .node h3 {
+        margin: 0 0 0.25rem;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .node p {
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+      }
+
+      .role-pill {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        background: #f1f5f9;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      .connectors {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      aside {
+        background: var(--surface);
+        border-left: 1px solid var(--border);
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .detail-card h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        background: #f1f5f9;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+      }
+
+      .section {
+        margin-bottom: 2rem;
+      }
+
+      .section h4 {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 1.25rem;
+        font-size: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .alert {
+        background: #fff7ed;
+        border: 1px solid #ffedd5;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        color: #9a3412;
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+      }
+
+      .icon { font-size: 1.1em; }
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>
+        SawadeePass
+        <span class="badge">Mechanics Map</span>
+      </h1>
+      <div class="controls">
+        <div class="toggle-group">
+          <button class="toggle-btn active" onclick="setFilter('all')">All</button>
+          <button class="toggle-btn" onclick="setFilter('seeker')">Seeker</button>
+          <button class="toggle-btn" onclick="setFilter('provider')">Provider</button>
+          <button class="toggle-btn" onclick="setFilter('admin')">Admin</button>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="dot" style="background: var(--seeker)"></span> Seeker</div>
+          <div class="legend-item"><span class="dot" style="background: var(--provider)"></span> Provider</div>
+          <div class="legend-item"><span class="dot" style="background: var(--admin)"></span> Admin</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="canvas">
+        <svg class="connectors" id="svgLayer"></svg>
+        <div class="flow-container" id="flowContainer"></div>
+      </div>
+      <aside id="detailPanel">
+        <div style="text-align: center; margin-top: 6rem; color: var(--text-muted)">
+          Select any node to inspect<br>logic and corner cases.
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      const stages = [
+        {
+          id: "acquisition",
+          label: "Acquisition",
+          nodes: [
+            {
+              id: "s-intake",
+              role: "seeker",
+              title: "Intake Form",
+              desc: "Anonymous needs assessment via /get-started.",
+              status: "Public",
+              actions: ["Collect Visa Goal", "Determine Urgency", "Tokenize Data"],
+              cornerCases: ["Drop-off = Data Purge"]
+            },
+            {
+              id: "p-signup",
+              role: "provider",
+              title: "Partner Signup",
+              desc: "Business profile creation.",
+              status: "Public",
+              actions: ["Select Business Type", "Define Service Area"],
+              cornerCases: ["Duplicate Business Check"]
+            }
+          ]
+        },
+        {
+          id: "onboarding",
+          label: "Onboarding",
+          nodes: [
+            {
+              id: "s-auth",
+              role: "seeker",
+              title: "Account Creation",
+              desc: "Convert intake to user.",
+              status: "Gated",
+              actions: ["Auth (Email/Social)", "Map Intake Token", "Auto-Draft Request"]
+            },
+            {
+              id: "p-verify",
+              role: "provider",
+              title: "Verification",
+              desc: "Trust Badge gate.",
+              status: "Locked",
+              actions: ["Upload DBD/License", "Identity Check"],
+              cornerCases: ["Rejected Docs", "Expired License"]
+            },
+            {
+              id: "a-vetting",
+              role: "admin",
+              title: "Vetting Queue",
+              desc: "Manual review process.",
+              status: "Ops",
+              actions: ["Verify against Gov DB", "Approve/Reject Badge"]
+            }
+          ]
+        },
+        {
+          id: "marketplace",
+          label: "Marketplace",
+          nodes: [
+            {
+              id: "s-publish",
+              role: "seeker",
+              title: "Publish Request",
+              desc: "Go live to providers.",
+              status: "Active",
+              actions: ["Verify Email", "Review Draft", "Set Status: OPEN"]
+            },
+            {
+              id: "p-browse",
+              role: "provider",
+              title: "Lead Feed",
+              desc: "Anonymized browsing.",
+              status: "Active",
+              actions: ["Filter by Type", "View Budget/Urgency"],
+              cornerCases: ["Low Credit Balance"]
+            },
+            {
+              id: "p-unlock",
+              role: "provider",
+              title: "Unlock Lead",
+              desc: "Monetization event.",
+              status: "Transactional",
+              actions: ["Spend 1 Credit", "Reveal Seeker Info", "Enable Chat"]
+            }
+          ]
+        },
+        {
+          id: "engagement",
+          label: "Engagement",
+          nodes: [
+            {
+              id: "p-proposal",
+              role: "provider",
+              title: "Send Proposal",
+              desc: "Structured offer.",
+              status: "Active",
+              actions: ["Set Price & Timeline", "Attach Deliverables"]
+            },
+            {
+              id: "s-inbox",
+              role: "seeker",
+              title: "Review & Chat",
+              desc: "Selection process.",
+              status: "Active",
+              actions: ["Compare Proposals", "Chat securely", "Hire Provider"]
+            }
+          ]
+        },
+        {
+          id: "fulfillment",
+          label: "Fulfillment",
+          nodes: [
+            {
+              id: "s-pay",
+              role: "seeker",
+              title: "Log Payment",
+              desc: "Direct transfer record.",
+              status: "Manual",
+              actions: ["Mark 'Hired'", "Record Transfer Details"]
+            },
+            {
+              id: "saas-tools",
+              role: "provider",
+              title: "Case Management",
+              desc: "SaaS Execution.",
+              status: "Active",
+              actions: ["Request Docs (Vault)", "Update Milestones", "Timeline View"]
+            }
+          ]
+        },
+        {
+          id: "retention",
+          label: "Retention",
+          nodes: [
+            {
+              id: "s-review",
+              role: "seeker",
+              title: "Completion Review",
+              desc: "Reputation loop.",
+              status: "Final",
+              actions: ["Rate 1-5 Stars", "Close Request"]
+            },
+            {
+              id: "a-monitor",
+              role: "admin",
+              title: "Quality Ops",
+              desc: "Platform health.",
+              status: "Ops",
+              actions: ["Monitor Disputes", "Suspend Bad Actors"]
+            }
+          ]
+        }
+      ];
+
+      const edges = [
+        { from: "s-intake", to: "s-auth" },
+        { from: "p-signup", to: "p-verify" },
+        { from: "p-verify", to: "a-vetting" },
+        { from: "a-vetting", to: "p-browse" },
+        { from: "s-auth", to: "s-publish" },
+        { from: "s-publish", to: "p-browse" },
+        { from: "p-browse", to: "p-unlock" },
+        { from: "p-unlock", to: "p-proposal" },
+        { from: "p-proposal", to: "s-inbox" },
+        { from: "s-inbox", to: "s-pay" },
+        { from: "s-pay", to: "saas-tools" },
+        { from: "saas-tools", to: "s-review" },
+        { from: "s-review", to: "a-monitor" }
+      ];
+
+      // Render
+      const container = document.getElementById('flowContainer');
+      const svg = document.getElementById('svgLayer');
+      const detail = document.getElementById('detailPanel');
+
+      stages.forEach(stage => {
+        const row = document.createElement('div');
+        row.className = 'stage';
+        
+        row.innerHTML = `
+          <div class="stage-label">${stage.label}</div>
+          <div class="stage-nodes">
+            ${stage.nodes.map(node => `
+              <div class="node" id="${node.id}" data-role="${node.role}" onclick="selectNode('${node.id}')">
+                <h3>${node.title} <span class="role-pill">${node.role}</span></h3>
+                <p>${node.desc}</p>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      // Logic
+      let nodesMap = {};
+      stages.forEach(s => s.nodes.forEach(n => nodesMap[n.id] = n));
+
+      function selectNode(id) {
+        document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        
+        const node = nodesMap[id];
+        
+        detail.innerHTML = `
+          <div class="detail-card">
+            <h2>${node.title}</h2>
+            <div class="status-badge">
+              <span class="dot" style="background: var(--${node.role})"></span>
+              ${node.status}
+            </div>
+
+            <div class="section">
+              <h4>System Actions</h4>
+              <ul>
+                ${node.actions.map(a => `<li>${a}</li>`).join('')}
+              </ul>
+            </div>
+
+            ${node.cornerCases ? `
+              <div class="alert">
+                <span class="icon">⚠️</span>
+                <div>
+                  <div style="font-weight:600; margin-bottom:0.25rem">Edge Cases</div>
+                  ${node.cornerCases.join('<br>')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      function setFilter(role) {
+        document.querySelectorAll('.toggle-btn').forEach(b => 
+          b.classList.toggle('active', b.innerText.toLowerCase() === role)
+        );
+
+        document.querySelectorAll('.node').forEach(n => {
+          if (role === 'all' || n.dataset.role === role) {
+            n.classList.remove('dimmed');
+          } else {
+            n.classList.add('dimmed');
+          }
+        });
+      }
+
+      function drawConnections() {
+        svg.innerHTML = '';
+        const offset = container.getBoundingClientRect();
+
+        edges.forEach(edge => {
+          const f = document.getElementById(edge.from).getBoundingClientRect();
+          const t = document.getElementById(edge.to).getBoundingClientRect();
+
+          const x1 = f.right - offset.left;
+          const y1 = f.top + (f.height/2) - offset.top;
+          const x2 = t.left - offset.left;
+          const y2 = t.top + (t.height/2) - offset.top;
+
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          
+          // Curvy connector
+          const c = 50;
+          const d = `M ${x1} ${y1} C ${x1+c} ${y1}, ${x2-c} ${y2}, ${x2} ${y2}`;
+          
+          path.setAttribute("d", d);
+          path.setAttribute("fill", "none");
+          path.setAttribute("stroke", "#cbd5e1");
+          path.setAttribute("stroke-width", "2");
+          
+          svg.appendChild(path);
+        });
+      }
+
+      window.onresize = drawConnections;
+      setTimeout(drawConnections, 100);
+
+    </script>
+  </body>
+</html>

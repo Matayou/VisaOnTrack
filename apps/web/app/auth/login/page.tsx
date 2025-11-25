@@ -3,77 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Compass, Eye, EyeOff, CheckCircle, AlertCircle, ShieldCheck, Clock } from 'lucide-react';
+import { Compass, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
-import { getApiErrorMessage, isApiError } from '@/lib/api-error';
-import { Button, Spinner, PageBackground, GradientText } from '@/components/ui';
-
-// Email typo detection
-const commonTypos: Record<string, string> = {
-  'gmial.com': 'gmail.com',
-  'gmai.com': 'gmail.com',
-  'gmil.com': 'gmail.com',
-  'yahooo.com': 'yahoo.com',
-  'yaho.com': 'yahoo.com',
-  'hotmial.com': 'hotmail.com',
-};
-
-type ValidationState = 'empty' | 'success' | 'error';
-
-interface ValidationResult {
-  status: ValidationState;
-  message: string;
-  suggestion?: string;
-}
-
-function validateEmail(email: string): ValidationResult {
-  if (!email) {
-    return { status: 'empty', message: '' };
-  }
-
-  if (!email.includes('@')) {
-    return {
-      status: 'error',
-      message: 'Email is missing @ symbol',
-    };
-  }
-
-  const parts = email.split('@');
-  if (parts.length !== 2 || !parts[0] || !parts[1]) {
-    return {
-      status: 'error',
-      message: 'Email format looks incorrect',
-    };
-  }
-
-  const domain = parts[1].toLowerCase();
-
-  // Check for common typos
-  for (const [typo, correct] of Object.entries(commonTypos)) {
-    if (domain === typo) {
-      return {
-        status: 'error',
-        message: `Did you mean ${parts[0]}@${correct}?`,
-        suggestion: `${parts[0]}@${correct}`,
-      };
-    }
-  }
-
-  // Check for basic domain format
-  if (!domain.includes('.')) {
-    return {
-      status: 'error',
-      message: 'Domain needs a dot (like .com)',
-    };
-  }
-
-  // Valid!
-  return {
-    status: 'success',
-    message: 'Looks good!',
-  };
-}
+import { Button, GradientText } from '@/components/ui';
+import { AuthPageShell } from '@/components/AuthPageShell';
+import { validateEmail, type ValidationResult } from '@/lib/validation';
+import { LOADING_SIGNING_IN } from '@/lib/loading-messages';
+import { getErrorDisplayMessage, isAuthError } from '@/lib/error-handling';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -96,7 +33,6 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
 
-    // Validate email before submit
     const emailResult = validateEmail(email);
     if (emailResult.status !== 'success') {
       setEmailValidation(emailResult);
@@ -114,70 +50,49 @@ export default function LoginPage() {
         requestBody: {
           email,
           password,
-          // Note: rememberMe is not in OpenAPI spec - stored in localStorage
         },
       });
 
-      // Store rememberMe preference
       if (rememberMe) {
         localStorage.setItem('rememberMe', 'true');
       }
 
-      // Redirect to dashboard/home after successful login
-      // Check onboarding status and redirect accordingly
       try {
         const user = await api.users.getCurrentUser();
-        console.log('[LoginPage] User after login:', {
-          id: user.id,
-          email: user.email,
-          role: user.role,
-          emailVerified: user.emailVerified,
-          providerOnboardingCompleted: user.providerOnboardingCompleted,
-          providerBusinessStepCompleted: user.providerBusinessStepCompleted,
-          providerServicesStepCompleted: user.providerServicesStepCompleted,
-          providerCredentialsStepCompleted: user.providerCredentialsStepCompleted,
-        });
-        
-        // Check email verification first
+
         if (!user.emailVerified) {
-          console.log('[LoginPage] Email not verified, redirecting to verify-email');
           router.push('/auth/verify-email');
           return;
         }
 
-        // Check provider onboarding progress
         if (user.role === 'PROVIDER' && !user.providerOnboardingCompleted) {
           const nextStep = getNextProviderOnboardingStep(user);
-          console.log('[LoginPage] Provider with incomplete onboarding, next step:', nextStep);
           if (nextStep) {
             router.push(nextStep);
             return;
           }
         }
 
-        // SEEKER users go directly to their dashboard (no onboarding process)
         if (user.role === 'SEEKER') {
-          console.log('[LoginPage] Seeker user, redirecting to dashboard');
           router.push('/dashboard');
           return;
         }
 
-        // For completed onboarding, redirect to landing page
-        // (The landing page will handle further redirects if needed)
-        console.log('[LoginPage] Redirecting to landing page (role:', user.role, ', onboarding complete:', user.providerOnboardingCompleted || user.seekerOnboardingCompleted, ')');
+        if (user.role === 'PROVIDER') {
+          router.push('/providers/dashboard');
+          return;
+        }
+
         router.push('/');
       } catch (userError) {
         console.error('[LoginPage] Error fetching user after login:', userError);
-        // Fallback to landing page if user fetch fails
         router.push('/');
       }
-    } catch (error: unknown) {
-      if (isApiError(error) && (error.body?.code === 'UNAUTHORIZED' || error.status === 401)) {
+    } catch (err: unknown) {
+      if (isAuthError(err)) {
         setError('Invalid email or password');
       } else {
-        const message = isApiError(error)
-          ? getApiErrorMessage(error, 'An error occurred. Please try again.')
-          : 'An error occurred. Please try again.';
+        const message = getErrorDisplayMessage(err, 'sign in');
         setError(message);
       }
     } finally {
@@ -186,12 +101,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6 sm:p-8">
-      <PageBackground />
-      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
-        {/* Header */}
-        <div className="relative p-8 sm:p-10 pb-6 text-center">
+    <AuthPageShell>
+      <div className="relative z-10 w-full max-w-[28rem] mx-auto bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 transition-all duration-300 overflow-hidden p-6 sm:p-8">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full" />
+        <div className="relative pb-6 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-6 shadow-md shadow-primary/20">
             <Compass className="w-7 h-7 text-white" aria-hidden="true" />
           </div>
@@ -201,10 +114,8 @@ export default function LoginPage() {
           <p className="text-base text-text-secondary leading-relaxed">Sign in to your VisaOnTrack account</p>
         </div>
 
-        {/* Form */}
-        <div className="px-8 sm:px-10 pb-8 sm:pb-10">
+        <div className="px-2 sm:px-4 md:px-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {/* Email Input */}
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="text-sm font-medium tracking-normal flex items-center gap-2">
                 Email address
@@ -215,12 +126,12 @@ export default function LoginPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-lg transition-all duration-150 outline-none pr-11 ${
+                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
                     emailValidation.status === 'success'
                       ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
                       : emailValidation.status === 'error'
                       ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
                   }`}
                   placeholder="you@example.com"
                   required
@@ -229,9 +140,7 @@ export default function LoginPage() {
                   aria-describedby={emailValidation.status !== 'empty' ? 'email-message' : undefined}
                 />
                 {(emailValidation.status === 'success' || emailValidation.status === 'error') && (
-                  <div
-                    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-opacity duration-150 opacity-100"
-                  >
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-opacity duration-150 opacity-100">
                     {emailValidation.status === 'success' ? (
                       <CheckCircle className="w-[18px] h-[18px] text-success" aria-hidden="true" />
                     ) : (
@@ -256,7 +165,6 @@ export default function LoginPage() {
               )}
             </div>
 
-            {/* Password Input */}
             <div className="flex flex-col gap-2">
               <label htmlFor="password" className="text-sm font-medium tracking-normal">
                 Password
@@ -270,7 +178,7 @@ export default function LoginPage() {
                     setPassword(e.target.value);
                     setError(null);
                   }}
-                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-lg transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] focus:scale-[1.01]"
+                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
                   placeholder="Enter your password"
                   required
                   autoComplete="current-password"
@@ -281,16 +189,11 @@ export default function LoginPage() {
                   className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none p-2 cursor-pointer text-text-tertiary flex items-center rounded-sm transition-all duration-150 hover:text-text-secondary hover:bg-bg-secondary"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                    {showPassword ? (
-                      <EyeOff className="w-[18px] h-[18px]" aria-hidden="true" />
-                    ) : (
-                      <Eye className="w-[18px] h-[18px]" aria-hidden="true" />
-                  )}
+                  {showPassword ? <EyeOff className="w-[18px] h-[18px]" aria-hidden="true" /> : <Eye className="w-[18px] h-[18px]" aria-hidden="true" />}
                 </button>
               </div>
             </div>
 
-            {/* Remember Me + Forgot Password */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <input
@@ -312,7 +215,6 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div role="alert" className="text-xs text-error flex items-center gap-2 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
                 <AlertCircle className="w-4 h-4" aria-hidden="true" />
@@ -320,34 +222,28 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              loading={isLoading}
-              fullWidth
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+            <Button type="submit" disabled={isLoading} loading={isLoading} fullWidth>
+              {isLoading ? LOADING_SIGNING_IN : 'Sign in'}
             </Button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-4 my-8">
-            <div className="flex-1 h-px bg-border-light"></div>
+            <div className="flex-1 h-px bg-border-light" />
             <span className="text-sm text-text-tertiary">New to VisaOnTrack?</span>
-            <div className="flex-1 h-px bg-border-light"></div>
+            <div className="flex-1 h-px bg-border-light" />
           </div>
 
-          {/* Sign Up Link */}
           <div className="text-center">
             <span className="text-base text-text-secondary">Don&rsquo;t have an account? </span>
-            <Link href="/auth/register" className="font-semibold text-primary no-underline transition-colors duration-200 hover:text-primary-hover">
+            <Link
+              href="/auth/register"
+              className="font-semibold text-primary no-underline transition-colors duration-200 hover:text-primary-hover"
+            >
               Create account
             </Link>
           </div>
         </div>
       </div>
-    </div>
+    </AuthPageShell>
   );
 }
-

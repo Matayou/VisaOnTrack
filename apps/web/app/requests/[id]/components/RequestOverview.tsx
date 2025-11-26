@@ -1,4 +1,14 @@
 import React from 'react';
+import { 
+  Globe, 
+  User, 
+  MapPin, 
+  Target, 
+  FileBadge, 
+  Clock, 
+  Wallet, 
+  PiggyBank 
+} from 'lucide-react';
 
 interface RequestOverviewProps {
   title: string;
@@ -53,15 +63,17 @@ export const RequestOverview: React.FC<RequestOverviewProps> = ({
               Edited {updatedAt}
             </span>
           </div>
-          <button 
-            onClick={onEdit}
-            className="text-sm text-gray-500 hover:text-primary font-medium flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors group"
-          >
-            <svg className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-            Edit details
-          </button>
+          {status === 'DRAFT' && (
+            <button 
+              onClick={onEdit}
+              className="text-sm text-gray-500 hover:text-primary font-medium flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors group"
+            >
+              <svg className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Edit details
+            </button>
+          )}
         </div>
 
         <h1 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-3">
@@ -83,21 +95,33 @@ export const RequestOverview: React.FC<RequestOverviewProps> = ({
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
-              <span className="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Nationality</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <Globe className="w-3 h-3 text-gray-400" />
+                <span className="text-gray-500 text-[11px] uppercase tracking-wide">Nationality</span>
+              </div>
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-gray-900 text-sm">{applicant.nationality}</p>
               </div>
             </div>
             <div className="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
-              <span className="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Age Range</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <User className="w-3 h-3 text-gray-400" />
+                <span className="text-gray-500 text-[11px] uppercase tracking-wide">Age Range</span>
+              </div>
               <p className="font-semibold text-gray-900 text-sm">{applicant.ageRange}</p>
             </div>
             <div className="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
-              <span className="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Location</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <MapPin className="w-3 h-3 text-gray-400" />
+                <span className="text-gray-500 text-[11px] uppercase tracking-wide">Location</span>
+              </div>
               <p className="font-semibold text-gray-900 text-sm">{applicant.location}</p>
             </div>
             <div className="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
-              <span className="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Purpose</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <Target className="w-3 h-3 text-gray-400" />
+                <span className="text-gray-500 text-[11px] uppercase tracking-wide">Purpose</span>
+              </div>
               <p className="font-semibold text-gray-900 text-sm">{applicant.purpose}</p>
             </div>
           </div>
@@ -111,15 +135,24 @@ export const RequestOverview: React.FC<RequestOverviewProps> = ({
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-blue-50/50 rounded-xl p-3.5 border border-blue-100/60 shadow-sm sm:col-span-1">
-              <span className="text-blue-600/80 text-[11px] uppercase tracking-wide block mb-1">Visa Type</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <FileBadge className="w-3 h-3 text-blue-400" />
+                <span className="text-blue-600/80 text-[11px] uppercase tracking-wide">Visa Type</span>
+              </div>
               <p className="font-bold text-blue-700 text-sm">{visa.type}</p>
             </div>
             <div className="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
-              <span className="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Duration</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <Clock className="w-3 h-3 text-gray-400" />
+                <span className="text-gray-500 text-[11px] uppercase tracking-wide">Duration</span>
+              </div>
               <p className="font-semibold text-gray-900 text-sm">{visa.duration}</p>
             </div>
             <div className="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm">
-              <span className="text-gray-500 text-[11px] uppercase tracking-wide block mb-1">Income Source</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <Wallet className="w-3 h-3 text-gray-400" />
+                <span className="text-gray-500 text-[11px] uppercase tracking-wide">Income Source</span>
+              </div>
               <p className="font-semibold text-gray-900 text-sm">{visa.incomeSource}</p>
             </div>
           </div>
@@ -135,7 +168,10 @@ export const RequestOverview: React.FC<RequestOverviewProps> = ({
             </div>
           </div>
           <div className="sm:text-right sm:border-l sm:border-gray-100 sm:pl-6">
-            <span className="text-gray-500 text-[11px] uppercase tracking-wide block mb-0.5">Savings Proof</span>
+            <div className="flex items-center gap-1.5 mb-0.5 justify-start sm:justify-end">
+              <PiggyBank className="w-3 h-3 text-gray-400" />
+              <span className="text-gray-500 text-[11px] uppercase tracking-wide">Savings Proof</span>
+            </div>
              <p className="text-sm font-medium text-gray-700">{budget.savings}</p>
           </div>
         </div>

@@ -1,6 +1,6 @@
 # UX Audit Report
 
-**Date:** 2025-01-22 (Updated 2025-01-22)  
+**Date:** 2025-01-22 (Updated 2025-11-26)  
 **Auditor:** UI/UX Designer  
 **Scope:** All implemented pages in VisaOnTrack v2  
 **Status:** Phase 1 & 2 Improvements Complete
@@ -8,6 +8,11 @@
 ## Executive Summary
 
 This audit examined 14+ implemented pages for UX quality, design consistency, component usage, and user experience patterns. The application shows good overall UX quality with modern design patterns, but several consistency issues were identified that should be addressed to improve maintainability and user experience.
+
+## Recent Improvements (2025-11-26)
+- Global footer restyled on dark surface tokens (`footer.surface`, `footer.text.*`) to align with trust-first visual direction without altering information architecture.
+- QA focus areas: smoke-test `/`, `/how-it-works`, and `/dashboard` after next deploy to ensure ≥4.5:1 link contrast, persistent focus rings, and responsive spacing on the new surface.
+- Decorative glow/grid layers remain intentionally non-semantic so keyboard and screen-reader experiences stay unchanged.
 
 ### Overall Assessment
 

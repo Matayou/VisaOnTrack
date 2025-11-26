@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { IsEnum, IsNumber, IsObject, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 import { RequestStatus } from '@prisma/client';
 
 /**
@@ -44,5 +44,9 @@ export class UpdateRequestDto {
   @IsOptional()
   @IsEnum(RequestStatus)
   status?: RequestStatus;
+
+  @IsOptional()
+  @IsObject()
+  intakeData?: Record<string, any> | null;
 }
 

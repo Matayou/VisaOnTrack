@@ -14,6 +14,17 @@ const config: Config = {
           hover: 'var(--color-primary-hover)',
           light: '#dbeafe',
         },
+        footer: {
+          surface: 'var(--color-surface-footer)',
+          surfaceMuted: 'var(--color-surface-footer-muted)',
+          text: {
+            primary: 'var(--color-text-on-dark)',
+            secondary: 'var(--color-text-on-dark-muted)',
+            tertiary: 'var(--color-text-on-dark-subtle)',
+          },
+          border: 'var(--color-border-footer)',
+          glow: 'var(--color-glow-footer)',
+        },
         text: {
           primary: 'var(--color-text-primary)',
           secondary: 'var(--color-text-secondary)',

@@ -16,6 +16,13 @@
     --color-bg-secondary: #fafafa;
     --color-border-light: rgba(0, 0, 0, 0.06);
     --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    --color-surface-footer: #05070f;
+    --color-surface-footer-muted: #0c1324;
+    --color-text-on-dark: #f4f7ff;
+    --color-text-on-dark-muted: rgba(226, 232, 255, 0.82);
+    --color-text-on-dark-subtle: rgba(148, 163, 184, 0.85);
+    --color-border-footer: rgba(255, 255, 255, 0.08);
+    --color-glow-footer: rgba(37, 99, 235, 0.35);
   }
 
   html {

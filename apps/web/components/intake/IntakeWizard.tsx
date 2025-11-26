@@ -171,15 +171,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         
         const requestPayload = {
           title: `Visa application for ${mapEligibilityCodeToVisaType(selectedCard)}`,
-          description: [
-            `Age Range: ${mapAgeRange(state.age)}`,
-            `Nationality: ${state.nationality}`,
-            `Current Status: ${mapLocation(state.location) === 'IN_THAILAND' ? 'Inside Thailand' : 'Outside Thailand'}`,
-            `Purpose: ${state.purpose}`,
-            `Timeline: ${mapDurationToTimeline(state.duration)}`,
-            `Income Source: ${state.incomeType}`,
-            `Additional Needs: ${state.fields?.join(', ') || 'None'}`
-          ].join('\n'),
+          description: state.fields?.join(', ') || 'None', // Use simpler description
           visaType: mapEligibilityCodeToVisaType(selectedCard),
           budgetMin: budget.min,
           budgetMax: budget.max,

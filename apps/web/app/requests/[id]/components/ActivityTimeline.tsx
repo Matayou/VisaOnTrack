@@ -4,7 +4,7 @@ import React from 'react';
 export interface AuditLogEntry {
   id: string;
   action: string; // 'EDIT', 'PUBLISH', etc.
-  createdAt: Date;
+  createdAt: Date | string;
 }
 
 interface ActivityTimelineProps {
@@ -18,24 +18,43 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
   status, 
   auditLogs 
 }) => {
+  const getActionLabel = (action: string) => {
+    switch (action) {
+      case 'REQUEST_CREATED':
+        return 'Request created';
+      case 'REQUEST_UPDATED':
+        return 'Request updated';
+      case 'EDIT':
+        return 'Request edited';
+      default:
+        // Convert "SOME_ACTION_NAME" to "Some action name"
+        return action.replace(/_/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase());
+    }
+  };
+
+  const hasCreationLog = auditLogs.some(log => log.action === 'REQUEST_CREATED');
+
   // Combine creation event with audit logs
   const events = [
-    // The creation event always exists
-    {
+    // The creation event always exists (fallback if not in logs)
+    ...(!hasCreationLog ? [{
       id: 'created',
       title: 'Request created',
-      subtitle: `Draft saved · ${new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(0, 'second')}`, // Simplified relative time for now
+      subtitle: `Draft saved · ${new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(0, 'second')}`, 
       type: 'creation',
       timestamp: requestCreatedAt
-    },
+    }] : []),
     // Map audit logs to timeline events
-    ...auditLogs.map(log => ({
-      id: log.id,
-      title: log.action === 'EDIT' ? 'Request edited' : log.action,
-      subtitle: log.createdAt.toLocaleDateString(),
-      type: 'action',
-      timestamp: log.createdAt
-    }))
+    ...auditLogs.map(log => {
+      const date = new Date(log.createdAt);
+      return {
+        id: log.id,
+        title: getActionLabel(log.action),
+        subtitle: date.toLocaleDateString(),
+        type: log.action === 'REQUEST_CREATED' ? 'creation' : 'action',
+        timestamp: date
+      };
+    })
   ].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()); // Newest first
 
   return (

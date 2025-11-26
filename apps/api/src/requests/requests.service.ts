@@ -179,7 +179,24 @@ export class RequestsService {
       });
     }
 
-    return this.mapRequest(request);
+    // Fetch audit logs for this request
+    const logs = await this.prisma.auditLog.findMany({
+      where: {
+        entityType: 'Request',
+        entityId: requestId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        action: true,
+        createdAt: true,
+        actorRole: true,
+      },
+    });
+
+    return this.mapRequest(request, logs);
   }
 
   /**
@@ -227,6 +244,26 @@ export class RequestsService {
       });
     }
 
+    // Restrict updating published requests (only allow closing/hiring, or admin overrides)
+    if (request.status !== RequestStatus.DRAFT && role !== UserRole.ADMIN) {
+      // If status is not changing, or if trying to change anything other than status
+      const isStatusChangeOnly = 
+        dto.status !== undefined && 
+        dto.title === undefined && 
+        dto.description === undefined && 
+        dto.visaType === undefined && 
+        dto.budgetMin === undefined && 
+        dto.budgetMax === undefined && 
+        dto.location === undefined;
+
+      if (!isStatusChangeOnly) {
+        throw new ForbiddenException({
+          code: 'FORBIDDEN',
+          message: 'Cannot edit details of a published request. Only status changes are allowed.',
+        });
+      }
+    }
+
     const { budgetMin: currentBudgetMin, budgetMax: currentBudgetMax } = this.parseBudget(request.budget);
 
     const nextBudgetMin = dto.budgetMin !== undefined ? dto.budgetMin : currentBudgetMin;
@@ -247,6 +284,12 @@ export class RequestsService {
       if (title !== request.title) {
         changes.title = { from: request.title, to: title };
       }
+    }
+
+    if (dto.intakeData !== undefined) {
+      data.intakeData = dto.intakeData ?? Prisma.DbNull;
+      // We don't deep diff intakeData for now, just note it changed
+      changes.intakeData = { from: 'old_data', to: 'new_data' };
     }
 
     if (dto.description !== undefined) {
@@ -441,7 +484,7 @@ export class RequestsService {
     });
   }
 
-  private mapRequest(request: PrismaRequest): RequestResponseDto {
+  private mapRequest(request: PrismaRequest, auditLogs?: any[]): RequestResponseDto {
     const { budgetMin, budgetMax } = this.parseBudget(request.budget);
     return {
       id: request.id,
@@ -455,6 +498,7 @@ export class RequestsService {
       status: request.status,
       createdAt: request.createdAt,
       intakeData: request.intakeData,
+      auditLogs,
     };
   }
 

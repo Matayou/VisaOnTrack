@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Providers | SawadeePass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            },
+            colors: {
+              primary: '#2563eb',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .ios-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+      }
+    </style>
+    <script>
+      function toggleFilters() {
+        const sidebar = document.getElementById('filters-sidebar');
+        sidebar.classList.toggle('hidden');
+      }
+      function toggleView(view) {
+        const gridView = document.getElementById('grid-view');
+        const listView = document.getElementById('list-view');
+        const gridBtn = document.getElementById('grid-btn');
+        const listBtn = document.getElementById('list-btn');
+        
+        if (view === 'grid') {
+          gridView.classList.remove('hidden');
+          listView.classList.add('hidden');
+          gridBtn.classList.add('bg-gray-100', 'text-gray-900');
+          gridBtn.classList.remove('text-gray-500');
+          listBtn.classList.remove('bg-gray-100', 'text-gray-900');
+          listBtn.classList.add('text-gray-500');
+        } else {
+          gridView.classList.add('hidden');
+          listView.classList.remove('hidden');
+          listBtn.classList.add('bg-gray-100', 'text-gray-900');
+          listBtn.classList.remove('text-gray-500');
+          gridBtn.classList.remove('bg-gray-100', 'text-gray-900');
+          gridBtn.classList.add('text-gray-500');
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="min-h-screen pb-32 lg:pb-12">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+              <span class="text-white font-bold text-sm">SP</span>
+            </div>
+            <span class="font-bold text-gray-900">SawadeePass</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="text-sm text-gray-500 hover:text-gray-900 font-medium">
+              Support
+            </button>
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+              <span class="text-sm font-semibold text-gray-600">JD</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
+        <div class="mb-4 lg:mb-6 flex items-center justify-between">
+          <button class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors px-2 py-1 -ml-2 rounded-lg hover:bg-gray-100/50">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </button>
+          <button onclick="toggleFilters()" class="lg:hidden px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
+          </button>
+        </div>
+
+        <div class="lg:grid lg:grid-cols-4 lg:gap-6">
+          <!-- Filters Sidebar -->
+          <aside id="filters-sidebar" class="hidden lg:block lg:col-span-1 mb-4 lg:mb-0">
+            <div class="ios-card p-5 sticky top-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-gray-900">Filters</h3>
+                <button class="text-xs text-primary hover:text-indigo-600 font-medium">Clear all</button>
+              </div>
+
+              <div class="space-y-5">
+                <!-- Verified Only -->
+                <div>
+                  <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked class="rounded border-gray-300 text-primary focus:ring-primary" />
+                    <span class="text-gray-700 font-medium">Verified providers only</span>
+                  </label>
+                </div>
+
+                <!-- Specialization -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Specialization
+                  </label>
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" checked class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Digital Nomad (DTV)</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Retirement</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Elite Visa</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Education</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Business</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Rating -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Minimum Rating
+                  </label>
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="radio" name="rating" class="text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Any rating</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="radio" name="rating" checked class="text-primary focus:ring-primary" />
+                      <span class="text-gray-700">4+ stars</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="radio" name="rating" class="text-primary focus:ring-primary" />
+                      <span class="text-gray-700">4.5+ stars</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Location -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Location
+                  </label>
+                  <select class="w-full rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3">
+                    <option>All locations</option>
+                    <option>Bangkok</option>
+                    <option>Chiang Mai</option>
+                    <option>Phuket</option>
+                    <option>Pattaya</option>
+                  </select>
+                </div>
+
+                <!-- Languages -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Languages
+                  </label>
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">English</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Thai</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Mandarin</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Experience -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Experience
+                  </label>
+                  <select class="w-full rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3">
+                    <option>Any experience</option>
+                    <option>5+ years</option>
+                    <option>10+ years</option>
+                    <option>15+ years</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Main Content -->
+          <div class="lg:col-span-3">
+            <!-- Search & View Toggle Bar -->
+            <div class="ios-card p-4 mb-4">
+              <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 relative">
+                  <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search providers by name, location, or specialty..."
+                    class="w-full pl-10 pr-4 py-2 rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm"
+                  />
+                </div>
+                <div class="flex items-center gap-2">
+                  <select class="rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3">
+                    <option>Sort: Recommended</option>
+                    <option>Sort: Highest rated</option>
+                    <option>Sort: Most reviews</option>
+                    <option>Sort: Lowest price</option>
+                    <option>Sort: Fastest response</option>
+                  </select>
+                  <div class="hidden sm:flex items-center gap-1 border border-gray-200 rounded-lg p-1">
+                    <button id="grid-btn" onclick="toggleView('grid')" class="p-1.5 rounded bg-gray-100 text-gray-900 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                      </svg>
+                    </button>
+                    <button id="list-btn" onclick="toggleView('list')" class="p-1.5 rounded text-gray-500 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-gray-500">
+                Showing <span class="font-semibold text-gray-900">12</span> verified providers
+              </div>
+            </div>
+
+            <!-- Grid View -->
+            <div id="grid-view" class="grid sm:grid-cols-2 gap-4">
+              <!-- Provider Card 1 -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-lg">
+                    VT
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-gray-900 text-base mb-1 truncate">
+                      Visa Thailand Experts
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-2">Bangkok, Thailand</p>
+                    <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-0.5">
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      </div>
+                      <span class="text-xs font-semibold text-gray-900">4.9</span>
+                      <span class="text-xs text-gray-500">(24)</span>
+                      <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 ml-auto flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">
+                  Professional visa agency with 15+ years of experience helping expats navigate Thai immigration.
+                </p>
+
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">DTV</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Retirement</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Elite</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">From</p>
+                    <p class="font-semibold text-gray-900">฿45,000</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Response</p>
+                    <p class="font-semibold text-gray-900">~2-4 hours</p>
+                  </div>
+                </div>
+
+                <button class="w-full px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200">
+                  View profile
+                </button>
+              </div>
+
+              <!-- Provider Card 2 -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-lg">
+                    TS
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-gray-900 text-base mb-1 truncate">
+                      Thai Smile Visa Services
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-2">Chiang Mai, Thailand</p>
+                    <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-0.5">
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      </div>
+                      <span class="text-xs font-semibold text-gray-900">5.0</span>
+                      <span class="text-xs text-gray-500">(18)</span>
+                      <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 ml-auto flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">
+                  Boutique visa agency specializing in Digital Nomad and Education visas. Fast processing with personalized service.
+                </p>
+
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">DTV</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Education</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">From</p>
+                    <p class="font-semibold text-gray-900">฿38,000</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Response</p>
+                    <p class="font-semibold text-gray-900">~1-2 hours</p>
+                  </div>
+                </div>
+
+                <button class="w-full px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200">
+                  View profile
+                </button>
+              </div>
+
+              <!-- Provider Card 3 -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-lg">
+                    BL
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-gray-900 text-base mb-1 truncate">
+                      Bangkok Legal Partners
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-2">Bangkok, Thailand</p>
+                    <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-0.5">
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-gray-300 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      </div>
+                      <span class="text-xs font-semibold text-gray-900">4.7</span>
+                      <span class="text-xs text-gray-500">(31)</span>
+                      <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 ml-auto flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">
+                  Full-service law firm specializing in business visas, work permits, and corporate immigration solutions.
+                </p>
+
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Business</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Work Permit</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">BOI</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">From</p>
+                    <p class="font-semibold text-gray-900">฿85,000</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Response</p>
+                    <p class="font-semibold text-gray-900">~4-6 hours</p>
+                  </div>
+                </div>
+
+                <button class="w-full px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200">
+                  View profile
+                </button>
+              </div>
+
+              <!-- Provider Card 4 -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-lg">
+                    PE
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-gray-900 text-base mb-1 truncate">
+                      Phuket Elite Services
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-2">Phuket, Thailand</p>
+                    <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-0.5">
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      </div>
+                      <span class="text-xs font-semibold text-gray-900">4.8</span>
+                      <span class="text-xs text-gray-500">(42)</span>
+                      <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 ml-auto">
+                        Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">
+                  Premium concierge service for retirement and elite visas. White-glove service with full relocation support.
+                </p>
+
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Retirement</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Elite</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Concierge</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">From</p>
+                    <p class="font-semibold text-gray-900">฿120,000</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Response</p>
+                    <p class="font-semibold text-gray-900">~3-5 hours</p>
+                  </div>
+                </div>
+
+                <button class="w-full px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200">
+                  View profile
+                </button>
+              </div>
+
+              <!-- Provider Card 5 -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-lg">
+                    IV
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-gray-900 text-base mb-1 truncate">
+                      Immigration Visa Consultants
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-2">Bangkok, Thailand</p>
+                    <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-0.5">
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-3.5 h-3.5 text-gray-300 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      </div>
+                      <span class="text-xs font-semibold text-gray-900">4.6</span>
+                      <span class="text-xs text-gray-500">(15)</span>
+                      <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 ml-auto flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">
+                  Experienced immigration consultants handling all visa types. Multilingual team with fast turnaround times.
+                </p>
+
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">All Visas</span>
+                  <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Work Permit</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">From</p>
+                    <p class="font-semibold text-gray-900">฿32,000</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Response</p>
+                    <p class="font-semibold text-gray-900">~6-8 hours</p>
+                  </div>
+                </div>
+
+                <button class="w-full px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200">
+                  View profile
+                </button>
+              </div>
+            </div>
+
+            <!-- List View (hidden by default) -->
+            <div id="list-view" class="hidden space-y-3">
+              <!-- Provider List Item 1 -->
+              <div class="ios-card p-4 hover:border-primary/30 transition-colors">
+                <div class="flex items-start gap-4">
+                  <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-xl">
+                    VT
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <h3 class="font-semibold text-gray-900 text-base mb-1">
+                          Visa Thailand Experts
+                        </h3>
+                        <p class="text-xs text-gray-500">Bangkok, Thailand</p>
+                      </div>
+                      <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 flex-shrink-0 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Verified
+                      </span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3 leading-relaxed">
+                      Professional visa agency with 15+ years of experience helping expats navigate Thai immigration.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-4 text-sm mb-3">
+                      <div class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <span class="font-semibold text-gray-900">4.9</span>
+                        <span class="text-gray-500">(24 reviews)</span>
+                      </div>
+                      <span class="text-gray-500">From <span class="font-semibold text-gray-900">฿45,000</span></span>
+                      <span class="text-gray-500">~2-4h response</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                      <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">DTV</span>
+                      <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Retirement</span>
+                      <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Elite</span>
+                    </div>
+                  </div>
+                  <button class="px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex-shrink-0">
+                    View profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Provider List Item 2 -->
+              <div class="ios-card p-4 hover:border-primary/30 transition-colors">
+                <div class="flex items-start gap-4">
+                  <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-xl">
+                    TS
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <h3 class="font-semibold text-gray-900 text-base mb-1">
+                          Thai Smile Visa Services
+                        </h3>
+                        <p class="text-xs text-gray-500">Chiang Mai, Thailand</p>
+                      </div>
+                      <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 flex-shrink-0 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Verified
+                      </span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3 leading-relaxed">
+                      Boutique visa agency specializing in Digital Nomad and Education visas. Fast processing with personalized service.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-4 text-sm mb-3">
+                      <div class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <span class="font-semibold text-gray-900">5.0</span>
+                        <span class="text-gray-500">(18 reviews)</span>
+                      </div>
+                      <span class="text-gray-500">From <span class="font-semibold text-gray-900">฿38,000</span></span>
+                      <span class="text-gray-500">~1-2h response</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                      <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">DTV</span>
+                      <span class="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">Education</span>
+                    </div>
+                  </div>
+                  <button class="px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex-shrink-0">
+                    View profile
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+              <button class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Previous
+              </button>
+              <div class="flex items-center gap-2">
+                <button class="w-8 h-8 text-sm font-semibold text-white bg-primary rounded-lg">1</button>
+                <button class="w-8 h-8 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">2</button>
+                <button class="w-8 h-8 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">3</button>
+              </div>
+              <button class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+

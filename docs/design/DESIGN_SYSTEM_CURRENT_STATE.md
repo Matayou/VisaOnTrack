@@ -26,10 +26,23 @@ The `apps/web/app/globals.css` file defines minimal CSS variables:
   --color-bg-secondary: #fafafa;
   --color-border-light: rgba(0, 0, 0, 0.06);
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --color-surface-footer: #05070f;
+  --color-surface-footer-muted: #0c1324;
+  --color-text-on-dark: #f4f7ff;
+  --color-text-on-dark-muted: rgba(226, 232, 255, 0.82);
+  --color-text-on-dark-subtle: rgba(148, 163, 184, 0.85);
+  --color-border-footer: rgba(255, 255, 255, 0.08);
+  --color-glow-footer: rgba(37, 99, 235, 0.35);
 }
 ```
 
 **Note:** ✅ CSS variables are now integrated with Tailwind config. Tailwind classes reference CSS variables as the source of truth, enabling future theming support.
+
+**Dark Surface Tokens (2025-11-26):**
+- `--color-surface-footer` / `--color-surface-footer-muted` — layered background tones for the global footer.
+- `--color-text-on-dark*` — text hierarchy tuned for ≥4.5:1 contrast on dark surfaces.
+- `--color-border-footer` — subtle dividers that remain visible on the new surface.
+- `--color-glow-footer` — radial accent used for the soft gradient glow.
 
 ### Tailwind Configuration
 
@@ -39,6 +52,7 @@ The `apps/web/tailwind.config.ts` contains a comprehensive design system:
 - **Primary:** `#2563eb` (Blue 600) with hover variant `#1d4ed8`
 - **Text:** Primary (`#0a0a0a`), Secondary (`#525252`), Tertiary (`#a3a3a3`)
 - **Background:** Primary (white), Secondary (`#fafafa`), Tertiary (`#f5f5f5`)
+- **Footer surfaces:** Dark gradient tokens (`footer.surface`, `footer.surfaceMuted`, `footer.text.*`, `footer.border`, `footer.glow`) mapped from the new CSS variables for high-contrast footers.
 - **Borders:** Light, Medium, Dark variants with opacity
 - **Semantic:** Success, Error, Warning with light variants
 
@@ -187,6 +201,14 @@ Located in `apps/web/components/ui/`:
 - ✅ Consistent branding and navigation across all pages
 - ✅ Responsive design with mobile-first approach
 - ✅ Accessible navigation with ARIA labels
+- ✅ **2025-11-26 Update:** Dark surface treatment aligns the footer with trust-first visual language while preserving existing information architecture.
+
+**Dark Footer Acceptance Criteria (Tech Lead · 2025-11-26):**
+- Maintain ≥4.5:1 contrast for navigation links and body copy, ≥3:1 contrast for iconography/badges.
+- Focus rings must remain visible on dark backgrounds via `ring-offset-footer-surface`.
+- Hover/focus interactions may only brighten text or underline; no color shifts that drop below contrast requirements.
+- Gradient/glow layers are decorative only (no semantic information) and must keep text readable at all breakpoints.
+- Both `full` and `minimal` variants inherit the same tokens to guarantee consistency across authenticated vs. marketing pages.
 
 **Usage:**
 - **Public Pages:** Landing, How It Works, Get Started

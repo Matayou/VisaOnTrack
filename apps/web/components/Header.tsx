@@ -233,20 +233,38 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
           </Link>
         )} */}
 
+        {/* Seeker variant - Navigation links */}
+        {variant === 'seeker' && (
+          <nav className="hidden md:flex items-center gap-1 ml-4">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/providers"
+              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
+            >
+              Find Providers
+            </Link>
+          </nav>
+        )}
+
         {/* Provider variant - Navigation links */}
         {variant === 'provider' && (
           <nav className="hidden md:flex items-center gap-1 ml-4">
             <Link
-              href="/requests"
+              href="/providers/marketplace"
               className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
             >
-              Marketplace
+              Browse Leads
             </Link>
             <Link
               href="/quotes"
               className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
             >
-              My Offers
+              My Proposals
             </Link>
             <Link
               href="/orders"

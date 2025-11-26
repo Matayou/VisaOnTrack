@@ -2,10 +2,12 @@ import React from 'react';
 
 interface ProposalsListProps {
   proposals: any[]; // Replace with actual Proposal type
+  status: 'DRAFT' | 'PUBLISHED'; // Add status prop
   onPublish?: () => void;
 }
 
-export const ProposalsList: React.FC<ProposalsListProps> = ({ proposals, onPublish }) => {
+export const ProposalsList: React.FC<ProposalsListProps> = ({ proposals, status, onPublish }) => {
+  const isDraft = status === 'DRAFT';
   return (
     <div className="ios-card p-5 lg:p-6">
       <div className="flex items-center justify-between mb-6">
@@ -29,17 +31,22 @@ export const ProposalsList: React.FC<ProposalsListProps> = ({ proposals, onPubli
             </div>
             <h3 className="font-bold text-gray-900 mb-2">No proposals yet</h3>
             <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto leading-relaxed">
-              Publish your request to start receiving proposals from verified visa providers
+              {isDraft 
+                ? 'Publish your request to start receiving proposals from verified visa providers'
+                : 'We are waiting for verified providers to review your request and send proposals'
+              }
             </p>
-            <button 
-              onClick={onPublish}
-              className="px-6 py-2.5 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-600 font-medium rounded-xl text-sm transition-all shadow-sm hover:shadow flex items-center gap-2 mx-auto"
-            >
-              <span>Publish Request</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </button>
+            {isDraft && (
+              <button 
+                onClick={onPublish}
+                className="px-6 py-2.5 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-600 font-medium rounded-xl text-sm transition-all shadow-sm hover:shadow flex items-center gap-2 mx-auto"
+              >
+                <span>Publish Request</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
       ) : (

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lead Marketplace | SawadeePass Provider</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            },
+            colors: {
+              primary: '#2563eb',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .ios-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+      }
+      .tab-active {
+        color: #2563eb;
+        border-color: #2563eb;
+      }
+      .tab-inactive {
+        color: #9ca3af;
+        border-color: transparent;
+      }
+    </style>
+    <script>
+      function switchTab(tab) {
+        document
+          .querySelectorAll('[data-tab-content]')
+          .forEach((content) => content.classList.add('hidden'));
+        document.querySelectorAll('[data-tab-button]').forEach((button) => {
+          button.classList.remove('tab-active');
+          button.classList.add('tab-inactive');
+        });
+
+        document
+          .querySelector(`[data-tab-content="${tab}"]`)
+          .classList.remove('hidden');
+        const activeBtn = document.querySelector(`[data-tab-button="${tab}"]`);
+        activeBtn.classList.add('tab-active');
+        activeBtn.classList.remove('tab-inactive');
+      }
+
+      function toggleFilters() {
+        const sidebar = document.getElementById('filters-sidebar');
+        sidebar.classList.toggle('hidden');
+      }
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="min-h-screen pb-32 lg:pb-12">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+              <span class="text-white font-bold text-sm">SP</span>
+            </div>
+            <span class="font-bold text-gray-900">SawadeePass</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="text-sm text-gray-500 hover:text-gray-900 font-medium">
+              Support
+            </button>
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+              <span class="text-sm font-semibold text-gray-600">AP</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
+        <div class="mb-4 lg:mb-6 flex items-center justify-between">
+          <button class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors px-2 py-1 -ml-2 rounded-lg hover:bg-gray-100/50">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </button>
+          <button onclick="toggleFilters()" class="lg:hidden px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
+          </button>
+        </div>
+
+        <div class="lg:grid lg:grid-cols-4 lg:gap-6">
+          <!-- Filters Sidebar -->
+          <aside id="filters-sidebar" class="hidden lg:block lg:col-span-1 mb-4 lg:mb-0">
+            <div class="ios-card p-5 sticky top-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-gray-900">Filters</h3>
+                <button class="text-xs text-primary hover:text-indigo-600 font-medium">Clear all</button>
+              </div>
+
+              <div class="space-y-5">
+                <!-- Visa Type -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Visa Type
+                  </label>
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" checked class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Digital Nomad (DTV)</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Retirement</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Elite Visa</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Education</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Business</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Budget Range -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Budget Range
+                  </label>
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="radio" name="budget" class="text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Any budget</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="radio" name="budget" checked class="text-primary focus:ring-primary" />
+                      <span class="text-gray-700">฿50K+</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="radio" name="budget" class="text-primary focus:ring-primary" />
+                      <span class="text-gray-700">฿100K+</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="radio" name="budget" class="text-primary focus:ring-primary" />
+                      <span class="text-gray-700">฿200K+</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Location -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Location
+                  </label>
+                  <select class="w-full rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3">
+                    <option>All locations</option>
+                    <option>Inside Thailand</option>
+                    <option>Outside Thailand</option>
+                  </select>
+                </div>
+
+                <!-- Urgency -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    Urgency
+                  </label>
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">Urgent (24h)</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                      <span class="text-gray-700">New (posted today)</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Main Content -->
+          <div class="lg:col-span-3">
+            <!-- Search & Sort Bar -->
+            <div class="ios-card p-4 mb-4">
+              <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 relative">
+                  <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search by visa type, nationality..."
+                    class="w-full pl-10 pr-4 py-2 rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm"
+                  />
+                </div>
+                <select class="rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3">
+                  <option>Sort: Recommended</option>
+                  <option>Sort: Newest first</option>
+                  <option>Sort: Highest budget</option>
+                  <option>Sort: Most urgent</option>
+                  <option>Sort: Best match</option>
+                </select>
+              </div>
+              <div class="mt-3 flex items-center justify-between text-sm">
+                <span class="text-gray-500">Showing <span class="font-semibold text-gray-900">24</span> leads</span>
+                <span class="text-xs text-gray-400">Updated 2 minutes ago</span>
+              </div>
+            </div>
+
+            <!-- Leads List -->
+            <div class="space-y-4">
+              <!-- Lead Card 1 - High Match -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10">
+                        95% match
+                      </span>
+                      <span class="px-2 py-0.5 text-xs font-medium bg-amber-50 text-amber-700 rounded">
+                        Urgent
+                      </span>
+                      <span class="text-xs text-gray-500">Posted 2h ago</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-gray-900 mb-1">
+                      Digital Nomad Visa (DTV) Application
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                      Remote designer from Sweden, currently outside Thailand, needs DTV application support within 45 days. Has all documents ready.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Budget</p>
+                        <p class="font-semibold text-gray-900">฿120K – ฿180K</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Nationality</p>
+                        <p class="font-semibold text-gray-900">Sweden</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Location</p>
+                        <p class="font-semibold text-gray-900">Outside TH</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Competition</p>
+                        <p class="font-semibold text-amber-600">3 proposals</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                  <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Unlock with <span class="font-semibold text-gray-900">10 credits</span> to view full details</span>
+                  </div>
+                  <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button class="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary rounded-xl transition-all">
+                      Save
+                    </button>
+                    <button class="flex-1 sm:flex-none px-5 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                      </svg>
+                      <span>Unlock lead</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lead Card 2 - Medium Match -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-blue-50 text-blue-700 ring-blue-600/10">
+                        82% match
+                      </span>
+                      <span class="text-xs text-gray-500">Posted 5h ago</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-gray-900 mb-1">
+                      Retirement Visa (Non-O) with Bank Account Setup
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                      Couple from UK planning permanent move to Phuket. Need comprehensive retirement visa service including bank account and insurance coordination.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Budget</p>
+                        <p class="font-semibold text-gray-900">฿300K – ฿420K</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Nationality</p>
+                        <p class="font-semibold text-gray-900">UK</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Location</p>
+                        <p class="font-semibold text-gray-900">Outside TH</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Competition</p>
+                        <p class="font-semibold text-green-600">2 unlocked</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                  <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Unlock with <span class="font-semibold text-gray-900">10 credits</span> to view full details</span>
+                  </div>
+                  <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button class="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary rounded-xl transition-all">
+                      Save
+                    </button>
+                    <button class="flex-1 sm:flex-none px-5 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                      </svg>
+                      <span>Unlock lead</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lead Card 3 - Lower Match -->
+              <div class="ios-card p-5 hover:border-primary/30 transition-colors">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-gray-50 text-gray-700 ring-gray-600/10">
+                        68% match
+                      </span>
+                      <span class="text-xs text-gray-500">Posted 1 day ago</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-gray-900 mb-1">
+                      Education Visa for Language School
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                      Student from Japan looking for education visa assistance. Enrolled in Thai language school in Bangkok, needs visa application support.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Budget</p>
+                        <p class="font-semibold text-gray-900">฿25K – ฿40K</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Nationality</p>
+                        <p class="font-semibold text-gray-900">Japan</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Location</p>
+                        <p class="font-semibold text-gray-900">Inside TH</p>
+                      </div>
+                      <div>
+                        <p class="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Competition</p>
+                        <p class="font-semibold text-gray-600">5 proposals</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                  <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Unlock with <span class="font-semibold text-gray-900">10 credits</span> to view full details</span>
+                  </div>
+                  <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button class="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary rounded-xl transition-all">
+                      Save
+                    </button>
+                    <button class="flex-1 sm:flex-none px-5 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                      </svg>
+                      <span>Unlock lead</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty State (hidden by default) -->
+              <div class="hidden text-center py-12 relative overflow-hidden rounded-2xl bg-gray-50/50 border border-gray-100/50">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10">
+                  <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center ring-4 ring-gray-50">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="font-bold text-gray-900 mb-2">No leads match your filters</h3>
+                  <p class="text-sm text-gray-500 mb-6 max-w-xs mx-auto leading-relaxed">
+                    Try adjusting your filters or check back later for new requests
+                  </p>
+                  <button class="px-6 py-2.5 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-600 font-medium rounded-xl text-sm transition-all shadow-sm hover:shadow flex items-center gap-2 mx-auto">
+                    Clear all filters
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+              <button class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Previous
+              </button>
+              <div class="flex items-center gap-2">
+                <button class="w-8 h-8 text-sm font-semibold text-white bg-primary rounded-lg">1</button>
+                <button class="w-8 h-8 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">2</button>
+                <button class="w-8 h-8 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">3</button>
+                <span class="text-gray-400">...</span>
+                <button class="w-8 h-8 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">8</button>
+              </div>
+              <button class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+

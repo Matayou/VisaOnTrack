@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | SawadeePass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            },
+            colors: {
+              primary: '#2563eb',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .ios-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="min-h-screen">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+              <span class="text-white font-bold text-sm">SP</span>
+            </div>
+            <span class="font-bold text-gray-900">SawadeePass</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="#" class="text-sm text-gray-500 hover:text-gray-900 font-medium">Dashboard</a>
+            <a href="#" class="text-sm text-gray-500 hover:text-gray-900 font-medium">Find Providers</a>
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+              <span class="text-sm font-semibold text-gray-600">JD</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
+        <!-- Welcome Header -->
+        <div class="ios-card p-5 lg:p-6 mb-4 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50/40 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none"></div>
+          <div class="relative">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Your Requests</p>
+            <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+              Manage your visa requests
+            </h1>
+            <p class="text-sm text-gray-600 mb-6 max-w-2xl leading-relaxed">
+              Create and track your visa applications. Connect with verified providers and manage your journey to Thailand.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <button class="px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <span>Start new request</span>
+              </button>
+              <button class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary rounded-xl transition-all">
+                Find providers
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Request Cards -->
+        <div class="space-y-4 mb-8">
+          <!-- Active Request -->
+          <article class="ios-card overflow-hidden hover:border-primary/30 transition-colors group">
+            <div class="h-1 w-full bg-green-500"></div>
+            <div class="p-5 lg:p-6">
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <div class="flex-1 min-w-0">
+                  <h2 class="text-lg font-bold text-gray-900 mb-1.5 leading-tight group-hover:text-primary transition-colors">
+                    Visa application for DTV
+                  </h2>
+                  <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                    Digital Nomad visa application with document preparation and embassy support
+                  </p>
+                </div>
+                <span class="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 flex-shrink-0 flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Published
+                </span>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2 mb-5">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                  DTV
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ฿100,000 - ฿150,000
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Outside Thailand
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  2 days ago
+                </span>
+              </div>
+
+              <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                <button class="text-sm text-gray-500 hover:text-gray-900 font-medium px-3 py-1.5 transition-colors">
+                  View
+                </button>
+                <button class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors">
+                  View details
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Draft Request -->
+          <article class="ios-card overflow-hidden hover:border-primary/30 transition-colors group">
+            <div class="h-1 w-full bg-amber-400"></div>
+            <div class="p-5 lg:p-6">
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <div class="flex-1 min-w-0">
+                  <h2 class="text-lg font-bold text-gray-900 mb-1.5 leading-tight group-hover:text-primary transition-colors">
+                    Visa application for NON-IMM-ED
+                  </h2>
+                  <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                    Education visa for Thai language school enrollment
+                  </p>
+                </div>
+                <span class="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-amber-50 text-amber-700 ring-amber-600/10 flex-shrink-0">
+                  Draft
+                </span>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2 mb-5">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                  NON-IMM-ED
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ฿25,000 - ฿40,000
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Yesterday
+                </span>
+              </div>
+
+              <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                <button class="text-sm text-gray-500 hover:text-gray-900 font-medium px-3 py-1.5 transition-colors">
+                  View
+                </button>
+                <button class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors">
+                  Continue editing
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="ios-card" aria-label="Frequently asked questions">
+          <div class="p-6 md:p-8">
+            <div class="mb-8">
+              <h2 class="text-xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h2>
+              <p class="text-sm text-gray-500">Find answers to common questions about using SawadeePass</p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex gap-1 mb-8 bg-gray-50/80 p-1 rounded-xl w-fit">
+              <button class="px-4 py-2 text-sm font-medium rounded-lg bg-white text-gray-900 shadow-sm ring-1 ring-black/5">
+                Basics
+              </button>
+              <button class="px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100/50">
+                Troubleshooting
+              </button>
+            </div>
+
+            <!-- FAQ Items -->
+            <div class="space-y-3">
+              <div class="border border-gray-100 rounded-xl overflow-hidden">
+                <button class="w-full px-4 py-3.5 text-left flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors">
+                  <span class="font-semibold text-gray-900 text-sm">How do I post a request?</span>
+                  <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+
+              <div class="border border-gray-100 rounded-xl overflow-hidden">
+                <button class="w-full px-4 py-3.5 text-left flex items-center justify-between gap-4 bg-gray-50/50">
+                  <span class="font-semibold text-gray-900 text-sm">How do offers work?</span>
+                  <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                  </svg>
+                </button>
+                <div class="px-4 pb-4 pt-0 text-sm text-gray-600 leading-relaxed">
+                  Once you publish a request, verified providers can submit offers with pricing, deliverables, and timelines. You'll receive notifications when offers are submitted. Review and compare offers to choose the best provider for your needs.
+                </div>
+              </div>
+
+              <div class="border border-gray-100 rounded-xl overflow-hidden">
+                <button class="w-full px-4 py-3.5 text-left flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors">
+                  <span class="font-semibold text-gray-900 text-sm">What happens after I receive offers?</span>
+                  <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+
+              <div class="border border-gray-100 rounded-xl overflow-hidden">
+                <button class="w-full px-4 py-3.5 text-left flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors">
+                  <span class="font-semibold text-gray-900 text-sm">How do I choose a provider?</span>
+                  <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-100 mt-16">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8 text-center text-sm text-gray-500">
+          <p>&copy; 2025 SawadeePass. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+

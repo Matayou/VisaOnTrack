@@ -4,6 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { SeekerHeader } from '@/components/SeekerHeader';
 import { api, type Request } from '@visaontrack/client';
+import { mapDurationToTimeline } from '@/lib/eligibilityMapping';
 import { RequestStatusCard } from './components/RequestStatusCard';
 import { RequestOverview } from './components/RequestOverview';
 import { ProposalsList } from './components/ProposalsList';
@@ -69,9 +70,8 @@ export default function RequestDetailPage() {
   };
 
   const handleEdit = () => {
-    // Navigate to edit page (placeholder path)
-    // router.push(`/requests/${requestId}/edit`);
-    alert("Edit functionality coming soon");
+    // Navigate to edit page
+    router.push(`/requests/${requestId}/edit`);
   };
 
   // Data Mapping
@@ -124,7 +124,7 @@ export default function RequestDetailPage() {
 
       visa: {
         type: request.visaType || 'Not specified',
-        duration: intakeData?.duration || '—',
+        duration: intakeData?.duration ? mapDurationToTimeline(intakeData.duration) : '—',
         incomeSource: intakeData?.incomeType || '—',
       },
 
@@ -139,7 +139,7 @@ export default function RequestDetailPage() {
         messages: (request as any).messages?.length || 0,
       },
 
-      auditLogs: [], // TODO: Fetch audit logs via API when available
+      auditLogs: (request as any).auditLogs || [], // Fetch audit logs via API when available
       proposalsList: (request as any).proposals || [],
     };
   }, [request]);
@@ -178,6 +178,16 @@ export default function RequestDetailPage() {
     <div className="min-h-screen bg-gray-50 pb-32 lg:pb-12">
       <SeekerHeader />
       <main className="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
+        <div className="mb-4 lg:mb-6">
+          <button 
+            onClick={() => router.push('/dashboard')}
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors px-2 py-1 -ml-2 rounded-lg hover:bg-gray-100/50"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </button>
+        </div>
+
         <div className="lg:grid lg:grid-cols-3 lg:gap-6">
           
           {/* Main Column (Left) */}
@@ -201,6 +211,7 @@ export default function RequestDetailPage() {
 
             <ProposalsList 
               proposals={mappedData.proposalsList}
+              status={mappedData.status}
               onPublish={handlePublish}
             />
 

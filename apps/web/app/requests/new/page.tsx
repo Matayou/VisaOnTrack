@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@visaontrack/client';
-import { Spinner, PageBackground } from '@/components/ui';
+import { Spinner, PageBackground, Footer } from '@/components/ui';
 import { SeekerHeader } from '@/components/SeekerHeader';
 import { IntakeWizard } from '@/components/intake/IntakeWizard';
 import { LOADING_GENERIC } from '@/lib/loading-messages';
@@ -38,12 +38,13 @@ export default function CreateRequestPage() {
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-bg-secondary" />}>
-      <div className="min-h-screen bg-bg-secondary relative overflow-hidden">
+      <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex flex-col">
         <PageBackground />
         <SeekerHeader />
-        <main className="relative max-w-7xl mx-auto px-6 sm:px-8 py-8 sm:py-12 z-10">
+        <main className="relative max-w-7xl mx-auto px-6 sm:px-8 py-8 sm:py-12 z-10 flex-1">
           <IntakeWizard mode="authenticated" />
         </main>
+        <Footer />
       </div>
     </Suspense>
   );

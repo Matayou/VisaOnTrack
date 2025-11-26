@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Provider Dashboard v2 | SawadeePass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            },
+            colors: {
+              primary: '#2563eb',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .ios-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="min-h-screen pb-32 lg:pb-12">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+              <span class="text-white font-bold text-sm">SP</span>
+            </div>
+            <span class="font-bold text-gray-900">SawadeePass</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="text-sm text-gray-500 hover:text-gray-900 font-medium">
+              Support
+            </button>
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+              <span class="text-sm font-semibold text-gray-600">AP</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
+        <div class="mb-4 lg:mb-6">
+          <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p class="text-sm text-gray-500 mt-1">Welcome back! Here's your business overview.</p>
+        </div>
+
+        <div class="lg:grid lg:grid-cols-3 lg:gap-6">
+          <!-- Main Column (Left) -->
+          <div class="lg:col-span-2 space-y-4 mb-4 lg:mb-0">
+            
+            <!-- KPI Stats Card -->
+            <div class="ios-card p-5 lg:p-6">
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Performance Overview</h3>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                  <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Credits</span>
+                  <span class="text-lg font-bold text-gray-900 block">245</span>
+                  <span class="text-xs text-gray-400">12 unlocks left</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                  <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Active</span>
+                  <span class="text-lg font-bold text-gray-900 block">8</span>
+                  <span class="text-xs text-gray-400">proposals</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                  <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Messages</span>
+                  <span class="text-lg font-bold text-gray-900 block">5</span>
+                  <span class="text-xs text-amber-600 font-semibold">3 unread</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                  <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Win Rate</span>
+                  <span class="text-lg font-bold text-gray-900 block">42%</span>
+                  <span class="text-xs text-green-600 font-semibold">+6% this week</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="ios-card p-5 lg:p-6">
+              <h2 class="font-bold text-gray-900 text-base lg:text-lg mb-4">Quick Actions</h2>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <a href="provider-marketplace-enhanced-v1.html" class="group relative overflow-hidden rounded-xl border border-gray-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-5 hover:border-primary/30 transition-all hover:shadow-md">
+                  <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full -mr-16 -mt-16"></div>
+                  <div class="relative">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-1">Browse New Leads</h3>
+                    <p class="text-sm text-gray-600">18 new requests in last 24h</p>
+                  </div>
+                </a>
+
+                <a href="provider-profile-manage-v1.html" class="group relative overflow-hidden rounded-xl border border-gray-100 bg-gradient-to-br from-purple-50 to-pink-50 p-5 hover:border-primary/30 transition-all hover:shadow-md">
+                  <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/10 to-transparent rounded-full -mr-16 -mt-16"></div>
+                  <div class="relative">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-1">Manage Profile</h3>
+                    <p class="text-sm text-gray-600">Update info, photos & reviews</p>
+                  </div>
+                </a>
+
+                <a href="#" class="group relative overflow-hidden rounded-xl border border-gray-100 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 hover:border-primary/30 transition-all hover:shadow-md">
+                  <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-400/10 to-transparent rounded-full -mr-16 -mt-16"></div>
+                  <div class="relative">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-1">Messages</h3>
+                    <p class="text-sm text-gray-600">3 unread conversations</p>
+                  </div>
+                </a>
+
+                <a href="#" class="group relative overflow-hidden rounded-xl border border-gray-100 bg-gradient-to-br from-amber-50 to-orange-50 p-5 hover:border-primary/30 transition-all hover:shadow-md">
+                  <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-400/10 to-transparent rounded-full -mr-16 -mt-16"></div>
+                  <div class="relative">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-1">Top Up Credits</h3>
+                    <p class="text-sm text-gray-600">Get more leads faster</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Active Proposals -->
+            <div class="ios-card p-5 lg:p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="font-bold text-gray-900 text-base lg:text-lg">Active Proposals</h2>
+                <a href="#" class="text-sm text-primary hover:text-indigo-600 font-medium">View all</a>
+              </div>
+
+              <div class="space-y-3">
+                <!-- Proposal Item 1 -->
+                <div class="border border-gray-100 rounded-xl p-4 bg-white hover:border-primary/20 transition-colors">
+                  <div class="flex items-start justify-between gap-3 mb-2">
+                    <div>
+                      <h3 class="font-semibold text-gray-900 text-sm">Digital Nomad Visa Application</h3>
+                      <p class="text-xs text-gray-500 mt-0.5">Sent 2 days ago</p>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-blue-50 text-blue-700 ring-blue-600/10 flex-shrink-0">
+                      Pending
+                    </span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">฿120,000 • 7-10 days</span>
+                    <button class="text-primary hover:text-indigo-600 font-medium">View details</button>
+                  </div>
+                </div>
+
+                <!-- Proposal Item 2 -->
+                <div class="border border-gray-100 rounded-xl p-4 bg-white hover:border-primary/20 transition-colors">
+                  <div class="flex items-start justify-between gap-3 mb-2">
+                    <div>
+                      <h3 class="font-semibold text-gray-900 text-sm">Retirement Visa with Bank Setup</h3>
+                      <p class="text-xs text-gray-500 mt-0.5">Sent 5 days ago • 2 messages</p>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-amber-50 text-amber-700 ring-amber-600/10 flex-shrink-0">
+                      In discussion
+                    </span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">฿350,000 • 14-21 days</span>
+                    <button class="text-primary hover:text-indigo-600 font-medium">View details</button>
+                  </div>
+                </div>
+
+                <!-- Proposal Item 3 -->
+                <div class="border border-gray-100 rounded-xl p-4 bg-white hover:border-primary/20 transition-colors">
+                  <div class="flex items-start justify-between gap-3 mb-2">
+                    <div>
+                      <h3 class="font-semibold text-gray-900 text-sm">Education Visa for Language School</h3>
+                      <p class="text-xs text-gray-500 mt-0.5">Sent 1 week ago</p>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-blue-50 text-blue-700 ring-blue-600/10 flex-shrink-0">
+                      Pending
+                    </span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">฿32,000 • 5-7 days</span>
+                    <button class="text-primary hover:text-indigo-600 font-medium">View details</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- This Week Insights -->
+            <div class="ios-card p-5 lg:p-6">
+              <h2 class="font-bold text-gray-900 text-base lg:text-lg mb-4">This Week</h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div>
+                  <p class="text-xs uppercase text-gray-400 tracking-wide mb-1">Leads unlocked</p>
+                  <p class="text-2xl font-bold text-gray-900">6</p>
+                  <p class="text-xs text-green-600 font-semibold">+2 vs last week</p>
+                </div>
+                <div>
+                  <p class="text-xs uppercase text-gray-400 tracking-wide mb-1">Proposals sent</p>
+                  <p class="text-2xl font-bold text-gray-900">5</p>
+                  <p class="text-xs text-green-600 font-semibold">+1 vs last week</p>
+                </div>
+                <div>
+                  <p class="text-xs uppercase text-gray-400 tracking-wide mb-1">Deals closed</p>
+                  <p class="text-2xl font-bold text-gray-900">2</p>
+                  <p class="text-xs text-gray-500">Same as last week</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Sidebar (Right) -->
+          <aside class="hidden lg:block space-y-6">
+            
+            <!-- Recent Activity -->
+            <div class="ios-card p-5">
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Recent Activity</h3>
+              <div class="space-y-3 text-sm">
+                <div class="flex gap-3 items-start">
+                  <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900">Proposal sent</p>
+                    <p class="text-xs text-gray-500">DTV Application • 2h ago</p>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                  <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900">Lead unlocked</p>
+                    <p class="text-xs text-gray-500">Retirement Visa • 4h ago</p>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                  <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900">New message</p>
+                    <p class="text-xs text-gray-500">From John D. • 6h ago</p>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                  <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900">Proposal accepted</p>
+                    <p class="text-xs text-gray-500">Elite Visa • Yesterday</p>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                  <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900">Lead unlocked</p>
+                    <p class="text-xs text-gray-500">Business Visa • Yesterday</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- This Month Stats -->
+            <div class="ios-card p-5">
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">This Month</h3>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+                  <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Unlocked</span>
+                  <span class="text-lg font-bold text-gray-900">24</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+                  <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Sent</span>
+                  <span class="text-lg font-bold text-gray-900">18</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+                  <span class="text-[10px] uppercase text-gray-400 font-semibold block mb-1">Won</span>
+                  <span class="text-lg font-bold text-gray-900">7</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verification Status -->
+            <div class="ios-card p-5">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900">Verified Provider</p>
+                  <p class="text-xs text-gray-500">All checks passed</p>
+                </div>
+              </div>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-500">Identity</span>
+                  <span class="font-semibold text-green-600">✓ Approved</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-500">Business License</span>
+                  <span class="font-semibold text-green-600">✓ Approved</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-500">References</span>
+                  <span class="font-semibold text-green-600">✓ Approved</span>
+                </div>
+              </div>
+            </div>
+
+          </aside>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+

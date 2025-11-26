@@ -200,15 +200,7 @@ function DashboardContent() {
             
             const requestPayload = {
               title: `Visa application for ${mapEligibilityCodeToVisaType(intakeData.selectedCode)}`,
-              description: [
-                `Age Range: ${mapAgeRange(intakeData.age)}`,
-                `Nationality: ${intakeData.nationality}`,
-                `Current Status: ${mapLocation(intakeData.location) === 'IN_THAILAND' ? 'Inside Thailand' : 'Outside Thailand'}`,
-                `Purpose: ${intakeData.purpose}`,
-                `Timeline: ${mapDurationToTimeline(intakeData.duration)}`,
-                `Income Source: ${intakeData.incomeType}`,
-                `Additional Needs: ${intakeData.fields?.join(', ') || 'None'}`
-              ].join('\n'),
+              description: intakeData.fields?.join(', ') || 'None', // Use simpler description
               visaType: mapEligibilityCodeToVisaType(intakeData.selectedCode),
               budgetMin: budget.min,
               budgetMax: budget.max,
@@ -275,12 +267,12 @@ function DashboardContent() {
 
   if (isProcessingIntake) {
     return (
-      <div className="min-h-screen bg-bg-secondary flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <Spinner size="lg" />
           <div>
-            <h2 className="text-xl font-semibold text-text-primary">Setting up your workspace</h2>
-            <p className="text-text-secondary mt-1">Creating your request from your answers...</p>
+            <h2 className="text-xl font-semibold text-gray-900">Setting up your workspace</h2>
+            <p className="text-gray-600 mt-1">Creating your request from your answers...</p>
           </div>
         </div>
       </div>
@@ -295,15 +287,15 @@ function DashboardContent() {
         <header className="ios-card px-6 py-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50/40 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none"></div>
           <div className="relative">
-            <p className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Your requests</p>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-              Manage your visa request
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Your Requests</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Manage your visa requests
             </h1>
           </div>
-          <p className="text-gray-600 mt-2 max-w-2xl leading-relaxed">
-            You can keep one request active or in draft. Publish to connect with providers or close it when you are done.
+          <p className="text-sm text-gray-600 mt-2 max-w-2xl leading-relaxed">
+            Create and track your visa applications. Connect with verified providers and manage your journey to Thailand.
           </p>
-          <div className="mt-6 flex gap-3">
+          <div className="mt-6 flex flex-wrap gap-3">
             <Button
               type="button"
               onClick={() => router.push('/requests/new')}
@@ -312,43 +304,54 @@ function DashboardContent() {
             >
               Start new request
             </Button>
-            {requests[0] && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.push(`/requests/${requests[0].id}`)}
-                icon={<ArrowRight className="w-4 h-4" />}
-                iconPosition="right"
-              >
-                View latest
-              </Button>
-            )}
+            <button
+              type="button"
+              onClick={() => router.push('/providers')}
+              className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary rounded-xl transition-all"
+            >
+              Find providers
+            </button>
           </div>
         </header>
 
         {isLoadingUser || isLoadingRequests ? (
-          <div className="bg-bg-primary border border-border-light rounded-base p-6 flex items-center gap-3 text-text-secondary">
+          <div className="ios-card p-6 flex items-center gap-3 text-gray-600">
             <Spinner size="sm" />
             <span>{LOADING_GENERIC}</span>
           </div>
         ) : null}
 
         {showEmptyState && (
-          <div className="bg-bg-primary border border-border-light rounded-base p-6 text-text-secondary">
-            <p className="text-lg font-semibold text-text-primary mb-2">No requests yet</p>
-            <p className="text-sm">Create a request to start working with providers.</p>
+          <div className="text-center py-12 relative overflow-hidden rounded-2xl bg-gray-50/50 border border-gray-100/50">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center ring-4 ring-gray-50">
+                <PlusCircle className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2">No requests yet</h3>
+              <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto leading-relaxed">
+                Create your first visa request to start receiving proposals from verified providers
+              </p>
+              <button 
+                onClick={() => router.push('/requests/new')}
+                className="px-6 py-2.5 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-600 font-medium rounded-xl text-sm transition-all shadow-sm hover:shadow flex items-center gap-2 mx-auto"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Start new request
+              </button>
+            </div>
           </div>
         )}
 
         {error && (
-          <div className="bg-bg-primary border border-error/30 text-error rounded-base p-4 flex items-start gap-3">
+          <div className="bg-red-50 text-red-800 p-4 rounded-xl border border-red-200 flex items-start gap-3">
             <AlertCircle className="w-5 h-5" aria-hidden="true" />
             <div className="flex-1">
-              <p className="text-sm font-semibold">We couldn&apos;t load your request</p>
+              <p className="text-sm font-semibold">We couldn&apos;t load your requests</p>
               <p className="text-sm">{error}</p>
               <button
                 type="button"
-                className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-error underline"
+                className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 underline"
                 onClick={() => router.refresh()}
               >
                 Try again
@@ -369,8 +372,8 @@ function DashboardContent() {
                   key={request.id}
                   className="ios-card group transition-all duration-300 hover:shadow-md overflow-hidden"
                 >
-                  <div className={`h-1.5 w-full ${
-                    request.status === 'OPEN' ? 'bg-emerald-500' : 
+                  <div className={`h-1 w-full ${
+                    request.status === 'OPEN' ? 'bg-green-500' : 
                     request.status === 'DRAFT' ? 'bg-amber-400' : 
                     request.status === 'HIRED' ? 'bg-blue-500' : 'bg-gray-300'
                   }`} />
@@ -386,12 +389,17 @@ function DashboardContent() {
                       </div>
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset flex-shrink-0 ${
-                          request.status === 'DRAFT' ? 'bg-amber-50 text-amber-700 ring-amber-600/20' :
-                          request.status === 'OPEN' ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' :
-                          'bg-gray-50 text-gray-600 ring-gray-500/20'
+                          request.status === 'DRAFT' ? 'bg-amber-50 text-amber-700 ring-amber-600/10' :
+                          request.status === 'OPEN' ? 'bg-green-50 text-green-700 ring-green-600/10' :
+                          request.status === 'HIRED' ? 'bg-blue-50 text-blue-700 ring-blue-600/10' :
+                          'bg-gray-50 text-gray-600 ring-gray-500/10'
                         }`}
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
+                        {request.status === 'OPEN' && (
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
                         {statusLabels[request.status]}
                       </span>
                     </div>
@@ -400,24 +408,24 @@ function DashboardContent() {
                     {hasMetadata && (
                       <div className="flex flex-wrap items-center gap-2 mb-5">
                         {request.visaType && (
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
                             {request.visaType}
                           </span>
                         )}
                         {budgetText && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
                             <Wallet className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
                             <span>{budgetText}</span>
                           </span>
                         )}
                         {request.location && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
                             <MapPin className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
                             <span>{request.location}</span>
                           </span>
                         )}
                         {dateText && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
                             <Calendar className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
                             <span>{dateText}</span>
                           </span>
@@ -543,11 +551,11 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-bg-secondary flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <Spinner size="lg" />
           <div>
-            <h2 className="text-xl font-semibold text-text-primary">Loading your dashboard...</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Loading your dashboard...</h2>
           </div>
         </div>
       </div>

@@ -77,7 +77,7 @@ export function Footer({ variant = 'full' }: FooterProps) {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               {brand}
               <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3">
-                <Link href="/how-it-works" className={inlineLinkClass}>
+                <Link href="/#how-it-works" className={inlineLinkClass}>
                   How It Works
                 </Link>
                 <Link href="/help" className={inlineLinkClass}>
@@ -114,7 +114,7 @@ export function Footer({ variant = 'full' }: FooterProps) {
                   <Link href="/#features" className={linkClass}>
                     Features
                   </Link>
-                  <Link href="/how-it-works" className={linkClass}>
+                  <Link href="/#how-it-works" className={linkClass}>
                     How it Works
                   </Link>
                   <Link href="/#pricing" className={linkClass}>

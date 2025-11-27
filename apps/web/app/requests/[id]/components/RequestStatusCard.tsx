@@ -17,7 +17,7 @@ export const RequestStatusCard: React.FC<RequestStatusCardProps> = ({ status, on
         {/* Icon */}
         <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm shadow-indigo-100 ring-4 ring-white">
           <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
           </svg>
         </div>
 
@@ -30,12 +30,13 @@ export const RequestStatusCard: React.FC<RequestStatusCardProps> = ({ status, on
           
           {/* Desktop Button */}
           <button 
-            onClick={onPublish}
+            type="button"
+            onClick={() => onPublish?.()}
             className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-indigo-600 text-white font-medium rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 hover:shadow-md hover:-translate-y-0.5"
           >
             <span>Publish Request</span>
             <svg className="w-4 h-4 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </button>
         </div>

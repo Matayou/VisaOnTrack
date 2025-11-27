@@ -15,6 +15,11 @@ import {
   ArrowRight,
   Menu,
   X,
+  Users,
+  CheckCircle2,
+  BarChart3,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
@@ -24,10 +29,57 @@ import { LOADING_GENERIC } from '@/lib/loading-messages';
 import { Header } from '@/components/Header';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
 
+const steps = [
+  {
+    number: 1,
+    icon: Compass,
+    title: 'Tell Us What You Need',
+    description: 'Answer a few quick questions about your nationality, purpose, timeline, and budget. Takes less than 2 minutes.',
+  },
+  {
+    number: 2,
+    icon: Users,
+    title: 'Get Matched with Experts',
+    description: 'We match you with vetted immigration professionals who specialize in your visa type. Only verified, experienced professionals.',
+  },
+  {
+    number: 3,
+    icon: CheckCircle2,
+    title: 'Compare & Choose',
+    description: 'Receive detailed quotes with timelines and deliverables. Compare options, read reviews, and choose your provider. 100% free platform.',
+  },
+  {
+    number: 4,
+    icon: Activity,
+    title: 'Track Your Progress',
+    description: 'Your payment is held securely in escrow. Track milestones, communicate directly, and release payment only when satisfied.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'How long does the process take?',
+    answer: 'The initial matching and quote process typically takes 24-48 hours. Once you select a provider, timeline depends on your visa type and requirements. Most applications are processed within 2-4 weeks.',
+  },
+  {
+    question: 'Is the platform free?',
+    answer: 'Yes! VisaOnTrack is completely free for visa seekers. There are no platform fees, no hidden costs, and no subscription charges. You only pay providers directly for their visa services, and all payments are held in secure escrow until milestones are completed to your satisfaction.',
+  },
+  {
+    question: "What if I'm not satisfied with the service?",
+    answer: "If you're not satisfied with a milestone, you can request revisions before releasing payment. Our support team is also available to help resolve any issues. Your satisfaction is our priority.",
+  },
+  {
+    question: 'Do I need to be in Thailand to use this service?',
+    answer: 'No! You can start the process from anywhere. However, some visa types may require you to be in Thailand for certain steps. Our providers will guide you through the specific requirements for your situation.',
+  },
+];
+
 export default function LandingPage() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   // Check if user is authenticated and redirect accordingly
   useEffect(() => {
@@ -132,12 +184,17 @@ export default function LandingPage() {
     {
       icon: ShieldCheck,
       title: 'Verified Providers',
-      description: 'All immigration professionals are vetted and verified. Work with confidence knowing credentials are checked.',
+      description: 'All immigration professionals are vetted and verified. Work with confidence knowing credentials are thoroughly checked.',
+    },
+    {
+      icon: BarChart3,
+      title: '100% Free Platform',
+      description: 'No platform fees for visa seekers. You only pay providers for their services. Complete transparency, no hidden costs.',
     },
     {
       icon: Lock,
       title: 'Secure Escrow',
-      description: 'Your payment is protected. Funds released only when milestones are completed to your satisfaction.',
+      description: 'Your payment is protected in escrow. Funds released only when milestones are completed to your satisfaction.',
     },
     {
       icon: Activity,
@@ -147,17 +204,12 @@ export default function LandingPage() {
     {
       icon: MessageCircle,
       title: 'Direct Communication',
-      description: 'Chat directly with your provider. Get updates, ask questions, and stay informed throughout.',
-    },
-    {
-      icon: FileText,
-      title: 'Document Management',
-      description: 'Upload, share, and organize all your visa documents securely in one place.',
+      description: 'Chat directly with your provider. Get updates, ask questions, and stay informed throughout the process.',
     },
     {
       icon: Star,
       title: 'Reviews & Ratings',
-      description: 'Read verified reviews from real clients. Make informed decisions based on others\' experiences.',
+      description: 'Read verified reviews from real clients. Make informed decisions based on proven track records.',
     },
   ];
 
@@ -230,33 +282,119 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Features Grid */}
-        <section id="features" className="max-w-7xl mx-auto px-6 sm:px-8 py-20 md:py-24 bg-bg-secondary">
-          <div className="text-center mb-16">
+        {/* How It Works Section */}
+        <section id="how-it-works" className="max-w-7xl mx-auto px-6 sm:px-8 py-20 md:py-24">
+          <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-              <GradientText>Everything You Need to Succeed</GradientText>
+              <GradientText>How It Works</GradientText>
             </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-              A complete platform designed to make your visa journey smooth, secure, and transparent.
+              A simple, secure process to get you the visa you need
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {features.map((feature) => {
-              const Icon = feature.icon;
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {steps.map((step) => {
+              const Icon = step.icon;
               return (
                 <div
-                  key={feature.title}
-                  className="group relative p-8 bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 overflow-hidden"
+                  key={step.number}
+                  className="relative bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all duration-200"
                 >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
-                  <div className="w-14 h-14 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mb-6" aria-hidden="true">
-                    <Icon className="w-7 h-7 text-primary" />
+                  {/* Step number badge */}
+                  <div className="absolute top-4 right-4">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                      <span className="text-sm font-bold text-primary">{step.number}</span>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-text-primary">{feature.title}</h3>
-                  <p className="text-base text-text-secondary leading-relaxed">{feature.description}</p>
+
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 pr-8">{step.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{step.description}</p>
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* Features Grid */}
+        <section id="features" className="bg-gray-50 py-20 md:py-24">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+                <GradientText>Why Choose SawadeePass</GradientText>
+              </h2>
+              <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
+                Everything you need for a smooth, secure, and transparent visa journey
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {features.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={feature.title}
+                    className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all duration-200"
+                  >
+                    {/* Icon */}
+                    <div className="w-12 h-12 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-primary" />
+                    </div>
+
+                    {/* Content */}
+                    <h3 className="text-lg font-semibold mb-2 text-gray-900">{feature.title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section id="faq" className="max-w-4xl mx-auto px-6 sm:px-8 py-20 md:py-24">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              <GradientText>Common Questions</GradientText>
+            </h2>
+            <p className="text-lg text-text-secondary leading-relaxed">
+              Everything you need to know to get started
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-all duration-200"
+              >
+                <button
+                  type="button"
+                  onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                  className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                >
+                  <span className="text-base font-semibold text-gray-900 pr-4">
+                    {faq.question}
+                  </span>
+                  {expandedFaq === index ? (
+                    <ChevronUp className="w-5 h-5 text-primary flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  )}
+                </button>
+                {expandedFaq === index && (
+                  <div className="px-5 pb-4 text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </section>
 

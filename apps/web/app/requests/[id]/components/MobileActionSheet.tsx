@@ -14,20 +14,22 @@ export const MobileActionSheet: React.FC<MobileActionSheetProps> = ({ status, on
           {status === 'DRAFT' ? (
             <>
               <button 
-                onClick={onPublish}
+                type="button"
+                onClick={() => onPublish?.()}
                 className="flex-1 py-3 bg-primary hover:bg-indigo-600 text-white font-bold rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 hover:shadow-md active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 <span>Publish Request</span>
                 <svg className="w-4 h-4 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </button>
               <button 
-                onClick={onEdit}
+                type="button"
+                onClick={() => onEdit?.()}
                 className="px-4 py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-colors shadow-sm"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </button>
             </>

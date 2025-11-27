@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -33,12 +33,15 @@ const statusClasses: Partial<Record<RequestStatus, string>> = {
 
 export function Header({ variant, scrolled = false, onAnchorClick, showLandingActions = true }: HeaderProps) {
   const router = useRouter();
+  const menuId = useId();
   const [user, setUser] = useState<User | null>(null);
   const [latestRequest, setLatestRequest] = useState<Request | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(variant !== 'landing');
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const menuContentRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   // Load user data for seeker and provider variants
   useEffect(() => {
@@ -76,6 +79,48 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
+
+  // Close menu on Escape and keep focus within the menu when open
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const focusableSelectors = ['a[href]', 'button:not([disabled])', '[tabindex]:not([tabindex="-1"])'];
+    const focusableElements = menuContentRef.current
+      ? (Array.from(menuContentRef.current.querySelectorAll<HTMLElement>(focusableSelectors.join(','))) || [])
+      : [];
+
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus();
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setIsMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+
+      if (event.key === 'Tab' && focusableElements.length > 0) {
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+
+        if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen]);
 
   // Hide header for seeker variant if user is not a seeker
   if (variant === 'seeker' && !isLoading && (!user || user.role !== 'SEEKER')) {
@@ -156,7 +201,8 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                 <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
               </Link>
               <Link
-                href="/how-it-works"
+                href="/#how-it-works"
+                onClick={(e) => onAnchorClick?.(e, '#how-it-works')}
                 className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
                 aria-label="How it works"
               >
@@ -215,6 +261,19 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
               )}
             </button>
           </>
+        )}
+
+        {/* Mobile menu button for seeker/provider variants */}
+        {(variant === 'provider' || variant === 'seeker') && (
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            className="md:hidden p-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
+            aria-label="Toggle mobile menu"
+            aria-expanded={isMobileMenuOpen}
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
+          </button>
         )}
 
         {/* Seeker variant - Latest request link (Hidden per design requirements) */}
@@ -283,22 +342,34 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                 type="button"
                 onClick={() => setIsMenuOpen((prev) => !prev)}
                 className="inline-flex items-center gap-2 rounded-full border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:border-border transition"
+                aria-haspopup="menu"
+                aria-expanded={isMenuOpen}
+                aria-controls={menuId}
+                ref={menuButtonRef}
               >
                 <UserIcon className="w-4 h-4" aria-hidden="true" />
                 <ChevronDown className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
               </button>
               {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-44 rounded-base border border-border-light bg-white shadow-lg">
+                <div
+                  id={menuId}
+                  role="menu"
+                  aria-label="User menu"
+                  className="absolute right-0 mt-2 w-44 rounded-base border border-border-light bg-white shadow-lg focus:outline-none"
+                  ref={menuContentRef}
+                >
                   {variant === 'seeker' ? (
                     <>
                       <Link
                         href="/dashboard"
+                        role="menuitem"
                         className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
                       >
                         Home
                       </Link>
                       <Link
                         href="/settings"
+                        role="menuitem"
                         className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
                       >
                         Settings
@@ -308,18 +379,21 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                     <>
                       <Link
                         href="/dashboard"
+                        role="menuitem"
                         className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
                       >
                         Dashboard
                       </Link>
                       <Link
                         href="/profile"
+                        role="menuitem"
                         className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
                       >
                         Profile
                       </Link>
                       <Link
                         href="/settings"
+                        role="menuitem"
                         className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
                       >
                         Settings
@@ -329,6 +403,7 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                   <form
                     action={() => logout(router)}
                     className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60 flex items-center gap-2"
+                    role="menuitem"
                   >
                     <button type="submit" className="flex items-center gap-2 w-full text-left">
                       <LogOut className="w-4 h-4" aria-hidden="true" />
@@ -358,8 +433,11 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
               Features
             </Link>
             <Link
-              href="/how-it-works"
-              onClick={() => setIsMobileMenuOpen(false)}
+              href="/#how-it-works"
+              onClick={(e) => {
+                onAnchorClick?.(e, '#how-it-works');
+                setIsMobileMenuOpen(false);
+              }}
               className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
               aria-label="How it works"
             >
@@ -404,7 +482,101 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
           </nav>
         </div>
       )}
+
+      {/* Mobile Navigation Menu (seeker/provider variants) */}
+      {variant === 'seeker' && isMobileMenuOpen && (
+        <div className="md:hidden border-t border-border-light bg-white">
+          <nav className="max-w-7xl mx-auto px-6 py-4 space-y-3" aria-label="Mobile navigation">
+            <Link
+              href="/dashboard"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/providers"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+            >
+              Find Providers
+            </Link>
+            <div className="pt-2 space-y-2 border-t border-border-light">
+              <Link
+                href="/settings"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+              >
+                Settings
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  logout(router);
+                }}
+                className="block w-full px-4 py-3 text-base font-semibold text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors text-center"
+              >
+                Logout
+              </button>
+            </div>
+          </nav>
+        </div>
+      )}
+
+      {variant === 'provider' && isMobileMenuOpen && (
+        <div className="md:hidden border-t border-border-light bg-white">
+          <nav className="max-w-7xl mx-auto px-6 py-4 space-y-3" aria-label="Mobile navigation">
+            <Link
+              href="/providers/marketplace"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+            >
+              Browse Leads
+            </Link>
+            <Link
+              href="/quotes"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+            >
+              My Proposals
+            </Link>
+            <Link
+              href="/orders"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+            >
+              Orders
+            </Link>
+            <div className="pt-2 space-y-2 border-t border-border-light">
+              <Link
+                href="/profile"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+              >
+                Profile
+              </Link>
+              <Link
+                href="/settings"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+              >
+                Settings
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  logout(router);
+                }}
+                className="block w-full px-4 py-3 text-base font-semibold text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors text-center"
+              >
+                Logout
+              </button>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
-

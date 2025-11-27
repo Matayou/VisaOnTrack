@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Globe,
@@ -26,10 +26,7 @@ import { generateRecommendations, type EligibilityState, type VisaRecommendation
 import { countEligibleVisas, isPurposeDisabled } from '@/lib/intake/eligibilityUtils';
 import { 
   estimateBudgetFromSavings, 
-  mapDurationToTimeline, 
-  mapLocation, 
-  mapEligibilityCodeToVisaType, 
-  mapAgeRange 
+  mapEligibilityCodeToVisaType
 } from '@/lib/eligibilityMapping';
 import { baseCardClass } from '@/app/requests/new/constants';
 import { nationalityOptions } from '@/config/requestForm';
@@ -45,6 +42,12 @@ interface IntakeWizardProps {
 
 export function IntakeWizard({ mode }: IntakeWizardProps) {
   const router = useRouter();
+  const locationSelectId = useId();
+  const durationSelectId = useId();
+  const incomeSelectId = useId();
+  const savingsSelectId = useId();
+  const visaExpirationSelectId = useId();
+  const visaTypeSelectId = useId();
   const [step, setStep] = useState(1);
   const [state, setState] = useState<EligibilityState>({
     age: '',
@@ -59,8 +62,6 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
   const [results, setResults] = useState<VisaRecommendation[]>([]);
   const [showMore, setShowMore] = useState(false);
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
-  const [allowAutoAdvance, setAllowAutoAdvance] = useState(true);
-  const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -69,43 +70,6 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
   // Count eligible visas using shared utility
   const possibleVisasCount = useMemo(() => countEligibleVisas(state), [state]);
-
-  // Auto-advance logic for step 2
-  useEffect(() => {
-    if (step === 2 && allowAutoAdvance) {
-      const needsVisaExpirationInfo = 
-        state.location === 'Inside Thailand' && 
-        ['90_180', '365', '365_5y', '1825_plus'].includes(state.duration);
-      
-      const hasAll = state.age && state.purpose && state.incomeType && state.savings && state.location && state.duration &&
-        (needsVisaExpirationInfo ? (state.currentVisaExpiration && state.currentVisaType) : true);
-      
-      if (hasAll && possibleVisasCount > 0) {
-        setAutoAdvanceCountdown(3);
-      } else {
-        setAutoAdvanceCountdown(null);
-      }
-    } else {
-      setAutoAdvanceCountdown(null);
-    }
-  }, [state, step, allowAutoAdvance, possibleVisasCount]);
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (autoAdvanceCountdown === null) return;
-    
-    if (autoAdvanceCountdown === 0) {
-      setStep(3);
-      setAutoAdvanceCountdown(null);
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setAutoAdvanceCountdown(autoAdvanceCountdown - 1);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [autoAdvanceCountdown]);
 
   // Generate results when reaching step 3
   useEffect(() => {
@@ -351,11 +315,14 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         <div className="relative text-lg leading-relaxed text-text-primary space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <span>I am</span>
+            <label htmlFor={locationSelectId} className="sr-only">
+              Current location
+            </label>
             <select
+              id={locationSelectId}
               value={state.location}
               onChange={(e) => {
                 setState((prev) => ({ ...prev, location: e.target.value }));
-                setAllowAutoAdvance(true);
               }}
               className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
                 focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
@@ -368,11 +335,14 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
           <div className="flex flex-wrap items-center gap-2">
             <span>planning to stay for</span>
+            <label htmlFor={durationSelectId} className="sr-only">
+              Planned stay duration
+            </label>
             <select
+              id={durationSelectId}
               value={state.duration}
               onChange={(e) => {
                 setState((prev) => ({ ...prev, duration: e.target.value }));
-                setAllowAutoAdvance(true);
               }}
               className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
                 focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
@@ -387,11 +357,14 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
           <div className="flex flex-wrap items-center gap-2">
             <span>with income from</span>
+            <label htmlFor={incomeSelectId} className="sr-only">
+              Income source
+            </label>
             <select
+              id={incomeSelectId}
               value={state.incomeType}
               onChange={(e) => {
                 setState((prev) => ({ ...prev, incomeType: e.target.value }));
-                setAllowAutoAdvance(true);
               }}
               className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
                 focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
@@ -407,11 +380,14 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
           <div className="flex flex-wrap items-center gap-2">
             <span>and I have savings of</span>
+            <label htmlFor={savingsSelectId} className="sr-only">
+              Savings amount
+            </label>
             <select
+              id={savingsSelectId}
               value={state.savings}
               onChange={(e) => {
                 setState((prev) => ({ ...prev, savings: e.target.value }));
-                setAllowAutoAdvance(true);
               }}
               className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
                 focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
@@ -429,11 +405,14 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
             <>
               <div className="flex flex-wrap items-center gap-2">
                 <span>My current visa expires in</span>
+                <label htmlFor={visaExpirationSelectId} className="sr-only">
+                  Current visa expiration timeframe
+                </label>
                 <select
+                  id={visaExpirationSelectId}
                   value={state.currentVisaExpiration || ''}
                   onChange={(e) => {
                     setState((prev) => ({ ...prev, currentVisaExpiration: e.target.value }));
-                    setAllowAutoAdvance(true);
                   }}
                   className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
                     focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
@@ -447,11 +426,14 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
               <div className="flex flex-wrap items-center gap-2">
                 <span>and I currently have a</span>
+                <label htmlFor={visaTypeSelectId} className="sr-only">
+                  Current visa type
+                </label>
                 <select
+                  id={visaTypeSelectId}
                   value={state.currentVisaType || ''}
                   onChange={(e) => {
                     setState((prev) => ({ ...prev, currentVisaType: e.target.value }));
-                    setAllowAutoAdvance(true);
                   }}
                   className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
                     focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
@@ -533,24 +515,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         const hasVisaFields = needsVisaExpirationInfo ? (state.currentVisaExpiration && state.currentVisaType) : true;
         const hasAllFields = hasBasicFields && hasVisaFields;
 
-        if (!allowAutoAdvance && hasAllFields) {
-          return (
-            <Button
-              type="button"
-              onClick={() => {
-                setAllowAutoAdvance(true);
-                setStep(3);
-              }}
-              disabled={possibleVisasCount === 0}
-              fullWidth
-              size="lg"
-              icon={possibleVisasCount > 0 ? <ArrowRight className="w-5 h-5" /> : undefined}
-              iconPosition="right"
-            >
-              {possibleVisasCount === 0 ? 'No visas available - adjust your selections' : 'See My Recommendations'}
-            </Button>
-          );
-        } else if (hasAllFields) {
+        if (hasAllFields) {
           if (possibleVisasCount === 0) {
             return (
               <div className="text-sm text-text-tertiary text-center">
@@ -558,51 +523,24 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
               </div>
             );
           }
-          
-          if (autoAdvanceCountdown !== null) {
-            return (
-              <div className="space-y-3">
-                <div className="flex items-center justify-center gap-2 text-sm text-primary font-medium">
-                  <Clock className="w-4 h-4 animate-pulse" />
-                  <span>Showing recommendations in {autoAdvanceCountdown} second{autoAdvanceCountdown !== 1 ? 's' : ''}...</span>
-                </div>
-                <div className="flex gap-3 justify-center">
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setAutoAdvanceCountdown(null);
-                      setStep(3);
-                    }}
-                    size="sm"
-                    icon={<ArrowRight className="w-4 h-4" />}
-                    iconPosition="right"
-                  >
-                    Show now
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setAutoAdvanceCountdown(null);
-                      setAllowAutoAdvance(false);
-                    }}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Wait, I'm not done
-                  </Button>
-                </div>
-              </div>
-            );
-          }
-          
+
           return (
-            <div className="text-sm text-text-tertiary text-center">
-              <span>✨ Recommendations will appear automatically when complete</span>
-            </div>
+            <Button
+              type="button"
+              onClick={() => setStep(3)}
+              fullWidth
+              size="lg"
+              icon={<ArrowRight className="w-5 h-5" />}
+              iconPosition="right"
+            >
+              See My Recommendations
+            </Button>
           );
         } else {
           return (
-            <div className="text-sm text-text-tertiary text-center">✨ Complete all fields to see recommendations</div>
+            <div className="text-sm text-text-tertiary text-center">
+              <span>✨ Complete all fields to see recommendations</span>
+            </div>
           );
         }
       })()}
@@ -619,7 +557,6 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
           <button
             type="button"
             onClick={() => {
-              setAllowAutoAdvance(false);
               setResults([]);
               setSelectedCard(null);
               setStep(2);

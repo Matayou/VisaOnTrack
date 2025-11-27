@@ -1,16 +1,24 @@
 'use client';
 
-import { useEffect, useState, useRef, Suspense } from 'react';
+import { useEffect, useState, useRef, Suspense, useMemo } from 'react';
 import {
   AlertCircle,
   ArrowRight,
   Calendar,
+  Check,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  Clock,
+  FileText,
+  Globe,
   MapPin,
+  MessageSquare,
+  MoreVertical,
   PlusCircle,
+  User,
   Wallet,
+  Briefcase,
 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api, type Request, type RequestStatus } from '@visaontrack/client';
@@ -159,6 +167,8 @@ const faqData: FAQCategory[] = [
   },
 ];
 
+type StatusFilter = 'ALL' | RequestStatus;
+
 function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -169,7 +179,25 @@ function DashboardContent() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('basics');
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const autoCreateAttemptedRef = useRef(false);
+
+  // Calculate metrics
+  const metrics = useMemo(() => {
+    const total = requests.length;
+    const active = requests.filter(r => r.status === 'OPEN').length;
+    const draft = requests.filter(r => r.status === 'DRAFT').length;
+    const hired = requests.filter(r => r.status === 'HIRED').length;
+    const proposals = 0; // TODO: Calculate from proposals data when available
+
+    return { total, active, draft, hired, proposals };
+  }, [requests]);
+
+  // Filter requests based on status
+  const filteredRequests = useMemo(() => {
+    if (statusFilter === 'ALL') return requests;
+    return requests.filter(r => r.status === statusFilter);
+  }, [requests, statusFilter]);
 
   useEffect(() => {
     const run = async () => {
@@ -250,6 +278,7 @@ function DashboardContent() {
   }, [router, searchParams]);
 
   const showEmptyState = !requests.length && !isLoadingRequests && !error && !isProcessingIntake;
+  const showFilteredEmptyState = filteredRequests.length === 0 && requests.length > 0;
 
   const toggleQuestion = (questionId: string) => {
     setExpandedQuestions((prev) => {
@@ -284,35 +313,127 @@ function DashboardContent() {
       <PageBackground />
       <SeekerHeader />
       <div className="relative z-10 w-full mx-auto space-y-6 px-4 sm:px-6 lg:px-8 py-6 lg:py-10 max-w-7xl">
-        <header className="ios-card px-6 py-8 relative overflow-hidden">
+        {/* Header with Metrics */}
+        <header className="ios-card px-6 py-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50/40 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none"></div>
           <div className="relative">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Your Requests</p>
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-              Manage your visa requests
-            </h1>
-          </div>
-          <p className="text-sm text-gray-600 mt-2 max-w-2xl leading-relaxed">
-            Create and track your visa applications. Connect with verified providers and manage your journey to Thailand.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button
-              type="button"
-              onClick={() => router.push('/requests/new')}
-              icon={<PlusCircle className="w-4 h-4" />}
-              iconPosition="left"
-            >
-              Start new request
-            </Button>
-            <button
-              type="button"
-              onClick={() => router.push('/providers')}
-              className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary rounded-xl transition-all"
-            >
-              Find providers
-            </button>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Your Requests</p>
+                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                  Manage your visa requests
+                </h1>
+              </div>
+              <Button
+                type="button"
+                onClick={() => router.push('/requests/new')}
+                icon={<PlusCircle className="w-4 h-4" />}
+                iconPosition="left"
+                className="hidden sm:inline-flex"
+              >
+                Start new request
+              </Button>
+            </div>
+
+            {/* Metrics Cards - Compact on Mobile */}
+            {!isLoadingRequests && requests.length > 0 && (
+              <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6">
+                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">Total</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{metrics.total}</p>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
+                  <p className="text-[10px] sm:text-xs text-emerald-600 mb-0.5 sm:mb-1">Active</p>
+                  <p className="text-lg sm:text-2xl font-bold text-emerald-600">{metrics.active}</p>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
+                  <p className="text-[10px] sm:text-xs text-blue-600 mb-0.5 sm:mb-1">Proposals</p>
+                  <p className="text-lg sm:text-2xl font-bold text-blue-600">{metrics.proposals}</p>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
+                  <p className="text-[10px] sm:text-xs text-purple-600 mb-0.5 sm:mb-1">Hired</p>
+                  <p className="text-lg sm:text-2xl font-bold text-purple-600">{metrics.hired}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile CTA */}
+            <div className="sm:hidden">
+              <Button
+                type="button"
+                onClick={() => router.push('/requests/new')}
+                icon={<PlusCircle className="w-4 h-4" />}
+                iconPosition="left"
+                className="w-full"
+              >
+                Start new request
+              </Button>
+            </div>
           </div>
         </header>
+
+        {/* Status Filter Tabs - Clean Minimal */}
+        {!isLoadingRequests && requests.length > 0 && (
+          <div className="bg-white border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+            <div className="flex gap-6 overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setStatusFilter('ALL')}
+                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                  statusFilter === 'ALL'
+                    ? 'border-primary text-gray-900'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                All {requests.length > 0 && <span className="ml-1">({requests.length})</span>}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatusFilter('OPEN')}
+                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                  statusFilter === 'OPEN'
+                    ? 'border-primary text-gray-900'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Active {metrics.active > 0 && <span className="ml-1">({metrics.active})</span>}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatusFilter('DRAFT')}
+                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                  statusFilter === 'DRAFT'
+                    ? 'border-primary text-gray-900'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Draft {metrics.draft > 0 && <span className="ml-1">({metrics.draft})</span>}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatusFilter('HIRED')}
+                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                  statusFilter === 'HIRED'
+                    ? 'border-primary text-gray-900'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Hired {metrics.hired > 0 && <span className="ml-1">({metrics.hired})</span>}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatusFilter('CLOSED')}
+                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                  statusFilter === 'CLOSED'
+                    ? 'border-primary text-gray-900'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Completed
+              </button>
+            </div>
+          </div>
+        )}
 
         {isLoadingUser || isLoadingRequests ? (
           <div className="ios-card p-6 flex items-center gap-3 text-gray-600">
@@ -322,24 +443,70 @@ function DashboardContent() {
         ) : null}
 
         {showEmptyState && (
-          <div className="text-center py-12 relative overflow-hidden rounded-2xl bg-gray-50/50 border border-gray-100/50">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-2xl pointer-events-none"></div>
-            <div className="relative z-10">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center ring-4 ring-gray-50">
-                <PlusCircle className="w-8 h-8 text-gray-400" />
+          <div className="text-center py-12 sm:py-16 px-4 relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-50/30 via-white to-blue-50/30 border border-gray-200/60">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+            <div className="relative z-10 max-w-md mx-auto">
+              <div className="w-16 sm:w-20 h-16 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-2xl bg-primary/10 flex items-center justify-center ring-4 ring-primary/5">
+                <FileText className="w-8 sm:w-10 h-8 sm:h-10 text-primary" />
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">No requests yet</h3>
-              <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto leading-relaxed">
-                Create your first visa request to start receiving proposals from verified providers
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Ready to start your visa journey?</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-2 leading-relaxed">
+                Create your first visa request to connect with verified providers.
+                They'll review your requirements and send personalized proposals.
               </p>
-              <button 
-                onClick={() => router.push('/requests/new')}
-                className="px-6 py-2.5 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-600 font-medium rounded-xl text-sm transition-all shadow-sm hover:shadow flex items-center gap-2 mx-auto"
-              >
-                <PlusCircle className="w-4 h-4" />
-                Start new request
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 pt-2">
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  Free to post
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  Multiple quotes
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  Secure payments
+                </span>
+              </div>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
+                <Button
+                  type="button"
+                  size="lg"
+                  onClick={() => router.push('/requests/new')}
+                  icon={<PlusCircle className="w-5 h-5" />}
+                  iconPosition="left"
+                  className="w-full sm:w-auto"
+                >
+                  Start new request
+                </Button>
+                <button
+                  onClick={() => router.push('/providers')}
+                  className="w-full sm:w-auto px-6 py-3 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-700 font-semibold rounded-xl text-base transition-all shadow-sm hover:shadow"
+                >
+                  Browse providers
+                </button>
+              </div>
             </div>
+          </div>
+        )}
+
+        {/* Filtered Empty State */}
+        {showFilteredEmptyState && (
+          <div className="text-center py-12 ios-card">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 flex items-center justify-center">
+              <FileText className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-2">No {statusFilter.toLowerCase()} requests</h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Try selecting a different filter to view other requests
+            </p>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('ALL')}
+              className="text-sm font-medium text-primary hover:text-primary/80 underline"
+            >
+              View all requests
+            </button>
           </div>
         )}
 
@@ -360,99 +527,132 @@ function DashboardContent() {
           </div>
         )}
 
-        {!showEmptyState && requests.length > 0 && (
+        {/* Request Cards */}
+        {!showEmptyState && !showFilteredEmptyState && filteredRequests.length > 0 && (
           <div className="space-y-4">
-            {requests.map((request) => {
+            {filteredRequests.map((request) => {
               const budgetText = formatBudget(request.budgetMin, request.budgetMax);
               const dateText = formatRelativeDate(request.createdAt);
-              const hasMetadata = request.visaType || budgetText || request.location;
+              const intakeData = request.intakeData as any;
+
+              // Extract rich data from intakeData if available
+              const nationality = intakeData?.nationality || 'Not specified';
+              const ageRange = intakeData?.ageRange || mapAgeRange(intakeData?.fields) || 'Not specified';
+              const purpose = intakeData?.purpose || 'Not specified';
 
               return (
                 <article
                   key={request.id}
-                  className="ios-card group transition-all duration-300 hover:shadow-md overflow-hidden"
+                  className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => router.push(`/requests/${request.id}`)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      router.push(`/requests/${request.id}`);
+                    }
+                  }}
                 >
-                  <div className={`h-1 w-full ${
-                    request.status === 'OPEN' ? 'bg-green-500' : 
-                    request.status === 'DRAFT' ? 'bg-amber-400' : 
-                    request.status === 'HIRED' ? 'bg-blue-500' : 'bg-gray-300'
-                  }`} />
-                  
-                  <div className="p-5 lg:p-6">
-                    {/* Header: Title and Status */}
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                      <div className="flex-1 min-w-0">
-                        <h2 className="text-lg font-bold text-gray-900 mb-1.5 leading-tight group-hover:text-primary transition-colors">
-                          {request.title}
-                        </h2>
-                        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">{request.description}</p>
-                      </div>
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-2 flex-1">
+                      <FileText className="w-4 h-4 text-primary flex-shrink-0" />
+                      {request.visaType && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-primary bg-blue-50 border border-blue-100">
+                          {request.visaType}
+                        </span>
+                      )}
                       <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset flex-shrink-0 ${
-                          request.status === 'DRAFT' ? 'bg-amber-50 text-amber-700 ring-amber-600/10' :
-                          request.status === 'OPEN' ? 'bg-green-50 text-green-700 ring-green-600/10' :
-                          request.status === 'HIRED' ? 'bg-blue-50 text-blue-700 ring-blue-600/10' :
-                          'bg-gray-50 text-gray-600 ring-gray-500/10'
+                        className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium ${
+                          request.status === 'DRAFT' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                          request.status === 'OPEN' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                          request.status === 'HIRED' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                          'bg-gray-50 text-gray-600 border border-gray-200'
                         }`}
                       >
-                        {request.status === 'OPEN' && (
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
                         {statusLabels[request.status]}
                       </span>
                     </div>
+                    <button
+                      type="button"
+                      className="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // TODO: Add menu actions
+                      }}
+                      aria-label="More options"
+                    >
+                      <MoreVertical className="w-4 h-4 text-gray-400" />
+                    </button>
+                  </div>
 
-                    {/* Metadata Section */}
-                    {hasMetadata && (
-                      <div className="flex flex-wrap items-center gap-2 mb-5">
-                        {request.visaType && (
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
-                            {request.visaType}
-                          </span>
-                        )}
-                        {budgetText && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
-                            <Wallet className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
-                            <span>{budgetText}</span>
-                          </span>
-                        )}
-                        {request.location && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
-                            <MapPin className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
-                            <span>{request.location}</span>
-                          </span>
-                        )}
-                        {dateText && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-xs font-medium text-gray-600 border border-gray-100">
-                            <Calendar className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
-                            <span>{dateText}</span>
-                          </span>
-                        )}
+                  {/* Title */}
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    {request.title}
+                  </h2>
+
+                  {/* Clean Info Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-3 mb-4 pb-4 border-b border-gray-200">
+                    <div>
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                        <Globe className="w-3.5 h-3.5" />
+                        <span>Nationality</span>
                       </div>
-                    )}
-
-                    {/* Actions */}
-                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-50">
-                      <button
-                        type="button"
-                        className="text-sm text-gray-500 hover:text-gray-900 font-medium px-3 py-1.5 transition-colors"
-                        onClick={() => router.push(`/requests/${request.id}`)}
-                      >
-                        View
-                      </button>
-                      {(request.status === 'DRAFT' || request.status === 'OPEN') && (
-                        <button
-                          type="button"
-                          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
-                          onClick={() => router.push(`/requests/${request.id}`)}
-                        >
-                          {request.status === 'DRAFT' ? 'Continue' : 'View details'}
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      )}
+                      <p className="text-sm font-medium text-gray-900">{nationality}</p>
                     </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                        <User className="w-3.5 h-3.5" />
+                        <span>Age Range</span>
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">{ageRange}</p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>Location</span>
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">{request.location || 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                        <Briefcase className="w-3.5 h-3.5" />
+                        <span>Purpose</span>
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 capitalize">{purpose}</p>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500">
+                      <span className="flex items-center gap-1.5">
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        0 proposals
+                      </span>
+                      {budgetText && (
+                        <span className="flex items-center gap-1.5">
+                          <Wallet className="w-3.5 h-3.5" />
+                          {budgetText}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" />
+                        {dateText}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 self-end sm:self-auto"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/requests/${request.id}`);
+                      }}
+                    >
+                      View details
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </article>
               );

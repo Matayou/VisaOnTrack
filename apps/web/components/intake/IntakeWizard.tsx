@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, useId } from 'react';
+import { useEffect, useMemo, useState, useId, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Globe,
@@ -32,6 +32,7 @@ import { baseCardClass } from '@/app/requests/new/constants';
 import { nationalityOptions } from '@/config/requestForm';
 import { Button } from '@/components/ui';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
+import { trackEvent } from '@/lib/analytics';
 
 // Key for localStorage persistence
 const INTAKE_DATA_KEY = 'vot_intake_data';
@@ -64,6 +65,9 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const submittedRef = useRef(false);
+  const previousStepRef = useRef(step);
+  const stepStartRef = useRef<number | null>(null);
 
   // Progress calculation
   const progress = (step / 4) * 100;
@@ -78,6 +82,39 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
       setResults(generated);
     }
   }, [step, state, results.length]);
+
+  // Track step views and dwell
+  useEffect(() => {
+    const now = Date.now();
+    if (stepStartRef.current && previousStepRef.current !== step) {
+      const durationMs = now - stepStartRef.current;
+      trackEvent('intake_step_duration', { step: previousStepRef.current, mode, durationMs });
+    }
+    trackEvent('intake_step_view', { step, mode });
+    previousStepRef.current = step;
+    stepStartRef.current = now;
+  }, [step, mode]);
+
+  // Track abandonment on unload/visibility change
+  useEffect(() => {
+    const handleExit = () => {
+      if (submittedRef.current) return;
+      trackEvent('intake_abandon', { step, mode });
+    };
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        handleExit();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('beforeunload', handleExit);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleExit);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [step, mode]);
 
   const handleFieldToggle = (field: string) => {
     setState((prev) => ({
@@ -115,6 +152,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
   const handleSubmit = async () => {
     if (!selectedCard) return;
+    trackEvent('intake_submit_attempt', { mode, step, selectedCode: selectedCard });
 
     if (mode === 'public') {
       // Public Mode: Save to LocalStorage and redirect to Register
@@ -123,6 +161,8 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         selectedCode: selectedCard,
       };
       localStorage.setItem(INTAKE_DATA_KEY, JSON.stringify(eligibilityData));
+      submittedRef.current = true;
+      trackEvent('intake_submit_success', { mode, step, selectedCode: selectedCard });
       router.push('/auth/register?from=intake');
     } else {
       // Authenticated Mode: Create request directly via API
@@ -147,10 +187,13 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
           requestBody: requestPayload,
         });
 
+        submittedRef.current = true;
+        trackEvent('intake_submit_success', { mode, step, selectedCode: selectedCard });
         router.push(`/requests/${newRequest.id}`);
       } catch (error) {
         console.error('Failed to create request:', error);
         setSubmitError(getErrorDisplayMessage(error, 'create your request'));
+        trackEvent('intake_submit_error', { mode, step, selectedCode: selectedCard });
         setIsSubmitting(false);
       }
     }

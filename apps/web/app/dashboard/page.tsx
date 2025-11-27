@@ -335,28 +335,6 @@ function DashboardContent() {
               </Button>
             </div>
 
-            {/* Metrics Cards - Compact on Mobile */}
-            {!isLoadingRequests && requests.length > 0 && (
-              <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6">
-                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">Total</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{metrics.total}</p>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
-                  <p className="text-[10px] sm:text-xs text-emerald-600 mb-0.5 sm:mb-1">Active</p>
-                  <p className="text-lg sm:text-2xl font-bold text-emerald-600">{metrics.active}</p>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
-                  <p className="text-[10px] sm:text-xs text-blue-600 mb-0.5 sm:mb-1">Proposals</p>
-                  <p className="text-lg sm:text-2xl font-bold text-blue-600">{metrics.proposals}</p>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-2 sm:p-3">
-                  <p className="text-[10px] sm:text-xs text-purple-600 mb-0.5 sm:mb-1">Hired</p>
-                  <p className="text-lg sm:text-2xl font-bold text-purple-600">{metrics.hired}</p>
-                </div>
-              </div>
-            )}
-
             {/* Mobile CTA */}
             <div className="sm:hidden">
               <Button

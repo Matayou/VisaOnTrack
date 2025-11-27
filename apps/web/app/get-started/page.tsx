@@ -26,7 +26,6 @@ export default function GetStartedPage() {
         <section className="ios-card p-6 sm:p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl -mr-10 -mt-12 pointer-events-none" aria-hidden="true" />
           <div className="relative">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Start</p>
             <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-3">
               Start your visa plan with <GradientText>SawadeePass</GradientText>
             </h1>

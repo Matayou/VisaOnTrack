@@ -40,12 +40,12 @@ export function Footer({ variant = 'full' }: FooterProps) {
     <Link
       href="/"
       className="inline-flex items-center gap-3 text-lg font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-footer-surface rounded"
-      aria-label="VisaOnTrack homepage"
+      aria-label="SawadeePass homepage"
     >
       <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-white">
         <Compass className="w-5 h-5" aria-hidden="true" />
       </span>
-      <span>VisaOnTrack</span>
+      <span>SawadeePass</span>
     </Link>
   );
 
@@ -92,7 +92,7 @@ export function Footer({ variant = 'full' }: FooterProps) {
               </div>
             </div>
             <div className="pt-6 mt-8 border-t border-white/10 text-center">
-              <p className="text-sm text-footer-text-tertiary">© 2025 VisaOnTrack. All rights reserved.</p>
+              <p className="text-sm text-footer-text-tertiary">© 2025 SawadeePass. All rights reserved.</p>
             </div>
           </>
         ) : (
@@ -101,8 +101,8 @@ export function Footer({ variant = 'full' }: FooterProps) {
               <div className="md:col-span-2 space-y-4">
                 {brand}
                 <p className="text-base text-footer-text-secondary max-w-md leading-relaxed">
-                  Connect with verified immigration professionals. 100% free platform for visa seekers. Secure payments
-                  and milestone-based progress tracking.
+                  Thailand visa marketplace: share your plan once and get proposals from verified providers. They spend
+                  credits to unlock leads; you pay providers directly with our safety guidance.
                 </p>
               </div>
 
@@ -142,7 +142,7 @@ export function Footer({ variant = 'full' }: FooterProps) {
             </div>
 
             <div className="pt-8 border-t border-white/10 text-center md:text-left">
-              <p className="text-sm text-footer-text-tertiary">© 2025 VisaOnTrack. All rights reserved.</p>
+              <p className="text-sm text-footer-text-tertiary">© 2025 SawadeePass. All rights reserved.</p>
             </div>
           </>
         )}

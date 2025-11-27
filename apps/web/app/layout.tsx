@@ -9,8 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'VisaOnTrack - Navigate Your Visa Journey',
-  description: 'Connect with verified immigration professionals in Thailand. Secure payments, transparent pricing, and milestone-based progress tracking.',
+  title: 'SawadeePass — Thailand visas, simplified',
+  description:
+    'Share your plan once and get proposals from verified Thai visa experts. Providers spend credits to unlock and reply; you pay them directly with our safety guidance.',
 };
 
 export default function RootLayout({

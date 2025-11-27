@@ -20,6 +20,8 @@ import {
   BarChart3,
   ChevronDown,
   ChevronUp,
+  Briefcase,
+  Sparkles,
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
@@ -33,45 +35,53 @@ const steps = [
   {
     number: 1,
     icon: Compass,
-    title: 'Tell Us What You Need',
-    description: 'Answer a few quick questions about your nationality, purpose, timeline, and budget. Takes less than 2 minutes.',
+    title: 'Share Your Visa Goal',
+    description: 'Tell us your visa type, timing, and budget in under 2 minutes. No paperwork yet.',
   },
   {
     number: 2,
-    icon: Users,
-    title: 'Get Matched with Experts',
-    description: 'We match you with vetted immigration professionals who specialize in your visa type. Only verified, experienced professionals.',
+    icon: ShieldCheck,
+    title: 'Verified Experts Unlock & Reply',
+    description: 'Licensed Thai agents, schools, and law firms spend credits to unlock your request and send proposals.',
   },
   {
     number: 3,
-    icon: CheckCircle2,
-    title: 'Compare & Choose',
-    description: 'Receive detailed quotes with timelines and deliverables. Compare options, read reviews, and choose your provider. 100% free platform.',
+    icon: MessageCircle,
+    title: 'Compare & Chat',
+    description: 'Review timelines, inclusions, and pricing. Chat directly to clarify details before you commit.',
   },
   {
     number: 4,
-    icon: Activity,
-    title: 'Track Your Progress',
-    description: 'Your payment is held securely in escrow. Track milestones, communicate directly, and release payment only when satisfied.',
+    icon: CheckCircle2,
+    title: 'Choose & Pay Your Provider Directly',
+    description: 'Pick the provider that fits best. Pay them directly using our safety checklist and red-flag guidance.',
   },
 ];
 
 const faqs = [
   {
-    question: 'How long does the process take?',
-    answer: 'The initial matching and quote process typically takes 24-48 hours. Once you select a provider, timeline depends on your visa type and requirements. Most applications are processed within 2-4 weeks.',
+    question: 'Is SawadeePass free for visa seekers?',
+    answer: 'Yes. Posting your request and receiving proposals is free for seekers. Providers pay credits or subscriptions to unlock and respond to qualified leads.',
   },
   {
-    question: 'Is the platform free?',
-    answer: 'Yes! VisaOnTrack is completely free for visa seekers. There are no platform fees, no hidden costs, and no subscription charges. You only pay providers directly for their visa services, and all payments are held in secure escrow until milestones are completed to your satisfaction.',
+    question: 'Do you hold my payment in escrow?',
+    answer:
+      'No. You pay providers directly. We give you safety guidance, red flags to avoid, and a checklist to keep off-platform payments secure.',
   },
   {
-    question: "What if I'm not satisfied with the service?",
-    answer: "If you're not satisfied with a milestone, you can request revisions before releasing payment. Our support team is also available to help resolve any issues. Your satisfaction is our priority.",
+    question: 'How fast will I hear back?',
+    answer:
+      'Most seekers receive their first proposal within 24–48 hours. Response time can vary by visa type and seasonality, but providers are incentivized to reply quickly because they spend credits to unlock leads.',
   },
   {
-    question: 'Do I need to be in Thailand to use this service?',
-    answer: 'No! You can start the process from anywhere. However, some visa types may require you to be in Thailand for certain steps. Our providers will guide you through the specific requirements for your situation.',
+    question: 'How are providers vetted?',
+    answer:
+      'We verify identity, DBD/license documents, and track performance. Only verified Thai agents, schools, and law firms can unlock and submit proposals.',
+  },
+  {
+    question: 'Which visas do you support?',
+    answer:
+      'Common visas include Education (ED), Business, LTR, Digital Nomad (DTV), Retirement, Marriage, and tourist extensions. Providers will advise the best path based on your situation.',
   },
 ];
 
@@ -180,36 +190,64 @@ export default function LandingPage() {
     }
   };
 
-  const features = [
+  const seekerFeatures = [
     {
       icon: ShieldCheck,
-      title: 'Verified Providers',
-      description: 'All immigration professionals are vetted and verified. Work with confidence knowing credentials are thoroughly checked.',
+      title: 'Verified Thai Providers',
+      description: 'Licensed agents, schools, and law firms pass ID + DBD/license checks before they can unlock leads.',
     },
     {
-      icon: BarChart3,
-      title: '100% Free Platform',
-      description: 'No platform fees for visa seekers. You only pay providers for their services. Complete transparency, no hidden costs.',
-    },
-    {
-      icon: Lock,
-      title: 'Secure Escrow',
-      description: 'Your payment is protected in escrow. Funds released only when milestones are completed to your satisfaction.',
-    },
-    {
-      icon: Activity,
-      title: 'Track Progress',
-      description: 'Monitor your visa application in real-time. Always know what\'s happening and what\'s next.',
+      icon: FileText,
+      title: 'Transparent Proposals',
+      description: 'See government fees, service fees, timelines, and inclusions before you choose who to work with.',
     },
     {
       icon: MessageCircle,
-      title: 'Direct Communication',
-      description: 'Chat directly with your provider. Get updates, ask questions, and stay informed throughout the process.',
+      title: 'Direct Chat & Docs',
+      description: 'Ask questions, share documents, and clarify requirements in one thread per request.',
+    },
+    {
+      icon: Lock,
+      title: 'Safety Guidance for Payments',
+      description: 'We do not hold funds. You pay providers directly using our safety checklist and red-flag reminders.',
+    },
+    {
+      icon: Activity,
+      title: 'Status Updates',
+      description: 'Track replies, proposals, and next steps from a single request view.',
+    },
+    {
+      icon: BarChart3,
+      title: 'Fast Responses',
+      description: 'Most requests receive a first reply within 24–48 hours because providers spend credits to unlock.',
+    },
+  ];
+
+  const providerHighlights = [
+    {
+      icon: Briefcase,
+      title: 'Qualified Leads, Not Clicks',
+      description: 'Requests include visa type, timing, and budget so you can choose the right opportunities.',
     },
     {
       icon: Star,
-      title: 'Reviews & Ratings',
-      description: 'Read verified reviews from real clients. Make informed decisions based on proven track records.',
+      title: 'Credit-Based Unlocks',
+      description: 'Spend credits to unlock a lead and reply. Predictable costs, no bidding wars.',
+    },
+    {
+      icon: Compass,
+      title: 'Proposal Workspace',
+      description: 'Send structured proposals with timelines, deliverables, and pricing from one place.',
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Verification Badge',
+      description: 'Upload your documents once to earn a verified badge and increase win rates.',
+    },
+    {
+      icon: Sparkles,
+      title: 'Plans for Teams',
+      description: 'Pro and Agency tiers with bundled credits and discounts for higher-volume teams.',
     },
   ];
 
@@ -225,15 +263,14 @@ export default function LandingPage() {
             {/* Left Column: Text Content */}
             <div className="text-center lg:text-left space-y-6">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-success-light to-green-50 border border-success/20 rounded-full text-sm font-semibold text-success shadow-sm">
-                <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-                <span>Trusted by 1,000+ verified providers</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-primary/10 to-blue-50 border border-primary/20 rounded-full text-sm font-semibold text-primary shadow-sm">
+                <Sparkles className="w-4 h-4" aria-hidden="true" />
+                <span>Lead marketplace for Thailand visas</span>
               </div>
 
               {/* Main Heading - Display size (48-72px) */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-text-primary">
-                Navigate Your Visa Journey with{' '}
-                <GradientText>Confidence</GradientText>
+                Thailand visas, <GradientText>simplified</GradientText>
               </h1>
 
               {/* Hero Image - Mobile: After heading */}
@@ -250,22 +287,59 @@ export default function LandingPage() {
 
               {/* Description - Body text (16-18px) */}
               <p className="text-lg md:text-xl text-text-secondary max-w-xl lg:max-w-lg mx-auto lg:mx-0 leading-relaxed">
-                Connect with verified immigration professionals in Thailand.{' '}
-                100% free platform for visa seekers. Secure payments and milestone-based progress tracking.
+                Share your plan once and get proposals from verified Thai experts. Providers spend credits to unlock and
+                reply; you pay them directly with our safety guidance.
               </p>
 
+              {/* Trust Indicators */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+                {[
+                  { label: 'Verified providers', value: 'ID + DBD/license checks', icon: ShieldCheck },
+                  { label: 'Fast responses', value: '<48h for most requests', icon: BarChart3 },
+                  { label: 'Visa coverage', value: 'ED, Business, LTR, DTV, Retirement', icon: FileText },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.label}
+                      className="flex items-start gap-3 bg-white/60 border border-border-light rounded-lg px-4 py-3 shadow-sm backdrop-blur-sm"
+                    >
+                      <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/15">
+                        <Icon className="w-4 h-4" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-text-primary leading-tight">{item.label}</p>
+                        <p className="text-xs text-text-secondary leading-tight">{item.value}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
               {/* Primary CTA - Eligibility Check */}
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:gap-4">
                 <Link
                   href="/get-started"
                   className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-lg font-bold text-white bg-gradient-to-br from-primary via-primary to-primary-hover rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-offset-2 min-h-[60px] w-full sm:w-auto"
                   aria-label="Start visa eligibility check"
                 >
                   <Compass className="w-6 h-6" aria-hidden="true" />
-                  <span>Start Your Visa Journey</span>
+                  <span>Start Visa Check</span>
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
+                <Link
+                  href="/auth/register?role=provider"
+                  className="mt-3 sm:mt-0 inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold text-primary bg-white border border-border-light rounded-xl transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 min-h-[56px] w-full sm:w-auto"
+                  aria-label="Sign up as a provider"
+                >
+                  <Users className="w-5 h-5" aria-hidden="true" />
+                  <span>I’m a provider</span>
+                </Link>
               </div>
+
+              <p className="text-sm text-text-tertiary">
+                Free for seekers. Providers pay credits/subscriptions to unlock and reply.
+              </p>
             </div>
 
             {/* Right Column: Hero Image - Desktop only */}
@@ -286,10 +360,11 @@ export default function LandingPage() {
         <section id="how-it-works" className="max-w-7xl mx-auto px-6 sm:px-8 py-20 md:py-24">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-              <GradientText>How It Works</GradientText>
+              <GradientText>How SawadeePass Works</GradientText>
             </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-              A simple, secure process to get you the visa you need
+              Providers pay to unlock qualified requests, so you get faster, higher-quality proposals — and you pay
+              providers directly with clear safety guidance.
             </p>
           </div>
 
@@ -327,15 +402,15 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-6 sm:px-8">
             <div className="text-center mb-12 md:mb-16">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-                <GradientText>Why Choose SawadeePass</GradientText>
+                <GradientText>For Seekers</GradientText>
               </h2>
               <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-                Everything you need for a smooth, secure, and transparent visa journey
+                Get clarity before you commit. Verified providers send structured proposals you can compare side by side.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {features.map((feature) => {
+              {seekerFeatures.map((feature) => {
                 const Icon = feature.icon;
                 return (
                   <div
@@ -350,6 +425,62 @@ export default function LandingPage() {
                     {/* Content */}
                     <h3 className="text-lg font-semibold mb-2 text-gray-900">{feature.title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Provider Section */}
+        <section id="pricing" className="max-w-7xl mx-auto px-6 sm:px-8 py-16 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-start">
+            <div className="space-y-4">
+              <p className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-primary bg-primary/10 rounded-full border border-primary/20">
+                For Providers
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold leading-tight text-text-primary">
+                Predictable lead unlocks. Purpose-built for Thai visa teams.
+              </h2>
+              <p className="text-lg text-text-secondary leading-relaxed max-w-2xl">
+                Spend credits to unlock qualified requests, send structured proposals, and manage your pipeline. Move up
+                to Pro/Agency tiers for bundled credits and discounts.
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border-light bg-white shadow-sm text-sm text-text-secondary">
+                  <ShieldCheck className="w-4 h-4 text-primary" aria-hidden="true" />
+                  Verified badge after docs
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border-light bg-white shadow-sm text-sm text-text-secondary">
+                  <BarChart3 className="w-4 h-4 text-primary" aria-hidden="true" />
+                  Lead quality controls
+                </div>
+              </div>
+              <div className="pt-2">
+                <Link
+                  href="/auth/register?role=provider"
+                  className="inline-flex items-center gap-3 px-8 py-4 text-base font-semibold text-white bg-gradient-to-br from-primary via-primary to-primary-hover rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-offset-2"
+                >
+                  <Compass className="w-5 h-5" aria-hidden="true" />
+                  Start as a provider
+                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+              {providerHighlights.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.title}
+                    className="bg-white border border-border-light rounded-lg p-5 shadow-sm hover:shadow-md transition-all duration-200"
+                  >
+                    <div className="w-11 h-11 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center mb-3">
+                      <Icon className="w-5 h-5 text-primary" aria-hidden="true" />
+                    </div>
+                    <h3 className="text-md font-semibold text-text-primary mb-2">{item.title}</h3>
+                    <p className="text-sm text-text-secondary leading-relaxed">{item.description}</p>
                   </div>
                 );
               })}
@@ -409,10 +540,10 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-primary-hover/50 to-transparent"></div>
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight">
-              Ready to Start Your Visa Journey?
+              Start your Thailand visa plan today
             </h2>
             <p className="text-xl md:text-2xl opacity-95 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Find the perfect visa option for your situation in minutes
+              Share your plan once, compare verified providers, and move forward with clear pricing and timelines.
             </p>
             <Link
               href="/get-started"
@@ -420,7 +551,7 @@ export default function LandingPage() {
               aria-label="Start your visa journey"
             >
               <Compass className="w-6 h-6" aria-hidden="true" />
-              <span>Start Your Visa Journey</span>
+              <span>Start Visa Check</span>
               <ArrowRight className="w-6 h-6" aria-hidden="true" />
             </Link>
           </div>
@@ -442,4 +573,3 @@ export default function LandingPage() {
     </div>
   );
 }
-

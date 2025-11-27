@@ -304,14 +304,17 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         <p className="text-text-secondary">This helps us find the best visa options for you</p>
       </div>
 
-      <div className="relative bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 rounded-base p-6 sm:p-8 border-2 border-primary/30 shadow-lg shadow-primary/5 overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
-            backgroundSize: '24px 24px'
-          }}></div>
+      <div className="relative rounded-base p-6 sm:p-8 border border-border-light bg-white shadow-sm overflow-hidden">
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
+              backgroundSize: '22px 22px',
+            }}
+          />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-primary/10 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
         <div className="relative text-lg leading-relaxed text-text-primary space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <span>I am</span>
@@ -748,14 +751,17 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
   return (
     <>
       {/* Progress Bar */}
-      <div className="border-t border-border-light bg-bg-primary">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8">
-          <div className="flex items-center justify-between py-3">
-            <div className="flex-1 h-1 bg-border-light rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-primary to-primary-hover transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
-            </div>
-            <span className="ml-4 text-sm font-medium text-text-secondary whitespace-nowrap">Step {step} of 4</span>
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center justify-between gap-4 rounded-base border border-border-light bg-white px-4 py-3 shadow-sm">
+          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-primary-hover transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
+            />
           </div>
+          <span className="text-xs sm:text-sm font-semibold text-text-secondary whitespace-nowrap min-w-[90px] text-right">
+            Step {step} of 4
+          </span>
         </div>
       </div>
 

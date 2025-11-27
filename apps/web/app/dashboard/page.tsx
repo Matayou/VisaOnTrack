@@ -372,61 +372,65 @@ function DashboardContent() {
           </div>
         </header>
 
-        {/* Status Filter Tabs - Clean Minimal */}
+        {/* Status Filter Tabs - Compact pill row */}
         {!isLoadingRequests && requests.length > 0 && (
-          <div className="bg-white border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
-            <div className="flex gap-6 overflow-x-auto">
+          <div className="ios-card px-4 sm:px-6 py-3">
+            <div className="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar">
               <button
                 type="button"
                 onClick={() => setStatusFilter('ALL')}
-                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
                   statusFilter === 'ALL'
-                    ? 'border-primary text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
+                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
                 }`}
               >
-                All {requests.length > 0 && <span className="ml-1">({requests.length})</span>}
+                All
+                {requests.length > 0 && <span className="text-xs font-semibold text-gray-500">({requests.length})</span>}
               </button>
               <button
                 type="button"
                 onClick={() => setStatusFilter('OPEN')}
-                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
                   statusFilter === 'OPEN'
-                    ? 'border-primary text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
+                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
                 }`}
               >
-                Active {metrics.active > 0 && <span className="ml-1">({metrics.active})</span>}
+                Active
+                {metrics.active > 0 && <span className="text-xs font-semibold text-gray-500">({metrics.active})</span>}
               </button>
               <button
                 type="button"
                 onClick={() => setStatusFilter('DRAFT')}
-                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
                   statusFilter === 'DRAFT'
-                    ? 'border-primary text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
+                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
                 }`}
               >
-                Draft {metrics.draft > 0 && <span className="ml-1">({metrics.draft})</span>}
+                Draft
+                {metrics.draft > 0 && <span className="text-xs font-semibold text-gray-500">({metrics.draft})</span>}
               </button>
               <button
                 type="button"
                 onClick={() => setStatusFilter('HIRED')}
-                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
                   statusFilter === 'HIRED'
-                    ? 'border-primary text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
+                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
                 }`}
               >
-                Hired {metrics.hired > 0 && <span className="ml-1">({metrics.hired})</span>}
+                Hired
+                {metrics.hired > 0 && <span className="text-xs font-semibold text-gray-500">({metrics.hired})</span>}
               </button>
               <button
                 type="button"
                 onClick={() => setStatusFilter('CLOSED')}
-                className={`pb-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
                   statusFilter === 'CLOSED'
-                    ? 'border-primary text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
+                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
                 }`}
               >
                 Completed

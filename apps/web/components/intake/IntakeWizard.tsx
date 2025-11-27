@@ -304,157 +304,133 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         <p className="text-text-secondary">This helps us find the best visa options for you</p>
       </div>
 
-      <div className="relative rounded-base p-6 sm:p-8 border border-border-light bg-white shadow-sm overflow-hidden">
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
-              backgroundSize: '22px 22px',
+      <div className="rounded-base border border-border-light bg-white p-4 sm:p-5 shadow-sm space-y-4">
+        <div className="space-y-1">
+          <label htmlFor={locationSelectId} className="text-xs font-semibold text-text-secondary">
+            I am
+          </label>
+          <select
+            id={locationSelectId}
+            value={state.location}
+            onChange={(e) => {
+              setState((prev) => ({ ...prev, location: e.target.value }));
             }}
-          />
+            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+          >
+            <option value="">Select location</option>
+            <option value="Outside Thailand">Outside Thailand</option>
+            <option value="Inside Thailand">Inside Thailand</option>
+          </select>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
-        <div className="relative text-lg leading-relaxed text-text-primary space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <span>I am</span>
-            <label htmlFor={locationSelectId} className="sr-only">
-              Current location
-            </label>
-            <select
-              id={locationSelectId}
-              value={state.location}
-              onChange={(e) => {
-                setState((prev) => ({ ...prev, location: e.target.value }));
-              }}
-              className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
-                focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
-            >
-              <option value="">...</option>
-              <option value="Outside Thailand">outside Thailand</option>
-              <option value="Inside Thailand">already in Thailand</option>
-            </select>
-          </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span>planning to stay for</span>
-            <label htmlFor={durationSelectId} className="sr-only">
-              Planned stay duration
-            </label>
-            <select
-              id={durationSelectId}
-              value={state.duration}
-              onChange={(e) => {
-                setState((prev) => ({ ...prev, duration: e.target.value }));
-              }}
-              className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
-                focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
-            >
-              <option value="">...</option>
-              <option value="90_180">3-6 months</option>
-              <option value="365">around 1 year</option>
-              <option value="365_5y">1-5 years</option>
-              <option value="1825_plus">5+ years</option>
-            </select>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <span>with income from</span>
-            <label htmlFor={incomeSelectId} className="sr-only">
-              Income source
-            </label>
-            <select
-              id={incomeSelectId}
-              value={state.incomeType}
-              onChange={(e) => {
-                setState((prev) => ({ ...prev, incomeType: e.target.value }));
-              }}
-              className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
-                focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
-            >
-              <option value="">...</option>
-              <option value="Remote/freelance">remote/freelance work</option>
-              <option value="Foreign salary">foreign salary</option>
-              <option value="Pension">pension</option>
-              <option value="Investments">investments</option>
-              <option value="Varies">varies</option>
-            </select>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <span>and I have savings of</span>
-            <label htmlFor={savingsSelectId} className="sr-only">
-              Savings amount
-            </label>
-            <select
-              id={savingsSelectId}
-              value={state.savings}
-              onChange={(e) => {
-                setState((prev) => ({ ...prev, savings: e.target.value }));
-              }}
-              className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
-                focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
-            >
-              <option value="">...</option>
-              <option value="0_500k">&lt;500k THB</option>
-              <option value="500k_800k">500k-800k THB</option>
-              <option value="800k_3M">800k-3M THB</option>
-              <option value="3M_10M">3M-10M THB</option>
-              <option value="10M_plus">&gt;10M THB</option>
-            </select>
-          </div>
-
-          {state.location === 'Inside Thailand' && ['90_180', '365', '365_5y', '1825_plus'].includes(state.duration) && (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <span>My current visa expires in</span>
-                <label htmlFor={visaExpirationSelectId} className="sr-only">
-                  Current visa expiration timeframe
-                </label>
-                <select
-                  id={visaExpirationSelectId}
-                  value={state.currentVisaExpiration || ''}
-                  onChange={(e) => {
-                    setState((prev) => ({ ...prev, currentVisaExpiration: e.target.value }));
-                  }}
-                  className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
-                    focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
-                >
-                  <option value="">...</option>
-                  <option value="<1month">less than 1 month</option>
-                  <option value="1-2months">1 to 2 months</option>
-                  <option value=">2months">more than 2 months</option>
-                </select>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <span>and I currently have a</span>
-                <label htmlFor={visaTypeSelectId} className="sr-only">
-                  Current visa type
-                </label>
-                <select
-                  id={visaTypeSelectId}
-                  value={state.currentVisaType || ''}
-                  onChange={(e) => {
-                    setState((prev) => ({ ...prev, currentVisaType: e.target.value }));
-                  }}
-                  className="inline-flex px-4 py-2 bg-bg-primary border-2 border-primary/30 rounded-base font-semibold text-primary
-                    focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer hover:border-primary/50 transition-colors"
-                >
-                  <option value="">...</option>
-                  <option value="Tourist Visa (TR)">Tourist Visa (TR)</option>
-                  <option value="Visa Exemption">Visa Exemption</option>
-                  <option value="Education Visa (ED)">Education Visa (ED)</option>
-                  <option value="Non-Immigrant O">Non-Immigrant O (Family/Retirement)</option>
-                  <option value="Non-Immigrant B">Non-Immigrant B (Business/Work)</option>
-                  <option value="Elite Visa">Elite Visa</option>
-                  <option value="Other">Other</option>
-                  <option value="Not sure">Not sure</option>
-                </select>
-              </div>
-            </>
-          )}
+        <div className="space-y-1">
+          <label htmlFor={durationSelectId} className="text-xs font-semibold text-text-secondary">
+            Planning to stay for
+          </label>
+          <select
+            id={durationSelectId}
+            value={state.duration}
+            onChange={(e) => {
+              setState((prev) => ({ ...prev, duration: e.target.value }));
+            }}
+            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+          >
+            <option value="">Select duration</option>
+            <option value="90_180">3-6 months</option>
+            <option value="365">around 1 year</option>
+            <option value="365_5y">1-5 years</option>
+            <option value="1825_plus">5+ years</option>
+          </select>
         </div>
+
+        <div className="space-y-1">
+          <label htmlFor={incomeSelectId} className="text-xs font-semibold text-text-secondary">
+            Income source
+          </label>
+          <select
+            id={incomeSelectId}
+            value={state.incomeType}
+            onChange={(e) => {
+              setState((prev) => ({ ...prev, incomeType: e.target.value }));
+            }}
+            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+          >
+            <option value="">Select income source</option>
+            <option value="Remote/freelance">Remote/freelance work</option>
+            <option value="Foreign salary">Foreign salary</option>
+            <option value="Pension">Pension</option>
+            <option value="Investments">Investments</option>
+            <option value="Varies">Varies</option>
+          </select>
+        </div>
+
+        <div className="space-y-1">
+          <label htmlFor={savingsSelectId} className="text-xs font-semibold text-text-secondary">
+            Savings
+          </label>
+          <select
+            id={savingsSelectId}
+            value={state.savings}
+            onChange={(e) => {
+              setState((prev) => ({ ...prev, savings: e.target.value }));
+            }}
+            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+          >
+            <option value="">Select savings</option>
+            <option value="0_500k">&lt;500k THB</option>
+            <option value="500k_800k">500k-800k THB</option>
+            <option value="800k_3M">800k-3M THB</option>
+            <option value="3M_10M">3M-10M THB</option>
+            <option value="10M_plus">&gt;10M THB</option>
+          </select>
+        </div>
+
+        {state.location === 'Inside Thailand' && ['90_180', '365', '365_5y', '1825_plus'].includes(state.duration) && (
+          <>
+            <div className="space-y-1">
+              <label htmlFor={visaExpirationSelectId} className="text-xs font-semibold text-text-secondary">
+                Current visa expires in
+              </label>
+              <select
+                id={visaExpirationSelectId}
+                value={state.currentVisaExpiration || ''}
+                onChange={(e) => {
+                  setState((prev) => ({ ...prev, currentVisaExpiration: e.target.value }));
+                }}
+                className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+              >
+                <option value="">Select timeframe</option>
+                <option value="<1month">less than 1 month</option>
+                <option value="1-2months">1 to 2 months</option>
+                <option value=">2months">more than 2 months</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor={visaTypeSelectId} className="text-xs font-semibold text-text-secondary">
+                Current visa type
+              </label>
+              <select
+                id={visaTypeSelectId}
+                value={state.currentVisaType || ''}
+                onChange={(e) => {
+                  setState((prev) => ({ ...prev, currentVisaType: e.target.value }));
+                }}
+                className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+              >
+                <option value="">Select visa type</option>
+                <option value="Tourist Visa (TR)">Tourist Visa (TR)</option>
+                <option value="Visa Exemption">Visa Exemption</option>
+                <option value="Education Visa (ED)">Education Visa (ED)</option>
+                <option value="Non-Immigrant O">Non-Immigrant O (Family/Retirement)</option>
+                <option value="Non-Immigrant B">Non-Immigrant B (Business/Work)</option>
+                <option value="Elite Visa">Elite Visa</option>
+                <option value="Other">Other</option>
+                <option value="Not sure">Not sure</option>
+              </select>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="space-y-3">

@@ -102,19 +102,18 @@ export default function LoginPage() {
 
   return (
     <AuthPageShell>
-      <div className="relative z-10 w-full max-w-[28rem] mx-auto bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 transition-all duration-300 overflow-hidden p-6 sm:p-8">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full" />
+      <div className="ios-card w-full max-w-[28rem] mx-auto p-6 sm:p-8">
         <div className="relative pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-6 shadow-md shadow-primary/20">
-            <Compass className="w-7 h-7 text-white" aria-hidden="true" />
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 text-primary rounded-xl mb-6 border border-primary/20">
+            <Compass className="w-7 h-7" aria-hidden="true" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight">
             <GradientText>Welcome back</GradientText>
           </h1>
-          <p className="text-base text-text-secondary leading-relaxed">Sign in to your VisaOnTrack account</p>
+          <p className="text-base text-text-secondary leading-relaxed">Sign in to your SawadeePass account</p>
         </div>
 
-        <div className="px-2 sm:px-4 md:px-6">
+        <div className="px-1 sm:px-2 md:px-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="text-sm font-medium tracking-normal flex items-center gap-2">
@@ -229,7 +228,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-4 my-8">
             <div className="flex-1 h-px bg-border-light" />
-            <span className="text-sm text-text-tertiary">New to VisaOnTrack?</span>
+            <span className="text-sm text-text-tertiary">New to SawadeePass?</span>
             <div className="flex-1 h-px bg-border-light" />
           </div>
 

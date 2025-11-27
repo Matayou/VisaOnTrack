@@ -216,16 +216,16 @@ function VerifyEmailContent() {
 
   return (
     <AuthPageShell>
-      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="ios-card w-full max-w-[28rem] animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-base mb-5 shadow-[0_2px_8px_rgba(37,99,235,0.2)]">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-base mb-5 border border-primary/20">
             {state === 'success' ? (
-              <CheckCircle className="w-6 h-6 text-white" aria-hidden="true" />
+              <CheckCircle className="w-6 h-6" aria-hidden="true" />
             ) : state === 'error' ? (
-              <AlertCircle className="w-6 h-6 text-white" aria-hidden="true" />
+              <AlertCircle className="w-6 h-6" aria-hidden="true" />
             ) : (
-              <Mail className="w-6 h-6 text-white" aria-hidden="true" />
+              <Mail className="w-6 h-6" aria-hidden="true" />
             )}
           </div>
           <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">

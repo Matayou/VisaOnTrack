@@ -67,11 +67,11 @@ export default function SimpleRegisterPage() {
 
   return (
     <AuthPageShell>
-      <div className="w-full max-w-[28rem] bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="ios-card w-full max-w-[28rem] animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
         {/* Header */}
         <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-base mb-5 shadow-[0_2px_8px_rgba(37,99,235,0.2)]">
-            <Zap className="w-6 h-6 text-white" aria-hidden="true" />
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-base mb-5 border border-primary/20">
+            <Zap className="w-6 h-6" aria-hidden="true" />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">Get started in seconds</h1>
           <p className="text-sm text-text-secondary mb-4">Quick signup • Complete profile later</p>

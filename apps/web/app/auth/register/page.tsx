@@ -153,17 +153,16 @@ function RegisterForm() {
 
   return (
     <AuthPageShell>
-      <div className="relative z-10 w-full max-w-[28rem] bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-xl shadow-lg shadow-primary/5 transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
+      <div className="ios-card w-full max-w-[28rem]">
         {/* Header */}
         <div className="p-6 sm:p-8 pb-4 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-xl mb-4 shadow-md shadow-primary/20">
-            <Compass className="w-6 h-6 text-white" aria-hidden="true" />
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-xl mb-4 border border-primary/20">
+            <Compass className="w-6 h-6" aria-hidden="true" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight">
             <GradientText>Create your account</GradientText>
           </h1>
-          <p className="text-base text-text-secondary leading-relaxed">Start your visa journey with VisaOnTrack</p>
+          <p className="text-base text-text-secondary leading-relaxed">Start your visa journey with SawadeePass</p>
         </div>
 
         {/* Form */}

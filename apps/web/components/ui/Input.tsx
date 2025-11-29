@@ -64,10 +64,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     
     // State classes
     const stateClasses = error
-      ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)] focus:border-error'
+      ? 'border-error bg-error-light/5 focus:shadow-focus-error focus:border-error'
       : success
-      ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)] focus:border-success'
-      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]';
+      ? 'border-success bg-success-light/5 focus:shadow-focus-success focus:border-success'
+      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary';
     
     // Disabled state
     const disabledClasses = disabled
@@ -82,7 +82,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="relative">
         {icon && (
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-tertiary">
+          <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary">
             {icon}
           </div>
         )}
@@ -94,7 +94,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {rightIcon && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-tertiary">
+          <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary">
             {rightIcon}
           </div>
         )}

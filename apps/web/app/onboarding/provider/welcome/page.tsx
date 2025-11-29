@@ -89,7 +89,7 @@ export default function ProviderWelcomePage() {
   // Show loading state while checking email verification
   if (isCheckingVerification) {
     return (
-      <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+      <div className="flex min-h-screen items-center justify-center bg-bg-secondary p-6">
         <div className="text-center">
           <Spinner size="lg" className="mb-4" />
           <p className="text-text-secondary">Checking verification status...</p>
@@ -99,47 +99,47 @@ export default function ProviderWelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex items-center justify-center p-6">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-bg-secondary p-6">
       <PageBackground />
       {/* Logout Button - Top Right */}
       <button
         onClick={() => logout(router)}
-        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 hover:border-border focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="hover:border-border absolute right-6 top-6 flex items-center gap-2 rounded-base border border-border-light bg-bg-primary px-4 py-2 text-sm text-text-secondary transition-all duration-150 hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="Logout"
       >
-        <LogOut className="w-4 h-4" aria-hidden="true" />
+        <LogOut className="h-4 w-4" aria-hidden="true" />
         <span>Logout</span>
       </button>
 
-      <div className="relative z-10 w-full max-w-6xl bg-gradient-to-br from-primary/8 via-primary/5 to-primary/10 border-2 border-primary/30 rounded-lg shadow-lg shadow-primary/5 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full"></div>
+      <div className="from-primary/8 via-primary/5 to-primary/10 border-primary/30 shadow-primary/5 relative z-10 w-full max-w-6xl animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)] overflow-hidden rounded-lg border-2 bg-gradient-to-br shadow-lg">
+        <div className="from-primary/20 absolute right-0 top-0 h-32 w-32 rounded-bl-full bg-gradient-to-br to-transparent"></div>
         {/* Header */}
         <div className="p-12 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary-hover rounded-md mb-6 shadow-[0_4px_12px_rgba(37,99,235,0.2)] animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)]">
-            <Briefcase className="w-8 h-8 text-white" aria-hidden="true" />
+          <div className="mb-6 inline-flex h-16 w-16 animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)] items-center justify-center rounded-md bg-gradient-to-br from-primary to-primary-hover shadow-[0_4px_12px_rgba(37,99,235,0.2)]">
+            <Briefcase className="h-8 w-8 text-white" aria-hidden="true" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_200ms_both]">
+          <h1 className="mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] text-3xl font-bold tracking-tight">
             <GradientText>Welcome to VisaOnTrack!</GradientText>
           </h1>
-          <p className="text-lg text-text-secondary max-w-[42rem] mx-auto animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
+          <p className="mx-auto max-w-[42rem] animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both] text-lg text-text-secondary">
             Let&rsquo;s get your profile set up so you can start connecting with clients
           </p>
         </div>
 
         {/* Progress Bar */}
-        <div className="px-12 pb-8 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both]">
-          <div className="text-sm text-text-secondary mb-3 text-center">
+        <div className="animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both] px-12 pb-8">
+          <div className="mb-3 text-center text-sm text-text-secondary">
             Complete these 3 steps to activate your account
           </div>
-          <div className="flex gap-2 h-2">
+          <div className="flex h-2 gap-2">
             {[1, 2, 3].map((step) => (
               <div
                 key={step}
-                className="flex-1 bg-border-light rounded-sm overflow-hidden relative"
+                className="relative flex-1 overflow-hidden rounded-sm bg-border-light"
               >
                 <div
                   data-progress-step
-                  className="absolute top-0 left-0 w-full h-full bg-primary transition-all duration-400"
+                  className="duration-400 absolute left-0 top-0 h-full w-full bg-primary transition-all"
                   style={{
                     transform: 'translateX(-100%)',
                   }}
@@ -177,7 +177,7 @@ export default function ProviderWelcomePage() {
                 role="button"
                 tabIndex={0}
                 aria-label={`Step ${step.number}: ${step.title}. ${step.description}. Estimated time: ${step.time}`}
-                className="p-6 bg-bg-secondary border border-border-light rounded-md flex gap-5 transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_both] cursor-pointer hover:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="hover:border-primary/30 flex animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_both] cursor-pointer gap-5 rounded-md border border-border-light bg-bg-secondary p-6 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 style={{ animationDelay: `${500 + index * 100}ms` }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -186,16 +186,16 @@ export default function ProviderWelcomePage() {
                   }
                 }}
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-base flex items-center justify-center text-xl font-bold text-primary flex-shrink-0 transition-transform duration-150">
+                <div className="from-primary/10 to-primary/5 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br text-xl font-bold text-primary transition-transform duration-150">
                   {step.number}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-base font-semibold mb-1.5">{step.title}</h3>
-                  <p className="text-sm text-text-secondary leading-relaxed mb-2">
+                  <h3 className="mb-1.5 text-base font-semibold">{step.title}</h3>
+                  <p className="mb-2 text-sm leading-relaxed text-text-secondary">
                     {step.description}
                   </p>
                   <div className="flex items-center gap-1.5 text-xs text-text-tertiary">
-                    <Clock className="w-3.5 h-3.5" aria-hidden="true" />
+                    <Clock className="h-3.5 w-3.5" aria-hidden="true" />
                     <span>{step.time}</span>
                   </div>
                 </div>
@@ -205,13 +205,13 @@ export default function ProviderWelcomePage() {
         </div>
 
         {/* Actions */}
-        <div className="px-12 pb-12 flex gap-4 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_900ms_both]">
+        <div className="flex animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_900ms_both] gap-4 px-12 pb-12">
           <Button
             type="button"
             onClick={handleCompleteLater}
             variant="secondary"
             className="flex-1"
-            icon={<LogOut className="w-4.5 h-4.5" />}
+            icon={<LogOut className="h-4.5 w-4.5" />}
             iconPosition="left"
           >
             Complete Later
@@ -220,7 +220,7 @@ export default function ProviderWelcomePage() {
             type="button"
             onClick={handleStartSetup}
             className="flex-1"
-            icon={<ArrowRight className="w-4.5 h-4.5" />}
+            icon={<ArrowRight className="h-4.5 w-4.5" />}
             iconPosition="right"
           >
             Start Setup

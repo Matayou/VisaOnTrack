@@ -22,8 +22,7 @@ import {
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { ProviderHeader } from '@/components/ProviderHeader';
-import { Button } from '@/components/ui';
-import { baseCardClass } from '@/app/requests/new/constants';
+import { Button, Card } from '@/components/ui';
 import { LOADING_SAVING } from '@/lib/loading-messages';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
 
@@ -217,8 +216,8 @@ export default function BusinessDetailsPage() {
     const fieldError = formErrors[field];
     if (fieldError) {
       return (
-        <p className="mt-2 text-sm text-error flex items-center gap-2" role="alert">
-          <AlertCircle className="w-4 h-4" aria-hidden="true" />
+        <p className="mt-2 flex items-center gap-2 text-sm text-error" role="alert">
+          <AlertCircle className="h-4 w-4" aria-hidden="true" />
           {fieldError}
         </p>
       );
@@ -241,8 +240,8 @@ export default function BusinessDetailsPage() {
       }
       
       return (
-        <p className="mt-2 text-sm text-success flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+        <p className="mt-2 flex items-center gap-2 text-sm text-success">
+          <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
           {fallbackSuccess}
         </p>
       );
@@ -453,104 +452,104 @@ export default function BusinessDetailsPage() {
   return (
     <div className="min-h-screen bg-bg-secondary">
       <ProviderHeader />
-      <div className="p-6 lg:p-10 relative">
-        <div className="max-w-6xl mx-auto space-y-6">
-          <header className={`${baseCardClass} px-6 py-8 md:px-10 md:py-10`}>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-16 lg:items-center">
+      <div className="relative p-6 lg:p-10">
+        <div className="mx-auto max-w-6xl space-y-6">
+          <Card padding="none" elevated className="px-6 py-8 md:px-10 md:py-10">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-16">
               {/* Left Column: Heading & Description */}
               <div className="space-y-5">
-                <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-text-tertiary">
                   Provider onboarding
                 </p>
-                <h1 className="text-3xl md:text-4xl lg:text-[2.5rem] font-semibold leading-[1.15] tracking-tight text-text-primary">
+                <h1 className="text-3xl font-semibold leading-[1.15] tracking-tight text-text-primary md:text-4xl lg:text-[2.5rem]">
                   Set up your provider profile
                 </h1>
-                <p className="text-text-secondary text-base md:text-lg leading-relaxed max-w-xl">
+                <p className="max-w-xl text-base leading-relaxed text-text-secondary md:text-lg">
                   Complete your business details to start receiving requests from visa seekers. Your profile helps seekers find and trust you.
                 </p>
               </div>
 
               {/* Right Column: Feature List */}
-              <div className="lg:pl-6 lg:border-l lg:border-border-light">
+              <div className="lg:border-l lg:border-border-light lg:pl-6">
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3">
                     <div className="mt-0.5 flex-shrink-0">
-                      <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden="true" />
+                      <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
                     </div>
-                    <span className="text-sm text-text-secondary leading-relaxed">
+                    <span className="text-sm leading-relaxed text-text-secondary">
                       Verified providers get priority in search results.
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="mt-0.5 flex-shrink-0">
-                      <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden="true" />
+                      <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
                     </div>
-                    <span className="text-sm text-text-secondary leading-relaxed">
+                    <span className="text-sm leading-relaxed text-text-secondary">
                       Complete profiles receive more requests from seekers.
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="mt-0.5 flex-shrink-0">
-                      <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden="true" />
+                      <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
                     </div>
-                    <span className="text-sm text-text-secondary leading-relaxed">
+                    <span className="text-sm leading-relaxed text-text-secondary">
                       All changes are saved automatically as you type.
                     </span>
                   </li>
                 </ul>
               </div>
             </div>
-          </header>
+          </Card>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <section className={`${baseCardClass} p-6 md:p-8 space-y-6`}>
+            <Card as="section" padding="none" elevated className="space-y-6 p-6 md:p-8">
               <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-text-tertiary font-semibold">
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-text-tertiary">
                   Step {currentStepIndex + 1} of {providerSteps.length}
                 </p>
                 <h2 className="text-2xl font-semibold text-text-primary">Business Details</h2>
                 <p className="text-sm text-text-secondary">Tell us about your business and expertise</p>
               </div>
-              <div className="h-2 w-full bg-border/30 rounded-full overflow-hidden" aria-hidden="true">
+              <div className="bg-border/30 h-2 w-full overflow-hidden rounded-full" aria-hidden="true">
                 <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progressPercentage}%` }} />
               </div>
               <ol
-                className="no-scrollbar flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 sm:grid sm:grid-cols-4 sm:overflow-visible sm:snap-none"
+                className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-2 sm:grid sm:snap-none sm:grid-cols-4 sm:overflow-visible"
                 aria-label="Provider onboarding progress"
               >
                 {providerSteps.map((step, index) => {
                   const stepComplete = index < currentStepIndex;
                   const isActive = index === currentStepIndex;
                   return (
-                    <li key={step.id} className="snap-center flex-shrink-0 min-w-[72vw] sm:min-w-0 sm:w-auto">
+                    <li key={step.id} className="min-w-[72vw] flex-shrink-0 snap-center sm:w-auto sm:min-w-0">
                       <div
                         className={`w-full rounded-2xl border px-4 py-3 text-left text-xs sm:text-sm ${
                           isActive
-                            ? 'border-primary bg-primary/5 text-text-primary shadow-sm'
+                            ? 'bg-primary/5 border-primary text-text-primary shadow-sm'
                             : stepComplete
                             ? 'border-success/50 bg-success/5 text-text-secondary'
-                            : 'border-border-light bg-bg-secondary/60 text-text-tertiary'
+                            : 'bg-bg-secondary/60 border-border-light text-text-tertiary'
                         }`}
                         aria-current={isActive ? 'step' : undefined}
                       >
                         <div className="flex items-center gap-2 font-semibold text-text-primary">
                           {stepComplete ? (
-                            <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+                            <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
                           ) : (
                             <span className="text-xs text-text-tertiary">{index + 1}</span>
                           )}
                           <span className="truncate">{step.title}</span>
                         </div>
-                        <p className="text-[0.7rem] text-text-tertiary mt-1 line-clamp-3 leading-relaxed">{step.subtitle}</p>
+                        <p className="mt-1 line-clamp-3 text-[0.7rem] leading-relaxed text-text-tertiary">{step.subtitle}</p>
                       </div>
                     </li>
                   );
                 })}
               </ol>
-            </section>
+            </Card>
 
             {/* Form Content */}
-            <section className={`${baseCardClass} p-6 md:p-8 space-y-8`}>
+            <Card as="section" padding="none" elevated className="space-y-8 p-6 md:p-8">
               {/* Auto-save indicator */}
               <div
                 aria-live="polite"
@@ -567,12 +566,12 @@ export default function BusinessDetailsPage() {
               >
                 {autoSaveStatus === 'saving' ? (
                   <>
-                    <Loader className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+                    <Loader className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                     <span>{LOADING_SAVING}</span>
                   </>
                 ) : autoSaveStatus === 'saved' ? (
                   <>
-                    <CheckCircle className="w-3.5 h-3.5" aria-hidden="true" />
+                    <CheckCircle className="h-3.5 w-3.5" aria-hidden="true" />
                     <span>All changes saved</span>
                   </>
                 ) : null}
@@ -580,24 +579,24 @@ export default function BusinessDetailsPage() {
 
               {/* Error Message */}
               {error && (
-                <div role="alert" className="text-sm text-error flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                <div role="alert" className="flex items-center gap-2 text-sm text-error">
+                  <AlertCircle className="h-4 w-4" aria-hidden="true" />
                   {error}
                 </div>
               )}
 
               {/* Basic Information */}
               <div className="space-y-6">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white flex-shrink-0">
-                    <Briefcase className="w-6 h-6" aria-hidden="true" />
+                <div className="mb-2 flex items-center gap-4">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
+                    <Briefcase className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-text-primary">Basic Information</h2>
                     <p className="text-sm text-text-secondary">Help seekers find you with accurate business details</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <label htmlFor="businessName" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
                       <span className="h-3 w-1 rounded-full bg-primary" aria-hidden="true" />
@@ -609,7 +608,7 @@ export default function BusinessDetailsPage() {
                       value={businessName}
                       onChange={handleInputChange(setBusinessName, 'businessName')}
                       onBlur={() => handleBlur('businessName', businessName)}
-                      className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('businessName')}`}
+                      className={`h-12 w-full rounded-base border bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('businessName')}`}
                       placeholder="Immigration Services Co., Ltd."
                       required
                     />
@@ -619,7 +618,7 @@ export default function BusinessDetailsPage() {
 
                   <div className="flex flex-col gap-2">
                     <label htmlFor="registrationNumber" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
-                      <span className="h-3 w-1 rounded-full bg-text-tertiary/30" aria-hidden="true" />
+                      <span className="bg-text-tertiary/30 h-3 w-1 rounded-full" aria-hidden="true" />
                       Registration Number
                     </label>
                     <input
@@ -627,7 +626,7 @@ export default function BusinessDetailsPage() {
                       id="registrationNumber"
                       value={registrationNumber}
                       onChange={handleInputChange(setRegistrationNumber)}
-                      className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      className="focus:ring-primary/30 h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2"
                       placeholder="0105563123456"
                     />
                     <span className="text-xs text-text-tertiary">Thai business registration number</span>
@@ -637,16 +636,16 @@ export default function BusinessDetailsPage() {
 
               {/* Location */}
               <div className="space-y-6">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white flex-shrink-0">
-                    <MapPin className="w-6 h-6" aria-hidden="true" />
+                <div className="mb-2 flex items-center gap-4">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
+                    <MapPin className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-text-primary">Location</h2>
                     <p className="text-sm text-text-secondary">Where your business is located</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <label htmlFor="city" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
                       <span className="h-3 w-1 rounded-full bg-primary" aria-hidden="true" />
@@ -657,7 +656,7 @@ export default function BusinessDetailsPage() {
                       value={city}
                       onChange={handleInputChange(setCity, 'city')}
                       onBlur={() => handleBlur('city', city)}
-                      className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('city')}`}
+                      className={`h-12 w-full rounded-base border bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('city')}`}
                       required
                     >
                       <option value="">Select city</option>
@@ -674,7 +673,7 @@ export default function BusinessDetailsPage() {
 
                   <div className="flex flex-col gap-2">
                     <label htmlFor="timezone" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
-                      <span className="h-3 w-1 rounded-full bg-text-tertiary/30" aria-hidden="true" />
+                      <span className="bg-text-tertiary/30 h-3 w-1 rounded-full" aria-hidden="true" />
                       Timezone
                     </label>
                     <input
@@ -683,7 +682,7 @@ export default function BusinessDetailsPage() {
                       value={timezone}
                       readOnly
                       disabled
-                      className="w-full h-12 px-4 text-base font-sans text-text-tertiary border border-border-light rounded-base bg-bg-tertiary cursor-not-allowed"
+                      className="h-12 w-full cursor-not-allowed rounded-base border border-border-light bg-bg-tertiary px-4 font-sans text-base text-text-tertiary"
                     />
                     <span className="text-xs text-text-tertiary">Thailand timezone (Indochina Time)</span>
                   </div>
@@ -692,9 +691,9 @@ export default function BusinessDetailsPage() {
 
               {/* Expertise */}
               <div className="space-y-6">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white flex-shrink-0">
-                    <Award className="w-6 h-6" aria-hidden="true" />
+                <div className="mb-2 flex items-center gap-4">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
+                    <Award className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-text-primary">Expertise</h2>
@@ -711,7 +710,7 @@ export default function BusinessDetailsPage() {
                     <div 
                       role="group" 
                       aria-labelledby="languages-label"
-                      className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5"
+                      className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4"
                     >
                       {[
                         { value: 'en', label: 'English', flag: '🇬🇧' },
@@ -741,10 +740,10 @@ export default function BusinessDetailsPage() {
                               triggerAutoSave();
                             }}
                             onBlur={() => handleBlur('languages', languages)}
-                            className={`group relative flex items-center justify-center gap-2 h-12 px-4 rounded-lg border-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 ${
+                            className={`focus-visible:ring-primary/40 group relative flex h-12 items-center justify-center gap-2 rounded-lg border-2 px-4 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                               isSelected
                                 ? 'border-primary bg-primary text-white shadow-sm hover:border-primary-hover hover:bg-primary-hover'
-                                : 'border-border-light text-text-secondary hover:border-primary/60 hover:text-primary bg-bg-primary hover:bg-primary/5'
+                                : 'hover:border-primary/60 hover:bg-primary/5 border-border-light bg-bg-primary text-text-secondary hover:text-primary'
                             }`}
                             aria-pressed={isSelected}
                             aria-label={`${isSelected ? 'Deselect' : 'Select'} ${lang.label}`}
@@ -752,17 +751,17 @@ export default function BusinessDetailsPage() {
                             <span className="text-base leading-none" aria-hidden="true">{lang.flag}</span>
                             <span className="font-medium">{lang.label}</span>
                             {isSelected && (
-                              <CheckCircle2 className="w-4 h-4 absolute -top-1.5 -right-1.5 bg-white text-primary rounded-full border-2 border-primary" aria-hidden="true" />
+                              <CheckCircle2 className="absolute -right-1.5 -top-1.5 h-4 w-4 rounded-full border-2 border-primary bg-white text-primary" aria-hidden="true" />
                             )}
                           </button>
                         );
                       })}
                     </div>
-                    <div className="flex items-center justify-between mt-1">
-                      <p className="text-xs text-text-tertiary flex items-center gap-1.5">
+                    <div className="mt-1 flex items-center justify-between">
+                      <p className="flex items-center gap-1.5 text-xs text-text-tertiary">
                         {languages.length > 0 ? (
                           <>
-                            <CheckCircle2 className="w-3.5 h-3.5 text-success" aria-hidden="true" />
+                            <CheckCircle2 className="h-3.5 w-3.5 text-success" aria-hidden="true" />
                             <span className="font-medium text-text-secondary">
                               {languages.length} language{languages.length !== 1 ? 's' : ''} selected
                             </span>
@@ -786,21 +785,21 @@ export default function BusinessDetailsPage() {
                       value={yearsExperience}
                       onChange={handleInputChange(setYearsExperience, 'yearsExperience')}
                       onBlur={() => handleBlur('yearsExperience', yearsExperience)}
-                      className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('yearsExperience')}`}
+                      className={`h-12 w-full rounded-base border bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('yearsExperience')}`}
                       placeholder="5"
                       min="0"
                       max="50"
                       required
                     />
-                    <span className="text-xs text-primary bg-primary/5 border border-primary/10 px-3 py-1.5 rounded-md flex items-center gap-1.5">
-                      <Lightbulb className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span className="bg-primary/5 border-primary/10 flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs text-primary">
+                      <Lightbulb className="h-3.5 w-3.5" aria-hidden="true" />
                       Providers with 5+ years get a &ldquo;Verified Expert&rdquo; badge
                     </span>
                     {renderValidationFeedback('yearsExperience', yearsExperience && parseInt(yearsExperience, 10) >= 5 ? 'You qualify for the Verified Expert badge!' : 'Experience level recorded.')}
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <label htmlFor="description" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
                         <span className="h-3 w-1 rounded-full bg-primary" aria-hidden="true" />
                         Business Description <span className="text-error">*</span>
@@ -815,9 +814,9 @@ export default function BusinessDetailsPage() {
                           }
                         }}
                         aria-label="Show example business description"
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-transparent border border-border-light rounded-md text-xs text-text-secondary cursor-pointer transition-all duration-150 hover:bg-bg-secondary hover:border-border-medium hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-border-light bg-transparent px-2.5 py-1 text-xs text-text-secondary transition-all duration-150 hover:border-border-medium hover:bg-bg-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                       >
-                        <Sparkles className="w-3 h-3" aria-hidden="true" />
+                        <Sparkles className="h-3 w-3" aria-hidden="true" />
                         Show example
                       </button>
                     </div>
@@ -826,14 +825,14 @@ export default function BusinessDetailsPage() {
                       value={description}
                       onChange={handleInputChange(setDescription, 'description')}
                       onBlur={() => handleBlur('description', description)}
-                      className={`w-full min-h-[6rem] px-4 py-3 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 resize-y ${getInputClasses('description')}`}
+                      className={`min-h-[6rem] w-full resize-y rounded-base border bg-bg-primary px-4 py-3 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('description')}`}
                       placeholder="Describe your business, expertise, and what makes you unique..."
                       maxLength={500}
                       required
                     />
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <span
-                        className={`text-xs flex items-center gap-1.5 ${
+                        className={`flex items-center gap-1.5 text-xs ${
                           descriptionLength >= 200
                             ? 'text-success'
                             : descriptionLength >= 100
@@ -842,16 +841,16 @@ export default function BusinessDetailsPage() {
                         }`}
                       >
                         {descriptionLength >= 200 ? (
-                          <CheckCircle className="w-3.5 h-3.5" aria-hidden="true" />
+                          <CheckCircle className="h-3.5 w-3.5" aria-hidden="true" />
                         ) : descriptionLength >= 100 ? (
-                          <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />
+                          <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
                         ) : (
-                          <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+                          <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
                         )}
                         <span>{descriptionHint}</span>
                       </span>
                       <div
-                        className={`text-xs text-right transition-colors duration-150 ${
+                        className={`text-right text-xs transition-colors duration-150 ${
                           descriptionLength > 450 ? 'text-error' : descriptionLength >= 150 ? 'text-success' : 'text-text-tertiary'
                         }`}
                       >
@@ -865,30 +864,30 @@ export default function BusinessDetailsPage() {
 
             {/* Contact Information */}
             <div className="space-y-6">
-              <div className="flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white flex-shrink-0">
-                  <MessageCircle className="w-6 h-6" aria-hidden="true" />
+              <div className="mb-2 flex items-center gap-4">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
+                  <MessageCircle className="h-6 w-6" aria-hidden="true" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-text-primary">Contact Information</h2>
                   <p className="text-sm text-text-secondary">How seekers can reach you</p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="flex flex-col gap-2">
                   <label htmlFor="phone" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
                     <span className="h-3 w-1 rounded-full bg-primary" aria-hidden="true" />
                     Phone Number <span className="text-error">*</span>
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-tertiary pointer-events-none" aria-hidden="true" />
+                    <Phone className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-tertiary" aria-hidden="true" />
                     <input
                       type="tel"
                       id="phone"
                       value={phone}
                       onChange={(e) => handlePhoneChange(e.target.value)}
                       onBlur={() => handleBlur('phone', phone)}
-                      className={`w-full h-12 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('phone')}`}
+                      className={`h-12 w-full rounded-base border bg-bg-primary pl-11 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('phone')}`}
                       placeholder="02-123-4567"
                       required
                     />
@@ -899,18 +898,18 @@ export default function BusinessDetailsPage() {
 
                 <div className="flex flex-col gap-2">
                   <label htmlFor="website" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <span className="h-3 w-1 rounded-full bg-text-tertiary/30" aria-hidden="true" />
+                    <span className="bg-text-tertiary/30 h-3 w-1 rounded-full" aria-hidden="true" />
                     Website
                   </label>
                   <div className="relative">
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-tertiary pointer-events-none" aria-hidden="true" />
+                    <Globe className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-tertiary" aria-hidden="true" />
                     <input
                       type="url"
                       id="website"
                       value={website}
                       onChange={handleInputChange(setWebsite, 'website')}
                       onBlur={() => handleBlur('website', website)}
-                      className={`w-full h-12 pl-11 pr-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('website')}`}
+                      className={`h-12 w-full rounded-base border bg-bg-primary pl-11 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('website')}`}
                       placeholder="https://yourwebsite.com"
                     />
                   </div>
@@ -919,13 +918,13 @@ export default function BusinessDetailsPage() {
                 </div>
               </div>
             </div>
-            </section>
+            </Card>
 
             <div className="sticky bottom-4 z-10">
-              <div className="bg-bg-primary/95 border border-border-light rounded-base px-4 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between shadow-sm backdrop-blur">
+              <div className="bg-bg-primary/95 flex flex-col gap-4 rounded-base border border-border-light px-4 py-4 shadow-sm backdrop-blur md:flex-row md:items-center md:justify-between">
                 {error && (
-                  <p className="text-error text-sm flex items-center gap-2" role="alert">
-                    <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                  <p className="flex items-center gap-2 text-sm text-error" role="alert">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
                     {error}
                   </p>
                 )}
@@ -934,7 +933,7 @@ export default function BusinessDetailsPage() {
                     type="button"
                     variant="outline"
                     onClick={() => router.push('/onboarding/provider/welcome')}
-                    icon={<ArrowLeft className="w-4 h-4" aria-hidden="true" />}
+                    icon={<ArrowLeft className="h-4 w-4" aria-hidden="true" />}
                   >
                     Back
                   </Button>
@@ -942,7 +941,7 @@ export default function BusinessDetailsPage() {
                     type="submit"
                     disabled={isLoading}
                     loading={isLoading}
-                    icon={<ArrowRight className="w-4 h-4" aria-hidden="true" />}
+                    icon={<ArrowRight className="h-4 w-4" aria-hidden="true" />}
                     iconPosition="right"
                   >
                     Continue

@@ -153,25 +153,25 @@ function RegisterForm() {
 
   return (
     <AuthPageShell>
-      <div className="ios-card w-full max-w-[28rem]">
+      <div className="ios-card w-full max-w-auth">
         {/* Header */}
-        <div className="p-6 sm:p-8 pb-4 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-xl mb-4 border border-primary/20">
-            <Compass className="w-6 h-6" aria-hidden="true" />
+        <div className="p-6 pb-4 text-center sm:p-8">
+          <div className="bg-primary/10 border-primary/20 mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border text-primary">
+            <Compass className="h-6 w-6" aria-hidden="true" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight">
+          <h1 className="mb-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
             <GradientText>Create your account</GradientText>
           </h1>
-          <p className="text-base text-text-secondary leading-relaxed">Start your visa journey with SawadeePass</p>
+          <p className="text-base leading-relaxed text-text-secondary">Start your visa journey with SawadeePass</p>
         </div>
 
         {/* Form */}
-        <div className="px-6 sm:px-8 pb-6 sm:pb-8">
+        <div className="px-6 pb-6 sm:px-8 sm:pb-8">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-2">
-                <label htmlFor="firstName" className="text-sm font-medium flex items-center gap-2">
+                <label htmlFor="firstName" className="flex items-center gap-2 text-sm font-medium">
                   First name
                 </label>
                 <div className="relative">
@@ -180,35 +180,35 @@ function RegisterForm() {
                     id="firstName"
                     value={firstName}
                     onChange={(e) => handleFirstNameChange(e.target.value)}
-                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                    className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
                       firstNameValidation.status === 'success'
-                        ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
+                        ? 'border-success bg-success-light/5 focus:shadow-focus-success'
                         : firstNameValidation.status === 'error'
-                        ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
+                        ? 'border-error bg-error-light/5 focus:shadow-focus-error'
+                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
                     }`}
                     placeholder="John"
                     required
                     autoComplete="given-name"
                   />
                   {firstNameValidation.status !== 'empty' && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
                       {firstNameValidation.status === 'success' ? (
-                        <CheckCircle className="w-[18px] h-[18px] text-success" aria-hidden="true" />
+                        <CheckCircle className="h-4.5 w-4.5 text-success" aria-hidden="true" />
                       ) : (
-                        <AlertCircle className="w-[18px] h-[18px] text-error" aria-hidden="true" />
+                        <AlertCircle className="h-4.5 w-4.5 text-error" aria-hidden="true" />
                       )}
                     </div>
                   )}
                 </div>
                 {firstNameValidation.status !== 'empty' && (
                   <div
-                    className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${
+                    className={`flex min-h-4.5 items-center gap-2 text-xs transition-all duration-150 ${
                       firstNameValidation.status === 'success'
-                        ? 'text-success opacity-100 translate-y-0'
+                        ? 'translate-y-0 text-success opacity-100'
                         : firstNameValidation.status === 'error'
-                        ? 'text-error opacity-100 translate-y-0'
-                        : 'opacity-0 -translate-y-1'
+                        ? 'translate-y-0 text-error opacity-100'
+                        : '-translate-y-1 opacity-0'
                     }`}
                   >
                     {firstNameValidation.message}
@@ -217,7 +217,7 @@ function RegisterForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="lastName" className="text-sm font-medium flex items-center gap-2">
+                <label htmlFor="lastName" className="flex items-center gap-2 text-sm font-medium">
                   Last name
                 </label>
                 <div className="relative">
@@ -226,35 +226,35 @@ function RegisterForm() {
                     id="lastName"
                     value={lastName}
                     onChange={(e) => handleLastNameChange(e.target.value)}
-                    className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                    className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
                       lastNameValidation.status === 'success'
-                        ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
+                        ? 'border-success bg-success-light/5 focus:shadow-focus-success'
                         : lastNameValidation.status === 'error'
-                        ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
+                        ? 'border-error bg-error-light/5 focus:shadow-focus-error'
+                        : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
                     }`}
                     placeholder="Doe"
                     required
                     autoComplete="family-name"
                   />
                   {lastNameValidation.status !== 'empty' && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
                       {lastNameValidation.status === 'success' ? (
-                        <CheckCircle className="w-[18px] h-[18px] text-success" aria-hidden="true" />
+                        <CheckCircle className="h-4.5 w-4.5 text-success" aria-hidden="true" />
                       ) : (
-                        <AlertCircle className="w-[18px] h-[18px] text-error" aria-hidden="true" />
+                        <AlertCircle className="h-4.5 w-4.5 text-error" aria-hidden="true" />
                       )}
                     </div>
                   )}
                 </div>
                 {lastNameValidation.status !== 'empty' && (
                   <div
-                    className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${
+                    className={`flex min-h-4.5 items-center gap-2 text-xs transition-all duration-150 ${
                       lastNameValidation.status === 'success'
-                        ? 'text-success opacity-100 translate-y-0'
+                        ? 'translate-y-0 text-success opacity-100'
                         : lastNameValidation.status === 'error'
-                        ? 'text-error opacity-100 translate-y-0'
-                        : 'opacity-0 -translate-y-1'
+                        ? 'translate-y-0 text-error opacity-100'
+                        : '-translate-y-1 opacity-0'
                     }`}
                   >
                     {lastNameValidation.message}
@@ -265,7 +265,7 @@ function RegisterForm() {
 
             {/* Email Input */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
+              <label htmlFor="email" className="flex items-center gap-2 text-sm font-medium">
                 Email address
               </label>
               <div className="relative">
@@ -274,35 +274,35 @@ function RegisterForm() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
+                      ? 'border-success bg-success-light/5 focus:shadow-focus-success'
                       : emailValidation.status === 'error'
-                      ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
+                      ? 'border-error bg-error-light/5 focus:shadow-focus-error'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
                   }`}
                   placeholder="you@example.com"
                   required
                   autoComplete="email"
                 />
                 {emailValidation.status !== 'empty' && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
                     {emailValidation.status === 'success' ? (
-                      <CheckCircle className="w-[18px] h-[18px] text-success" aria-hidden="true" />
+                      <CheckCircle className="h-4.5 w-4.5 text-success" aria-hidden="true" />
                     ) : (
-                      <AlertCircle className="w-[18px] h-[18px] text-error" aria-hidden="true" />
+                      <AlertCircle className="h-4.5 w-4.5 text-error" aria-hidden="true" />
                     )}
                   </div>
                 )}
               </div>
               {emailValidation.status !== 'empty' && (
                 <div
-                  className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${
+                  className={`flex min-h-4.5 items-center gap-2 text-xs transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'text-success opacity-100 translate-y-0'
+                      ? 'translate-y-0 text-success opacity-100'
                       : emailValidation.status === 'error'
-                      ? 'text-error opacity-100 translate-y-0'
-                      : 'opacity-0 -translate-y-1'
+                      ? 'translate-y-0 text-error opacity-100'
+                      : '-translate-y-1 opacity-0'
                   }`}
                 >
                   {emailValidation.message}
@@ -321,7 +321,7 @@ function RegisterForm() {
                   id="password"
                   value={password}
                   onChange={(e) => handlePasswordChange(e.target.value)}
-                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                  className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                   placeholder="At least 8 characters"
                   required
                   autoComplete="new-password"
@@ -329,13 +329,13 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none p-2 cursor-pointer text-text-tertiary flex items-center rounded-sm transition-all duration-150 hover:text-text-secondary hover:bg-bg-secondary"
+                  className="absolute right-4 top-1/2 flex -translate-y-1/2 cursor-pointer items-center rounded-sm border-none bg-transparent p-2 text-text-tertiary transition-all duration-150 hover:bg-bg-secondary hover:text-text-secondary"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                     {showPassword ? (
-                      <EyeOff className="w-[18px] h-[18px]" aria-hidden="true" />
+                      <EyeOff className="h-4.5 w-4.5" aria-hidden="true" />
                     ) : (
-                      <Eye className="w-[18px] h-[18px]" aria-hidden="true" />
+                      <Eye className="h-4.5 w-4.5" aria-hidden="true" />
                   )}
                 </button>
               </div>
@@ -343,25 +343,25 @@ function RegisterForm() {
               {/* Password Strength Meter */}
               {password && (
                 <div aria-live="polite" aria-atomic="true">
-                  <div className="flex gap-1 h-1 mt-1.5 transition-opacity duration-150 opacity-100">
+                  <div className="mt-1.5 flex h-1 gap-1 opacity-100 transition-opacity duration-150">
                     {[1, 2, 3, 4].map((bar) => (
                       <div
                         key={bar}
-                        className={`flex-1 rounded-[2px] transition-all duration-150 ${
+                        className={`flex-1 rounded-xs transition-all duration-150 ${
                           bar <= passwordStrength.strength
                             ? passwordStrength.level === 'weak'
                               ? 'bg-error'
                               : passwordStrength.level === 'fair'
                               ? 'bg-warning'
                               : passwordStrength.level === 'good'
-                              ? 'bg-[#10b981]'
+                              ? 'bg-success-bright'
                               : 'bg-success'
                             : 'bg-border-light'
                         }`}
                       ></div>
                     ))}
                   </div>
-                  <div className={`text-xs mt-1 flex items-center gap-2 transition-opacity duration-150 ${password ? 'opacity-100' : 'opacity-0'}`}>
+                  <div className={`mt-1 flex items-center gap-2 text-xs transition-opacity duration-150 ${password ? 'opacity-100' : 'opacity-0'}`}>
                     <strong
                       className={
                         passwordStrength.level === 'weak'
@@ -369,7 +369,7 @@ function RegisterForm() {
                           : passwordStrength.level === 'fair'
                           ? 'text-warning'
                           : passwordStrength.level === 'good'
-                          ? 'text-[#10b981]'
+                          ? 'text-success-bright'
                           : 'text-success'
                       }
                     >
@@ -393,19 +393,19 @@ function RegisterForm() {
                 id="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="w-4 h-4 mt-0.5 cursor-pointer accent-primary flex-shrink-0"
+                className="mt-0.5 h-4 w-4 flex-shrink-0 cursor-pointer accent-primary"
                 required
               />
-              <label htmlFor="terms" className="text-xs text-text-secondary cursor-pointer select-none leading-relaxed">
-                I agree to the <a href="#" className="text-primary no-underline font-medium hover:underline">Terms of Service</a> and{' '}
-                <a href="#" className="text-primary no-underline font-medium hover:underline">Privacy Policy</a>
+              <label htmlFor="terms" className="cursor-pointer select-none text-xs leading-relaxed text-text-secondary">
+                I agree to the <a href="#" className="font-medium text-primary no-underline hover:underline">Terms of Service</a> and{' '}
+                <a href="#" className="font-medium text-primary no-underline hover:underline">Privacy Policy</a>
               </label>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div role="alert" className="text-xs text-error flex items-center gap-2 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+              <div role="alert" className="flex animate-slide-up items-center gap-2 text-xs text-error">
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
                 {error}
               </div>
             )}
@@ -422,10 +422,10 @@ function RegisterForm() {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-5">
-            <div className="flex-1 h-px bg-border-light"></div>
+          <div className="my-5 flex items-center gap-4">
+            <div className="h-px flex-1 bg-border-light"></div>
             <span className="text-xs text-text-tertiary">Already have an account?</span>
-            <div className="flex-1 h-px bg-border-light"></div>
+            <div className="h-px flex-1 bg-border-light"></div>
           </div>
 
           {/* Sign In Link */}
@@ -456,8 +456,8 @@ function RegisterForm() {
 export default function RegisterPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-bg-secondary">
-        <Loader className="w-8 h-8 text-primary animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-bg-secondary">
+        <Loader className="h-8 w-8 animate-spin text-primary" />
       </div>
     }>
       <RegisterForm />

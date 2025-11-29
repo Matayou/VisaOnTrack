@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultation Offering - Provider View - SawadeePass</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            primary: '#2563eb',
+            'primary-dark': '#1d4ed8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      font-weight: 600;
+      padding: 0.625rem 1.25rem;
+      border-radius: 0.75rem;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .btn-secondary {
+      background: white;
+      color: #374151;
+      font-weight: 500;
+      padding: 0.625rem 1.25rem;
+      border-radius: 0.75rem;
+      border: 1px solid #E5E7EB;
+      transition: all 0.15s ease;
+    }
+    .btn-secondary:hover {
+      background: #F9FAFB;
+      border-color: #D1D5DB;
+    }
+    .modal-backdrop {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+    .modal-content {
+      animation: slideUp 0.3s ease-out;
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      transition: all 0.15s ease;
+      width: 100%;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #2563eb;
+      ring: 2px;
+      ring-color: rgba(37, 99, 235, 0.1);
+    }
+    .radio-card {
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .radio-card:hover {
+      border-color: #2563eb;
+      background: rgba(37, 99, 235, 0.02);
+    }
+    .radio-card input:checked + div {
+      border-color: #2563eb;
+      background: rgba(37, 99, 235, 0.05);
+    }
+    .radio-card input:checked ~ .checkmark {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+
+  <!-- ============================= -->
+  <!-- PROVIDER DASHBOARD VIEW      -->
+  <!-- ============================= -->
+  <div class="min-h-screen pb-16">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-6 lg:px-10">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-4">
+            <span class="text-xl font-bold text-gray-900">SawadeePass</span>
+            <span class="text-sm text-gray-400">|</span>
+            <span class="text-sm font-medium text-gray-600">Provider Dashboard</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="hidden lg:flex items-center gap-4 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100">
+              <div class="text-right">
+                <div class="text-xs uppercase text-blue-600 font-bold tracking-wider">Credits</div>
+                <div class="text-xl font-bold text-blue-900">45</div>
+              </div>
+              <button class="btn-primary text-sm px-3 py-1.5">Top Up</button>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">TV</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-6 lg:px-10 py-6">
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Main Column -->
+        <section class="lg:col-span-2 space-y-4">
+
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-lg font-bold flex items-center gap-2">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              Recent Leads
+            </h2>
+            <button class="text-sm text-gray-500 hover:text-gray-700 font-medium">View All</button>
+          </div>
+
+          <!-- Request Card - UNLOCKED STATE WITH NEW ACTION MENU -->
+          <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:border-primary/30 transition-all">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <div class="flex gap-2 mb-2">
+                  <span class="text-xs font-semibold bg-blue-50 text-blue-700 px-2 py-1 rounded">Thailand Elite Visa</span>
+                  <span class="text-xs font-semibold bg-green-100 text-green-700 px-2.5 py-1 rounded flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                    </svg>
+                    Unlocked
+                  </span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Long-term stay visa for remote work</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">Looking for assistance with obtaining a Thailand Elite visa for long-term stay. I'm a remote worker from the US planning to relocate to Bangkok.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4 border-t border-gray-50 pt-3">
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>฿50K - ฿100K</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span>Bangkok</span>
+              </div>
+              <div class="flex items-center gap-1 ml-auto">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>2 days ago</span>
+              </div>
+            </div>
+
+            <!-- NEW ACTION BUTTONS -->
+            <div class="flex justify-between items-center gap-2 bg-blue-50/50 border border-blue-100 rounded-lg p-3">
+              <div class="flex items-center gap-2 min-w-0">
+                <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-xs text-blue-700 leading-tight">Offer a consultation first or send a quote directly</p>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button onclick="document.getElementById('offerConsultationModal').classList.remove('hidden')" class="btn-secondary text-sm px-4 py-2 flex items-center gap-2 whitespace-nowrap">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                  </svg>
+                  Offer Call
+                </button>
+                <button class="btn-primary text-sm px-4 py-2 flex items-center gap-2 whitespace-nowrap">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  Send Quote
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Another Request Card - LOCKED STATE (for comparison) -->
+          <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <div class="flex gap-2 mb-2">
+                  <span class="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded">DTV Visa</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Digital nomad visa for Thailand</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">Software engineer looking for DTV visa guidance...</p>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 flex-shrink-0">
+                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                Locked
+              </span>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4 border-t border-gray-50 pt-3">
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>฿30K - ฿50K</span>
+              </div>
+              <div class="flex items-center gap-1 ml-auto">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>3 days ago</span>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button class="btn-primary text-sm px-4 py-2 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                </svg>
+                Unlock (1 Credit)
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="space-y-6">
+
+          <!-- Active Cases Widget -->
+          <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+            <h3 class="text-md font-bold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              Active Cases
+            </h3>
+            <div class="space-y-3">
+              <div class="p-3 border border-dashed border-gray-200 rounded-lg text-center text-sm text-gray-400 py-6">
+                No active cases
+              </div>
+            </div>
+            <button class="w-full mt-4 btn-secondary text-sm">View All Cases</button>
+          </div>
+
+          <!-- Verification Status -->
+          <div class="bg-gradient-to-br from-green-50 to-white border border-green-100 rounded-xl p-5">
+            <div class="flex items-center gap-3 mb-2">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              <span class="font-bold text-green-800">Verified Partner</span>
+            </div>
+            <p class="text-xs text-green-700 mb-3">Your badge is active</p>
+            <button class="text-green-700 hover:text-green-900 text-sm font-medium">View Profile →</button>
+          </div>
+
+        </aside>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ============================= -->
+  <!-- OFFER CONSULTATION MODAL     -->
+  <!-- ============================= -->
+  <div id="offerConsultationModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+
+    <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+
+      <!-- Modal Header -->
+      <div class="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10 rounded-t-2xl">
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">Offer Consultation</h2>
+          <p class="text-sm text-gray-500 mt-0.5">For: "Long-term stay visa for remote work"</p>
+        </div>
+        <button onclick="document.getElementById('offerConsultationModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-6">
+
+        <!-- Consultation Type Selection -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-3">
+            Consultation Type
+            <span class="text-red-500">*</span>
+          </label>
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- FREE Option -->
+            <label class="radio-card relative">
+              <input type="radio" name="consultationType" value="FREE" checked class="sr-only">
+              <div class="border-2 border-gray-200 rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-gray-900">Free Call</span>
+                  <div class="checkmark w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-600">Build trust with a free discovery call</p>
+                <div class="mt-3 flex items-center gap-2 text-xs">
+                  <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded font-semibold">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    ฿0
+                  </span>
+                </div>
+              </div>
+            </label>
+
+            <!-- PAID Option -->
+            <label class="radio-card relative">
+              <input type="radio" name="consultationType" value="PAID" class="sr-only">
+              <div class="border-2 border-gray-200 rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-gray-900">Paid Session</span>
+                  <div class="checkmark w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-600">In-depth consultation with value</p>
+                <div class="mt-3">
+                  <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-semibold">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    ฿500 - ฿10,000
+                  </span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Price Field (shown for PAID) -->
+        <div id="priceField" style="display: none;">
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Price (THB)
+            <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">฿</span>
+            <input
+              type="number"
+              min="500"
+              max="10000"
+              step="100"
+              value="2500"
+              class="pl-8"
+              placeholder="2,500"
+            />
+          </div>
+          <p class="text-xs text-gray-500 mt-1.5">Recommended: ฿1,500 - ฿3,500 for 60 min</p>
+        </div>
+
+        <!-- Duration -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Call Duration
+            <span class="text-red-500">*</span>
+          </label>
+          <select>
+            <option value="15">15 minutes - Quick Q&A</option>
+            <option value="30" selected>30 minutes - Standard consultation</option>
+            <option value="45">45 minutes - In-depth discussion</option>
+            <option value="60">60 minutes - Comprehensive review</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            What will you discuss?
+            <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            rows="4"
+            placeholder="Describe what you'll cover in this consultation..."
+          >Let's discuss your Thailand Elite visa requirements in a quick 30-minute call. I'll answer all your questions and help you understand the process, timeline, and next steps.</textarea>
+          <p class="text-xs text-gray-500 mt-1.5">1,000 characters max</p>
+        </div>
+
+        <!-- Meeting Link (Optional) -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Meeting Link (optional)
+          </label>
+          <input
+            type="text"
+            placeholder="https://zoom.us/j/... or Google Meet link"
+          />
+          <p class="text-xs text-gray-500 mt-1.5">You can add this later after the seeker books</p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
+          <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <p class="text-sm font-medium text-blue-900 mb-1">How it works</p>
+            <ul class="text-xs text-blue-700 space-y-1">
+              <li>• Seeker books a time slot that works for both of you</li>
+              <li>• You'll receive email notification when booked</li>
+              <li>• For paid consultations, payment is collected upfront</li>
+              <li>• Mark as complete after the call happens</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="sticky bottom-0 bg-gray-50 border-t border-gray-100 px-6 py-4 flex items-center justify-between gap-3 rounded-b-2xl">
+        <button onclick="document.getElementById('offerConsultationModal').classList.add('hidden')" class="btn-secondary">
+          Cancel
+        </button>
+        <button class="btn-primary">
+          <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Offer Consultation
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Toggle price field based on consultation type
+    document.querySelectorAll('input[name="consultationType"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const priceField = document.getElementById('priceField');
+        if (e.target.value === 'PAID') {
+          priceField.style.display = 'block';
+        } else {
+          priceField.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

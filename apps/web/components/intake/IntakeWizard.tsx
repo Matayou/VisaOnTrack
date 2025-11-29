@@ -24,13 +24,12 @@ import {
 import { api } from '@visaontrack/client';
 import { generateRecommendations, type EligibilityState, type VisaRecommendation } from '@/lib/intake/recommendations';
 import { countEligibleVisas, isPurposeDisabled } from '@/lib/intake/eligibilityUtils';
-import { 
-  estimateBudgetFromSavings, 
-  mapEligibilityCodeToVisaType
+import {
+  estimateBudgetFromSavings,
+  mapEligibilityCodeToVisaType,
 } from '@/lib/eligibilityMapping';
-import { baseCardClass } from '@/app/requests/new/constants';
 import { nationalityOptions } from '@/config/requestForm';
-import { Button } from '@/components/ui';
+import { Button, Card } from '@/components/ui';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
 import { trackEvent } from '@/lib/analytics';
 
@@ -203,22 +202,22 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
   const Step1 = () => (
     <div className="space-y-8">
       <div className="relative">
-        <h2 className="text-3xl font-bold text-text-primary mb-2 bg-gradient-to-r from-text-primary to-primary bg-clip-text text-transparent">
+        <h2 className="mb-2 bg-gradient-to-r from-text-primary to-primary bg-clip-text text-3xl font-bold text-text-primary text-transparent">
           {mode === 'authenticated' ? 'Create a New Request' : "Let's find your perfect visa"}
         </h2>
         <p className="text-text-secondary">Answer a few questions to get personalized recommendations</p>
-        <div className="absolute -bottom-2 left-0 w-16 h-1 bg-gradient-to-r from-primary to-primary-hover rounded-full"></div>
+        <div className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-gradient-to-r from-primary to-primary-hover"></div>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
-            <div className="p-1.5 rounded-md bg-primary/10 border border-primary/20">
-              <Users className="w-4 h-4 text-primary" />
+            <div className="bg-primary/10 border-primary/20 rounded-md border p-1.5">
+              <Users className="h-4 w-4 text-primary" />
             </div>
             Your Details
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="space-y-2">
               <label htmlFor="nationality" className="block text-xs font-medium text-text-secondary">
                 Nationality
@@ -227,7 +226,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
                 id="nationality"
                 value={state.nationality}
                 onChange={(e) => setState((prev) => ({ ...prev, nationality: e.target.value }))}
-                className="w-full h-[48px] px-4 py-3 rounded-base border-2 border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:border-primary hover:border-primary/40 cursor-pointer"
+                className="hover:border-primary/40 h-[48px] w-full cursor-pointer rounded-base border-2 border-border-light bg-bg-primary px-4 py-3 font-medium text-text-primary transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 <option value="">Select nationality</option>
                 {nationalityOptions.map((option) => (
@@ -256,10 +255,10 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
                         return newState;
                       });
                     }}
-                    className={`h-[48px] px-4 py-3 rounded-base border-2 font-medium transition-all duration-200 ${
+                    className={`h-[48px] rounded-base border-2 px-4 py-3 font-medium transition-all duration-200 ${
                       state.age === age
-                        ? 'border-primary bg-primary/5 text-primary shadow-xs'
-                        : 'border-border-light bg-bg-primary text-text-secondary hover:border-primary/40 hover:text-primary'
+                        ? 'bg-primary/5 border-primary text-primary shadow-xs'
+                        : 'hover:border-primary/40 border-border-light bg-bg-primary text-text-secondary hover:text-primary'
                     }`}
                   >
                     {age}
@@ -272,12 +271,12 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
         <div className="space-y-3">
           <label className="flex items-center gap-2 text-sm font-semibold text-text-primary">
-            <div className="p-1.5 rounded-md bg-primary/10 border border-primary/20">
-              <Briefcase className="w-4 h-4 text-primary" />
+            <div className="bg-primary/10 border-primary/20 rounded-md border p-1.5">
+              <Briefcase className="h-4 w-4 text-primary" />
             </div>
             Primary Purpose
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { value: 'remote', label: 'Remote Work / Freelance', icon: Globe },
               { value: 'retirement', label: 'Retirement', icon: Coffee },
@@ -299,15 +298,15 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
                   }}
                   disabled={disabled}
                   title={reason || undefined}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-base border-2 font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-3 rounded-base border-2 px-4 py-3 font-medium transition-all duration-300 ${
                     disabled
-                      ? 'border-border-light bg-bg-secondary text-text-tertiary cursor-not-allowed opacity-50'
+                      ? 'cursor-not-allowed border-border-light bg-bg-secondary text-text-tertiary opacity-50'
                       : state.purpose === value
-                      ? 'border-primary bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-md shadow-primary/10'
-                      : 'border-border-light bg-bg-primary text-text-secondary hover:border-primary/50 hover:text-primary hover:bg-primary/3'
+                      ? 'from-primary/10 to-primary/5 shadow-primary/10 border-primary bg-gradient-to-br text-primary shadow-md'
+                      : 'hover:border-primary/50 hover:bg-primary/3 border-border-light bg-bg-primary text-text-secondary hover:text-primary'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 flex-shrink-0 ${disabled ? 'opacity-50' : ''}`} />
+                  <Icon className={`h-5 w-5 flex-shrink-0 ${disabled ? 'opacity-50' : ''}`} />
                   <span className="text-left">{label}</span>
                   {disabled && reason && (
                     <span className="ml-auto text-xs text-text-tertiary">({reason})</span>
@@ -325,7 +324,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         disabled={!state.nationality || !state.age || !state.purpose}
         fullWidth
         size="lg"
-        icon={<ArrowRight className="w-5 h-5" />}
+        icon={<ArrowRight className="h-5 w-5" />}
         iconPosition="right"
       >
         Continue to Details
@@ -339,15 +338,15 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         <button
           type="button"
           onClick={() => setStep(1)}
-          className="text-sm text-text-secondary hover:text-text-primary mb-4 flex items-center gap-1"
+          className="mb-4 flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
         >
           ← Back
         </button>
-        <h2 className="text-3xl font-bold text-text-primary mb-2">Tell us more about yourself</h2>
+        <h2 className="mb-2 text-3xl font-bold text-text-primary">Tell us more about yourself</h2>
         <p className="text-text-secondary">This helps us find the best visa options for you</p>
       </div>
 
-      <div className="rounded-base border border-border-light bg-white p-4 sm:p-5 shadow-sm space-y-4">
+      <div className="space-y-4 rounded-base border border-border-light bg-white p-4 shadow-sm sm:p-5">
         <div className="space-y-1">
           <label htmlFor={locationSelectId} className="text-xs font-semibold text-text-secondary">
             I am
@@ -358,7 +357,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
             onChange={(e) => {
               setState((prev) => ({ ...prev, location: e.target.value }));
             }}
-            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+            className="hover:border-primary/40 h-[48px] w-full rounded-base border border-border-light bg-bg-primary px-4 py-3 font-medium text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             <option value="">Select location</option>
             <option value="Outside Thailand">Outside Thailand</option>
@@ -376,7 +375,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
             onChange={(e) => {
               setState((prev) => ({ ...prev, duration: e.target.value }));
             }}
-            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+            className="hover:border-primary/40 h-[48px] w-full rounded-base border border-border-light bg-bg-primary px-4 py-3 font-medium text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             <option value="">Select duration</option>
             <option value="90_180">3-6 months</option>
@@ -396,7 +395,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
             onChange={(e) => {
               setState((prev) => ({ ...prev, incomeType: e.target.value }));
             }}
-            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+            className="hover:border-primary/40 h-[48px] w-full rounded-base border border-border-light bg-bg-primary px-4 py-3 font-medium text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             <option value="">Select income source</option>
             <option value="Remote/freelance">Remote/freelance work</option>
@@ -417,7 +416,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
             onChange={(e) => {
               setState((prev) => ({ ...prev, savings: e.target.value }));
             }}
-            className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+            className="hover:border-primary/40 h-[48px] w-full rounded-base border border-border-light bg-bg-primary px-4 py-3 font-medium text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             <option value="">Select savings</option>
             <option value="0_500k">&lt;500k THB</option>
@@ -440,7 +439,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
                 onChange={(e) => {
                   setState((prev) => ({ ...prev, currentVisaExpiration: e.target.value }));
                 }}
-                className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+                className="hover:border-primary/40 h-[48px] w-full rounded-base border border-border-light bg-bg-primary px-4 py-3 font-medium text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 <option value="">Select timeframe</option>
                 <option value="<1month">less than 1 month</option>
@@ -459,7 +458,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
                 onChange={(e) => {
                   setState((prev) => ({ ...prev, currentVisaType: e.target.value }));
                 }}
-                className="w-full h-[48px] px-4 py-3 rounded-base border border-border-light bg-bg-primary text-text-primary font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:border-primary/40"
+                className="hover:border-primary/40 h-[48px] w-full rounded-base border border-border-light bg-bg-primary px-4 py-3 font-medium text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 <option value="">Select visa type</option>
                 <option value="Tourist Visa (TR)">Tourist Visa (TR)</option>
@@ -478,8 +477,8 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
 
       <div className="space-y-3">
         <label className="flex items-center gap-2 text-sm font-semibold text-text-primary">
-          <div className="p-1.5 rounded-md bg-primary/10 border border-primary/20">
-            <Info className="w-4 h-4 text-primary" />
+          <div className="bg-primary/10 border-primary/20 rounded-md border p-1.5">
+            <Info className="h-4 w-4 text-primary" />
           </div>
           Additional Context (Optional)
         </label>
@@ -489,10 +488,10 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
               key={field}
               type="button"
               onClick={() => handleFieldToggle(field)}
-              className={`px-4 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-300 ${
+              className={`rounded-full border-2 px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
                 state.fields.includes(field)
-                  ? 'border-primary bg-gradient-to-r from-primary to-primary-hover text-white shadow-md shadow-primary/20'
-                  : 'border-border-light bg-bg-primary text-text-secondary hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm'
+                  ? 'shadow-primary/20 border-primary bg-gradient-to-r from-primary to-primary-hover text-white shadow-md'
+                  : 'hover:border-primary/50 hover:bg-primary/5 border-border-light bg-bg-primary text-text-secondary hover:shadow-sm'
               }`}
             >
               {field}
@@ -512,12 +511,12 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
                           'bg-primary/10 border-primary/20 text-primary';
             
             return (
-              <div className={`${bgColor} rounded-base p-4 border flex items-start gap-3`}>
-                <Info className={`w-5 h-5 flex-shrink-0 mt-0.5 ${type === 'error' ? 'text-warning' : 'text-primary'}`} />
+              <div className={`${bgColor} flex items-start gap-3 rounded-base border p-4`}>
+                <Info className={`mt-0.5 h-5 w-5 flex-shrink-0 ${type === 'error' ? 'text-warning' : 'text-primary'}`} />
                 <div className="flex-1">
                   <p className="text-sm font-medium">{message}</p>
                   {state.purpose === 'family' && !state.fields.includes('Spouse/family in Thailand') && (
-                    <p className="text-xs mt-2 opacity-90">
+                    <p className="mt-2 text-xs opacity-90">
                       💡 Tip: Selecting "Spouse/family in Thailand" above will unlock family visa options
                     </p>
                   )}
@@ -540,7 +539,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
         if (hasAllFields) {
           if (possibleVisasCount === 0) {
             return (
-              <div className="text-sm text-text-tertiary text-center">
+              <div className="text-center text-sm text-text-tertiary">
                 <span className="text-warning">⚠️ No visas match your selections. Try adjusting your savings, income, or location.</span>
               </div>
             );
@@ -552,7 +551,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
               onClick={() => setStep(3)}
               fullWidth
               size="lg"
-              icon={<ArrowRight className="w-5 h-5" />}
+              icon={<ArrowRight className="h-5 w-5" />}
               iconPosition="right"
             >
               See My Recommendations
@@ -560,7 +559,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
           );
         } else {
           return (
-            <div className="text-sm text-text-tertiary text-center">
+            <div className="text-center text-sm text-text-tertiary">
               <span>✨ Complete all fields to see recommendations</span>
             </div>
           );
@@ -583,11 +582,11 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
               setSelectedCard(null);
               setStep(2);
             }}
-            className="text-sm text-text-secondary hover:text-text-primary mb-4 flex items-center gap-1"
+            className="mb-4 flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
           >
             ← Back to Questions
           </button>
-          <h2 className="text-3xl font-bold text-text-primary mb-2">Your Recommended Visas</h2>
+          <h2 className="mb-2 text-3xl font-bold text-text-primary">Your Recommended Visas</h2>
           <p className="text-text-secondary">We found {results.length} visa options that match your profile</p>
         </div>
 
@@ -602,59 +601,61 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
             const badge = badges[idx as keyof typeof badges] || badges[1];
 
             return (
-              <div
+              <Card
                 key={option.code}
+                padding="md"
+                elevated={isSelected}
                 onClick={() => selectResult(option.code)}
-                className={`relative ${baseCardClass} p-6 cursor-pointer transition-all duration-300 ${
+                className={`relative cursor-pointer transition-all duration-300 ${
                   isSelected
-                    ? 'border-2 border-primary shadow-lg shadow-primary/20 bg-gradient-to-br from-primary/5 to-white'
-                    : 'border-2 border-border-light hover:border-primary/50'
+                    ? 'shadow-primary/20 from-primary/5 border-2 border-primary bg-gradient-to-br to-white shadow-lg'
+                    : 'hover:border-primary/50 border-2 border-border-light'
                 }`}
               >
                 {isSelected && (
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary-hover to-primary"></div>
+                  <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-primary via-primary-hover to-primary"></div>
                 )}
                 {/* Selection indicator - checked when selected, unchecked when not */}
-                <div className="absolute top-6 right-6 z-10">
+                <div className="absolute right-6 top-6 z-10">
                   {isSelected ? (
-                    <CheckCircle2 className="w-6 h-6 text-primary" />
+                    <CheckCircle2 className="h-6 w-6 text-primary" />
                   ) : (
-                    <div className="w-8 h-8 rounded-full border-2 border-border bg-bg-primary hover:border-primary transition-all duration-150 flex items-center justify-center shadow-sm">
+                    <div className="border-border flex h-8 w-8 items-center justify-center rounded-full border-2 bg-bg-primary shadow-sm transition-all duration-150 hover:border-primary">
                       {/* Empty circle to show it's unchecked/selectable */}
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-start gap-4 mb-4">
+                <div className="mb-4 flex items-start gap-4">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="mb-2 flex items-center gap-3">
                       <h3 className="text-xl font-bold text-text-primary">{option.title}</h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${badge.color}`}>
+                      <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${badge.color}`}>
                         {badge.label}
                       </span>
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold border border-border-light text-text-secondary">
+                      <span className="rounded-full border border-border-light px-2.5 py-1 text-[11px] font-semibold text-text-secondary">
                         {option.confidence} confidence
                       </span>
                     </div>
-                    <p className="text-text-secondary leading-relaxed">{option.desc}</p>
+                    <p className="leading-relaxed text-text-secondary">{option.desc}</p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 mb-4 text-sm">
+                <div className="mb-4 flex flex-wrap gap-4 text-sm">
                   <div className="flex items-center gap-2 text-text-secondary">
-                    <Wallet className="w-4 h-4 text-text-tertiary" />
+                    <Wallet className="h-4 w-4 text-text-tertiary" />
                     <span className="font-medium">{option.cost}</span>
                   </div>
                   <div className="flex items-center gap-2 text-text-secondary">
-                    <Clock className="w-4 h-4 text-text-tertiary" />
+                    <Clock className="h-4 w-4 text-text-tertiary" />
                     <span className="font-medium">{option.time}</span>
                   </div>
                   <div className="flex items-center gap-2 text-text-secondary">
-                    <BarChart3 className="w-4 h-4 text-text-tertiary" />
+                    <BarChart3 className="h-4 w-4 text-text-tertiary" />
                     <span className="font-medium">{option.difficulty}</span>
                   </div>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -665,7 +666,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
           disabled={!selectedCard}
           fullWidth
           size="lg"
-          icon={selectedCard ? <ArrowRight className="w-5 h-5" /> : undefined}
+          icon={selectedCard ? <ArrowRight className="h-5 w-5" /> : undefined}
           iconPosition="right"
         >
           {selectedCard ? 'Continue with Selected Visa' : 'Select a visa to continue'}
@@ -680,30 +681,30 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
     return (
       <div className="space-y-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-success to-success/80 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-8 h-8 text-white" />
+          <div className="to-success/80 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-success">
+            <CheckCircle2 className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-text-primary mb-2">Perfect! Here's your summary</h2>
+          <h2 className="mb-2 text-3xl font-bold text-text-primary">Perfect! Here's your summary</h2>
           <p className="text-text-secondary">Review your details before proceeding</p>
         </div>
 
         {selected && (
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-base p-6 border-2 border-primary/20">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-primary rounded-base flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+          <div className="from-primary/5 to-primary/10 border-primary/20 rounded-base border-2 bg-gradient-to-br p-6">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-base bg-primary">
+                <Sparkles className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-text-primary">{selected.title}</h3>
                 <p className="text-sm text-text-secondary">{selected.badge}</p>
               </div>
             </div>
-            <p className="text-text-primary mb-4">{selected.desc}</p>
+            <p className="mb-4 text-text-primary">{selected.desc}</p>
           </div>
         )}
 
-        <div className={`${baseCardClass} p-6 space-y-4`}>
-          <h4 className="font-bold text-text-primary mb-3">Your Profile Summary</h4>
+        <Card padding="md" elevated className="space-y-4">
+          <h4 className="mb-3 font-bold text-text-primary">Your Profile Summary</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-text-secondary">Age Range:</span>
@@ -730,11 +731,11 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
               <span className="font-medium text-text-primary">{state.savings}</span>
             </div>
           </div>
-        </div>
+        </Card>
 
         {submitError && (
-          <div className="p-4 bg-error/10 text-error rounded-base border border-error/20 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5" />
+          <div className="flex items-center gap-2 rounded-base border border-error/20 bg-error/10 p-4 text-error">
+            <AlertTriangle className="h-5 w-5" />
             <p className="text-sm">{submitError}</p>
           </div>
         )}
@@ -755,7 +756,7 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
             onClick={handleSubmit}
             size="lg"
             className="flex-1"
-            icon={!isSubmitting ? <ArrowRight className="w-5 h-5" /> : undefined}
+            icon={!isSubmitting ? <ArrowRight className="h-5 w-5" /> : undefined}
             iconPosition="right"
             loading={isSubmitting}
             disabled={isSubmitting}
@@ -772,25 +773,25 @@ export function IntakeWizard({ mode }: IntakeWizardProps) {
       {/* Progress Bar */}
       <div className="mb-4 sm:mb-6">
         <div className="flex items-center justify-between gap-4 rounded-base border border-border-light bg-white px-4 py-3 shadow-sm">
-          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-100">
             <div
               className="h-full bg-gradient-to-r from-primary to-primary-hover transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <span className="text-xs sm:text-sm font-semibold text-text-secondary whitespace-nowrap min-w-[90px] text-right">
+          <span className="min-w-[90px] whitespace-nowrap text-right text-xs font-semibold text-text-secondary sm:text-sm">
             Step {step} of 4
           </span>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={`${baseCardClass} p-6 sm:p-8 lg:p-10`}>
+      <Card padding="none" elevated className="p-6 sm:p-8 lg:p-10">
         {step === 1 && <Step1 />}
         {step === 2 && <Step2 />}
         {step === 3 && <Step3 />}
         {step === 4 && <Step4 />}
-      </div>
+      </Card>
     </>
   );
 }

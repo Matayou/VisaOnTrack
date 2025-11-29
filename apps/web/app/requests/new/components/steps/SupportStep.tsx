@@ -3,9 +3,9 @@
 import { Shield } from 'lucide-react';
 
 import { ReadinessCard } from '@/app/requests/new/components/readiness/ReadinessCard';
-import { sectionCardClass } from '@/app/requests/new/constants';
 import { useRequestForm } from '@/app/requests/new/context/RequestFormContext';
 import { resolveLocationLabel, resolveVisaLabel } from '@/lib/requestForm';
+import { Card } from '@/components/ui';
 
 export function SupportStep() {
   const {
@@ -20,13 +20,13 @@ export function SupportStep() {
   } = useRequestForm();
 
   return (
-    <section className={sectionCardClass}>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-white">
-          <Shield className="w-6 h-6" aria-hidden="true" />
+    <Card as="section" padding="lg" elevated className="space-y-6">
+      <div className="flex items-center gap-4">
+        <div className="from-primary/80 flex h-12 w-12 items-center justify-center rounded-base bg-gradient-to-br to-primary text-white">
+          <Shield className="h-6 w-6" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">Step 4</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-text-tertiary">Step 4</p>
           <h2 className="text-2xl font-semibold tracking-tight">What help do you want?</h2>
           <p className="text-text-secondary">Choose the touchpoints: strategy, documents, bookings, follow-up.</p>
         </div>
@@ -36,7 +36,7 @@ export function SupportStep() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-text-tertiary font-semibold">Request preview</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-text-tertiary">Request preview</p>
               <h3 className="text-xl font-semibold text-text-primary">{formState.title || 'Untitled request'}</h3>
             </div>
             <span className="text-xs text-text-tertiary">{new Intl.DateTimeFormat('en-US').format(new Date())}</span>
@@ -120,7 +120,7 @@ export function SupportStep() {
         )}
 
         <div>
-          <label htmlFor="additionalNotes" className="block text-sm font-medium text-text-secondary mb-2">
+          <label htmlFor="additionalNotes" className="mb-2 block text-sm font-medium text-text-secondary">
             Last notes (optional)
           </label>
           <textarea
@@ -130,11 +130,11 @@ export function SupportStep() {
             onChange={(event) => updateField('additionalNotes', event.target.value)}
             onBlur={() => markFieldTouched('additionalNotes')}
             placeholder="Dependent details, employer info, anything else providers should know."
-            className="w-full rounded-base border border-border bg-transparent px-4 py-3 text-base min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className="border-border min-h-[120px] w-full rounded-base border bg-transparent px-4 py-3 text-base transition focus:outline-none focus:ring-2 focus:ring-primary"
             maxLength={2000}
           />
         </div>
       </div>
-    </section>
+    </Card>
   );
 }

@@ -38,7 +38,7 @@ export default function EditRequestPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <Spinner size="lg" />
       </div>
     );
@@ -46,10 +46,10 @@ export default function EditRequestPage() {
 
   if (error || !request) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h2 className="text-lg font-bold text-red-600 mb-2">Error</h2>
-          <p className="text-gray-600 mb-4">{error || 'Request not found'}</p>
+          <h2 className="mb-2 text-lg font-bold text-red-600">Error</h2>
+          <p className="mb-4 text-gray-600">{error || 'Request not found'}</p>
           <button
             onClick={() => router.back()}
             className="text-primary hover:underline"
@@ -64,15 +64,15 @@ export default function EditRequestPage() {
   // Redirect if not DRAFT
   if (request.status !== 'DRAFT') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center max-w-md px-4">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Cannot Edit Published Request</h2>
-          <p className="text-gray-600 mb-6">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="max-w-md px-4 text-center">
+          <h2 className="mb-2 text-xl font-bold text-gray-900">Cannot Edit Published Request</h2>
+          <p className="mb-6 text-gray-600">
             This request has already been published. To ensure consistency for providers, you cannot edit the details of a published request.
           </p>
           <button
             onClick={() => router.push(`/requests/${requestId}`)}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+            className="rounded-lg bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-hover"
           >
             Return to Request
           </button>
@@ -85,23 +85,23 @@ export default function EditRequestPage() {
     <div className="min-h-screen bg-gray-50 pb-12">
       <SeekerHeader />
       
-      <main className="max-w-3xl mx-auto px-4 lg:px-8 py-8">
+      <main className="mx-auto max-w-3xl px-4 py-8 lg:px-8">
         <div className="mb-6">
           <button 
             onClick={() => router.back()}
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors px-2 py-1 -ml-2 rounded-lg hover:bg-gray-100/50"
+            className="-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100/50 hover:text-gray-900"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Request
           </button>
         </div>
 
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Edit Request Details</h1>
-          <p className="text-gray-600 mt-1">Update your visa requirements and preferences.</p>
+          <p className="mt-1 text-gray-600">Update your visa requirements and preferences.</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
           <RequestEditForm request={request} />
         </div>
       </main>

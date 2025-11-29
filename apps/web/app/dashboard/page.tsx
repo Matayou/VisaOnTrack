@@ -36,10 +36,10 @@ const statusLabels: Record<RequestStatus, string> = {
 };
 
 const statusStyles: Record<RequestStatus, string> = {
-  DRAFT: 'bg-amber-50 text-amber-800 border-amber-200',
-  OPEN: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-  CLOSED: 'bg-gray-100 text-gray-700 border-gray-200',
-  HIRED: 'bg-blue-50 text-blue-800 border-blue-200',
+  DRAFT: 'bg-amber-50 text-amber-800 ring-amber-600/10',
+  OPEN: 'bg-emerald-50 text-emerald-800 ring-emerald-600/10',
+  CLOSED: 'bg-gray-100 text-gray-700 ring-gray-400/20',
+  HIRED: 'bg-blue-50 text-blue-800 ring-blue-600/10',
 };
 
 const statusBorderColors: Record<RequestStatus, string> = {
@@ -48,6 +48,7 @@ const statusBorderColors: Record<RequestStatus, string> = {
   CLOSED: 'border-l-gray-400',
   HIRED: 'border-l-blue-500',
 };
+const statusChipBase = 'inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg ring-1 ring-inset';
 
 // Key for localStorage persistence (MUST match GetStartedPage)
 const INTAKE_DATA_KEY = 'vot_intake_data';
@@ -296,12 +297,12 @@ function DashboardContent() {
 
   if (isProcessingIntake) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="space-y-4 text-center">
           <Spinner size="lg" />
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Setting up your workspace</h2>
-            <p className="text-gray-600 mt-1">Creating your request from your answers...</p>
+            <p className="mt-1 text-gray-600">Creating your request from your answers...</p>
           </div>
         </div>
       </div>
@@ -309,25 +310,25 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-gray-50">
       <PageBackground />
       <SeekerHeader />
-      <div className="relative z-10 w-full mx-auto space-y-6 px-4 sm:px-6 lg:px-8 py-6 lg:py-10 max-w-7xl">
+      <div className="relative z-10 mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         {/* Header with Metrics */}
-        <header className="ios-card px-6 py-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50/40 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none"></div>
+        <header className="ios-card relative overflow-hidden px-6 py-6">
+          <div className="pointer-events-none absolute right-0 top-0 -mr-20 -mt-20 h-64 w-64 rounded-full bg-gradient-to-br from-indigo-50/40 to-transparent"></div>
           <div className="relative">
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Your Requests</p>
-                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                <p className="mb-1 text-xs font-bold uppercase tracking-wider text-gray-400">Your Requests</p>
+                <h1 className="text-2xl font-bold text-gray-900 lg:text-3xl">
                   Manage your visa requests
                 </h1>
               </div>
               <Button
                 type="button"
                 onClick={() => router.push('/requests/new')}
-                icon={<PlusCircle className="w-4 h-4" />}
+                icon={<PlusCircle className="h-4 w-4" />}
                 iconPosition="left"
                 className="hidden sm:inline-flex"
               >
@@ -340,7 +341,7 @@ function DashboardContent() {
               <Button
                 type="button"
                 onClick={() => router.push('/requests/new')}
-                icon={<PlusCircle className="w-4 h-4" />}
+                icon={<PlusCircle className="h-4 w-4" />}
                 iconPosition="left"
                 className="w-full"
               >
@@ -352,15 +353,15 @@ function DashboardContent() {
 
         {/* Status Filter Tabs - Compact pill row */}
         {!isLoadingRequests && requests.length > 0 && (
-          <div className="ios-card px-4 sm:px-6 py-3">
-            <div className="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar">
+          <div className="ios-card px-4 py-3 sm:px-6">
+            <div className="no-scrollbar flex gap-2 overflow-x-auto sm:gap-3">
               <button
                 type="button"
                 onClick={() => setStatusFilter('ALL')}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
                   statusFilter === 'ALL'
-                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
-                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
+                    ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
+                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
                 }`}
               >
                 All
@@ -369,10 +370,10 @@ function DashboardContent() {
               <button
                 type="button"
                 onClick={() => setStatusFilter('OPEN')}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
                   statusFilter === 'OPEN'
-                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
-                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
+                    ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
+                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
                 }`}
               >
                 Active
@@ -381,10 +382,10 @@ function DashboardContent() {
               <button
                 type="button"
                 onClick={() => setStatusFilter('DRAFT')}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
                   statusFilter === 'DRAFT'
-                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
-                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
+                    ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
+                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
                 }`}
               >
                 Draft
@@ -393,10 +394,10 @@ function DashboardContent() {
               <button
                 type="button"
                 onClick={() => setStatusFilter('HIRED')}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
                   statusFilter === 'HIRED'
-                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
-                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
+                    ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
+                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
                 }`}
               >
                 Hired
@@ -405,10 +406,10 @@ function DashboardContent() {
               <button
                 type="button"
                 onClick={() => setStatusFilter('CLOSED')}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg border transition-all whitespace-nowrap ${
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
                   statusFilter === 'CLOSED'
-                    ? 'bg-primary/10 text-primary border-primary/20 shadow-sm'
-                    : 'bg-white text-gray-600 border-transparent hover:border-gray-200'
+                    ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
+                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
                 }`}
               >
                 Completed
@@ -418,44 +419,44 @@ function DashboardContent() {
         )}
 
         {isLoadingUser || isLoadingRequests ? (
-          <div className="ios-card p-6 flex items-center gap-3 text-gray-600">
+          <div className="ios-card flex items-center gap-3 p-6 text-gray-600">
             <Spinner size="sm" />
             <span>{LOADING_GENERIC}</span>
           </div>
         ) : null}
 
         {showEmptyState && (
-          <div className="text-center py-12 sm:py-16 px-4 relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-50/30 via-white to-blue-50/30 border border-gray-200/60">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
-            <div className="relative z-10 max-w-md mx-auto">
-              <div className="w-16 sm:w-20 h-16 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-2xl bg-primary/10 flex items-center justify-center ring-4 ring-primary/5">
-                <FileText className="w-8 sm:w-10 h-8 sm:h-10 text-primary" />
+          <div className="relative overflow-hidden rounded-2xl border border-gray-200/60 bg-gradient-to-br from-indigo-50/30 via-white to-blue-50/30 px-4 py-12 text-center sm:py-16">
+            <div className="from-primary/5 pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr to-transparent blur-3xl"></div>
+            <div className="relative z-10 mx-auto max-w-md">
+              <div className="bg-primary/10 ring-primary/5 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl ring-4 sm:mb-6 sm:h-20 sm:w-20">
+                <FileText className="h-8 w-8 text-primary sm:h-10 sm:w-10" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Ready to start your visa journey?</h3>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-2 leading-relaxed">
+              <h3 className="mb-2 text-xl font-bold text-gray-900 sm:mb-3 sm:text-2xl">Ready to start your visa journey?</h3>
+              <p className="mb-4 text-sm leading-relaxed text-gray-600 sm:mb-2 sm:text-base">
                 Create your first visa request to connect with verified providers.
                 They'll review your requirements and send personalized proposals.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 pt-2">
+              <div className="mb-6 flex flex-col items-center justify-center gap-2 pt-2 text-xs text-gray-500 sm:mb-8 sm:flex-row sm:gap-6 sm:text-sm">
                 <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Check className="h-4 w-4 flex-shrink-0 text-emerald-500" />
                   Free to post
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Check className="h-4 w-4 flex-shrink-0 text-emerald-500" />
                   Multiple quotes
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Check className="h-4 w-4 flex-shrink-0 text-emerald-500" />
                   Secure payments
                 </span>
               </div>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
+              <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
                 <Button
                   type="button"
                   size="lg"
                   onClick={() => router.push('/requests/new')}
-                  icon={<PlusCircle className="w-5 h-5" />}
+                  icon={<PlusCircle className="h-5 w-5" />}
                   iconPosition="left"
                   className="w-full sm:w-auto"
                 >
@@ -463,7 +464,7 @@ function DashboardContent() {
                 </Button>
                 <button
                   onClick={() => router.push('/providers')}
-                  className="w-full sm:w-auto px-6 py-3 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-700 font-semibold rounded-xl text-base transition-all shadow-sm hover:shadow"
+                  className="hover:border-primary/30 w-full rounded-xl border border-gray-200 bg-white px-6 py-3 text-base font-semibold text-gray-700 shadow-sm transition-all hover:text-primary hover:shadow sm:w-auto"
                 >
                   Browse providers
                 </button>
@@ -474,18 +475,18 @@ function DashboardContent() {
 
         {/* Filtered Empty State */}
         {showFilteredEmptyState && (
-          <div className="text-center py-12 ios-card">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 flex items-center justify-center">
-              <FileText className="w-8 h-8 text-gray-400" />
+          <div className="ios-card py-12 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50">
+              <FileText className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">No {statusFilter.toLowerCase()} requests</h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <h3 className="mb-2 font-semibold text-gray-900">No {statusFilter.toLowerCase()} requests</h3>
+            <p className="mb-4 text-sm text-gray-500">
               Try selecting a different filter to view other requests
             </p>
             <button
               type="button"
               onClick={() => setStatusFilter('ALL')}
-              className="text-sm font-medium text-primary hover:text-primary/80 underline"
+              className="hover:text-primary/80 text-sm font-medium text-primary underline"
             >
               View all requests
             </button>
@@ -493,14 +494,14 @@ function DashboardContent() {
         )}
 
         {error && (
-          <div className="bg-red-50 text-red-800 p-4 rounded-xl border border-red-200 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5" aria-hidden="true" />
+          <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">
+            <AlertCircle className="h-5 w-5" aria-hidden="true" />
             <div className="flex-1">
               <p className="text-sm font-semibold">We couldn&apos;t load your requests</p>
               <p className="text-sm">{error}</p>
               <button
                 type="button"
-                className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 underline"
+                className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-red-600 underline hover:text-red-700"
                 onClick={() => router.refresh()}
               >
                 Try again
@@ -525,7 +526,7 @@ function DashboardContent() {
               return (
                 <article
                   key={request.id}
-                  className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow cursor-pointer"
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
                   onClick={() => router.push(`/requests/${request.id}`)}
                   role="button"
                   tabIndex={0}
@@ -537,103 +538,96 @@ function DashboardContent() {
                   }}
                 >
                   {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-2 flex-1">
-                      <FileText className="w-4 h-4 text-primary flex-shrink-0" />
+                  <div className="mb-4 flex items-start justify-between">
+                    <div className="flex flex-1 items-center gap-2">
+                      <FileText className="h-4 w-4 flex-shrink-0 text-primary" />
                       {request.visaType && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-primary bg-blue-50 border border-blue-100">
+                        <span className="inline-flex items-center rounded border border-blue-100 bg-blue-50 px-2 py-0.5 text-xs font-medium text-primary">
                           {request.visaType}
                         </span>
                       )}
-                      <span
-                        className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium ${
-                          request.status === 'DRAFT' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                          request.status === 'OPEN' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                          request.status === 'HIRED' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
-                          'bg-gray-50 text-gray-600 border border-gray-200'
-                        }`}
-                      >
+                      <span className={`${statusChipBase} ${statusStyles[request.status]}`}>
                         {statusLabels[request.status]}
                       </span>
                     </div>
                     <button
                       type="button"
-                      className="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+                      className="flex-shrink-0 rounded p-1 transition-colors hover:bg-gray-100"
                       onClick={(e) => {
                         e.stopPropagation();
                         // TODO: Add menu actions
                       }}
                       aria-label="More options"
                     >
-                      <MoreVertical className="w-4 h-4 text-gray-400" />
+                      <MoreVertical className="h-4 w-4 text-gray-400" />
                     </button>
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h2 className="mb-4 text-lg font-semibold text-gray-900">
                     {request.title}
                   </h2>
 
                   {/* Clean Info Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-3 mb-4 pb-4 border-b border-gray-200">
+                  <div className="mb-4 grid grid-cols-2 gap-x-6 gap-y-3 border-b border-gray-200 pb-4 md:grid-cols-4">
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                        <Globe className="w-3.5 h-3.5" />
+                      <div className="mb-1 flex items-center gap-1.5 text-xs text-gray-500">
+                        <Globe className="h-3.5 w-3.5" />
                         <span>Nationality</span>
                       </div>
                       <p className="text-sm font-medium text-gray-900">{nationality}</p>
                     </div>
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                        <User className="w-3.5 h-3.5" />
+                      <div className="mb-1 flex items-center gap-1.5 text-xs text-gray-500">
+                        <User className="h-3.5 w-3.5" />
                         <span>Age Range</span>
                       </div>
                       <p className="text-sm font-medium text-gray-900">{ageRange}</p>
                     </div>
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                        <MapPin className="w-3.5 h-3.5" />
+                      <div className="mb-1 flex items-center gap-1.5 text-xs text-gray-500">
+                        <MapPin className="h-3.5 w-3.5" />
                         <span>Location</span>
                       </div>
                       <p className="text-sm font-medium text-gray-900">{request.location || 'Not specified'}</p>
                     </div>
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                        <Briefcase className="w-3.5 h-3.5" />
+                      <div className="mb-1 flex items-center gap-1.5 text-xs text-gray-500">
+                        <Briefcase className="h-3.5 w-3.5" />
                         <span>Purpose</span>
                       </div>
-                      <p className="text-sm font-medium text-gray-900 capitalize">{purpose}</p>
+                      <p className="text-sm font-medium capitalize text-gray-900">{purpose}</p>
                     </div>
                   </div>
 
                   {/* Footer */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
+                  <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500">
                       <span className="flex items-center gap-1.5">
-                        <MessageSquare className="w-3.5 h-3.5" />
+                        <MessageSquare className="h-3.5 w-3.5" />
                         0 proposals
                       </span>
                       {budgetText && (
                         <span className="flex items-center gap-1.5">
-                          <Wallet className="w-3.5 h-3.5" />
+                          <Wallet className="h-3.5 w-3.5" />
                           {budgetText}
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
+                        <Clock className="h-3.5 w-3.5" />
                         {dateText}
                       </span>
                     </div>
                     <button
                       type="button"
-                      className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 self-end sm:self-auto"
+                      className="hover:text-primary/80 flex items-center gap-1 self-end text-sm font-medium text-primary sm:self-auto"
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/requests/${request.id}`);
                       }}
                     >
                       View details
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </article>
@@ -646,12 +640,12 @@ function DashboardContent() {
         <section className="ios-card" aria-label="Frequently asked questions">
           <div className="p-6 md:p-8">
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h2>
+              <h2 className="mb-2 text-xl font-bold text-gray-900">Frequently Asked Questions</h2>
               <p className="text-sm text-gray-500">Find answers to common questions about using VisaOnTrack</p>
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex gap-1 mb-8 bg-gray-50/80 p-1 rounded-xl w-fit" role="tablist" aria-label="FAQ categories">
+            <div className="mb-8 flex w-fit gap-1 rounded-xl bg-gray-50/80 p-1" role="tablist" aria-label="FAQ categories">
               {faqData.map((category) => (
                 <button
                   key={category.id}
@@ -664,10 +658,10 @@ function DashboardContent() {
                     setActiveTab(category.id);
                     setExpandedQuestions(new Set());
                   }}
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                     activeTab === category.id
                       ? 'bg-white text-gray-900 shadow-sm ring-1 ring-black/5'
-                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100/50'
+                      : 'text-gray-500 hover:bg-gray-100/50 hover:text-gray-700'
                   }`}
                 >
                   {category.label}
@@ -688,7 +682,7 @@ function DashboardContent() {
                 return (
                   <div
                     key={questionId}
-                    className="border border-gray-100 rounded-xl overflow-hidden transition-all duration-200 hover:border-gray-200"
+                    className="overflow-hidden rounded-xl border border-gray-100 transition-all duration-200 hover:border-gray-200"
                   >
                     <button
                       type="button"
@@ -699,21 +693,21 @@ function DashboardContent() {
                           toggleQuestion(questionId);
                         }
                       }}
-                      className="w-full px-4 py-3.5 text-left flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors duration-150 focus:outline-none"
+                      className="flex w-full items-center justify-between gap-4 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-gray-50/50 focus:outline-none"
                       aria-expanded={isExpanded}
                       aria-controls={`faq-answer-${questionId}`}
                     >
-                      <span className="font-semibold text-gray-900 text-sm">{item.question}</span>
+                      <span className="text-sm font-semibold text-gray-900">{item.question}</span>
                       {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" aria-hidden="true" />
+                        <ChevronUp className="h-4 w-4 flex-shrink-0 text-gray-400" aria-hidden="true" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" aria-hidden="true" />
+                        <ChevronDown className="h-4 w-4 flex-shrink-0 text-gray-400" aria-hidden="true" />
                       )}
                     </button>
                     {isExpanded && (
                       <div
                         id={`faq-answer-${questionId}`}
-                        className="px-4 pb-4 pt-0 text-sm text-gray-600 leading-relaxed"
+                        className="px-4 pb-4 pt-0 text-sm leading-relaxed text-gray-600"
                       >
                         {item.answer}
                       </div>
@@ -733,8 +727,8 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="space-y-4 text-center">
           <Spinner size="lg" />
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Loading your dashboard...</h2>

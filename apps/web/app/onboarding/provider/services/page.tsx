@@ -97,20 +97,20 @@ export default function ServicesPricingPage() {
     <div className="min-h-screen bg-bg-secondary">
       <ProviderHeader />
       <div className="p-6">
-        <div className="max-w-6xl mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+        <div className="mx-auto max-w-6xl animate-slide-up rounded-md border border-border-light bg-bg-primary shadow-md">
         {/* Header */}
-        <div className="p-8 border-b border-border-light">
-          <div className="flex gap-2 mb-6">
+        <div className="border-b border-border-light p-8">
+          <div className="mb-6 flex gap-2">
             {[1, 2, 3, 4].map((step) => (
               <div
                 key={step}
-                className={`flex-1 h-1 rounded-sm transition-all duration-150 ${
+                className={`h-1 flex-1 rounded-sm transition-all duration-150 ${
                   step <= 3 ? 'bg-primary' : 'bg-border-light'
                 }`}
               />
             ))}
           </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-2">Services & Pricing</h1>
+          <h1 className="mb-2 text-2xl font-bold tracking-tight">Services & Pricing</h1>
           <p className="text-sm text-text-secondary">List the visa services you offer and set your pricing</p>
         </div>
 
@@ -118,21 +118,21 @@ export default function ServicesPricingPage() {
         <form onSubmit={handleSubmit} className="p-8">
           {/* Error Message */}
           {error && (
-            <div role="alert" className="mb-6 text-sm text-error flex items-center gap-2">
+            <div role="alert" className="mb-6 flex items-center gap-2 text-sm text-error">
               {error}
             </div>
           )}
 
           {/* Services List */}
-          <div className="space-y-4 mb-6">
+          <div className="mb-6 space-y-4">
             {services.map((service, index) => (
               <div
                 key={service.id}
-                className="p-6 bg-bg-secondary border border-border-light rounded-base transition-colors duration-150 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_both] hover:border-border-medium"
+                className="animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_both] rounded-base border border-border-light bg-bg-secondary p-6 transition-colors duration-150 hover:border-border-medium"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="flex justify-between items-start mb-6">
-                  <div className="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-md text-sm font-semibold">
+                <div className="mb-6 flex items-start justify-between">
+                  <div className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-sm font-semibold text-white">
                     {index + 1}
                   </div>
                   {services.length > 1 && (
@@ -146,16 +146,16 @@ export default function ServicesPricingPage() {
                         }
                       }}
                       aria-label={`Remove service ${index + 1}: ${service.name || 'Unnamed service'}`}
-                      className="p-2 text-error bg-transparent border border-error/20 rounded-md cursor-pointer transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+                      className="cursor-pointer rounded-md border border-error/20 bg-transparent p-2 text-error transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
                     >
-                      <Trash2 className="w-4 h-4" aria-hidden="true" />
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </button>
                   )}
                 </div>
 
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor={`service-name-${service.id}`} className="text-sm font-medium flex items-center gap-1">
+                    <label htmlFor={`service-name-${service.id}`} className="flex items-center gap-1 text-sm font-medium">
                       Service Name <span className="text-error">*</span>
                     </label>
                     <input
@@ -163,19 +163,19 @@ export default function ServicesPricingPage() {
                       id={`service-name-${service.id}`}
                       value={service.name}
                       onChange={(e) => updateService(service.id, 'name', e.target.value)}
-                      className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                      className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                       placeholder="e.g., Marriage Visa Application"
                       required
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-[2fr_1fr]">
                     <div className="flex flex-col gap-2">
-                      <label htmlFor={`service-price-${service.id}`} className="text-sm font-medium flex items-center gap-1">
+                      <label htmlFor={`service-price-${service.id}`} className="flex items-center gap-1 text-sm font-medium">
                         Base Price <span className="text-error">*</span>
                       </label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-medium text-text-tertiary pointer-events-none">
+                        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base font-medium text-text-tertiary">
                           ฿
                         </span>
                         <input
@@ -183,7 +183,7 @@ export default function ServicesPricingPage() {
                           id={`service-price-${service.id}`}
                           value={service.price}
                           onChange={(e) => updateService(service.id, 'price', e.target.value)}
-                          className="w-full h-12 pl-10 pr-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                          className="h-12 w-full rounded-base border border-border-light bg-bg-primary pl-10 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                           placeholder="25,000"
                           required
                         />
@@ -199,7 +199,7 @@ export default function ServicesPricingPage() {
                         id={`service-duration-${service.id}`}
                         value={service.duration}
                         onChange={(e) => updateService(service.id, 'duration', e.target.value)}
-                        className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                        className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                         placeholder="4-6 weeks"
                       />
                     </div>
@@ -213,7 +213,7 @@ export default function ServicesPricingPage() {
                       id={`service-description-${service.id}`}
                       value={service.description}
                       onChange={(e) => updateService(service.id, 'description', e.target.value)}
-                      className="w-full min-h-[4rem] px-4 py-3 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] resize-y"
+                      className="min-h-[4rem] w-full resize-y rounded-base border border-border-light bg-bg-primary px-4 py-3 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                       placeholder="Describe what's included in this service..."
                     />
                   </div>
@@ -233,14 +233,14 @@ export default function ServicesPricingPage() {
               }
             }}
             aria-label="Add another service"
-            className="w-full h-11 px-6 text-base font-medium text-primary bg-primary/5 border border-dashed border-primary rounded-base cursor-pointer transition-all duration-150 inline-flex items-center justify-center gap-2 hover:bg-primary/10 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="bg-primary/5 hover:bg-primary/10 inline-flex h-11 w-full animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] cursor-pointer items-center justify-center gap-2 rounded-base border border-dashed border-primary px-6 text-base font-medium text-primary transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            <Plus className="w-4.5 h-4.5" aria-hidden="true" />
+            <Plus className="h-4.5 w-4.5" aria-hidden="true" />
             Add another service
           </button>
 
           {/* Actions */}
-          <div className="pt-6 mt-8 border-t border-border-light flex justify-between gap-4">
+          <div className="mt-8 flex justify-between gap-4 border-t border-border-light pt-6">
             <button
               type="button"
               onClick={() => router.push('/onboarding/provider/business')}
@@ -251,9 +251,9 @@ export default function ServicesPricingPage() {
                 }
               }}
               aria-label="Go back to business details step"
-              className="h-11 px-6 text-base font-medium text-text-primary bg-bg-secondary border border-border-light rounded-base cursor-pointer transition-all duration-150 inline-flex items-center gap-2 hover:bg-bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-base border border-border-light bg-bg-secondary px-6 text-base font-medium text-text-primary transition-all duration-150 hover:bg-bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              <ArrowLeft className="w-4.5 h-4.5" aria-hidden="true" />
+              <ArrowLeft className="h-4.5 w-4.5" aria-hidden="true" />
               Back
             </button>
             <button
@@ -261,21 +261,21 @@ export default function ServicesPricingPage() {
               disabled={isLoading}
               aria-label={isLoading ? 'Saving services' : 'Continue to next step'}
               aria-disabled={isLoading}
-              className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-200 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+              className={`inline-flex h-11 cursor-pointer items-center gap-2 rounded-base px-6 text-base font-medium text-white shadow-xs transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isLoading
-                  ? 'opacity-60 cursor-not-allowed'
+                  ? 'cursor-not-allowed opacity-60'
                   : 'bg-gradient-to-b from-primary to-primary-hover'
               }`}
             >
               {isLoading ? (
                 <>
-                  <Loader className="w-4.5 h-4.5 animate-spin" aria-hidden="true" />
+                  <Loader className="h-4.5 w-4.5 animate-spin" aria-hidden="true" />
                   <span>{LOADING_SAVING}</span>
                 </>
               ) : (
                 <>
                   <span>Continue</span>
-                  <ArrowRight className="w-4.5 h-4.5" aria-hidden="true" />
+                  <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
                 </>
               )}
             </button>

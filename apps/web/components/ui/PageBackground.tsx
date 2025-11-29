@@ -8,10 +8,10 @@
  */
 export function PageBackground() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       {/* Gradient orbs for depth */}
-      <div className="absolute top-0 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className="bg-primary/5 absolute -right-32 top-0 h-96 w-96 rounded-full blur-3xl" />
+      <div className="bg-primary/5 absolute -left-32 bottom-0 h-96 w-96 rounded-full blur-3xl" />
       
       {/* Subtle grid pattern */}
       <div 

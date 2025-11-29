@@ -8,7 +8,7 @@ export interface AuditLogEntry {
 }
 
 interface ActivityTimelineProps {
-  requestCreatedAt: Date;
+  requestCreatedAt: Date | string;
   status: 'DRAFT' | 'PUBLISHED';
   auditLogs: AuditLogEntry[];
 }
@@ -18,6 +18,12 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
   status, 
   auditLogs 
 }) => {
+  const toSafeDate = (value: Date | string) => {
+    const date = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(date.getTime()) ? new Date() : date;
+  };
+  const createdAtDate = toSafeDate(requestCreatedAt);
+
   const formatTimestamp = (date: Date) =>
     date.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
 
@@ -43,13 +49,13 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
     ...(!hasCreationLog ? [{
       id: 'created',
       title: 'Request created',
-      subtitle: formatTimestamp(requestCreatedAt),
+      subtitle: formatTimestamp(createdAtDate),
       type: 'creation',
-      timestamp: requestCreatedAt
+      timestamp: createdAtDate
     }] : []),
     // Map audit logs to timeline events
     ...auditLogs.map(log => {
-      const date = new Date(log.createdAt);
+      const date = toSafeDate(log.createdAt);
       return {
         id: log.id,
         title: getActionLabel(log.action),
@@ -62,21 +68,21 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
 
   return (
     <div className="ios-card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Recent Activity</h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-text-secondary">Recent Activity</h3>
       </div>
       
       <div className="relative pl-2">
-        <div className="absolute top-2 bottom-2 left-2 w-px bg-gray-100" aria-hidden="true"></div>
+        <div className="absolute bottom-2 left-2 top-2 w-px bg-gray-100" aria-hidden="true"></div>
         <ol className="space-y-6" aria-label="Request activity timeline">
           {events.map((event) => (
             <li key={event.id} className="relative flex gap-4">
-              <div className={`w-2.5 h-2.5 rounded-full border-2 z-10 mt-1.5 -ml-[5px] ${
-                event.type === 'creation' ? 'bg-white border-green-500' : 'bg-white border-blue-500'
+              <div className={`z-10 -ml-[5px] mt-1.5 h-2.5 w-2.5 rounded-full border-2 ${
+                event.type === 'creation' ? 'border-green-500 bg-white' : 'border-blue-500 bg-white'
               }`}></div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-text-primary">{event.title}</p>
-                <time className="text-xs text-text-secondary mt-0.5 block" dateTime={event.timestamp.toISOString()}>{event.subtitle}</time>
+                <time className="mt-0.5 block text-xs text-text-secondary" dateTime={event.timestamp.toISOString()}>{event.subtitle}</time>
               </div>
             </li>
           ))}
@@ -84,9 +90,9 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
           {/* Empty state message for DRAFT */}
           {status === 'DRAFT' && (
             <li className="relative flex gap-4 opacity-70">
-              <div className="w-2 h-2 rounded-full bg-gray-200 z-10 mt-2 -ml-1"></div>
+              <div className="z-10 -ml-1 mt-2 h-2 w-2 rounded-full bg-gray-200"></div>
               <div className="flex-1">
-                <p className="text-xs text-text-secondary italic">More activity will appear here after you publish</p>
+                <p className="text-xs italic text-text-secondary">More activity will appear here after you publish</p>
               </div>
             </li>
           )}

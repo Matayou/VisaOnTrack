@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { Calendar, Wallet } from 'lucide-react';
 
-import { sectionCardClass } from '@/app/requests/new/constants';
 import { useRequestForm } from '@/app/requests/new/context/RequestFormContext';
 import { budgetPresets, timelineShortcuts } from '@/config/requestForm';
+import { Card } from '@/components/ui';
 
 export function BudgetStep() {
   const {
@@ -30,13 +30,13 @@ export function BudgetStep() {
   }, [formState.timeline]);
 
   return (
-    <section className={sectionCardClass}>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-white">
-          <Wallet className="w-6 h-6" aria-hidden="true" />
+    <Card as="section" padding="lg" elevated className="space-y-6">
+      <div className="flex items-center gap-4">
+        <div className="from-primary/80 flex h-12 w-12 items-center justify-center rounded-base bg-gradient-to-br to-primary text-white">
+          <Wallet className="h-6 w-6" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">Step 3</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-text-tertiary">Step 3</p>
           <h2 className="text-2xl font-semibold tracking-tight">Budget & timing</h2>
           <p className="text-text-secondary">Set expectations so providers can respond accurately.</p>
         </div>
@@ -52,7 +52,7 @@ export function BudgetStep() {
               </p>
               <p className="text-xs text-text-tertiary">Shared privately with vetted providers only</p>
             </div>
-            <span className="text-[10px] uppercase tracking-wide text-text-tertiary border border-border-light px-2 py-0.5 rounded-full">
+            <span className="rounded-full border border-border-light px-2 py-0.5 text-[10px] uppercase tracking-wide text-text-tertiary">
               Private
             </span>
           </div>
@@ -64,15 +64,15 @@ export function BudgetStep() {
                 <button
                   key={preset.label}
                   type="button"
-                  className={`text-left rounded-2xl border px-4 py-3 transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                  className={`focus-visible:ring-primary/40 rounded-2xl border px-4 py-3 text-left transition focus-visible:ring-2 ${
                     isActive
-                      ? 'border-primary bg-primary/5 text-primary shadow-sm'
-                      : 'border-border-light bg-bg-secondary/60 text-text-secondary hover:border-primary/40 hover:text-primary'
+                      ? 'bg-primary/5 border-primary text-primary shadow-sm'
+                      : 'bg-bg-secondary/60 hover:border-primary/40 border-border-light text-text-secondary hover:text-primary'
                   }`}
                   onClick={() => handleBudgetPreset(preset)}
                 >
                   <p className="text-sm font-semibold">{preset.label}</p>
-                  <p className="text-xs text-text-tertiary mt-1">{preset.description}</p>
+                  <p className="mt-1 text-xs text-text-tertiary">{preset.description}</p>
                 </button>
               );
             })}
@@ -96,10 +96,10 @@ export function BudgetStep() {
                 <button
                   key={shortcut.value}
                   type="button"
-                  className={`w-full rounded-2xl border px-4 py-3 text-left transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                  className={`focus-visible:ring-primary/40 w-full rounded-2xl border px-4 py-3 text-left transition focus-visible:ring-2 ${
                     isActive
-                      ? 'border-primary bg-primary/5 text-primary shadow-sm'
-                      : 'border-border-light bg-bg-secondary/60 text-text-secondary hover:border-primary/40 hover:text-primary'
+                      ? 'bg-primary/5 border-primary text-primary shadow-sm'
+                      : 'bg-bg-secondary/60 hover:border-primary/40 border-border-light text-text-secondary hover:text-primary'
                   }`}
                   onClick={() => {
                     handleTimelineShortcut(shortcut.value);
@@ -107,16 +107,16 @@ export function BudgetStep() {
                   }}
                 >
                   <p className="text-sm font-semibold">{shortcut.label}</p>
-                  <p className="text-xs text-text-tertiary mt-1">{shortcut.description}</p>
+                  <p className="mt-1 text-xs text-text-tertiary">{shortcut.description}</p>
                 </button>
               );
             })}
             <button
               type="button"
-              className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+              className={`focus-visible:ring-primary/40 w-full rounded-2xl border px-4 py-3 text-left text-sm transition focus-visible:ring-2 ${
                 isCustomTimeline
-                  ? 'border-primary bg-primary/5 text-primary shadow-sm'
-                  : 'border-dashed border-border-light bg-bg-secondary/60 text-text-secondary hover:border-primary/40 hover:text-primary'
+                  ? 'bg-primary/5 border-primary text-primary shadow-sm'
+                  : 'bg-bg-secondary/60 hover:border-primary/40 border-dashed border-border-light text-text-secondary hover:text-primary'
               }`}
               onClick={() => setIsCustomTimeline(true)}
             >
@@ -125,8 +125,8 @@ export function BudgetStep() {
           </div>
 
           {isCustomTimeline && (
-            <div className="rounded-base border border-border bg-transparent px-4 py-3 flex gap-3 items-center focus-within:ring-2 focus-within:ring-primary/30">
-              <Calendar className="w-5 h-5 text-text-tertiary" aria-hidden="true" />
+            <div className="border-border focus-within:ring-primary/30 flex items-center gap-3 rounded-base border bg-transparent px-4 py-3 focus-within:ring-2">
+              <Calendar className="h-5 w-5 text-text-tertiary" aria-hidden="true" />
               <input
                 id="timeline"
                 name="timeline"
@@ -141,6 +141,6 @@ export function BudgetStep() {
           )}
         </div>
       </div>
-    </section>
+    </Card>
   );
 }

@@ -67,13 +67,13 @@ export function DropdownSelect<Option extends DropdownOption = DropdownOption>({
         aria-expanded={isOpen}
         aria-label={ariaLabel}
       >
-        <span className="flex items-center gap-2 text-left w-full">
+        <span className="flex w-full items-center gap-2 text-left">
           {startIcon}
           <span className={`${selectedOption ? 'text-text-primary' : 'text-text-tertiary'} flex-1`}>
             {renderSelected ? renderSelected(selectedOption) : selectedOption?.label || placeholder}
           </span>
         </span>
-        <ChevronDown className={`w-4 h-4 text-text-tertiary transition ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+        <ChevronDown className={`h-4 w-4 text-text-tertiary transition ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
       </button>
       {isOpen && (
         <div

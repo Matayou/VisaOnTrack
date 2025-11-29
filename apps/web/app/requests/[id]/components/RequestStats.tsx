@@ -13,8 +13,8 @@ export const RequestStats: React.FC<RequestStatsProps> = ({ status, counts }) =>
   const isDraft = status === 'DRAFT';
 
   const StatItem = ({ label, value }: { label: string; value: number | string }) => (
-    <div className="bg-gray-50 rounded-lg p-2 border border-gray-100">
-      <span className="text-[12px] uppercase text-text-secondary font-semibold block mb-1 tracking-wide">{label}</span>
+    <div className="rounded-lg border border-gray-100 bg-gray-50 p-2">
+      <span className="mb-1 block text-[12px] font-semibold uppercase tracking-wide text-text-secondary">{label}</span>
       <span className={`text-lg font-bold ${isDraft || value === '—' ? 'text-text-tertiary' : 'text-text-primary'}`}>
         {typeof value === 'number' ? value.toLocaleString() : value}
       </span>
@@ -23,8 +23,8 @@ export const RequestStats: React.FC<RequestStatsProps> = ({ status, counts }) =>
 
   return (
     <div className="ios-card p-5">
-      <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">Request Stats</h3>
-      <div className="grid grid-cols-3 gap-2 text-center mb-3">
+      <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-text-secondary">Request Stats</h3>
+      <div className="mb-3 grid grid-cols-3 gap-2 text-center">
         <StatItem 
           label="Views" 
           value={isDraft || counts.views === null ? '—' : counts.views} 
@@ -39,7 +39,7 @@ export const RequestStats: React.FC<RequestStatsProps> = ({ status, counts }) =>
         />
       </div>
       {isDraft && (
-        <p className="text-xs text-center text-text-secondary">Stats available after publishing</p>
+        <p className="text-center text-xs text-text-secondary">Stats available after publishing</p>
       )}
     </div>
   );

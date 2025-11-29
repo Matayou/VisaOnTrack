@@ -2,9 +2,9 @@
 
 import { Check, Globe, Sparkles } from 'lucide-react';
 
-import { sectionCardClass } from '@/app/requests/new/constants';
 import { useRequestForm } from '@/app/requests/new/context/RequestFormContext';
 import { featuredLocationOptions, locationOptions, missionVisaOptions } from '@/config/requestForm';
+import { Card } from '@/components/ui';
 
 export function MissionStep() {
   const {
@@ -26,13 +26,13 @@ export function MissionStep() {
   const selectedMissionVisa = missionVisaOptions.find((option) => option.value === formState.visaType);
 
   return (
-    <section className={sectionCardClass}>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white">
-          <Sparkles className="w-6 h-6" aria-hidden="true" />
+    <Card as="section" padding="lg" elevated className="space-y-6">
+      <div className="flex items-center gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
+          <Sparkles className="h-6 w-6" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">Step 2</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-text-tertiary">Step 2</p>
           <h2 className="text-2xl font-semibold tracking-tight">What do you need?</h2>
           <p className="text-text-secondary">Pick your visa track and where you plan to live.</p>
         </div>
@@ -40,7 +40,7 @@ export function MissionStep() {
 
       <div className="space-y-6">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-text-secondary mb-2">
+          <label htmlFor="title" className="mb-2 block text-sm font-medium text-text-secondary">
             Request title
           </label>
           <input
@@ -59,14 +59,14 @@ export function MissionStep() {
               setFocusedField(null);
             }}
             placeholder="e.g. LTR visa with dependents arriving Q2 2025"
-            className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('title')}`}
+            className={`w-full rounded-base border bg-transparent px-4 py-3 text-base transition focus:outline-none focus:ring-2 ${getInputClasses('title')}`}
             maxLength={200}
             aria-invalid={false}
           />
           {focusedField === 'title' && !formState.title && (
             <div className="mt-3 flex flex-wrap gap-2">
               {['Call out visa class', 'Mention timing', 'Highlight dependents'].map((tip) => (
-                <span key={tip} className="text-xs px-3 py-1 rounded-full border border-border-light text-text-secondary">
+                <span key={tip} className="rounded-full border border-border-light px-3 py-1 text-xs text-text-secondary">
                   {tip}
                 </span>
               ))}
@@ -84,7 +84,7 @@ export function MissionStep() {
               </p>
               <p className="text-xs text-text-tertiary">Pick your best fit. Not sure? Choose “Other / Not sure.”</p>
             </div>
-            {selectedMissionVisa && <span className="text-xs text-primary font-medium">{selectedMissionVisa.label}</span>}
+            {selectedMissionVisa && <span className="text-xs font-medium text-primary">{selectedMissionVisa.label}</span>}
           </div>
           <div className="grid gap-3 md:grid-cols-2">
             {missionVisaOptions.map((option) => {
@@ -93,8 +93,8 @@ export function MissionStep() {
                 <button
                   key={option.value}
                   type="button"
-                  className={`rounded-2xl border px-4 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                    isActive ? 'border-primary bg-primary/5 shadow-sm' : 'border-border-light bg-white/80 hover:border-primary/50'
+                  className={`focus-visible:ring-primary/40 rounded-2xl border px-4 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 ${
+                    isActive ? 'bg-primary/5 border-primary shadow-sm' : 'hover:border-primary/50 border-border-light bg-white/80'
                   }`}
                   onClick={() => handleVisaSelect(option.value)}
                   aria-pressed={isActive}
@@ -102,11 +102,11 @@ export function MissionStep() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className={`text-sm font-semibold ${isActive ? 'text-primary' : 'text-text-secondary'}`}>{option.label}</p>
-                      <p className="text-xs text-text-tertiary mt-0.5">{option.description}</p>
+                      <p className="mt-0.5 text-xs text-text-tertiary">{option.description}</p>
                     </div>
                     {option.badge && (
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
                           isActive ? 'bg-primary text-white' : 'bg-border-light/60 text-text-tertiary'
                         }`}
                       >
@@ -118,7 +118,7 @@ export function MissionStep() {
                     <ul className="mt-3 space-y-1 text-xs text-text-tertiary">
                       {option.details.map((detail) => (
                         <li key={detail} className="flex items-start gap-2">
-                          <Check className={`w-3.5 h-3.5 mt-0.5 ${isActive ? 'text-primary' : 'text-border'}`} aria-hidden="true" />
+                          <Check className={`mt-0.5 h-3.5 w-3.5 ${isActive ? 'text-primary' : 'text-border'}`} aria-hidden="true" />
                           <span>{detail}</span>
                         </li>
                       ))}
@@ -141,7 +141,7 @@ export function MissionStep() {
               <p className="text-xs text-text-tertiary">Where do you prefer to settle or spend most of your time?</p>
             </div>
             {formState.location && (
-              <span className="text-xs text-primary font-medium">
+              <span className="text-xs font-medium text-primary">
                 {locationOptions.find((opt) => opt.value === formState.location)?.label}
               </span>
             )}
@@ -156,10 +156,10 @@ export function MissionStep() {
                   <button
                     key={option.value}
                     type="button"
-                    className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                    className={`rounded-base border px-3 py-1.5 text-sm transition ${
                       isActive
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                        ? 'bg-primary/10 border-primary text-primary'
+                        : 'hover:border-primary/50 border-border-light text-text-secondary hover:text-primary'
                     }`}
                     onClick={() => {
                       handleLocationSelect(option.value);
@@ -172,10 +172,10 @@ export function MissionStep() {
               })}
             <button
               type="button"
-              className={`px-3 py-1.5 rounded-base border text-sm transition ${
+              className={`rounded-base border px-3 py-1.5 text-sm transition ${
                 formState.location && !featuredLocationOptions.includes(formState.location)
-                  ? 'border-primary text-primary bg-primary/10'
-                  : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                  ? 'bg-primary/10 border-primary text-primary'
+                  : 'hover:border-primary/50 border-border-light text-text-secondary hover:text-primary'
               }`}
               onClick={() => setIsLocationSelectOpen((prev) => !prev)}
             >
@@ -201,7 +201,7 @@ export function MissionStep() {
           {formState.location === 'OTHER' && (
             <input
               type="text"
-              className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('locationDetail')}`}
+              className={`w-full rounded-base border bg-transparent px-4 py-3 text-base transition focus:outline-none focus:ring-2 ${getInputClasses('locationDetail')}`}
               placeholder="Share the city or embassy"
               value={formState.locationDetail}
               onChange={(event) => updateField('locationDetail', event.target.value)}
@@ -211,6 +211,6 @@ export function MissionStep() {
           {renderValidationFeedback('location')}
         </div>
       </div>
-    </section>
+    </Card>
   );
 }

@@ -126,13 +126,13 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthPageShell>
-      <div className="ios-card w-full max-w-[28rem] animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="ios-card w-full max-w-auth animate-slide-up">
         {/* Header */}
         <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-base mb-5 border border-primary/20">
-            <Lock className="w-6 h-6" aria-hidden="true" />
+          <div className="bg-primary/10 border-primary/20 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-base border text-primary">
+            <Lock className="h-6 w-6" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">
+          <h1 className="mb-2 text-2xl font-semibold leading-tight tracking-tight">
             <GradientText>Reset your password</GradientText>
           </h1>
           <p className="text-sm text-text-secondary">Enter your new password below</p>
@@ -145,10 +145,10 @@ export default function ResetPasswordPage() {
             {tokenError && (
               <div
                 role="alert"
-                className="p-4 bg-gradient-to-br from-error-light to-red-50 border border-red-200 rounded-base text-sm text-error animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)]"
+                className="animate-fade-in-up rounded-base border border-red-200 bg-gradient-to-br from-error-light to-red-50 p-4 text-sm text-error"
               >
-                <div className="flex gap-3 items-start">
-                  <AlertCircle className="w-5 h-5 text-error flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-error" aria-hidden="true" />
                   <p className="leading-relaxed">{tokenError}</p>
                 </div>
               </div>
@@ -156,8 +156,8 @@ export default function ResetPasswordPage() {
 
             {/* Error Message */}
             {error && (
-              <div role="alert" className="text-xs text-error flex items-center gap-2 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+              <div role="alert" className="flex animate-slide-up items-center gap-2 text-xs text-error">
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
                 {error}
               </div>
             )}
@@ -173,7 +173,7 @@ export default function ResetPasswordPage() {
                   id="newPassword"
                   value={newPassword}
                   onChange={(e) => handleNewPasswordChange(e.target.value)}
-                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                  className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                   placeholder="At least 8 characters"
                   required
                   disabled={!token || !!tokenError || isLoading}
@@ -182,14 +182,14 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none p-2 cursor-pointer text-text-tertiary flex items-center rounded-sm transition-all duration-150 hover:text-text-secondary hover:bg-bg-secondary"
+                  className="absolute right-4 top-1/2 flex -translate-y-1/2 cursor-pointer items-center rounded-sm border-none bg-transparent p-2 text-text-tertiary transition-all duration-150 hover:bg-bg-secondary hover:text-text-secondary"
                   aria-label={showNewPassword ? 'Hide password' : 'Show password'}
                   disabled={!token || !!tokenError || isLoading}
                 >
                   {showNewPassword ? (
-                    <EyeOff className="w-[18px] h-[18px]" aria-hidden="true" />
+                    <EyeOff className="h-4.5 w-4.5" aria-hidden="true" />
                   ) : (
-                    <Eye className="w-[18px] h-[18px]" aria-hidden="true" />
+                    <Eye className="h-4.5 w-4.5" aria-hidden="true" />
                   )}
                 </button>
               </div>
@@ -197,25 +197,25 @@ export default function ResetPasswordPage() {
               {/* Password Strength Meter */}
               {newPassword && (
                 <div aria-live="polite" aria-atomic="true">
-                  <div className="flex gap-1 h-1 mt-2 transition-opacity duration-150 opacity-100">
+                  <div className="mt-2 flex h-1 gap-1 opacity-100 transition-opacity duration-150">
                     {[1, 2, 3, 4].map((bar) => (
                       <div
                         key={bar}
-                        className={`flex-1 rounded-[2px] transition-all duration-150 ${
+                        className={`flex-1 rounded-xs transition-all duration-150 ${
                           bar <= passwordStrength.strength
                             ? passwordStrength.level === 'weak'
                               ? 'bg-error'
                               : passwordStrength.level === 'fair'
                               ? 'bg-warning'
                               : passwordStrength.level === 'good'
-                              ? 'bg-[#10b981]'
+                              ? 'bg-success-bright'
                               : 'bg-success'
                             : 'bg-border-light'
                         }`}
                       ></div>
                     ))}
                   </div>
-                  <div className={`text-xs mt-1 flex items-center gap-2 transition-opacity duration-150 ${newPassword ? 'opacity-100' : 'opacity-0'}`}>
+                  <div className={`mt-1 flex items-center gap-2 text-xs transition-opacity duration-150 ${newPassword ? 'opacity-100' : 'opacity-0'}`}>
                     <strong
                       className={
                         passwordStrength.level === 'weak'
@@ -223,7 +223,7 @@ export default function ResetPasswordPage() {
                           : passwordStrength.level === 'fair'
                           ? 'text-warning'
                           : passwordStrength.level === 'good'
-                          ? 'text-[#10b981]'
+                          ? 'text-success-bright'
                           : 'text-success'
                       }
                     >
@@ -235,7 +235,7 @@ export default function ResetPasswordPage() {
                   </div>
                 </div>
               )}
-              <div className="text-xs text-text-tertiary mt-1">
+              <div className="mt-1 text-xs text-text-tertiary">
                 Use 8+ characters with a mix of letters, numbers & symbols
               </div>
             </div>
@@ -251,12 +251,12 @@ export default function ResetPasswordPage() {
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => handleConfirmPasswordChange(e.target.value)}
-                  className={`w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none ${
+                  className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
                     passwordMatch === true
-                      ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
+                      ? 'border-success bg-success-light/5 focus:shadow-focus-success'
                       : passwordMatch === false
-                      ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
+                      ? 'border-error bg-error-light/5 focus:shadow-focus-error'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
                   }`}
                   placeholder="Re-enter your password"
                   required
@@ -268,27 +268,27 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none p-2 cursor-pointer text-text-tertiary flex items-center rounded-sm transition-all duration-150 hover:text-text-secondary hover:bg-bg-secondary"
+                  className="absolute right-4 top-1/2 flex -translate-y-1/2 cursor-pointer items-center rounded-sm border-none bg-transparent p-2 text-text-tertiary transition-all duration-150 hover:bg-bg-secondary hover:text-text-secondary"
                   aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                   disabled={!token || !!tokenError || isLoading}
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="w-[18px] h-[18px]" aria-hidden="true" />
+                    <EyeOff className="h-4.5 w-4.5" aria-hidden="true" />
                   ) : (
-                    <Eye className="w-[18px] h-[18px]" aria-hidden="true" />
+                    <Eye className="h-4.5 w-4.5" aria-hidden="true" />
                   )}
                 </button>
               </div>
               <div id="confirm-password-message">
                 {passwordMatch === false && (
-                  <div className="text-xs text-error flex items-center gap-2 min-h-[1.125rem]">
-                    <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                  <div className="flex min-h-[1.125rem] items-center gap-2 text-xs text-error">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
                     Passwords do not match
                   </div>
                 )}
                 {passwordMatch === true && (
-                  <div className="text-xs text-success flex items-center gap-2 min-h-[1.125rem]">
-                    <CheckCircle className="w-4 h-4" aria-hidden="true" />
+                  <div className="flex min-h-[1.125rem] items-center gap-2 text-xs text-success">
+                    <CheckCircle className="h-4 w-4" aria-hidden="true" />
                     Passwords match
                   </div>
                 )}
@@ -312,7 +312,7 @@ export default function ResetPasswordPage() {
               href="/auth/login"
               className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary no-underline transition-colors duration-150 hover:text-primary"
             >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               Back to sign in
             </Link>
           </div>

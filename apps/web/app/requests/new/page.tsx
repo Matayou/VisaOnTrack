@@ -27,10 +27,10 @@ export default function CreateRequestPage() {
 
   if (isCheckingAuth) {
     return (
-      <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-        <div className="text-center space-y-3">
+      <div className="flex min-h-screen items-center justify-center bg-bg-secondary p-6">
+        <div className="space-y-3 text-center">
           <Spinner size="lg" />
-          <p className="text-text-secondary text-sm">{LOADING_GENERIC}</p>
+          <p className="text-sm text-text-secondary">{LOADING_GENERIC}</p>
         </div>
       </div>
     );
@@ -38,10 +38,10 @@ export default function CreateRequestPage() {
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-bg-secondary" />}>
-      <div className="min-h-screen bg-bg-secondary relative overflow-hidden flex flex-col">
+      <div className="relative flex min-h-screen flex-col overflow-hidden bg-bg-secondary">
         <PageBackground />
         <SeekerHeader />
-        <main className="relative max-w-7xl mx-auto px-6 sm:px-8 py-8 sm:py-12 z-10 flex-1">
+        <main className="relative z-10 mx-auto max-w-7xl flex-1 px-6 py-8 sm:px-8 sm:py-12">
           <IntakeWizard mode="authenticated" />
         </main>
         <Footer />

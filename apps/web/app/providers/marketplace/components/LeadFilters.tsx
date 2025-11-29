@@ -30,12 +30,12 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
   };
 
   return (
-    <div className="ios-card p-5 sticky top-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="ios-card sticky top-6 p-5">
+      <div className="mb-4 flex items-center justify-between">
         <h3 className="text-sm font-bold text-gray-900">Filters</h3>
         <button 
           onClick={handleClearAll}
-          className="text-xs text-primary hover:text-indigo-600 font-medium"
+          className="text-xs font-medium text-primary hover:text-indigo-600"
         >
           Clear all
         </button>
@@ -44,7 +44,7 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
       <div className="space-y-5">
         {/* Visa Type */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Visa Type
           </label>
           <div className="space-y-2">
@@ -64,7 +64,7 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
 
         {/* Budget Range */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Minimum Budget
           </label>
           <div className="space-y-2">
@@ -87,13 +87,13 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
 
         {/* Location */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Location
           </label>
           <select
             value={filters.location}
             onChange={(e) => onFiltersChange({ ...filters, location: e.target.value })}
-            className="w-full rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3"
+            className="w-full rounded-xl border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-primary focus:bg-white focus:ring-primary"
           >
             <option value="">All locations</option>
             <option value="Inside Thailand">Inside Thailand</option>
@@ -103,7 +103,7 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
 
         {/* Urgency */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Urgency
           </label>
           <div className="space-y-2">

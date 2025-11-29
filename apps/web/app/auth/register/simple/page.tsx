@@ -67,16 +67,16 @@ export default function SimpleRegisterPage() {
 
   return (
     <AuthPageShell>
-      <div className="ios-card w-full max-w-[28rem] animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="ios-card w-full max-w-auth animate-slide-up">
         {/* Header */}
         <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-base mb-5 border border-primary/20">
-            <Zap className="w-6 h-6" aria-hidden="true" />
+          <div className="bg-primary/10 border-primary/20 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-base border text-primary">
+            <Zap className="h-6 w-6" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">Get started in seconds</h1>
-          <p className="text-sm text-text-secondary mb-4">Quick signup • Complete profile later</p>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-success-light to-green-200 border border-green-300 rounded-base text-xs font-medium text-success mt-4 animate-pulse">
-            <Clock className="w-4 h-4" aria-hidden="true" />
+          <h1 className="mb-2 text-2xl font-semibold leading-tight tracking-tight">Get started in seconds</h1>
+          <p className="mb-4 text-sm text-text-secondary">Quick signup • Complete profile later</p>
+          <div className="mt-4 inline-flex animate-pulse items-center gap-2 rounded-base border border-green-300 bg-gradient-to-br from-success-light to-green-200 px-4 py-2 text-xs font-medium text-success">
+            <Clock className="h-4 w-4" aria-hidden="true" />
             <span>Takes less than 30 seconds</span>
           </div>
         </div>
@@ -95,23 +95,23 @@ export default function SimpleRegisterPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
+                      ? 'border-success bg-success-light/5 focus:shadow-focus-success'
                       : emailValidation.status === 'error'
-                      ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
+                      ? 'border-error bg-error-light/5 focus:shadow-focus-error'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
                   }`}
                   placeholder="you@company.com"
                   required
                   autoComplete="email"
                 />
                 {emailValidation.status !== 'empty' && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
                     {emailValidation.status === 'success' ? (
-                      <CheckCircle className="w-[18px] h-[18px] text-success" aria-hidden="true" />
+                      <CheckCircle className="h-4.5 w-4.5 text-success" aria-hidden="true" />
                     ) : (
-                      <AlertCircle className="w-[18px] h-[18px] text-error" aria-hidden="true" />
+                      <AlertCircle className="h-4.5 w-4.5 text-error" aria-hidden="true" />
                     )}
                   </div>
                 )}
@@ -119,12 +119,12 @@ export default function SimpleRegisterPage() {
               <div className="text-xs text-text-tertiary opacity-100">We&rsquo;ll send you a verification email</div>
               {emailValidation.status !== 'empty' && (
                 <div
-                  className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${
+                  className={`flex min-h-4.5 items-center gap-2 text-xs transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'text-success opacity-100 translate-y-0'
+                      ? 'translate-y-0 text-success opacity-100'
                       : emailValidation.status === 'error'
-                      ? 'text-error opacity-100 translate-y-0'
-                      : 'opacity-0 -translate-y-1'
+                      ? 'translate-y-0 text-error opacity-100'
+                      : '-translate-y-1 opacity-0'
                   }`}
                 >
                   {emailValidation.message}
@@ -145,7 +145,7 @@ export default function SimpleRegisterPage() {
                   setPassword(e.target.value);
                   setError(null);
                 }}
-                className="w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                 placeholder="At least 8 characters"
                 required
                 autoComplete="new-password"
@@ -155,8 +155,8 @@ export default function SimpleRegisterPage() {
 
             {/* Error Message */}
             {error && (
-              <div role="alert" className="text-xs text-error flex items-center gap-2 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+              <div role="alert" className="flex animate-slide-up items-center gap-2 text-xs text-error">
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
                 {error}
               </div>
             )}
@@ -165,24 +165,24 @@ export default function SimpleRegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
+              className={`relative flex h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-base border-none px-6 text-base font-medium text-white shadow-xs transition-all duration-200 ${
                 isLoading
-                  ? 'opacity-60 cursor-not-allowed'
+                  ? 'cursor-not-allowed opacity-60'
                   : 'bg-gradient-to-b from-primary to-primary-hover'
               }`}
             >
               {isLoading && (
-                <div className="absolute w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <div className="absolute h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
               )}
               <span className={isLoading ? 'opacity-70' : ''}>{isLoading ? LOADING_CREATING_ACCOUNT : 'Create account'}</span>
             </button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-6">
-            <div className="flex-1 h-px bg-border-light"></div>
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-px flex-1 bg-border-light"></div>
             <span className="text-xs text-text-tertiary">You can add more details later</span>
-            <div className="flex-1 h-px bg-border-light"></div>
+            <div className="h-px flex-1 bg-border-light"></div>
           </div>
 
           {/* Full Registration Link */}
@@ -198,7 +198,7 @@ export default function SimpleRegisterPage() {
         <div className="px-8 pb-8">
           <div className="flex items-center justify-center gap-6 pt-8">
             <div className="flex items-center gap-2 text-xs text-text-tertiary">
-              <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+              <ShieldCheck className="h-4 w-4" aria-hidden="true" />
               <span>Secure & encrypted</span>
             </div>
           </div>

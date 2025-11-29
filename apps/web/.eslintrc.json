@@ -1,4 +1,19 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "plugins": ["tailwindcss"],
+  "rules": {
+    "tailwindcss/no-custom-classname": "warn",
+    "tailwindcss/no-arbitrary-value": "warn",
+    "tailwindcss/classnames-order": "error"
+  },
+  "settings": {
+    "tailwindcss": {
+      "callees": ["cn", "clsx", "classnames"],
+      "whitelist": [
+        "ios-card",
+        "safe-bottom"
+      ]
+    }
+  }
 }
 

@@ -216,19 +216,19 @@ function VerifyEmailContent() {
 
   return (
     <AuthPageShell>
-      <div className="ios-card w-full max-w-[28rem] animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="ios-card w-full max-w-auth animate-slide-up">
         {/* Header */}
         <div className="p-8 pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-base mb-5 border border-primary/20">
+          <div className="bg-primary/10 border-primary/20 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-base border text-primary">
             {state === 'success' ? (
-              <CheckCircle className="w-6 h-6" aria-hidden="true" />
+              <CheckCircle className="h-6 w-6" aria-hidden="true" />
             ) : state === 'error' ? (
-              <AlertCircle className="w-6 h-6" aria-hidden="true" />
+              <AlertCircle className="h-6 w-6" aria-hidden="true" />
             ) : (
-              <Mail className="w-6 h-6" aria-hidden="true" />
+              <Mail className="h-6 w-6" aria-hidden="true" />
             )}
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-2 leading-tight">
+          <h1 className="mb-2 text-2xl font-semibold leading-tight tracking-tight">
             {state === 'success'
               ? 'Email verified!'
               : state === 'error'
@@ -254,10 +254,10 @@ function VerifyEmailContent() {
           {state === 'success' && (
             <div
               role="alert"
-              className="p-4 bg-gradient-to-br from-success-light to-green-50 border border-success rounded-base text-sm text-success animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)]"
+              className="animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)] rounded-base border border-success bg-gradient-to-br from-success-light to-green-50 p-4 text-sm text-success"
             >
-              <div className="flex gap-3 items-start">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <div className="flex items-start gap-3">
+                <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-success" aria-hidden="true" />
                 <p className="leading-relaxed">{message}</p>
               </div>
             </div>
@@ -267,10 +267,10 @@ function VerifyEmailContent() {
           {state === 'error' && (
             <div
               role="alert"
-              className="p-4 bg-gradient-to-br from-error-light to-red-50 border border-red-200 rounded-base text-sm text-error animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)] mb-5"
+              className="mb-5 animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)] rounded-base border border-red-200 bg-gradient-to-br from-error-light to-red-50 p-4 text-sm text-error"
             >
-              <div className="flex gap-3 items-start">
-                <AlertCircle className="w-5 h-5 text-error flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <div className="flex items-start gap-3">
+                <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-error" aria-hidden="true" />
                 <p className="leading-relaxed">{message}</p>
               </div>
             </div>
@@ -278,22 +278,22 @@ function VerifyEmailContent() {
 
           {/* No Token / Check Email Message */}
           {state === 'no-token' && (
-            <div className="text-center mb-6">
-              <p className="text-sm text-text-secondary mb-6">
+            <div className="mb-6 text-center">
+              <p className="mb-6 text-sm text-text-secondary">
                 We&rsquo;ve sent a verification link to your email address. Please check your inbox and click the link to verify your account.
               </p>
               
               {/* Dev-only: Show verification link for local development */}
               {devVerificationLink && (
-                <div className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-base mb-6 text-left">
-                  <p className="text-xs font-semibold text-primary mb-2">🔧 Development Mode</p>
-                  <p className="text-xs text-text-secondary mb-3">
+                <div className="from-primary/10 to-primary/5 border-primary/20 mb-6 rounded-base border bg-gradient-to-br p-4 text-left">
+                  <p className="mb-2 text-xs font-semibold text-primary">🔧 Development Mode</p>
+                  <p className="mb-3 text-xs text-text-secondary">
                     Since email service is not configured, use this link to verify your email:
                   </p>
                   <div className="flex flex-col gap-2">
                     <a
                       href={devVerificationLink}
-                      className="text-xs text-primary hover:text-primary-hover underline break-all"
+                      className="break-all text-xs text-primary underline hover:text-primary-hover"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -306,7 +306,7 @@ function VerifyEmailContent() {
                         setResendSuccess(true);
                         setTimeout(() => setResendSuccess(false), 2000);
                       }}
-                      className="text-xs text-primary hover:text-primary-hover underline text-left"
+                      className="text-left text-xs text-primary underline hover:text-primary-hover"
                     >
                       📋 Copy link
                     </button>
@@ -314,7 +314,7 @@ function VerifyEmailContent() {
                 </div>
               )}
               
-              <p className="text-xs text-text-tertiary mb-6">
+              <p className="mb-6 text-xs text-text-tertiary">
                 Didn&rsquo;t receive the email? Check your spam folder or request a new verification email.
               </p>
             </div>
@@ -328,16 +328,16 @@ function VerifyEmailContent() {
                   type="button"
                   onClick={handleResendVerification}
                   disabled={isResending}
-                  className={`w-full h-11 px-6 text-base font-medium text-white rounded-base border-none cursor-pointer transition-all duration-200 shadow-xs relative overflow-hidden flex items-center justify-center gap-2 ${
+                  className={`relative flex h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-base border-none px-6 text-base font-medium text-white shadow-xs transition-all duration-200 ${
                     isResending
-                      ? 'opacity-60 cursor-not-allowed'
+                      ? 'cursor-not-allowed opacity-60'
                       : 'bg-gradient-to-b from-primary to-primary-hover'
                   }`}
                 >
                   {isResending && (
-                    <div className="absolute w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <div className="absolute h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
                   )}
-                  <RefreshCw className={`w-4 h-4 ${isResending ? 'opacity-0' : ''}`} aria-hidden="true" />
+                  <RefreshCw className={`h-4 w-4 ${isResending ? 'opacity-0' : ''}`} aria-hidden="true" />
                   <span className={isResending ? 'opacity-70' : ''}>
                     {isResending ? 'Sending...' : 'Resend verification email'}
                   </span>
@@ -347,10 +347,10 @@ function VerifyEmailContent() {
                 {resendSuccess && (
                   <div
                     role="alert"
-                    className="p-3 bg-gradient-to-br from-success-light to-green-50 border border-success rounded-base text-xs text-success animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)]"
+                    className="animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)] rounded-base border border-success bg-gradient-to-br from-success-light to-green-50 p-3 text-xs text-success"
                   >
-                    <div className="flex gap-2 items-start">
-                      <CheckCircle className="w-4 h-4 text-success flex-shrink-0 mt-0.5" aria-hidden="true" />
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" aria-hidden="true" />
                       <p>Verification email sent! Please check your inbox.</p>
                     </div>
                   </div>
@@ -360,10 +360,10 @@ function VerifyEmailContent() {
                 {resendError && (
                   <div
                     role="alert"
-                    className="p-3 bg-gradient-to-br from-error-light to-red-50 border border-red-200 rounded-base text-xs text-error animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)]"
+                    className="animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)] rounded-base border border-red-200 bg-gradient-to-br from-error-light to-red-50 p-3 text-xs text-error"
                   >
-                    <div className="flex gap-2 items-start">
-                      <AlertCircle className="w-4 h-4 text-error flex-shrink-0 mt-0.5" aria-hidden="true" />
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-error" aria-hidden="true" />
                       <p>{resendError}</p>
                     </div>
                   </div>
@@ -378,7 +378,7 @@ function VerifyEmailContent() {
               href="/auth/login"
               className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary no-underline transition-colors duration-150 hover:text-primary"
             >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               Back to sign in
             </Link>
           </div>
@@ -415,8 +415,8 @@ function VerifyEmailContent() {
 export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-bg-secondary">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex min-h-screen items-center justify-center bg-bg-secondary">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
       </div>
     }>
       <VerifyEmailContent />

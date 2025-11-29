@@ -112,30 +112,43 @@ enum ReportStatus {
   DISMISSED
 }
 
+enum ConsultationType {
+  FREE
+  PAID
+}
+
+enum ConsultationStatus {
+  OFFERED // Provider offered, seeker hasn't booked
+  BOOKED // Seeker booked, awaiting call
+  COMPLETED // Call happened
+  CANCELLED // Either party cancelled
+  EXPIRED // Offer expired (7 days)
+}
+
 // ==================== CORE MODELS ====================
 
 model User {
-  id                      String    @id @default(uuid())
-  email                   String    @unique @db.VarChar(255)
-  role                    UserRole
-  name                    String?   @db.VarChar(200)
-  phone                   String?   @db.VarChar(50)
-  locale                  String    @default("en") @db.VarChar(10)
-  passwordHash            String?   // Hashed password (bcrypt)
-  passwordResetTokenHash  String?   // Hashed reset token (bcrypt)
-  passwordResetTokenHashSha256 String? // SHA-256 hash
-  passwordResetTokenExpiry DateTime?
-  emailVerified          Boolean   @default(false)
-  emailVerificationToken String?
-  emailVerificationTokenExpiry DateTime?
-  onboardingCompleted    Boolean   @default(false)
-  onboardingCompletedAt   DateTime?
-  seekerOnboardingCompleted Boolean @default(false)
-  providerOnboardingCompleted Boolean @default(false)
-  providerBusinessStepCompleted Boolean @default(false)
-  providerServicesStepCompleted Boolean @default(false)
-  providerCredentialsStepCompleted Boolean @default(false)
-  createdAt               DateTime  @default(now())
+  id                               String    @id @default(uuid())
+  email                            String    @unique @db.VarChar(255)
+  role                             UserRole
+  name                             String?   @db.VarChar(200)
+  phone                            String?   @db.VarChar(50)
+  locale                           String    @default("en") @db.VarChar(10)
+  passwordHash                     String? // Hashed password (bcrypt)
+  passwordResetTokenHash           String? // Hashed reset token (bcrypt)
+  passwordResetTokenHashSha256     String? // SHA-256 hash
+  passwordResetTokenExpiry         DateTime?
+  emailVerified                    Boolean   @default(false)
+  emailVerificationToken           String?
+  emailVerificationTokenExpiry     DateTime?
+  onboardingCompleted              Boolean   @default(false)
+  onboardingCompletedAt            DateTime?
+  seekerOnboardingCompleted        Boolean   @default(false)
+  providerOnboardingCompleted      Boolean   @default(false)
+  providerBusinessStepCompleted    Boolean   @default(false)
+  providerServicesStepCompleted    Boolean   @default(false)
+  providerCredentialsStepCompleted Boolean   @default(false)
+  createdAt                        DateTime  @default(now())
 
   // Relations
   providerProfile  ProviderProfile?
@@ -152,29 +165,30 @@ model User {
 }
 
 model ProviderProfile {
-  id           String    @id @default(uuid())
-  userId       String    @unique
-  businessName String    @db.VarChar(200)
-  businessType ProviderBusinessType?
-  description  String?   @db.Text
-  location     String?   @db.VarChar(200)
-  languages    Json      @default("[]")
-  website      String?   @db.VarChar(500)
-  contactPhone String?   @db.VarChar(50)
+  id              String                @id @default(uuid())
+  userId          String                @unique
+  businessName    String                @db.VarChar(200)
+  businessType    ProviderBusinessType?
+  description     String?               @db.Text
+  location        String?               @db.VarChar(200)
+  languages       Json                  @default("[]")
+  website         String?               @db.VarChar(500)
+  contactPhone    String?               @db.VarChar(50)
   yearsExperience Int?
-  verifiedAt   DateTime?
-  credits      Int       @default(0) // Credit ledger
-  createdAt    DateTime  @default(now())
+  verifiedAt      DateTime?
+  credits         Int                   @default(0) // Credit ledger
+  createdAt       DateTime              @default(now())
 
   // Relations
-  user             User               @relation(fields: [userId], references: [id], onDelete: Restrict)
-  servicePackages  ServicePackage[]
-  proposals        Proposal[]
-  billingCustomer  BillingCustomer?
-  subscriptions    Subscription[]
+  user               User                @relation(fields: [userId], references: [id], onDelete: Restrict)
+  servicePackages    ServicePackage[]
+  proposals          Proposal[]
+  consultations      Consultation[]
+  billingCustomer    BillingCustomer?
+  subscriptions      Subscription[]
   creditTransactions CreditTransaction[]
-  verificationCase VerificationCase[]
-  cases            Case[]
+  verificationCase   VerificationCase[]
+  cases              Case[]
 
   @@index([userId])
   @@index([businessName])
@@ -208,14 +222,15 @@ model Request {
   budget      String?       @db.VarChar(100) // e.g. "THB 50k-80k"
   location    String?       @db.VarChar(200)
   status      RequestStatus @default(DRAFT)
-  intakeData  Json?         // Raw intake form data
+  intakeData  Json? // Raw intake form data
   createdAt   DateTime      @default(now())
 
   // Relations
-  seeker      User         @relation("SeekerRequests", fields: [seekerId], references: [id], onDelete: Restrict)
-  messages    Message[]
-  proposals   Proposal[]
-  attachments Attachment[]
+  seeker        User           @relation("SeekerRequests", fields: [seekerId], references: [id], onDelete: Restrict)
+  messages      Message[]
+  proposals     Proposal[]
+  consultations Consultation[]
+  attachments   Attachment[]
 
   @@index([seekerId])
   @@index([status])
@@ -237,15 +252,15 @@ model Message {
 }
 
 model Proposal {
-  id         String      @id @default(uuid())
+  id         String         @id @default(uuid())
   requestId  String
   providerId String
-  totalTHB   Decimal     @db.Decimal(10, 2)
-  timeline   String?     @db.VarChar(200)
-  terms      String?     @db.Text
+  totalTHB   Decimal        @db.Decimal(10, 2)
+  timeline   String?        @db.VarChar(200)
+  terms      String?        @db.Text
   status     ProposalStatus @default(DRAFT)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
 
   // Relations
   request  Request         @relation(fields: [requestId], references: [id], onDelete: Cascade)
@@ -256,14 +271,52 @@ model Proposal {
   @@index([providerId])
 }
 
+model Consultation {
+  id              String             @id @default(uuid())
+  requestId       String
+  providerId      String
+  type            ConsultationType
+  priceTHB        Decimal?           @db.Decimal(10, 2) // Null for FREE
+  durationMinutes Int // 15, 30, 45, 60
+  description     String?            @db.Text // What will be discussed
+  meetingLink     String?            @db.VarChar(500) // Zoom/Google Meet URL
+  scheduledAt     DateTime? // When call is scheduled
+  status          ConsultationStatus @default(OFFERED)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  // Relations
+  request  Request              @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  provider ProviderProfile      @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  payment  ConsultationPayment?
+
+  @@index([requestId])
+  @@index([providerId])
+  @@index([status])
+}
+
+model ConsultationPayment {
+  id                    String   @id @default(uuid())
+  consultationId        String   @unique
+  stripePaymentIntentId String   @unique @db.VarChar(255)
+  amountTHB             Decimal  @db.Decimal(10, 2)
+  status                String   @db.VarChar(50) // succeeded, pending, failed
+  createdAt             DateTime @default(now())
+
+  // Relations
+  consultation Consultation @relation(fields: [consultationId], references: [id], onDelete: Cascade)
+
+  @@index([consultationId])
+}
+
 model Case {
-  id            String       @id @default(uuid())
-  proposalId    String       @unique
-  status        CaseStatus   @default(ACTIVE)
+  id            String        @id @default(uuid())
+  proposalId    String        @unique
+  status        CaseStatus    @default(ACTIVE)
   paymentStatus PaymentStatus @default(UNPAID)
   providerId    String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   // Relations
   proposal    Proposal        @relation(fields: [proposalId], references: [id], onDelete: Restrict)
@@ -346,8 +399,8 @@ model BillingCustomer {
   createdAt        DateTime @default(now())
 
   // Relations
-  provider      ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
-  invoices      Invoice[]
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  invoices Invoice[]
 
   @@index([providerId])
 }
@@ -384,13 +437,13 @@ model CreditTransaction {
 }
 
 model Invoice {
-  id                String    @id @default(uuid())
+  id                String   @id @default(uuid())
   billingCustomerId String
-  stripeInvoiceId   String    @unique @db.VarChar(255)
-  amount            Decimal   @db.Decimal(10, 2)
-  status            String    @db.VarChar(50)
-  url               String?   @db.VarChar(500)
-  createdAt         DateTime  @default(now())
+  stripeInvoiceId   String   @unique @db.VarChar(255)
+  amount            Decimal  @db.Decimal(10, 2)
+  status            String   @db.VarChar(50)
+  url               String?  @db.VarChar(500)
+  createdAt         DateTime @default(now())
 
   // Relations
   billingCustomer BillingCustomer @relation(fields: [billingCustomerId], references: [id], onDelete: Cascade)
@@ -401,10 +454,10 @@ model Invoice {
 // ==================== ADMIN & OPS ====================
 
 model AdminUser {
-  id         String    @id @default(uuid())
-  email      String    @unique @db.VarChar(255)
-  role       AdminRole
-  createdAt  DateTime  @default(now())
+  id        String    @id @default(uuid())
+  email     String    @unique @db.VarChar(255)
+  role      AdminRole
+  createdAt DateTime  @default(now())
 
   // Relations
   reviewedVerificationCases VerificationCase[] @relation("VerificationCaseReviewer")

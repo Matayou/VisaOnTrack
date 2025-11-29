@@ -124,33 +124,33 @@ export default function AccountTypePage() {
   return (
     <>
       <AuthPageShell showLandingActions={false}>
-        <div className="relative w-full flex items-center justify-center p-6">
+        <div className="relative flex w-full items-center justify-center p-6">
           {/* Logout Button - Top Right */}
           <button
             onClick={() => logout(router)}
-            className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 hover:border-border focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="hover:border-border absolute right-4 top-4 flex items-center gap-2 rounded-base border border-border-light bg-bg-primary px-4 py-2 text-sm text-text-secondary transition-all duration-150 hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             aria-label="Logout"
           >
-            <LogOut className="w-4 h-4" aria-hidden="true" />
+            <LogOut className="h-4 w-4" aria-hidden="true" />
             <span>Logout</span>
           </button>
 
           <div className="relative z-10 w-full max-w-4xl animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)]">
             {/* Header */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-primary-hover rounded-md mb-6 shadow-[0_4px_12px_rgba(37,99,235,0.2)] animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both]">
-                <Compass className="w-8 h-8 text-white" aria-hidden="true" />
+            <div className="mb-12 text-center">
+              <div className="mb-6 inline-flex h-14 w-14 animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] items-center justify-center rounded-md bg-gradient-to-br from-primary to-primary-hover shadow-[0_4px_12px_rgba(37,99,235,0.2)]">
+                <Compass className="h-8 w-8 text-white" aria-hidden="true" />
               </div>
-              <h1 className="text-3xl font-bold tracking-tight mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both]">
+              <h1 className="mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both] text-3xl font-bold tracking-tight">
                 <GradientText>What brings you to VisaOnTrack?</GradientText>
               </h1>
-              <p className="text-lg text-text-secondary animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both]">
+              <p className="animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both] text-lg text-text-secondary">
                 Choose how you&rsquo;d like to use the platform
               </p>
             </div>
 
             {/* Selection Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2">
               {/* Visa Seeker Card */}
               <div
                 role="button"
@@ -159,25 +159,25 @@ export default function AccountTypePage() {
                 aria-pressed={selectedType === 'SEEKER'}
                 onClick={() => handleCardClick('SEEKER')}
                 onKeyDown={(e) => handleCardKeyDown(e, 'SEEKER')}
-                className={`relative p-10 bg-bg-primary border-2 rounded-lg cursor-pointer transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_500ms_both] ${
+                className={`relative animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_500ms_both] cursor-pointer rounded-lg border-2 bg-bg-primary p-10 transition-all duration-150 ${
                   selectedType === 'SEEKER'
-                    ? 'border-primary bg-gradient-to-br from-primary/2 to-primary/5 shadow-[0_8px_24px_rgba(37,99,235,0.15)]'
-                    : 'border-border-light hover:border-primary/30 hover:shadow-md'
+                    ? 'from-primary/2 to-primary/5 border-primary bg-gradient-to-br shadow-[0_8px_24px_rgba(37,99,235,0.15)]'
+                    : 'hover:border-primary/30 border-border-light hover:shadow-md'
                 } focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
               >
                 {/* Selection Indicator */}
                 <div
-                  className={`absolute top-6 right-6 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-150 ${
+                  className={`absolute right-6 top-6 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-150 ${
                     selectedType === 'SEEKER'
                       ? 'border-primary bg-primary'
                       : 'border-border-light bg-bg-primary hover:border-primary'
                   }`}
                 >
                   <Check
-                    className={`w-5 h-5 text-white transition-all duration-150 ${
+                    className={`h-5 w-5 text-white transition-all duration-150 ${
                       selectedType === 'SEEKER'
-                        ? 'opacity-100 scale-100'
-                        : 'opacity-0 scale-0'
+                        ? 'scale-100 opacity-100'
+                        : 'scale-0 opacity-0'
                     }`}
                     aria-hidden="true"
                   />
@@ -185,20 +185,20 @@ export default function AccountTypePage() {
 
                 {/* Card Icon */}
                 <div
-                  className={`w-16 h-16 rounded-md mb-6 flex items-center justify-center transition-all duration-150 ${
+                  className={`mb-6 flex h-16 w-16 items-center justify-center rounded-md transition-all duration-150 ${
                     selectedType === 'SEEKER'
-                      ? 'bg-gradient-to-br from-primary/20 to-primary/10'
-                      : 'bg-gradient-to-br from-primary/10 to-primary/5'
+                      ? 'from-primary/20 to-primary/10 bg-gradient-to-br'
+                      : 'from-primary/10 to-primary/5 bg-gradient-to-br'
                   }`}
                 >
-                  <Compass className="w-8 h-8 text-primary" aria-hidden="true" />
+                  <Compass className="h-8 w-8 text-primary" aria-hidden="true" />
                 </div>
 
                 {/* Card Title */}
-                <h2 className="text-2xl font-semibold mb-3">I&rsquo;m a Visa Seeker</h2>
+                <h2 className="mb-3 text-2xl font-semibold">I&rsquo;m a Visa Seeker</h2>
 
                 {/* Card Description */}
-                <p className="text-base text-text-secondary mb-6 leading-relaxed">
+                <p className="mb-6 text-base leading-relaxed text-text-secondary">
                   I need help navigating the visa application process in Thailand
                 </p>
 
@@ -207,7 +207,7 @@ export default function AccountTypePage() {
                   {seekerFeatures.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3 text-sm text-text-secondary">
                       <CheckCircle
-                        className={`w-5 h-5 text-primary flex-shrink-0 mt-0.5 transition-transform duration-150 ${
+                        className={`mt-0.5 h-5 w-5 flex-shrink-0 text-primary transition-transform duration-150 ${
                           selectedType === 'SEEKER' ? 'translate-x-1' : ''
                         }`}
                         aria-hidden="true"
@@ -226,25 +226,25 @@ export default function AccountTypePage() {
                 aria-pressed={selectedType === 'PROVIDER'}
                 onClick={() => handleCardClick('PROVIDER')}
                 onKeyDown={(e) => handleCardKeyDown(e, 'PROVIDER')}
-                className={`relative p-10 bg-bg-primary border-2 rounded-lg cursor-pointer transition-all duration-150 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_600ms_both] ${
+                className={`relative animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_600ms_both] cursor-pointer rounded-lg border-2 bg-bg-primary p-10 transition-all duration-150 ${
                   selectedType === 'PROVIDER'
-                    ? 'border-primary bg-gradient-to-br from-primary/2 to-primary/5 shadow-[0_8px_24px_rgba(37,99,235,0.15)]'
-                    : 'border-border-light hover:border-primary/30 hover:shadow-md'
+                    ? 'from-primary/2 to-primary/5 border-primary bg-gradient-to-br shadow-[0_8px_24px_rgba(37,99,235,0.15)]'
+                    : 'hover:border-primary/30 border-border-light hover:shadow-md'
                 } focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
               >
                 {/* Selection Indicator */}
                 <div
-                  className={`absolute top-6 right-6 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-150 ${
+                  className={`absolute right-6 top-6 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-150 ${
                     selectedType === 'PROVIDER'
                       ? 'border-primary bg-primary'
                       : 'border-border-light bg-bg-primary hover:border-primary'
                   }`}
                 >
                   <Check
-                    className={`w-5 h-5 text-white transition-all duration-150 ${
+                    className={`h-5 w-5 text-white transition-all duration-150 ${
                       selectedType === 'PROVIDER'
-                        ? 'opacity-100 scale-100'
-                        : 'opacity-0 scale-0'
+                        ? 'scale-100 opacity-100'
+                        : 'scale-0 opacity-0'
                     }`}
                     aria-hidden="true"
                   />
@@ -252,20 +252,20 @@ export default function AccountTypePage() {
 
                 {/* Card Icon */}
                 <div
-                  className={`w-16 h-16 rounded-md mb-6 flex items-center justify-center transition-all duration-150 ${
+                  className={`mb-6 flex h-16 w-16 items-center justify-center rounded-md transition-all duration-150 ${
                     selectedType === 'PROVIDER'
-                      ? 'bg-gradient-to-br from-primary/20 to-primary/10'
-                      : 'bg-gradient-to-br from-primary/10 to-primary/5'
+                      ? 'from-primary/20 to-primary/10 bg-gradient-to-br'
+                      : 'from-primary/10 to-primary/5 bg-gradient-to-br'
                   }`}
                 >
-                  <Briefcase className="w-8 h-8 text-primary" aria-hidden="true" />
+                  <Briefcase className="h-8 w-8 text-primary" aria-hidden="true" />
                 </div>
 
                 {/* Card Title */}
-                <h2 className="text-2xl font-semibold mb-3">I&rsquo;m a Service Provider</h2>
+                <h2 className="mb-3 text-2xl font-semibold">I&rsquo;m a Service Provider</h2>
 
                 {/* Card Description */}
-                <p className="text-base text-text-secondary mb-6 leading-relaxed">
+                <p className="mb-6 text-base leading-relaxed text-text-secondary">
                   I&rsquo;m an immigration professional looking to connect with clients
                 </p>
 
@@ -274,7 +274,7 @@ export default function AccountTypePage() {
                   {providerFeatures.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3 text-sm text-text-secondary">
                       <CheckCircle
-                        className={`w-5 h-5 text-primary flex-shrink-0 mt-0.5 transition-transform duration-150 ${
+                        className={`mt-0.5 h-5 w-5 flex-shrink-0 text-primary transition-transform duration-150 ${
                           selectedType === 'PROVIDER' ? 'translate-x-1' : ''
                         }`}
                         aria-hidden="true"
@@ -290,22 +290,22 @@ export default function AccountTypePage() {
             {error && (
               <div
                 role="alert"
-                className="mb-6 text-sm text-error flex items-center gap-2 animate-[fadeInUp_300ms_cubic-bezier(0.16,1,0.3,1)]"
+                className="mb-6 flex animate-[fadeInUp_300ms_cubic-bezier(0.16,1,0.3,1)] items-center gap-2 text-sm text-error"
               >
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
                 {error}
               </div>
             )}
 
             {/* Continue Button */}
-            <div className="text-center animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_700ms_both]">
+            <div className="animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_700ms_both] text-center">
               <Button
                 type="button"
                 onClick={handleContinue}
                 onKeyDown={handleKeyDown}
                 disabled={!selectedType || isLoading}
                 loading={isLoading}
-                icon={!isLoading ? <ArrowRight className="w-5 h-5" /> : undefined}
+                icon={!isLoading ? <ArrowRight className="h-5 w-5" /> : undefined}
                 iconPosition="right"
               >
                 {isLoading ? LOADING_PROCESSING : 'Continue'}

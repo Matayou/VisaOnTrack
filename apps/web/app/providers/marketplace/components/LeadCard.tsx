@@ -49,73 +49,73 @@ export const LeadCard: React.FC<LeadCardProps> = ({ request, onUnlock, onSave })
   const nationality = intakeData?.nationality || 'Not specified';
 
   return (
-    <div className="ios-card p-5 hover:border-primary/30 transition-colors">
-      <div className="flex items-start justify-between gap-3 mb-3">
+    <div className="ios-card hover:border-primary/30 p-5 transition-colors">
+      <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
             {matchScore >= 90 && (
-              <span className="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10">
+              <span className="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
                 {matchScore}% match
               </span>
             )}
             {matchScore >= 75 && matchScore < 90 && (
-              <span className="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-blue-50 text-blue-700 ring-blue-600/10">
+              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/10">
                 {matchScore}% match
               </span>
             )}
             {matchScore < 75 && (
-              <span className="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-gray-50 text-gray-700 ring-gray-600/10">
+              <span className="rounded-full bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-700 ring-1 ring-inset ring-gray-600/10">
                 {matchScore}% match
               </span>
             )}
             <span className="text-xs text-gray-500">{getTimePosted()}</span>
           </div>
-          <h3 className="text-base font-semibold text-gray-900 mb-1">
+          <h3 className="mb-1 text-base font-semibold text-gray-900">
             {request.title}
           </h3>
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+          <p className="mb-3 line-clamp-2 text-sm text-gray-600">
             {request.description || 'No description provided'}
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
             <div>
-              <p className="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Budget</p>
+              <p className="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Budget</p>
               <p className="font-semibold text-gray-900">{getBudgetDisplay()}</p>
             </div>
             <div>
-              <p className="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Nationality</p>
+              <p className="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Nationality</p>
               <p className="font-semibold text-gray-900">{nationality}</p>
             </div>
             <div>
-              <p className="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Location</p>
+              <p className="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Location</p>
               <p className="font-semibold text-gray-900">{request.location || 'Not specified'}</p>
             </div>
             <div>
-              <p className="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Competition</p>
+              <p className="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Competition</p>
               <p className="font-semibold text-gray-900">{(request as any).proposalCount || 0} proposals</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
+      <div className="flex flex-col items-start justify-between gap-3 border-t border-gray-100 pt-3 sm:flex-row sm:items-center">
         {isLocked ? (
           <>
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <Unlock className="w-4 h-4 text-primary" />
+              <Unlock className="h-4 w-4 text-primary" />
               <span>Unlock with <span className="font-semibold text-gray-900">10 credits</span> to view full details</span>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex w-full items-center gap-2 sm:w-auto">
               <button 
                 onClick={() => onSave(request.id)}
-                className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary rounded-xl transition-all flex items-center justify-center gap-2"
+                className="hover:border-primary/30 flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition-all hover:text-primary sm:flex-none"
               >
-                <Bookmark className="w-4 h-4" />
+                <Bookmark className="h-4 w-4" />
                 <span>Save</span>
               </button>
               <button 
                 onClick={() => onUnlock(request.id)}
-                className="flex-1 sm:flex-none px-5 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex items-center justify-center gap-2"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-600 sm:flex-none"
               >
-                <Unlock className="w-4 h-4" />
+                <Unlock className="h-4 w-4" />
                 <span>Unlock lead</span>
               </button>
             </div>
@@ -123,14 +123,14 @@ export const LeadCard: React.FC<LeadCardProps> = ({ request, onUnlock, onSave })
         ) : (
           <>
             <div className="flex items-center gap-2 text-sm">
-              <span className="px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10">
+              <span className="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
                 Unlocked
               </span>
               <span className="text-gray-500">You can now send a proposal</span>
             </div>
             <button 
               onClick={() => {/* TODO: Navigate to proposal form */}}
-              className="px-5 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200"
+              className="rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-600"
             >
               Send proposal
             </button>

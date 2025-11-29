@@ -26,25 +26,25 @@ interface Benefit {
 
 const benefits: Benefit[] = [
   {
-    icon: <Search className="w-6 h-6 text-primary" aria-hidden="true" />,
+    icon: <Search className="h-6 w-6 text-primary" aria-hidden="true" />,
     title: 'Browse Verified Providers',
     description:
       'Search through hundreds of verified immigration professionals in Thailand. Filter by location, specialization, and reviews.',
   },
   {
-    icon: <ShieldCheck className="w-6 h-6 text-primary" aria-hidden="true" />,
+    icon: <ShieldCheck className="h-6 w-6 text-primary" aria-hidden="true" />,
     title: 'Secure Payment Protection',
     description:
       'Pay safely with milestone-based escrow. Funds are released only when you confirm work is complete to your satisfaction.',
   },
   {
-    icon: <Activity className="w-6 h-6 text-primary" aria-hidden="true" />,
+    icon: <Activity className="h-6 w-6 text-primary" aria-hidden="true" />,
     title: 'Track Your Progress',
     description:
       "Monitor every step of your visa application. Get updates in real-time and always know what's happening.",
   },
   {
-    icon: <MessageCircle className="w-6 h-6 text-primary" aria-hidden="true" />,
+    icon: <MessageCircle className="h-6 w-6 text-primary" aria-hidden="true" />,
     title: 'Direct Communication',
     description:
       'Chat directly with your provider, upload documents, and get quick answers to all your questions.',
@@ -120,9 +120,9 @@ export default function SeekerWelcomePage() {
   // Show loading state while checking email verification
   if (isCheckingVerification) {
     return (
-      <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+      <div className="flex min-h-screen items-center justify-center bg-bg-secondary p-6">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
           <p className="text-text-secondary">Checking verification status...</p>
         </div>
       </div>
@@ -132,43 +132,43 @@ export default function SeekerWelcomePage() {
   return (
     <div className="min-h-screen bg-bg-secondary">
       <Header variant="seeker" />
-      <main className="flex items-center justify-center p-6 py-12 min-h-[calc(100vh-200px)]">
-        <div className="w-full max-w-4xl bg-bg-primary border border-border-light rounded-lg shadow-md">
+      <main className="flex min-h-[calc(100vh-200px)] items-center justify-center p-6 py-12">
+        <div className="w-full max-w-4xl rounded-lg border border-border-light bg-bg-primary shadow-md">
           {/* Header */}
-          <div className="px-6 pt-8 pb-6 sm:px-12 sm:pt-12 sm:pb-8 text-center bg-gradient-to-br from-primary/2 to-primary/5 rounded-t-lg">
-            <div className="w-16 h-16 bg-gradient-to-br from-success-light to-success-light/60 rounded-full inline-flex items-center justify-center mb-6">
+          <div className="from-primary/2 to-primary/5 rounded-t-lg bg-gradient-to-br px-6 pb-6 pt-8 text-center sm:px-12 sm:pb-8 sm:pt-12">
+            <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-success-light to-success-light/60">
               <CheckCircle
-                className="w-8 h-8 text-success"
+                className="h-8 w-8 text-success"
                 aria-hidden="true"
               />
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-3">
+            <h1 className="mb-3 text-xl font-bold tracking-tight sm:text-2xl">
               Welcome to VisaOnTrack!
             </h1>
-            <p className="text-base sm:text-lg text-text-secondary">
+            <p className="text-base text-text-secondary sm:text-lg">
               Let&rsquo;s find the perfect immigration professional for your needs
             </p>
           </div>
 
           {/* Content */}
-          <div className="px-6 pt-6 pb-6 sm:px-12 sm:pt-10 sm:pb-10">
-            <h2 className="text-base font-semibold mb-6 text-text-secondary uppercase tracking-wider text-xs">
+          <div className="px-6 pb-6 pt-6 sm:px-12 sm:pb-10 sm:pt-10">
+            <h2 className="mb-6 text-base text-xs font-semibold uppercase tracking-wider text-text-secondary">
               Here&rsquo;s what you can do
             </h2>
 
             {/* Benefits Grid */}
-            <div className="space-y-6 mb-10">
+            <div className="mb-10 space-y-6">
               {benefits.map((benefit, index) => (
                 <div
                   key={index}
-                  className="p-6 bg-bg-secondary border border-border-light rounded-md flex gap-5 transition-colors duration-150 hover:border-border-medium"
+                  className="flex gap-5 rounded-md border border-border-light bg-bg-secondary p-6 transition-colors duration-150 hover:border-border-medium"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-base flex items-center justify-center flex-shrink-0">
+                  <div className="from-primary/10 to-primary/5 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br">
                     {benefit.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-base font-semibold mb-1.5">{benefit.title}</h3>
-                    <p className="text-sm text-text-secondary leading-relaxed">
+                    <h3 className="mb-1.5 text-base font-semibold">{benefit.title}</h3>
+                    <p className="text-sm leading-relaxed text-text-secondary">
                       {benefit.description}
                     </p>
                   </div>
@@ -178,26 +178,26 @@ export default function SeekerWelcomePage() {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 px-6 pb-6 sm:px-12 sm:pb-12">
+          <div className="flex flex-col gap-4 px-6 pb-6 sm:flex-row sm:px-12 sm:pb-12">
             <button
               type="button"
               onClick={handleCompleteProfile}
               onKeyDown={(e) => handleKeyDown(e, handleCompleteProfile)}
-              className="flex-1 h-12 px-8 text-base font-medium text-text-primary bg-bg-secondary border border-border-light rounded-base transition-colors duration-150 hover:bg-bg-primary inline-flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="inline-flex h-12 flex-1 items-center justify-center gap-3 rounded-base border border-border-light bg-bg-secondary px-8 text-base font-medium text-text-primary transition-colors duration-150 hover:bg-bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               aria-label="Complete your profile"
             >
-              <Settings className="w-[18px] h-[18px]" aria-hidden="true" />
+              <Settings className="h-4.5 w-4.5" aria-hidden="true" />
               <span>Complete Profile</span>
             </button>
             <button
               type="button"
               onClick={handleBrowseProviders}
               onKeyDown={(e) => handleKeyDown(e, handleBrowseProviders)}
-              className="flex-1 h-12 px-8 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-base transition-all duration-200 hover:shadow-[0_4px_12px_rgba(37,99,235,0.25)] shadow-[0_2px_8px_rgba(37,99,235,0.15)] inline-flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="inline-flex h-12 flex-1 items-center justify-center gap-3 rounded-base bg-gradient-to-b from-primary to-primary-hover px-8 text-base font-medium text-white shadow-[0_2px_8px_rgba(37,99,235,0.15)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(37,99,235,0.25)] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               aria-label="Browse providers"
             >
               <span>Browse Providers</span>
-              <ArrowRight className="w-[18px] h-[18px]" aria-hidden="true" />
+              <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
             </button>
           </div>
         </div>

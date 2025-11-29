@@ -39,11 +39,11 @@ export function Footer({ variant = 'full' }: FooterProps) {
   const brand = (
     <Link
       href="/"
-      className="inline-flex items-center gap-3 text-lg font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-footer-surface rounded"
+      className="inline-flex items-center gap-3 rounded text-lg font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-footer-surface"
       aria-label="SawadeePass homepage"
     >
       <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-white">
-        <Compass className="w-5 h-5" aria-hidden="true" />
+        <Compass className="h-5 w-5" aria-hidden="true" />
       </span>
       <span>SawadeePass</span>
     </Link>
@@ -51,9 +51,8 @@ export function Footer({ variant = 'full' }: FooterProps) {
 
   return (
     <footer
-      className={`relative isolate border-t border-footer-border bg-footer-surface text-footer-text-primary ${
-        isMinimal ? 'py-12' : 'py-16'
-      }`}
+      className={`relative isolate border-t border-footer-border bg-footer-surface text-footer-text-primary ${isMinimal ? 'py-12' : 'py-16'
+        }`}
       role="contentinfo"
     >
       {/* Background glow softens the dark treatment without new assets */}
@@ -68,15 +67,15 @@ export function Footer({ variant = 'full' }: FooterProps) {
       {/* Subtle grid adds structure that matches the dashboard surfaces */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.05)_1px,_transparent_1px)] [background-size:80px_80px] opacity-40"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.05)_1px,_transparent_1px)] opacity-40 [background-size:80px_80px]"
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
         {isMinimal ? (
           <>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
               {brand}
-              <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3">
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:justify-end">
                 <Link href="/#how-it-works" className={inlineLinkClass}>
                   How It Works
                 </Link>
@@ -91,23 +90,23 @@ export function Footer({ variant = 'full' }: FooterProps) {
                 </Link>
               </div>
             </div>
-            <div className="pt-6 mt-8 border-t border-white/10 text-center">
+            <div className="mt-8 border-t border-white/10 pt-6 text-center">
               <p className="text-sm text-footer-text-tertiary">© 2025 SawadeePass. All rights reserved.</p>
             </div>
           </>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-              <div className="md:col-span-2 space-y-4">
+            <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-4">
+              <div className="space-y-4 md:col-span-2">
                 {brand}
-                <p className="text-base text-footer-text-secondary max-w-md leading-relaxed">
+                <p className="max-w-md text-base leading-relaxed text-footer-text-secondary">
                   Thailand visa marketplace: share your plan once and get proposals from verified providers. They spend
                   credits to unlock leads; you pay providers directly with our safety guidance.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-footer-text-tertiary mb-4 uppercase tracking-[0.2em]">
+                <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-footer-text-tertiary">
                   Product
                 </h3>
                 <nav className="space-y-3" aria-label="Product navigation">
@@ -117,14 +116,14 @@ export function Footer({ variant = 'full' }: FooterProps) {
                   <Link href="/#how-it-works" className={linkClass}>
                     How it Works
                   </Link>
-                  <Link href="/#pricing" className={linkClass}>
-                    Pricing
+                  <Link href="/for-experts" className={linkClass}>
+                    For Experts
                   </Link>
                 </nav>
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-footer-text-tertiary mb-4 uppercase tracking-[0.2em]">
+                <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-footer-text-tertiary">
                   Support
                 </h3>
                 <nav className="space-y-3" aria-label="Support navigation">
@@ -141,7 +140,7 @@ export function Footer({ variant = 'full' }: FooterProps) {
               </div>
             </div>
 
-            <div className="pt-8 border-t border-white/10 text-center md:text-left">
+            <div className="border-t border-white/10 pt-8 text-center md:text-left">
               <p className="text-sm text-footer-text-tertiary">© 2025 SawadeePass. All rights reserved.</p>
             </div>
           </>
@@ -150,4 +149,3 @@ export function Footer({ variant = 'full' }: FooterProps) {
     </footer>
   );
 }
-

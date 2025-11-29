@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { Globe } from 'lucide-react';
 
-import { sectionCardClass } from '@/app/requests/new/constants';
 import { useRequestForm } from '@/app/requests/new/context/RequestFormContext';
 import { featuredLocationOptions, locationOptions } from '@/config/requestForm';
+import { Card } from '@/components/ui';
 
 export function IntentStep() {
   const {
@@ -19,13 +19,13 @@ export function IntentStep() {
   const [showFullLocationList, setShowFullLocationList] = useState(false);
 
   return (
-    <section className={sectionCardClass}>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-white">
-          <Globe className="w-6 h-6" aria-hidden="true" />
+    <Card as="section" padding="lg" elevated className="space-y-3">
+      <div className="flex items-center gap-4">
+        <div className="from-primary/80 flex h-12 w-12 items-center justify-center rounded-base bg-gradient-to-br to-primary text-white">
+          <Globe className="h-6 w-6" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">Step 3</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-text-tertiary">Step 3</p>
           <h2 className="text-2xl font-semibold tracking-tight">Preferred location</h2>
         </div>
       </div>
@@ -37,7 +37,7 @@ export function IntentStep() {
             <p className="text-xs text-text-tertiary">Where do you prefer to settle or spend most of your time?</p>
           </div>
           {formState.location && (
-            <span className="text-xs text-primary font-medium">
+            <span className="text-xs font-medium text-primary">
               {locationOptions.find((opt) => opt.value === formState.location)?.label}
             </span>
           )}
@@ -52,10 +52,10 @@ export function IntentStep() {
                 <button
                   key={option.value}
                   type="button"
-                  className={`px-3 py-1.5 rounded-base border text-sm transition ${
+                  className={`rounded-base border px-3 py-1.5 text-sm transition ${
                     isActive
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                      ? 'bg-primary/10 border-primary text-primary'
+                      : 'hover:border-primary/50 border-border-light text-text-secondary hover:text-primary'
                   }`}
                   onClick={() => {
                     handleLocationSelect(option.value);
@@ -68,10 +68,10 @@ export function IntentStep() {
             })}
           <button
             type="button"
-            className={`px-3 py-1.5 rounded-base border text-sm transition ${
+            className={`rounded-base border px-3 py-1.5 text-sm transition ${
               formState.location && !featuredLocationOptions.includes(formState.location)
-                ? 'border-primary text-primary bg-primary/10'
-                : 'border-border-light text-text-secondary hover:border-primary/50 hover:text-primary'
+                ? 'bg-primary/10 border-primary text-primary'
+                : 'hover:border-primary/50 border-border-light text-text-secondary hover:text-primary'
             }`}
             onClick={() => setShowFullLocationList((prev) => !prev)}
           >
@@ -97,7 +97,7 @@ export function IntentStep() {
         {formState.location === 'OTHER' && (
           <input
             type="text"
-            className={`w-full rounded-base border bg-transparent px-4 py-3 text-base focus:outline-none focus:ring-2 transition ${getInputClasses('locationDetail')}`}
+            className={`w-full rounded-base border bg-transparent px-4 py-3 text-base transition focus:outline-none focus:ring-2 ${getInputClasses('locationDetail')}`}
             placeholder="Share the city or embassy"
             value={formState.locationDetail}
             onChange={(event) => updateField('locationDetail', event.target.value)}
@@ -106,6 +106,6 @@ export function IntentStep() {
         )}
         {renderValidationFeedback('location')}
       </div>
-    </section>
+    </Card>
   );
 }

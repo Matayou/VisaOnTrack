@@ -74,6 +74,8 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
       // Re-calculate derived fields
       const budget = estimateBudgetFromSavings(formData.savings);
       const locationLabel = formData.location;
+      const descriptionPayload =
+        formData.description.trim().length > 0 ? formData.description : request.description;
       
       const updatedIntakeData = {
         ...intakeData,
@@ -86,12 +88,11 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
         savings: formData.savings,
       };
 
-      // Update the request - omit title/description from update as they are hidden from user
       await api.requests.updateRequest({
         id: request.id,
         requestBody: {
           title: formData.title,
-          description: formData.description || 'None',
+          description: descriptionPayload || undefined,
           location: locationLabel,
           budgetMin: budget.min,
           budgetMax: budget.max,
@@ -109,15 +110,15 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
   };
 
   const SectionHeader = ({ icon: Icon, title }: { icon: React.ElementType; title: string }) => (
-    <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4 flex items-center gap-2">
-      <Icon className="w-3.5 h-3.5 text-text-tertiary" />
+    <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
+      <Icon className="h-3.5 w-3.5 text-text-tertiary" />
       {title}
       <div className="h-px flex-1 bg-gray-200"></div>
     </h3>
   );
 
   const Label = ({ htmlFor, children }: { htmlFor: string, children: React.ReactNode }) => (
-    <label htmlFor={htmlFor} className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1.5 ml-0.5">
+    <label htmlFor={htmlFor} className="mb-1.5 ml-0.5 block text-xs font-semibold uppercase tracking-wide text-text-secondary">
       {children}
     </label>
   );
@@ -127,9 +128,9 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
   return (
     <form onSubmit={handleSubmit}>
       {/* Request Details */}
-      <div className="p-6 sm:p-8 border-b border-gray-100 bg-white">
-        <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4 flex items-center gap-2">
-          <FileText className="w-3.5 h-3.5 text-text-tertiary" />
+      <div className="border-b border-gray-100 bg-white p-6 sm:p-8">
+        <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
+          <FileText className="h-3.5 w-3.5 text-text-tertiary" />
           Request Details
           <div className="h-px flex-1 bg-gray-200"></div>
         </h3>
@@ -159,13 +160,13 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
       </div>
 
       {/* Applicant Profile Section */}
-      <div className="p-6 sm:p-8 border-b border-gray-100 bg-gray-50/30">
+      <div className="border-b border-gray-100 bg-gray-50/30 p-6 sm:p-8">
         <SectionHeader icon={User} title="Applicant Profile" />
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <Globe className="w-3.5 h-3.5 text-text-tertiary" />
+            <div className="mb-1.5 flex items-center gap-1.5">
+              <Globe className="h-3.5 w-3.5 text-text-tertiary" />
               <Label htmlFor="nationality">Nationality</Label>
             </div>
             <select
@@ -182,8 +183,8 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <User className="w-3.5 h-3.5 text-text-tertiary" />
+            <div className="mb-1.5 flex items-center gap-1.5">
+              <User className="h-3.5 w-3.5 text-text-tertiary" />
               <Label htmlFor="age">Age Range</Label>
             </div>
             <select
@@ -199,8 +200,8 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <MapPin className="w-3.5 h-3.5 text-text-tertiary" />
+            <div className="mb-1.5 flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-text-tertiary" />
               <Label htmlFor="location">Current Location</Label>
             </div>
             <select
@@ -216,8 +217,8 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <Target className="w-3.5 h-3.5 text-text-tertiary" />
+            <div className="mb-1.5 flex items-center gap-1.5">
+              <Target className="h-3.5 w-3.5 text-text-tertiary" />
               <Label htmlFor="purpose">Primary Purpose</Label>
             </div>
             <select
@@ -239,13 +240,13 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
       </div>
 
       {/* Visa Requirements Section */}
-      <div className="p-6 sm:p-8 bg-gray-50/30">
+      <div className="bg-gray-50/30 p-6 sm:p-8">
         <SectionHeader icon={Clock} title="Visa Requirements" />
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <Clock className="w-3.5 h-3.5 text-text-tertiary" />
+            <div className="mb-1.5 flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-text-tertiary" />
               <Label htmlFor="duration">Desired Duration</Label>
             </div>
             <select
@@ -263,8 +264,8 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <Wallet className="w-3.5 h-3.5 text-text-tertiary" />
+            <div className="mb-1.5 flex items-center gap-1.5">
+              <Wallet className="h-3.5 w-3.5 text-text-tertiary" />
               <Label htmlFor="incomeType">Income Source</Label>
             </div>
             <select
@@ -283,8 +284,8 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
           </div>
 
           <div className="sm:col-span-2">
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <PiggyBank className="w-3.5 h-3.5 text-text-tertiary" />
+            <div className="mb-1.5 flex items-center gap-1.5">
+              <PiggyBank className="h-3.5 w-3.5 text-text-tertiary" />
               <Label htmlFor="savings">Available Savings</Label>
             </div>
             <select
@@ -305,9 +306,9 @@ export const RequestEditForm: React.FC<RequestEditFormProps> = ({ request }) => 
       </div>
 
       {/* Form Actions */}
-      <div className="p-6 sm:p-8 bg-white border-t border-gray-100 flex items-center justify-end gap-3 rounded-b-2xl">
+      <div className="flex items-center justify-end gap-3 rounded-b-2xl border-t border-gray-100 bg-white p-6 sm:p-8">
         {error && (
-          <span className="text-sm text-red-600 mr-auto font-medium bg-red-50 px-3 py-1.5 rounded-lg border border-red-100">{error}</span>
+          <span className="mr-auto rounded-lg border border-red-100 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600">{error}</span>
         )}
         <Button
           type="button"

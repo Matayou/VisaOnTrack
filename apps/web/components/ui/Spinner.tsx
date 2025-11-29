@@ -46,7 +46,7 @@ export function Spinner({
 }: SpinnerProps) {
   return (
     <div
-      className={`inline-block rounded-full border-2 animate-spin ${sizeClasses[size]} ${colorClasses[color]} ${className}`}
+      className={`inline-block animate-spin rounded-full border-2 ${sizeClasses[size]} ${colorClasses[color]} ${className}`}
       role="status"
       aria-label={ariaLabel}
       aria-live="polite"

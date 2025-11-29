@@ -25,10 +25,10 @@ const statusLabels: Partial<Record<RequestStatus, string>> = {
 };
 
 const statusClasses: Partial<Record<RequestStatus, string>> = {
-  DRAFT: 'bg-amber-50 text-amber-800 border-amber-200',
-  OPEN: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-  CLOSED: 'bg-gray-100 text-gray-700 border-gray-200',
-  HIRED: 'bg-blue-50 text-blue-800 border-blue-200',
+  DRAFT: 'bg-amber-50 text-amber-800 ring-amber-600/10',
+  OPEN: 'bg-emerald-50 text-emerald-800 ring-emerald-600/10',
+  CLOSED: 'bg-gray-100 text-gray-700 ring-gray-400/20',
+  HIRED: 'bg-blue-50 text-blue-800 ring-blue-600/10',
 };
 
 export function Header({ variant, scrolled = false, onAnchorClick, showLandingActions = true }: HeaderProps) {
@@ -167,12 +167,12 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
 
   return (
     <header className={headerClasses}>
-      <nav className="max-w-7xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between" aria-label="Site header">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 sm:px-8" aria-label="Site header">
         {/* Logo */}
         {/* Logo */}
         <Link
           href={getLogoHref()}
-          className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
+          className="flex items-center gap-3 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           aria-label="VisaOnTrack homepage"
         >
           <div className="relative h-12 w-40">
@@ -190,54 +190,37 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
         {variant === 'landing' && (
           <>
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+            <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
               <Link
                 href="/#features"
                 onClick={(e) => onAnchorClick?.(e, '#features')}
-                className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
+                className="group relative text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
                 aria-label="View features"
               >
                 Features
-                <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
+                <span className="absolute bottom-[-4px] left-0 h-0.5 w-0 bg-primary transition-all duration-150 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/#how-it-works"
                 onClick={(e) => onAnchorClick?.(e, '#how-it-works')}
-                className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
+                className="group relative text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
                 aria-label="How it works"
               >
                 How it Works
-                <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-              </Link>
-              <Link
-                href="/#pricing"
-                onClick={(e) => onAnchorClick?.(e, '#pricing')}
-                className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
-                aria-label="View pricing"
-              >
-                Pricing
-                <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
-              </Link>
-              <Link
-                href="/get-started"
-                className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 relative group"
-                aria-label="Check your visa eligibility"
-              >
-                Eligibility
-                <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-150 group-hover:w-full"></span>
+                <span className="absolute bottom-[-4px] left-0 h-0.5 w-0 bg-primary transition-all duration-150 group-hover:w-full"></span>
               </Link>
               {showLandingActions && (
                 <>
                   <Link
                     href="/auth/login"
-                    className="px-5 py-2 min-h-[44px] text-sm font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center justify-center"
+                    className="flex min-h-[44px] items-center justify-center rounded-lg border border-border-light bg-transparent px-5 py-2 text-sm font-medium text-text-primary transition-all duration-150 hover:bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                     aria-label="Sign in to your account"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/get-started"
-                    className="px-5 py-2 min-h-[44px] text-sm font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary"
+                    className="flex min-h-[44px] items-center gap-2 rounded-lg bg-gradient-to-b from-primary to-primary-hover px-5 py-2 text-sm font-medium text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary"
                     aria-label="Check your visa eligibility"
                   >
                     Get Started
@@ -250,14 +233,14 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
+              className="rounded-lg p-2 text-text-secondary transition-colors hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:hidden"
               aria-label="Toggle mobile menu"
               aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
-                <X className="w-6 h-6" aria-hidden="true" />
+                <X className="h-6 w-6" aria-hidden="true" />
               ) : (
-                <Menu className="w-6 h-6" aria-hidden="true" />
+                <Menu className="h-6 w-6" aria-hidden="true" />
               )}
             </button>
           </>
@@ -268,11 +251,11 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-            className="md:hidden p-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
+            className="rounded-lg p-2 text-text-secondary transition-colors hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:hidden"
             aria-label="Toggle mobile menu"
             aria-expanded={isMobileMenuOpen}
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
+            {isMobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
           </button>
         )}
 
@@ -284,7 +267,7 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
           >
             My request
             <span
-              className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${statusClasses[latestRequest.status] ?? 'bg-bg-secondary text-text-secondary border-border-light'
+              className={`inline-flex items-center rounded-lg px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset ${statusClasses[latestRequest.status] ?? 'bg-bg-secondary text-text-secondary ring-border-light'
                 }`}
             >
               {statusLabels[latestRequest.status] ?? latestRequest.status}
@@ -294,16 +277,16 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
 
         {/* Seeker variant - Navigation links */}
         {variant === 'seeker' && (
-          <nav className="hidden md:flex items-center gap-1 ml-4">
+          <nav className="ml-4 hidden items-center gap-1 md:flex">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
+              className="inline-flex items-center gap-2 rounded-base px-3 py-2 text-sm text-text-secondary transition hover:bg-bg-secondary hover:text-text-primary"
             >
               Dashboard
             </Link>
             <Link
               href="/providers"
-              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
+              className="inline-flex items-center gap-2 rounded-base px-3 py-2 text-sm text-text-secondary transition hover:bg-bg-secondary hover:text-text-primary"
             >
               Find Providers
             </Link>
@@ -312,22 +295,22 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
 
         {/* Provider variant - Navigation links */}
         {variant === 'provider' && (
-          <nav className="hidden md:flex items-center gap-1 ml-4">
+          <nav className="ml-4 hidden items-center gap-1 md:flex">
             <Link
               href="/providers/marketplace"
-              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
+              className="inline-flex items-center gap-2 rounded-base px-3 py-2 text-sm text-text-secondary transition hover:bg-bg-secondary hover:text-text-primary"
             >
               Browse Leads
             </Link>
             <Link
               href="/quotes"
-              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
+              className="inline-flex items-center gap-2 rounded-base px-3 py-2 text-sm text-text-secondary transition hover:bg-bg-secondary hover:text-text-primary"
             >
               My Proposals
             </Link>
             <Link
               href="/orders"
-              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary px-3 py-2 rounded-base transition"
+              className="inline-flex items-center gap-2 rounded-base px-3 py-2 text-sm text-text-secondary transition hover:bg-bg-secondary hover:text-text-primary"
             >
               Orders
             </Link>
@@ -341,14 +324,14 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
               <button
                 type="button"
                 onClick={() => setIsMenuOpen((prev) => !prev)}
-                className="inline-flex items-center gap-2 rounded-full border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:border-border transition"
+                className="hover:border-border inline-flex items-center gap-2 rounded-full border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary transition hover:text-text-primary"
                 aria-haspopup="menu"
                 aria-expanded={isMenuOpen}
                 aria-controls={menuId}
                 ref={menuButtonRef}
               >
-                <UserIcon className="w-4 h-4" aria-hidden="true" />
-                <ChevronDown className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+                <UserIcon className="h-4 w-4" aria-hidden="true" />
+                <ChevronDown className="h-4 w-4 text-text-tertiary" aria-hidden="true" />
               </button>
               {isMenuOpen && (
                 <div
@@ -363,14 +346,14 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                       <Link
                         href="/dashboard"
                         role="menuitem"
-                        className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
+                        className="hover:bg-bg-secondary/60 block px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
                       >
                         Home
                       </Link>
                       <Link
                         href="/settings"
                         role="menuitem"
-                        className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
+                        className="hover:bg-bg-secondary/60 block px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
                       >
                         Settings
                       </Link>
@@ -380,21 +363,21 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                       <Link
                         href="/dashboard"
                         role="menuitem"
-                        className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
+                        className="hover:bg-bg-secondary/60 block px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
                       >
                         Dashboard
                       </Link>
                       <Link
                         href="/profile"
                         role="menuitem"
-                        className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
+                        className="hover:bg-bg-secondary/60 block px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
                       >
                         Profile
                       </Link>
                       <Link
                         href="/settings"
                         role="menuitem"
-                        className="block px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60"
+                        className="hover:bg-bg-secondary/60 block px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
                       >
                         Settings
                       </Link>
@@ -402,11 +385,11 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                   )}
                   <form
                     action={() => logout(router)}
-                    className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-secondary/60 flex items-center gap-2"
+                    className="hover:bg-bg-secondary/60 flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-text-secondary hover:text-text-primary"
                     role="menuitem"
                   >
-                    <button type="submit" className="flex items-center gap-2 w-full text-left">
-                      <LogOut className="w-4 h-4" aria-hidden="true" />
+                    <button type="submit" className="flex w-full items-center gap-2 text-left">
+                      <LogOut className="h-4 w-4" aria-hidden="true" />
                       Logout
                     </button>
                   </form>
@@ -419,15 +402,15 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
 
       {/* Mobile Navigation Menu (landing variant only) */}
       {variant === 'landing' && isMobileMenuOpen && (
-        <div className="md:hidden border-t border-border-light bg-white">
-          <nav className="max-w-7xl mx-auto px-6 py-4 space-y-3" aria-label="Mobile navigation">
+        <div className="border-t border-border-light bg-white md:hidden">
+          <nav className="mx-auto max-w-7xl space-y-3 px-6 py-4" aria-label="Mobile navigation">
             <Link
               href="/#features"
               onClick={(e) => {
                 onAnchorClick?.(e, '#features');
                 setIsMobileMenuOpen(false);
               }}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
               aria-label="View features"
             >
               Features
@@ -438,33 +421,25 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                 onAnchorClick?.(e, '#how-it-works');
                 setIsMobileMenuOpen(false);
               }}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
               aria-label="How it works"
             >
               How it Works
             </Link>
-            <Link
-              href="/#pricing"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
-              aria-label="View pricing"
-            >
-              Pricing
-            </Link>
             {showLandingActions && (
-              <div className="pt-2 space-y-2 border-t border-border-light">
+              <div className="space-y-2 border-t border-border-light pt-2">
                 <Link
                   href="/get-started"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full px-4 py-3 text-base font-semibold text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors text-center"
-                  aria-label="Check your visa eligibility"
+                  className="bg-primary/10 border-primary/20 hover:bg-primary/15 block w-full rounded-lg border px-4 py-3 text-center text-base font-semibold text-primary transition-colors"
+                  aria-label="Get started"
                 >
-                  Check Eligibility
+                  Get Started
                 </Link>
                 <Link
                   href="/auth/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+                  className="block w-full rounded-lg border border-border-light bg-transparent px-4 py-3 text-center text-base font-medium text-text-primary transition-colors hover:bg-bg-secondary"
                   aria-label="Sign in to your account"
                 >
                   Sign In
@@ -472,7 +447,7 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                 <Link
                   href="/get-started"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full px-4 py-3 text-base font-medium text-white bg-gradient-to-b from-primary to-primary-hover rounded-lg transition-all duration-200 text-center"
+                  className="block w-full rounded-lg bg-gradient-to-b from-primary to-primary-hover px-4 py-3 text-center text-base font-medium text-white transition-all duration-200"
                   aria-label="Check your visa eligibility"
                 >
                   Get Started
@@ -485,27 +460,27 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
 
       {/* Mobile Navigation Menu (seeker/provider variants) */}
       {variant === 'seeker' && isMobileMenuOpen && (
-        <div className="md:hidden border-t border-border-light bg-white">
-          <nav className="max-w-7xl mx-auto px-6 py-4 space-y-3" aria-label="Mobile navigation">
+        <div className="border-t border-border-light bg-white md:hidden">
+          <nav className="mx-auto max-w-7xl space-y-3 px-6 py-4" aria-label="Mobile navigation">
             <Link
               href="/dashboard"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
             >
               Dashboard
             </Link>
             <Link
               href="/providers"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
             >
               Find Providers
             </Link>
-            <div className="pt-2 space-y-2 border-t border-border-light">
+            <div className="space-y-2 border-t border-border-light pt-2">
               <Link
                 href="/settings"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+                className="block w-full rounded-lg border border-border-light bg-transparent px-4 py-3 text-center text-base font-medium text-text-primary transition-colors hover:bg-bg-secondary"
               >
                 Settings
               </Link>
@@ -515,7 +490,7 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                   setIsMobileMenuOpen(false);
                   logout(router);
                 }}
-                className="block w-full px-4 py-3 text-base font-semibold text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors text-center"
+                className="bg-primary/10 border-primary/20 hover:bg-primary/15 block w-full rounded-lg border px-4 py-3 text-center text-base font-semibold text-primary transition-colors"
               >
                 Logout
               </button>
@@ -525,41 +500,41 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
       )}
 
       {variant === 'provider' && isMobileMenuOpen && (
-        <div className="md:hidden border-t border-border-light bg-white">
-          <nav className="max-w-7xl mx-auto px-6 py-4 space-y-3" aria-label="Mobile navigation">
+        <div className="border-t border-border-light bg-white md:hidden">
+          <nav className="mx-auto max-w-7xl space-y-3 px-6 py-4" aria-label="Mobile navigation">
             <Link
               href="/providers/marketplace"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
             >
               Browse Leads
             </Link>
             <Link
               href="/quotes"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
             >
               My Proposals
             </Link>
             <Link
               href="/orders"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-3 text-base font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
             >
               Orders
             </Link>
-            <div className="pt-2 space-y-2 border-t border-border-light">
+            <div className="space-y-2 border-t border-border-light pt-2">
               <Link
                 href="/profile"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+                className="block w-full rounded-lg border border-border-light bg-transparent px-4 py-3 text-center text-base font-medium text-text-primary transition-colors hover:bg-bg-secondary"
               >
                 Profile
               </Link>
               <Link
                 href="/settings"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full px-4 py-3 text-base font-medium text-text-primary bg-transparent border border-border-light rounded-lg hover:bg-bg-secondary transition-colors text-center"
+                className="block w-full rounded-lg border border-border-light bg-transparent px-4 py-3 text-center text-base font-medium text-text-primary transition-colors hover:bg-bg-secondary"
               >
                 Settings
               </Link>
@@ -569,7 +544,7 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                   setIsMobileMenuOpen(false);
                   logout(router);
                 }}
-                className="block w-full px-4 py-3 text-base font-semibold text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors text-center"
+                className="bg-primary/10 border-primary/20 hover:bg-primary/15 block w-full rounded-lg border px-4 py-3 text-center text-base font-semibold text-primary transition-colors"
               >
                 Logout
               </button>

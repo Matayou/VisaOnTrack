@@ -146,7 +146,7 @@ export default function RequestDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="flex items-center gap-3 text-gray-500">
           <Loader className="h-5 w-5 animate-spin" />
           <span>Loading request...</span>
@@ -157,16 +157,16 @@ export default function RequestDetailPage() {
 
   if (error || !mappedData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-xl border border-red-100 max-w-md w-full text-center">
-          <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-4" />
-          <h2 className="text-lg font-bold text-gray-900 mb-2">Unable to load request</h2>
-          <p className="text-gray-600 mb-6">{error || 'Request not found'}</p>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+        <div className="w-full max-w-md rounded-xl border border-red-100 bg-white p-6 text-center">
+          <AlertCircle className="mx-auto mb-4 h-10 w-10 text-red-500" />
+          <h2 className="mb-2 text-lg font-bold text-gray-900">Unable to load request</h2>
+          <p className="mb-6 text-gray-600">{error || 'Request not found'}</p>
           <button 
             onClick={() => router.push('/dashboard')}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-gray-700 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </button>
         </div>
@@ -177,13 +177,13 @@ export default function RequestDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-32 lg:pb-12">
       <SeekerHeader />
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
+      <main className="mx-auto max-w-7xl px-4 py-4 lg:px-8 lg:py-6">
         <div className="mb-4 lg:mb-6">
           <button 
             onClick={() => router.push('/dashboard')}
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors px-2 py-1 -ml-2 rounded-lg hover:bg-gray-100/50"
+            className="-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100/50 hover:text-gray-900"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </button>
         </div>
@@ -191,7 +191,7 @@ export default function RequestDetailPage() {
         <div className="lg:grid lg:grid-cols-3 lg:gap-6">
           
           {/* Main Column (Left) */}
-          <div className="lg:col-span-2 space-y-4 mb-4 lg:mb-0">
+          <div className="mb-4 space-y-4 lg:col-span-2 lg:mb-0">
             
             <RequestStatusCard 
               status={mappedData.status} 
@@ -218,7 +218,7 @@ export default function RequestDetailPage() {
           </div>
 
           {/* Sidebar (Right) - Desktop Only */}
-          <aside className="hidden lg:block space-y-6">
+          <aside className="hidden space-y-6 lg:block">
             
             <NextSteps status={mappedData.status} />
 
@@ -236,7 +236,7 @@ export default function RequestDetailPage() {
           </aside>
 
           {/* Mobile Activity (Below main content on mobile) */}
-          <div className="lg:hidden space-y-4">
+          <div className="space-y-4 lg:hidden">
              <ActivityTimeline 
               requestCreatedAt={mappedData.createdAt}
               status={mappedData.status}

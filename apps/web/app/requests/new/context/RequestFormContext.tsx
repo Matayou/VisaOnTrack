@@ -713,8 +713,8 @@ const useRequestFormController = (): RequestFormContextValue => {
     const fieldError = getErrorForField(field, formErrors);
     if (fieldError) {
       return (
-        <p className="mt-2 text-sm text-error flex items-center gap-2" role="alert">
-          <AlertCircle className="w-4 h-4" aria-hidden="true" />
+        <p className="mt-2 flex items-center gap-2 text-sm text-error" role="alert">
+          <AlertCircle className="h-4 w-4" aria-hidden="true" />
           {fieldError}
         </p>
       );
@@ -722,8 +722,8 @@ const useRequestFormController = (): RequestFormContextValue => {
 
     if (fallbackSuccess) {
       return (
-        <p className="mt-2 text-sm text-success flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+        <p className="mt-2 flex items-center gap-2 text-sm text-success">
+          <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
           {fallbackSuccess}
         </p>
       );

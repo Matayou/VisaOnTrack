@@ -146,7 +146,7 @@ export default function ProviderDirectoryPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="flex items-center gap-3 text-gray-500">
           <Loader className="h-5 w-5 animate-spin" />
           <span>Loading providers...</span>
@@ -158,27 +158,27 @@ export default function ProviderDirectoryPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-32 lg:pb-12">
       <SeekerHeader />
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-6">
-        <div className="mb-4 lg:mb-6 flex items-center justify-between">
+      <main className="mx-auto max-w-7xl px-4 py-4 lg:px-8 lg:py-6">
+        <div className="mb-4 flex items-center justify-between lg:mb-6">
           <button 
             onClick={() => router.push('/dashboard')}
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors px-2 py-1 -ml-2 rounded-lg hover:bg-gray-100/50"
+            className="-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100/50 hover:text-gray-900"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </button>
           <button 
             onClick={() => setShowFilters(!showFilters)}
-            className="lg:hidden px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl flex items-center gap-2"
+            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 lg:hidden"
           >
-            <Filter className="w-4 h-4" />
+            <Filter className="h-4 w-4" />
             Filters
           </button>
         </div>
 
         <div className="lg:grid lg:grid-cols-4 lg:gap-6">
           {/* Filters Sidebar */}
-          <aside className={`${showFilters ? 'block' : 'hidden'} lg:block lg:col-span-1 mb-4 lg:mb-0`}>
+          <aside className={`${showFilters ? 'block' : 'hidden'} mb-4 lg:col-span-1 lg:mb-0 lg:block`}>
             <ProviderFilters 
               filters={filters}
               onFiltersChange={setFilters}
@@ -188,23 +188,23 @@ export default function ProviderDirectoryPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {/* Search & View Toggle Bar */}
-            <div className="ios-card p-4 mb-4">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <div className="ios-card mb-4 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
                     placeholder="Search providers by name, location, or specialty..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm"
+                    className="w-full rounded-xl border-gray-200 bg-gray-50/50 py-2 pl-10 pr-4 text-sm text-gray-900 shadow-sm focus:border-primary focus:bg-white focus:ring-primary"
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3"
+                    className="rounded-xl border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-primary focus:bg-white focus:ring-primary"
                   >
                     <option value="recommended">Sort: Recommended</option>
                     <option value="rating">Sort: Highest rated</option>
@@ -212,18 +212,18 @@ export default function ProviderDirectoryPage() {
                     <option value="price-low">Sort: Lowest price</option>
                     <option value="response">Sort: Fastest response</option>
                   </select>
-                  <div className="hidden sm:flex items-center gap-1 border border-gray-200 rounded-lg p-1">
+                  <div className="hidden items-center gap-1 rounded-lg border border-gray-200 p-1 sm:flex">
                     <button 
                       onClick={() => setViewMode('grid')}
-                      className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-500'}`}
+                      className={`rounded p-1.5 transition-colors ${viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-500'}`}
                     >
-                      <Grid3x3 className="w-4 h-4" />
+                      <Grid3x3 className="h-4 w-4" />
                     </button>
                     <button 
                       onClick={() => setViewMode('list')}
-                      className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-500'}`}
+                      className={`rounded p-1.5 transition-colors ${viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-500'}`}
                     >
-                      <List className="w-4 h-4" />
+                      <List className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
@@ -235,22 +235,22 @@ export default function ProviderDirectoryPage() {
 
             {/* Error State */}
             {error && (
-              <div className="bg-red-50 text-red-800 p-4 rounded-xl border border-red-200 flex items-center gap-2 mb-4">
-                <AlertCircle className="w-5 h-5" />
+              <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">
+                <AlertCircle className="h-5 w-5" />
                 {error}
               </div>
             )}
 
             {/* Providers Grid/List */}
             {filteredProviders.length === 0 ? (
-              <div className="text-center py-12 relative overflow-hidden rounded-2xl bg-gray-50/50 border border-gray-100/50">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+              <div className="relative overflow-hidden rounded-2xl border border-gray-100/50 bg-gray-50/50 py-12 text-center">
+                <div className="from-primary/5 pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr to-transparent blur-2xl"></div>
                 <div className="relative z-10">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center ring-4 ring-gray-50">
-                    <Search className="w-8 h-8 text-gray-400" />
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-gray-100 bg-white shadow-sm ring-4 ring-gray-50">
+                    <Search className="h-8 w-8 text-gray-400" />
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2">No providers found</h3>
-                  <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto leading-relaxed">
+                  <h3 className="mb-2 font-bold text-gray-900">No providers found</h3>
+                  <p className="mx-auto mb-6 max-w-xs text-sm leading-relaxed text-gray-500">
                     Try adjusting your filters or search terms
                   </p>
                   <button 
@@ -258,14 +258,14 @@ export default function ProviderDirectoryPage() {
                       setSearchQuery('');
                       setFilters({ verifiedOnly: true, specialties: [], minRating: '', location: '', languages: [], minExperience: '' });
                     }}
-                    className="px-6 py-2.5 bg-white border border-gray-200 hover:border-primary/30 hover:text-primary text-gray-600 font-medium rounded-xl text-sm transition-all shadow-sm hover:shadow flex items-center gap-2 mx-auto"
+                    className="hover:border-primary/30 mx-auto flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-2.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:text-primary hover:shadow"
                   >
                     Clear all filters
                   </button>
                 </div>
               </div>
             ) : (
-              <div className={viewMode === 'grid' ? 'grid sm:grid-cols-2 gap-4' : 'space-y-3'}>
+              <div className={viewMode === 'grid' ? 'grid gap-4 sm:grid-cols-2' : 'space-y-3'}>
                 {filteredProviders.map((provider) => (
                   <ProviderCard
                     key={provider.id}

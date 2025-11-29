@@ -4,7 +4,6 @@ import { Globe, Sparkles, FileText } from 'lucide-react';
 
 import { DropdownSelect } from '@/app/requests/new/components/inputs/DropdownSelect';
 import { DatePickerTrigger } from '@/app/requests/new/components/inputs/DatePickerTrigger';
-import { sectionCardClass } from '@/app/requests/new/constants';
 import { useRequestForm } from '@/app/requests/new/context/RequestFormContext';
 import {
   ageRangeOptions,
@@ -12,6 +11,7 @@ import {
   nationalityOptions,
   residencyOptions,
 } from '@/config/requestForm';
+import { Card } from '@/components/ui';
 
 export function PersonalStep() {
   const {
@@ -27,13 +27,13 @@ export function PersonalStep() {
   } = useRequestForm();
 
   return (
-    <section className={sectionCardClass}>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-base bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white">
-          <Sparkles className="w-6 h-6" aria-hidden="true" />
+    <Card as="section" padding="lg" elevated className="space-y-6">
+      <div className="flex items-center gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
+          <Sparkles className="h-6 w-6" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-text-tertiary font-semibold">Step 1</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-text-tertiary">Step 1</p>
           <h2 className="text-2xl font-semibold tracking-tight">Tell us about you</h2>
           <p className="text-text-secondary">Nationality details help providers assess eligibility.</p>
         </div>
@@ -54,10 +54,10 @@ export function PersonalStep() {
                     key={option.value}
                     type="button"
                     onClick={() => handleAgeRangeSelect(option.value)}
-                    className={`flex-1 min-w-[150px] h-12 rounded-base border px-4 text-base font-semibold transition focus-visible:ring-2 focus-visible:ring-primary/40 flex items-center justify-center ${
+                    className={`focus-visible:ring-primary/40 flex h-12 min-w-[150px] flex-1 items-center justify-center rounded-base border px-4 text-base font-semibold transition focus-visible:ring-2 ${
                       isActive
-                        ? 'border-primary bg-primary/5 text-text-primary shadow-xs'
-                        : 'border-border-light text-text-secondary hover:border-primary/40 hover:text-primary'
+                        ? 'bg-primary/5 border-primary text-text-primary shadow-xs'
+                        : 'hover:border-primary/40 border-border-light text-text-secondary hover:text-primary'
                     }`}
                     aria-pressed={isActive}
                   >
@@ -81,7 +81,7 @@ export function PersonalStep() {
               options={nationalityOptions}
               placeholder="Select nationality"
               onSelect={handleNationalitySelect}
-              startIcon={<Globe className="w-4 h-4 text-text-tertiary" aria-hidden="true" />}
+              startIcon={<Globe className="h-4 w-4 text-text-tertiary" aria-hidden="true" />}
               triggerClassName={getInputClasses('nationality')}
             />
             {renderValidationFeedback('nationality')}
@@ -106,14 +106,14 @@ export function PersonalStep() {
                   key={option.value}
                   type="button"
                   onClick={() => handleResidencySelect(option.value)}
-                  className={`rounded-2xl border px-4 py-4 text-left transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                    isActive ? 'border-primary bg-primary/5 text-text-primary shadow-sm' : 'border-border-light text-text-secondary hover:border-primary/40'
+                  className={`focus-visible:ring-primary/40 rounded-2xl border px-4 py-4 text-left transition focus-visible:ring-2 ${
+                    isActive ? 'bg-primary/5 border-primary text-text-primary shadow-sm' : 'hover:border-primary/40 border-border-light text-text-secondary'
                   }`}
                   aria-pressed={isActive}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-bg-secondary/80 flex items-center justify-center text-primary">
-                      <Icon className="w-5 h-5" aria-hidden="true" />
+                    <div className="bg-bg-secondary/80 flex h-10 w-10 items-center justify-center rounded-full text-primary">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{option.label}</p>
@@ -139,7 +139,7 @@ export function PersonalStep() {
                   updateField('currentVisaType', value);
                   markFieldTouched('currentVisaType');
                 }}
-                startIcon={<FileText className="w-4 h-4 text-text-tertiary" aria-hidden="true" />}
+                startIcon={<FileText className="h-4 w-4 text-text-tertiary" aria-hidden="true" />}
                 triggerClassName={getInputClasses('currentVisaType')}
               />
               {renderValidationFeedback('currentVisaType')}
@@ -162,6 +162,6 @@ export function PersonalStep() {
           </div>
         )}
       </div>
-    </section>
+    </Card>
   );
 }

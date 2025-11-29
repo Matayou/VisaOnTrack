@@ -195,20 +195,20 @@ export default function CredentialsPage() {
 
   return (
     <div className="min-h-screen bg-bg-secondary p-6">
-      <div className="max-w-6xl mx-auto bg-bg-primary border border-border-light rounded-md shadow-md animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className="mx-auto max-w-6xl animate-slide-up rounded-md border border-border-light bg-bg-primary shadow-md">
         {/* Header */}
-        <div className="p-8 border-b border-border-light">
-          <div className="flex gap-2 mb-6">
+        <div className="border-b border-border-light p-8">
+          <div className="mb-6 flex gap-2">
             {[1, 2, 3, 4].map((step) => (
               <div
                 key={step}
-                className={`flex-1 h-1 rounded-sm transition-all duration-150 ${
+                className={`h-1 flex-1 rounded-sm transition-all duration-150 ${
                   step <= 4 ? 'bg-primary' : 'bg-border-light'
                 }`}
               />
             ))}
           </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-2">Professional Credentials</h1>
+          <h1 className="mb-2 text-2xl font-bold tracking-tight">Professional Credentials</h1>
           <p className="text-sm text-text-secondary">Upload your licenses and certifications for verification</p>
         </div>
 
@@ -216,16 +216,16 @@ export default function CredentialsPage() {
         <form onSubmit={handleSubmit} className="p-8">
           {/* Error Message */}
           {error && (
-            <div role="alert" className="mb-6 text-sm text-error flex items-center gap-2">
+            <div role="alert" className="mb-6 flex items-center gap-2 text-sm text-error">
               {error}
             </div>
           )}
 
           {/* Info Banner */}
-          <div className="flex gap-4 p-4 bg-primary/5 border border-primary/10 rounded-base mb-8">
-            <ShieldCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <div className="bg-primary/5 border-primary/10 mb-8 flex gap-4 rounded-base border p-4">
+            <ShieldCheck className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" aria-hidden="true" />
             <div className="flex-1">
-              <strong className="text-sm font-semibold text-text-primary block mb-1">
+              <strong className="mb-1 block text-sm font-semibold text-text-primary">
                 Why we need this
               </strong>
               <p className="text-sm text-text-secondary">
@@ -236,7 +236,7 @@ export default function CredentialsPage() {
 
           {/* Professional License Upload */}
           <div className="mb-8">
-            <label className="text-sm font-medium mb-3 block flex items-center gap-1">
+            <label className="mb-3 block flex items-center gap-1 text-sm font-medium">
               Professional License <span className="text-error">*</span>
             </label>
 
@@ -244,10 +244,10 @@ export default function CredentialsPage() {
               role="button"
               tabIndex={0}
               aria-label="Upload professional license. Click or press Enter to select file. Drag and drop also supported."
-              className={`border-2 border-dashed rounded-base p-8 text-center cursor-pointer transition-all duration-150 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+              className={`mb-4 cursor-pointer rounded-base border-2 border-dashed p-8 text-center transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isDragging
-                  ? 'border-primary bg-primary/8 border-solid'
-                  : 'border-border-light hover:border-primary hover:bg-primary/2'
+                  ? 'bg-primary/8 border-solid border-primary'
+                  : 'hover:bg-primary/2 border-border-light hover:border-primary'
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -255,11 +255,11 @@ export default function CredentialsPage() {
               onClick={() => licenseInputRef.current?.click()}
               onKeyDown={(e) => handleKeyDown(e, setLicenseFiles, licenseInputRef)}
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-base flex items-center justify-center mb-4 mx-auto transition-transform duration-150">
-                <Upload className="w-6 h-6 text-primary" aria-hidden="true" />
+              <div className="bg-primary/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-base transition-transform duration-150">
+                <Upload className="h-6 w-6 text-primary" aria-hidden="true" />
               </div>
-              <div className="text-base text-text-primary mb-1">
-                <span className="text-primary font-medium">Click to upload</span> or drag and drop
+              <div className="mb-1 text-base text-text-primary">
+                <span className="font-medium text-primary">Click to upload</span> or drag and drop
               </div>
               <div className="text-xs text-text-tertiary">PDF, PNG, or JPEG (max 10MB)</div>
               <input
@@ -277,30 +277,30 @@ export default function CredentialsPage() {
                 {licenseFiles.map((fileUpload) => (
                   <div
                     key={fileUpload.id}
-                    className="flex items-center gap-4 p-4 bg-bg-secondary border border-border-light rounded-base animate-[fileSlideIn_300ms_cubic-bezier(0.16,1,0.3,1)]"
+                    className="flex animate-[fileSlideIn_300ms_cubic-bezier(0.16,1,0.3,1)] items-center gap-4 rounded-base border border-border-light bg-bg-secondary p-4"
                   >
-                    <div className="w-10 h-10 bg-bg-primary border border-border-light rounded-md flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-5 h-5 text-text-tertiary" aria-hidden="true" />
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border border-border-light bg-bg-primary">
+                      <FileText className="h-5 w-5 text-text-tertiary" aria-hidden="true" />
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       {fileUpload.status === 'uploading' ? (
                         <>
-                          <div className="text-sm font-medium mb-2 truncate">{fileUpload.name}</div>
+                          <div className="mb-2 truncate text-sm font-medium">{fileUpload.name}</div>
                           <div className="flex items-center gap-2">
-                            <div className="flex-1 h-1.5 bg-border-light rounded-sm overflow-hidden">
+                            <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-border-light">
                               <div
-                                className="h-full bg-primary rounded-sm transition-all duration-200"
+                                className="h-full rounded-sm bg-primary transition-all duration-200"
                                 style={{ width: `${fileUpload.progress}%` }}
                               />
                             </div>
-                            <span className="text-xs text-text-tertiary font-medium min-w-[2.5rem] text-right">
+                            <span className="min-w-[2.5rem] text-right text-xs font-medium text-text-tertiary">
                               {Math.round(fileUpload.progress)}%
                             </span>
                           </div>
                         </>
                       ) : (
                         <>
-                          <div className="text-sm font-medium mb-1 truncate">{fileUpload.name}</div>
+                          <div className="mb-1 truncate text-sm font-medium">{fileUpload.name}</div>
                           <div className="text-xs text-text-tertiary">{fileUpload.size} • Uploaded just now</div>
                         </>
                       )}
@@ -308,12 +308,12 @@ export default function CredentialsPage() {
                     <div className="flex items-center gap-2">
                       {fileUpload.status === 'complete' ? (
                         <div className="flex items-center gap-2 text-xs font-medium text-success">
-                          <CheckCircle className="w-4 h-4" aria-hidden="true" />
+                          <CheckCircle className="h-4 w-4" aria-hidden="true" />
                           <span>Uploaded</span>
                         </div>
                       ) : fileUpload.status === 'uploading' ? (
                         <div className="flex items-center gap-2 text-xs font-medium text-primary">
-                          <Loader className="w-4 h-4 animate-spin" aria-hidden="true" />
+                          <Loader className="h-4 w-4 animate-spin" aria-hidden="true" />
                           <span>Uploading</span>
                         </div>
                       ) : null}
@@ -327,9 +327,9 @@ export default function CredentialsPage() {
                           }
                         }}
                         aria-label={`Remove ${fileUpload.name}`}
-                        className="p-2 text-error bg-transparent border-none rounded-md cursor-pointer transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+                        className="cursor-pointer rounded-md border-none bg-transparent p-2 text-error transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
                       >
-                        <X className="w-4.5 h-4.5" aria-hidden="true" />
+                        <X className="h-4.5 w-4.5" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -340,7 +340,7 @@ export default function CredentialsPage() {
 
           {/* Additional Certifications Upload */}
           <div className="mb-8">
-            <label className="text-sm font-medium mb-3 block">
+            <label className="mb-3 block text-sm font-medium">
               Additional Certifications (Optional)
             </label>
 
@@ -348,10 +348,10 @@ export default function CredentialsPage() {
               role="button"
               tabIndex={0}
               aria-label="Upload additional certifications. Click or press Enter to select files. Drag and drop also supported."
-              className={`border-2 border-dashed rounded-base p-8 text-center cursor-pointer transition-all duration-150 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+              className={`mb-4 cursor-pointer rounded-base border-2 border-dashed p-8 text-center transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isDragging
-                  ? 'border-primary bg-primary/8 border-solid'
-                  : 'border-border-light hover:border-primary hover:bg-primary/2'
+                  ? 'bg-primary/8 border-solid border-primary'
+                  : 'hover:bg-primary/2 border-border-light hover:border-primary'
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -359,11 +359,11 @@ export default function CredentialsPage() {
               onClick={() => certInputRef.current?.click()}
               onKeyDown={(e) => handleKeyDown(e, setCertFiles, certInputRef)}
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-base flex items-center justify-center mb-4 mx-auto transition-transform duration-150">
-                <Upload className="w-6 h-6 text-primary" aria-hidden="true" />
+              <div className="bg-primary/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-base transition-transform duration-150">
+                <Upload className="h-6 w-6 text-primary" aria-hidden="true" />
               </div>
-              <div className="text-base text-text-primary mb-1">
-                <span className="text-primary font-medium">Click to upload</span> or drag and drop
+              <div className="mb-1 text-base text-text-primary">
+                <span className="font-medium text-primary">Click to upload</span> or drag and drop
               </div>
               <div className="text-xs text-text-tertiary">Multiple files allowed • PDF, PNG, or JPEG (max 10MB each)</div>
               <input
@@ -382,30 +382,30 @@ export default function CredentialsPage() {
                 {certFiles.map((fileUpload) => (
                   <div
                     key={fileUpload.id}
-                    className="flex items-center gap-4 p-4 bg-bg-secondary border border-border-light rounded-base animate-[fileSlideIn_300ms_cubic-bezier(0.16,1,0.3,1)]"
+                    className="flex animate-[fileSlideIn_300ms_cubic-bezier(0.16,1,0.3,1)] items-center gap-4 rounded-base border border-border-light bg-bg-secondary p-4"
                   >
-                    <div className="w-10 h-10 bg-bg-primary border border-border-light rounded-md flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-5 h-5 text-text-tertiary" aria-hidden="true" />
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border border-border-light bg-bg-primary">
+                      <FileText className="h-5 w-5 text-text-tertiary" aria-hidden="true" />
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       {fileUpload.status === 'uploading' ? (
                         <>
-                          <div className="text-sm font-medium mb-2 truncate">{fileUpload.name}</div>
+                          <div className="mb-2 truncate text-sm font-medium">{fileUpload.name}</div>
                           <div className="flex items-center gap-2">
-                            <div className="flex-1 h-1.5 bg-border-light rounded-sm overflow-hidden">
+                            <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-border-light">
                               <div
-                                className="h-full bg-primary rounded-sm transition-all duration-200"
+                                className="h-full rounded-sm bg-primary transition-all duration-200"
                                 style={{ width: `${fileUpload.progress}%` }}
                               />
                             </div>
-                            <span className="text-xs text-text-tertiary font-medium min-w-[2.5rem] text-right">
+                            <span className="min-w-[2.5rem] text-right text-xs font-medium text-text-tertiary">
                               {Math.round(fileUpload.progress)}%
                             </span>
                           </div>
                         </>
                       ) : (
                         <>
-                          <div className="text-sm font-medium mb-1 truncate">{fileUpload.name}</div>
+                          <div className="mb-1 truncate text-sm font-medium">{fileUpload.name}</div>
                           <div className="text-xs text-text-tertiary">{fileUpload.size} • Uploaded just now</div>
                         </>
                       )}
@@ -413,12 +413,12 @@ export default function CredentialsPage() {
                     <div className="flex items-center gap-2">
                       {fileUpload.status === 'complete' ? (
                         <div className="flex items-center gap-2 text-xs font-medium text-success">
-                          <CheckCircle className="w-4 h-4" aria-hidden="true" />
+                          <CheckCircle className="h-4 w-4" aria-hidden="true" />
                           <span>Uploaded</span>
                         </div>
                       ) : fileUpload.status === 'uploading' ? (
                         <div className="flex items-center gap-2 text-xs font-medium text-primary">
-                          <Loader className="w-4 h-4 animate-spin" aria-hidden="true" />
+                          <Loader className="h-4 w-4 animate-spin" aria-hidden="true" />
                           <span>Uploading</span>
                         </div>
                       ) : null}
@@ -432,9 +432,9 @@ export default function CredentialsPage() {
                           }
                         }}
                         aria-label={`Remove ${fileUpload.name}`}
-                        className="p-2 text-error bg-transparent border-none rounded-md cursor-pointer transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+                        className="cursor-pointer rounded-md border-none bg-transparent p-2 text-error transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
                       >
-                        <X className="w-4.5 h-4.5" aria-hidden="true" />
+                        <X className="h-4.5 w-4.5" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -444,7 +444,7 @@ export default function CredentialsPage() {
           </div>
 
           {/* Actions */}
-          <div className="pt-6 border-t border-border-light flex justify-between gap-4">
+          <div className="flex justify-between gap-4 border-t border-border-light pt-6">
             <button
               type="button"
               onClick={() => router.push('/onboarding/provider/services')}
@@ -455,9 +455,9 @@ export default function CredentialsPage() {
                 }
               }}
               aria-label="Go back to previous step"
-              className="h-11 px-6 text-base font-medium text-text-primary bg-bg-secondary border border-border-light rounded-base cursor-pointer transition-all duration-150 inline-flex items-center gap-2 hover:bg-bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-base border border-border-light bg-bg-secondary px-6 text-base font-medium text-text-primary transition-all duration-150 hover:bg-bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              <ArrowLeft className="w-4.5 h-4.5" aria-hidden="true" />
+              <ArrowLeft className="h-4.5 w-4.5" aria-hidden="true" />
               Back
             </button>
             <button
@@ -465,21 +465,21 @@ export default function CredentialsPage() {
               disabled={isLoading || licenseFiles.length === 0 || licenseFiles.some((f) => f.status !== 'complete')}
               aria-label={isLoading ? 'Submitting credentials' : 'Submit credentials for review'}
               aria-disabled={isLoading || licenseFiles.length === 0 || licenseFiles.some((f) => f.status !== 'complete')}
-              className={`h-11 px-6 text-base font-medium text-white rounded-base cursor-pointer transition-all duration-200 shadow-xs inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+              className={`inline-flex h-11 cursor-pointer items-center gap-2 rounded-base px-6 text-base font-medium text-white shadow-xs transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                 isLoading || licenseFiles.length === 0 || licenseFiles.some((f) => f.status !== 'complete')
-                  ? 'opacity-60 cursor-not-allowed'
+                  ? 'cursor-not-allowed opacity-60'
                   : 'bg-gradient-to-b from-primary to-primary-hover'
               }`}
             >
               {isLoading ? (
                 <>
-                  <Loader className="w-4.5 h-4.5 animate-spin" aria-hidden="true" />
+                  <Loader className="h-4.5 w-4.5 animate-spin" aria-hidden="true" />
                   <span>{LOADING_SAVING}</span>
                 </>
               ) : (
                 <>
                   <span>Submit for Review</span>
-                  <ArrowRight className="w-4.5 h-4.5" aria-hidden="true" />
+                  <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
                 </>
               )}
             </button>

@@ -75,16 +75,16 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthPageShell>
-      <div className="ios-card w-full max-w-[28rem] p-6 sm:p-8">
+      <div className="ios-card w-full max-w-auth p-6 sm:p-8">
         {/* Header */}
         <div className="pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 text-primary rounded-xl mb-6 border border-primary/20">
-            <Lock className="w-7 h-7" aria-hidden="true" />
+          <div className="bg-primary/10 border-primary/20 mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl border text-primary">
+            <Lock className="h-7 w-7" aria-hidden="true" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight">
+          <h1 className="mb-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
             <GradientText>Reset your password</GradientText>
           </h1>
-          <p className="text-base text-text-secondary leading-relaxed">Enter your email and we&apos;ll send you a reset link</p>
+          <p className="text-base leading-relaxed text-text-secondary">Enter your email and we&apos;ll send you a reset link</p>
         </div>
 
         {/* Form */}
@@ -94,11 +94,11 @@ export default function ForgotPasswordPage() {
             {isSuccess && (
               <div
                 role="alert"
-                className="p-5 bg-gradient-to-br from-success-light to-green-50 border border-green-200 rounded-lg"
+                className="rounded-lg border border-green-200 bg-gradient-to-br from-success-light to-green-50 p-5"
               >
-                <div className="flex gap-3 items-start">
-                  <CheckCircle className="w-6 h-6 text-success flex-shrink-0 mt-0.5" aria-hidden="true" />
-                  <p className="text-sm text-text-secondary leading-relaxed">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-success" aria-hidden="true" />
+                  <p className="text-sm leading-relaxed text-text-secondary">
                     If an account with that email exists, a password reset link has been sent. Please check your inbox
                     and click the link to reset your password.
                   </p>
@@ -108,15 +108,15 @@ export default function ForgotPasswordPage() {
 
             {/* Error Message */}
             {error && (
-              <div role="alert" className="text-xs text-error flex items-center gap-2 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+              <div role="alert" className="flex animate-slide-up items-center gap-2 text-xs text-error">
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
                 {error}
               </div>
             )}
 
             {/* Email Input */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium tracking-normal flex items-center gap-2">
+              <label htmlFor="email" className="flex items-center gap-2 text-sm font-medium tracking-normal">
                 Email address
               </label>
               <div className="relative">
@@ -125,12 +125,12 @@ export default function ForgotPasswordPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
+                      ? 'border-success bg-success-light/5 focus:shadow-focus-success'
                       : emailValidation.status === 'error'
-                      ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
+                      ? 'border-error bg-error-light/5 focus:shadow-focus-error'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
                   }`}
                   placeholder="you@example.com"
                   required
@@ -140,11 +140,11 @@ export default function ForgotPasswordPage() {
                   aria-describedby={emailValidation.status !== 'empty' ? 'email-message' : undefined}
                 />
                 {(emailValidation.status === 'success' || emailValidation.status === 'error') && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-opacity duration-150 opacity-100">
+                  <div className="pointer-events-none absolute right-4 top-1/2 flex -translate-y-1/2 items-center opacity-100 transition-opacity duration-150">
                     {emailValidation.status === 'success' ? (
-                      <CheckCircle className="w-[18px] h-[18px] text-success" aria-hidden="true" />
+                      <CheckCircle className="h-4.5 w-4.5 text-success" aria-hidden="true" />
                     ) : (
-                      <AlertCircle className="w-[18px] h-[18px] text-error" aria-hidden="true" />
+                      <AlertCircle className="h-4.5 w-4.5 text-error" aria-hidden="true" />
                     )}
                   </div>
                 )}
@@ -152,12 +152,12 @@ export default function ForgotPasswordPage() {
               {emailValidation.status !== 'empty' && (
                 <div
                   id="email-message"
-                  className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${
+                  className={`flex min-h-4.5 items-center gap-2 text-xs transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'text-success opacity-100 translate-y-0'
+                      ? 'translate-y-0 text-success opacity-100'
                       : emailValidation.status === 'error'
-                      ? 'text-error opacity-100 translate-y-0'
-                      : 'opacity-0 -translate-y-1'
+                      ? 'translate-y-0 text-error opacity-100'
+                      : '-translate-y-1 opacity-0'
                   }`}
                 >
                   {emailValidation.message}
@@ -182,7 +182,7 @@ export default function ForgotPasswordPage() {
               href="/auth/login"
               className="inline-flex items-center gap-2 text-base font-semibold text-text-secondary no-underline transition-colors duration-200 hover:text-primary"
             >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               Back to sign in
             </Link>
           </div>

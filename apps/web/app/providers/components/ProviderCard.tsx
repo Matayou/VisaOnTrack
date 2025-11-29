@@ -59,7 +59,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
       stars.push(
         <Star
           key={i}
-          className={`w-3.5 h-3.5 ${i <= provider.rating ? 'text-amber-400 fill-current' : 'text-gray-300 fill-current'}`}
+          className={`h-3.5 w-3.5 ${i <= provider.rating ? 'fill-current text-amber-400' : 'fill-current text-gray-300'}`}
         />
       );
     }
@@ -68,30 +68,30 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
 
   if (viewMode === 'list') {
     return (
-      <div className="ios-card p-4 hover:border-primary/30 transition-colors">
+      <div className="ios-card hover:border-primary/30 p-4 transition-colors">
         <div className="flex items-start gap-4">
-          <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${getAvatarColor(provider.id)} flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-xl`}>
+          <div className={`h-16 w-16 rounded-xl bg-gradient-to-br ${getAvatarColor(provider.id)} flex flex-shrink-0 items-center justify-center text-xl font-bold text-white shadow-sm`}>
             {getInitials(provider.businessName)}
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-3 mb-2">
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex items-start justify-between gap-3">
               <div>
-                <h3 className="font-semibold text-gray-900 text-base mb-1">
+                <h3 className="mb-1 text-base font-semibold text-gray-900">
                   {provider.businessName}
                 </h3>
                 <p className="text-xs text-gray-500">{provider.location}</p>
               </div>
               {provider.verifiedAt && (
-                <span className="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 flex-shrink-0 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" />
+                <span className="flex flex-shrink-0 items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
+                  <ShieldCheck className="h-3.5 w-3.5" />
                   Verified
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+            <p className="mb-3 text-sm leading-relaxed text-gray-600">
               {provider.description}
             </p>
-            <div className="flex flex-wrap items-center gap-4 text-sm mb-3">
+            <div className="mb-3 flex flex-wrap items-center gap-4 text-sm">
               {provider.rating && (
                 <div className="flex items-center gap-1">
                   <div className="flex items-center gap-0.5">
@@ -113,7 +113,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
             {provider.specialties && provider.specialties.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {provider.specialties.map((specialty) => (
-                  <span key={specialty} className="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">
+                  <span key={specialty} className="rounded-lg bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
                     {specialty}
                   </span>
                 ))}
@@ -122,7 +122,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
           </div>
           <button 
             onClick={() => router.push(`/providers/${provider.id}`)}
-            className="px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200 flex-shrink-0"
+            className="flex-shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-600"
           >
             View profile
           </button>
@@ -133,16 +133,16 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
 
   // Grid view
   return (
-    <div className="ios-card p-5 hover:border-primary/30 transition-colors">
-      <div className="flex items-start gap-3 mb-4">
-        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${getAvatarColor(provider.id)} flex items-center justify-center flex-shrink-0 shadow-sm text-white font-bold text-lg`}>
+    <div className="ios-card hover:border-primary/30 p-5 transition-colors">
+      <div className="mb-4 flex items-start gap-3">
+        <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${getAvatarColor(provider.id)} flex flex-shrink-0 items-center justify-center text-lg font-bold text-white shadow-sm`}>
           {getInitials(provider.businessName)}
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 text-base mb-1 truncate">
+        <div className="min-w-0 flex-1">
+          <h3 className="mb-1 truncate text-base font-semibold text-gray-900">
             {provider.businessName}
           </h3>
-          <p className="text-xs text-gray-500 mb-2">{provider.location}</p>
+          <p className="mb-2 text-xs text-gray-500">{provider.location}</p>
           <div className="flex items-center gap-2">
             {provider.rating && (
               <>
@@ -154,8 +154,8 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
               </>
             )}
             {provider.verifiedAt && (
-              <span className="px-2 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/10 ml-auto flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" />
+              <span className="ml-auto flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
+                <ShieldCheck className="h-3.5 w-3.5" />
                 Verified
               </span>
             )}
@@ -163,30 +163,30 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
         </div>
       </div>
 
-      <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">
+      <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
         {provider.description}
       </p>
 
       {provider.specialties && provider.specialties.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="mb-4 flex flex-wrap gap-1.5">
           {provider.specialties.map((specialty) => (
-            <span key={specialty} className="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg">
+            <span key={specialty} className="rounded-lg bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
               {specialty}
             </span>
           ))}
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+      <div className="mb-4 grid grid-cols-2 gap-3 text-sm">
         {provider.startingPrice && (
           <div>
-            <p className="text-xs uppercase text-gray-400 tracking-wide mb-0.5">From</p>
+            <p className="mb-0.5 text-xs uppercase tracking-wide text-gray-400">From</p>
             <p className="font-semibold text-gray-900">{currencyFormatter.format(provider.startingPrice)}</p>
           </div>
         )}
         {provider.responseTime && (
           <div>
-            <p className="text-xs uppercase text-gray-400 tracking-wide mb-0.5">Response</p>
+            <p className="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Response</p>
             <p className="font-semibold text-gray-900">~{provider.responseTime}</p>
           </div>
         )}
@@ -194,7 +194,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, viewMode }
 
       <button 
         onClick={() => router.push(`/providers/${provider.id}`)}
-        className="w-full px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-indigo-600 rounded-xl transition-all shadow-sm shadow-indigo-200"
+        className="w-full rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-600"
       >
         View profile
       </button>

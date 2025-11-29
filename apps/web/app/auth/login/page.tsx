@@ -102,21 +102,21 @@ export default function LoginPage() {
 
   return (
     <AuthPageShell>
-      <div className="ios-card w-full max-w-[28rem] mx-auto p-6 sm:p-8">
+      <div className="ios-card mx-auto w-full max-w-auth p-6 sm:p-8">
         <div className="relative pb-6 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 text-primary rounded-xl mb-6 border border-primary/20">
-            <Compass className="w-7 h-7" aria-hidden="true" />
+          <div className="bg-primary/10 border-primary/20 mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl border text-primary">
+            <Compass className="h-7 w-7" aria-hidden="true" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 leading-tight">
+          <h1 className="mb-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
             <GradientText>Welcome back</GradientText>
           </h1>
-          <p className="text-base text-text-secondary leading-relaxed">Sign in to your SawadeePass account</p>
+          <p className="text-base leading-relaxed text-text-secondary">Sign in to your SawadeePass account</p>
         </div>
 
         <div className="px-1 sm:px-2 md:px-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium tracking-normal flex items-center gap-2">
+              <label htmlFor="email" className="flex items-center gap-2 text-sm font-medium tracking-normal">
                 Email address
               </label>
               <div className="relative">
@@ -125,12 +125,12 @@ export default function LoginPage() {
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full h-12 px-4 text-base font-sans text-text-primary bg-bg-primary border rounded-base transition-all duration-150 outline-none pr-11 ${
+                  className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'border-success bg-success-light/5 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.1)]'
+                      ? 'border-success bg-success-light/5 focus:shadow-focus-success'
                       : emailValidation.status === 'error'
-                      ? 'border-error bg-error-light/5 focus:shadow-[0_0_0_3px_rgba(220,38,38,0.1)]'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]'
+                      ? 'border-error bg-error-light/5 focus:shadow-focus-error'
+                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
                   }`}
                   placeholder="you@example.com"
                   required
@@ -139,11 +139,11 @@ export default function LoginPage() {
                   aria-describedby={emailValidation.status !== 'empty' ? 'email-message' : undefined}
                 />
                 {(emailValidation.status === 'success' || emailValidation.status === 'error') && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-opacity duration-150 opacity-100">
+                  <div className="pointer-events-none absolute right-4 top-1/2 flex -translate-y-1/2 items-center opacity-100 transition-opacity duration-150">
                     {emailValidation.status === 'success' ? (
-                      <CheckCircle className="w-[18px] h-[18px] text-success" aria-hidden="true" />
+                      <CheckCircle className="h-4.5 w-4.5 text-success" aria-hidden="true" />
                     ) : (
-                      <AlertCircle className="w-[18px] h-[18px] text-error" aria-hidden="true" />
+                      <AlertCircle className="h-4.5 w-4.5 text-error" aria-hidden="true" />
                     )}
                   </div>
                 )}
@@ -151,12 +151,12 @@ export default function LoginPage() {
               {emailValidation.status !== 'empty' && (
                 <div
                   id="email-message"
-                  className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${
+                  className={`flex min-h-4.5 items-center gap-2 text-xs transition-all duration-150 ${
                     emailValidation.status === 'success'
-                      ? 'text-success opacity-100 translate-y-0'
+                      ? 'translate-y-0 text-success opacity-100'
                       : emailValidation.status === 'error'
-                      ? 'text-error opacity-100 translate-y-0'
-                      : 'opacity-0 -translate-y-1'
+                      ? 'translate-y-0 text-error opacity-100'
+                      : '-translate-y-1 opacity-0'
                   }`}
                 >
                   {emailValidation.message}
@@ -177,7 +177,7 @@ export default function LoginPage() {
                     setPassword(e.target.value);
                     setError(null);
                   }}
-                  className="w-full h-12 px-4 pr-11 text-base font-sans text-text-primary bg-bg-primary border border-border-light rounded-base transition-all duration-150 outline-none hover:border-border-medium focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                  className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
                   placeholder="Enter your password"
                   required
                   autoComplete="current-password"
@@ -185,10 +185,10 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none p-2 cursor-pointer text-text-tertiary flex items-center rounded-sm transition-all duration-150 hover:text-text-secondary hover:bg-bg-secondary"
+                  className="absolute right-4 top-1/2 flex -translate-y-1/2 cursor-pointer items-center rounded-sm border-none bg-transparent p-2 text-text-tertiary transition-all duration-150 hover:bg-bg-secondary hover:text-text-secondary"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff className="w-[18px] h-[18px]" aria-hidden="true" /> : <Eye className="w-[18px] h-[18px]" aria-hidden="true" />}
+                  {showPassword ? <EyeOff className="h-4.5 w-4.5" aria-hidden="true" /> : <Eye className="h-4.5 w-4.5" aria-hidden="true" />}
                 </button>
               </div>
             </div>
@@ -200,23 +200,23 @@ export default function LoginPage() {
                   id="remember"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 cursor-pointer accent-primary"
+                  className="h-4 w-4 cursor-pointer accent-primary"
                 />
-                <label htmlFor="remember" className="text-sm text-text-secondary cursor-pointer select-none">
+                <label htmlFor="remember" className="cursor-pointer select-none text-sm text-text-secondary">
                   Remember me
                 </label>
               </div>
               <Link
                 href="/auth/forgot-password"
-                className="text-sm font-medium text-primary no-underline transition-colors duration-150 hover:text-primary-hover ml-auto"
+                className="ml-auto text-sm font-medium text-primary no-underline transition-colors duration-150 hover:text-primary-hover"
               >
                 Forgot password?
               </Link>
             </div>
 
             {error && (
-              <div role="alert" className="text-xs text-error flex items-center gap-2 animate-[slideUp_300ms_cubic-bezier(0.16,1,0.3,1)]">
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+              <div role="alert" className="flex animate-slide-up items-center gap-2 text-xs text-error">
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
                 {error}
               </div>
             )}
@@ -226,10 +226,10 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="flex items-center gap-4 my-8">
-            <div className="flex-1 h-px bg-border-light" />
+          <div className="my-8 flex items-center gap-4">
+            <div className="h-px flex-1 bg-border-light" />
             <span className="text-sm text-text-tertiary">New to SawadeePass?</span>
-            <div className="flex-1 h-px bg-border-light" />
+            <div className="h-px flex-1 bg-border-light" />
           </div>
 
           <div className="text-center">

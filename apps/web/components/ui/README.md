@@ -148,20 +148,6 @@ All button sizes meet minimum touch target requirements:
 <Button>Submit</Button>
 ```
 
-### From button class constants
-
-**Before:**
-```tsx
-import { primaryButtonClass } from '@/app/requests/new/constants';
-<button className={primaryButtonClass}>Submit</button>
-```
-
-**After:**
-```tsx
-import { Button } from '@/components/ui';
-<Button>Submit</Button>
-```
-
 ---
 
 ## Testing
@@ -218,5 +204,5 @@ The following pages have been migrated to use these shared components:
 
 - Design system: `tailwind.config.ts`
 - Global styles: `app/globals.css`
-- Card classes: `app/requests/new/constants.ts` (button classes deprecated)
+- Design system docs: `docs/design/DESIGN_SYSTEM_CURRENT_STATE.md`
 

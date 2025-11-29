@@ -1,19 +1,19 @@
 openapi: 3.1.0
 info:
   title: VisaOnTrack v2 API
-  version: 0.2.4
+  version: 0.2.5
   description: |
     Two-sided marketplace API connecting visa seekers with vetted service providers in Thailand.
-    
+
     ## Authentication
     This API uses JWT tokens stored in HttpOnly cookies. Include credentials with requests.
-    
+
     ## Entitlements & Quotas
     Provider plans (Free/Pro/Pro+/Enterprise) enforce entitlements at the API middleware level.
     Over-quota actions return structured errors (403 EntitlementExceeded, 429 Throttled).
-    
+
     ## Versioning
-    Contract version: 0.2.4 (semver) - RFC-003: Email verification flow
+    Contract version: 0.2.5 (semver) - RFC-005: Consultation offerings
     Breaking changes will increment major version and require client regeneration.
   
   contact:
@@ -41,6 +41,8 @@ tags:
     description: Service packages
   - name: requests
     description: Visa request posting and management
+  - name: consultations
+    description: Consultation offerings (free and paid discovery calls)
   - name: messages
     description: Request messaging and attachments
   - name: quotes
@@ -679,6 +681,199 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== CONSULTATIONS ====================
+  /requests/{id}/consultations:
+    post:
+      tags:
+        - consultations
+      summary: Offer consultation
+      description: Provider offers consultation (free or paid) to seeker for a request
+      operationId: offerConsultation
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Request ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferConsultationRequest'
+      responses:
+        '201':
+          description: Consultation offered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consultation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input (price required for paid consultations)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: Provider hasn't unlocked request or not a provider
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: Request not found
+
+    get:
+      tags:
+        - consultations
+      summary: List consultations
+      description: Get all consultation offers for a request (seeker or providers who unlocked)
+      operationId: listConsultations
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Request ID
+      responses:
+        '200':
+          description: Consultation list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Consultation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: Not authorized to view consultations for this request
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /consultations/{id}/book:
+    post:
+      tags:
+        - consultations
+      summary: Book consultation
+      description: Seeker books a consultation slot (payment required for paid consultations)
+      operationId: bookConsultation
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Consultation ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookConsultationRequest'
+      responses:
+        '200':
+          description: Consultation booked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookConsultationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input or consultation not available
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: Not authorized to book this consultation
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '402':
+          description: Payment required for paid consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookConsultationResponse'
+
+  /consultations/{id}/complete:
+    post:
+      tags:
+        - consultations
+      summary: Complete consultation
+      description: Provider marks consultation as completed after call happens
+      operationId: completeConsultation
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Consultation ID
+      responses:
+        '200':
+          description: Consultation marked as completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consultation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Consultation not in bookable state
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: Not the provider who offered this consultation
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /consultations/{id}/cancel:
+    post:
+      tags:
+        - consultations
+      summary: Cancel consultation
+      description: Seeker or provider cancels a consultation (refund issued for paid consultations)
+      operationId: cancelConsultation
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Consultation ID
+      responses:
+        '200':
+          description: Consultation cancelled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consultation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Consultation cannot be cancelled in current state
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: Not authorized to cancel this consultation
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -2612,4 +2807,173 @@ components:
           type: string
           format: date-time
           description: When counter resets (first of next month)
+
+    # ==================== CONSULTATIONS ====================
+    ConsultationType:
+      type: string
+      enum:
+        - FREE
+        - PAID
+      description: Type of consultation offering (free discovery call or paid consultation)
+
+    ConsultationStatus:
+      type: string
+      enum:
+        - OFFERED
+        - BOOKED
+        - COMPLETED
+        - CANCELLED
+        - EXPIRED
+      description: |
+        Consultation lifecycle status:
+        - OFFERED: Provider offered, seeker hasn't booked yet
+        - BOOKED: Seeker booked, awaiting scheduled call
+        - COMPLETED: Call happened
+        - CANCELLED: Either party cancelled
+        - EXPIRED: Offer expired (7 days after creation)
+
+    Consultation:
+      type: object
+      description: Consultation offer from provider to seeker (RFC-005)
+      required:
+        - id
+        - requestId
+        - providerId
+        - type
+        - durationMinutes
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        requestId:
+          type: string
+          format: uuid
+          description: Foreign key to Request
+        providerId:
+          type: string
+          format: uuid
+          description: Foreign key to ProviderProfile
+        type:
+          $ref: '#/components/schemas/ConsultationType'
+        priceTHB:
+          type: number
+          minimum: 0
+          nullable: true
+          description: Price in Thai Baht (null for FREE consultations, ฿500-฿10,000 for PAID)
+        durationMinutes:
+          type: integer
+          minimum: 15
+          maximum: 120
+          description: Call duration (15, 30, 45, or 60 minutes typical)
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          description: What will be discussed in the call
+        meetingLink:
+          type: string
+          format: uri
+          maxLength: 500
+          nullable: true
+          description: Zoom/Google Meet link (can be added later)
+        scheduledAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the call is scheduled (set when seeker books)
+        status:
+          $ref: '#/components/schemas/ConsultationStatus'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        provider:
+          type: object
+          nullable: true
+          description: Provider information (included in list/get responses)
+          properties:
+            id:
+              type: string
+              format: uuid
+            businessName:
+              type: string
+            businessType:
+              type: string
+              nullable: true
+            yearsExperience:
+              type: integer
+              nullable: true
+            verifiedAt:
+              type: string
+              format: date-time
+              nullable: true
+
+    OfferConsultationRequest:
+      type: object
+      description: Request to offer consultation to seeker (RFC-005)
+      required:
+        - type
+        - durationMinutes
+      properties:
+        type:
+          $ref: '#/components/schemas/ConsultationType'
+        priceTHB:
+          type: number
+          minimum: 500
+          maximum: 10000
+          description: Required for PAID consultations (฿500-฿10,000 range)
+        durationMinutes:
+          type: integer
+          enum: [15, 30, 45, 60]
+          description: Call duration in minutes
+        description:
+          type: string
+          maxLength: 1000
+          description: What will be discussed in the call
+        meetingLink:
+          type: string
+          format: uri
+          maxLength: 500
+          description: Zoom/Google Meet link (optional, can add later)
+
+    BookConsultationRequest:
+      type: object
+      description: Request to book a consultation slot (RFC-005)
+      required:
+        - scheduledAt
+      properties:
+        scheduledAt:
+          type: string
+          format: date-time
+          description: When seeker wants to have the call (must be future date)
+        notes:
+          type: string
+          maxLength: 500
+          description: Seeker's notes/questions for the call
+
+    BookConsultationResponse:
+      type: object
+      description: Response after booking consultation (RFC-005)
+      required:
+        - consultation
+      properties:
+        consultation:
+          $ref: '#/components/schemas/Consultation'
+        paymentIntent:
+          type: object
+          nullable: true
+          description: Only present for paid consultations requiring payment
+          properties:
+            clientSecret:
+              type: string
+              description: Stripe PaymentIntent client secret for frontend
+              example: 'pi_xxx_secret_xxx'
+            amount:
+              type: number
+              description: Amount in THB
 

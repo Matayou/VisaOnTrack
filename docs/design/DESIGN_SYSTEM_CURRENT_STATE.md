@@ -5,7 +5,7 @@
 
 ## Overview
 
-This document captures the current state of the design system implementation in VisaOnTrack v2, including design tokens, component library, and usage patterns.
+This document captures the current state of the design system implementation in SawadeePass, including design tokens, component library, and usage patterns.
 
 ## Design Tokens
 
@@ -43,6 +43,12 @@ The `apps/web/app/globals.css` file defines minimal CSS variables:
 - `--color-text-on-dark*` — text hierarchy tuned for ≥4.5:1 contrast on dark surfaces.
 - `--color-border-footer` — subtle dividers that remain visible on the new surface.
 - `--color-glow-footer` — radial accent used for the soft gradient glow.
+
+## Enforcement Guardrails
+
+- **Lint:** `eslint-plugin-tailwindcss` added (warn level) to flag arbitrary values and non-token classnames. Run with `pnpm lint` in `apps/web`.
+- **Policy:** Tokens-first for colors/spacing/radii; new UI should avoid hex/inline values unless added to Tailwind config.
+- **Next step:** Once existing pages are cleaned up, raise the warnings to errors in CI.
 
 ### Tailwind Configuration
 
@@ -140,6 +146,28 @@ Located in `apps/web/components/ui/`:
    - Accessible navigation with ARIA labels
    - Used on all pages except auth pages
 
+9. **Card** (`Card.tsx`) ✅ NEW
+   - Variants: default, muted, outline
+   - Spacing presets: none, sm, md (default), lg
+   - Optional elevation (`shadow-md`)
+   - Subcomponents: `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`
+
+10. **Modal/Dialog** (`Modal.tsx`) ✅ NEW
+    - Controlled via `open` + `onClose`
+    - Sizes: sm, md (default), lg
+    - Backdrop click + Esc to close, optional close button
+    - Accessible roles/labels; uses design tokens for surface/border
+
+11. **Toast/Inline Alert** (`Toast.tsx`) ✅ NEW
+    - Variants: info, success, warning, error
+    - Inline banner for feedback (not a global toasting system)
+    - Tokenized colors and radii, iconography included
+
+12. **Select** (`Select.tsx`) ✅ NEW
+    - Matches Input sizing/radius (`h-12`, `rounded-base`)
+    - State styling: default, error, success
+    - Supports `options` prop or custom `<option>` children
+
 ### Component Usage
 
 **Good Practices:**
@@ -159,9 +187,19 @@ Located in `apps/web/components/ui/`:
 
 ### Card/Container Patterns
 
-- **baseCardClass:** `bg-bg-primary border border-border-light rounded-base shadow-sm`
-- Used consistently across request forms and dashboard
-- Defined in `apps/web/app/requests/new/constants.ts`
+**Standardization Complete:** ✅
+- ✅ All card styling now uses the `Card` component from `@/components/ui`
+- ✅ Deprecated `baseCardClass`, `sectionCardClass`, `panelClass`, `mutedPanelClass` constants removed
+- Use `<Card padding="lg" elevated>` for sections, `<Card variant="muted">` for muted backgrounds
+
+**Card Component Features:**
+- Variants: `default`, `muted`, `outline`
+- Padding presets: `none`, `sm`, `md` (default), `lg`
+- Optional `elevated` prop for shadow
+- Semantic element support via `as` prop: `div`, `section`, `article`, `aside`
+- Subcomponents: `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`
+
+**Note:** The constants file `apps/web/app/requests/new/constants.ts` has been deleted as all its exports (card and button class constants) were deprecated and unused.
 
 ### Form Input Patterns
 
@@ -342,15 +380,15 @@ Located in `apps/web/components/ui/`:
 ### Missing Components
 1. ✅ **Input Component** - COMPLETE (Phase 1)
 2. ✅ **Form Field Component** - COMPLETE (Phase 1)
-3. **Card Component** - Cards use class strings, should be a component
-4. **Modal/Dialog Component** - Not found in codebase
-5. **Toast/Notification Component** - Not found in codebase
-6. **Select/Dropdown Component** - Custom implementation exists but not in component library
+3. ✅ **Card Component** - COMPLETE (Phase 3) - all pages migrated to use `Card`
+4. ✅ **Modal/Dialog Component** - COMPLETE (Phase 3)
+5. ✅ **Toast/Notification Component** - COMPLETE (Phase 3)
+6. ✅ **Select/Dropdown Component** - COMPLETE (Phase 3)
 
 ### Design Token Gaps
-1. CSS variables are minimal - should expand or remove if not used
-2. Some colors hardcoded instead of using tokens
-3. Spacing values sometimes arbitrary
+1. ✅ CSS variables expanded and integrated with Tailwind config
+2. ⚠️ Some arbitrary values still in use (186 violations flagged by lint)
+3. ⚠️ Spacing values sometimes arbitrary - needs token standardization
 
 ### Pattern Standardization Needed
 1. ✅ Form validation patterns extracted to shared utilities - COMPLETE (Phase 1)
@@ -359,38 +397,72 @@ Located in `apps/web/components/ui/`:
 4. ✅ Loading state patterns standardized - COMPLETE (Phase 2)
 5. ✅ Error handling patterns standardized - COMPLETE (Phase 2)
 6. ✅ Footer component created and added to all pages - COMPLETE (Phase 2)
+7. ✅ Card component adopted across all wizard/form sections - COMPLETE (Phase 3)
 
 ## Recommendations
 
-### High Priority
+### High Priority - ✅ ALL COMPLETE
 1. ✅ Create Input component with consistent styling - COMPLETE (Phase 1)
 2. ✅ Create FormField component (label + input + validation) - COMPLETE (Phase 1)
 3. ✅ Standardize header implementation - COMPLETE (Phase 2)
 4. ✅ Extract form validation to shared utilities - COMPLETE (Phase 1)
 5. ✅ Remove deprecated button classes - COMPLETE (Phase 1)
 
-### Medium Priority
+### Medium Priority - ✅ ALL COMPLETE
 1. ✅ Expand CSS variables or remove if not used - COMPLETE (Phase 2)
-2. Create Card component (Phase 3)
+2. ✅ Create Card component - COMPLETE (Phase 3)
 3. ✅ Standardize loading state patterns - COMPLETE (Phase 2, 100% coverage)
-4. Create Modal/Dialog component (Phase 3)
+4. ✅ Create Modal/Dialog component - COMPLETE (Phase 3)
 5. ✅ Standardize error handling patterns - COMPLETE (Phase 2, 100% coverage)
 6. ✅ Create Footer component - COMPLETE (Phase 2)
+7. ✅ Deprecated card class constants removed - COMPLETE (Phase 3)
+
+### Low Priority - IN PROGRESS
+1. ✅ Create Toast/Notification component - COMPLETE (Phase 3)
+2. ⚠️ Fix arbitrary value lint warnings (186 remaining)
+3. ⚠️ Fix classname ordering (1422 warnings - auto-fixable)
+4. Standardize animation patterns
 5. Improve responsive design consistency
 
-### Low Priority
-1. Create Toast/Notification component
-2. Standardize animation patterns
-3. Improve color token usage
-4. Document component usage patterns
+## Lint Status
+
+**Date:** 2025-11-29 (Updated)
+**Status:** ✅ Class ordering enforced, arbitrary values monitored
+
+| Category | Count | Status |
+|----------|-------|--------|
+| `tailwindcss/classnames-order` | 0 | ✅ Fixed & enforced (error) |
+| `tailwindcss/no-arbitrary-value` | ~94 | ⚠️ Warn level (complex patterns) |
+| `tailwindcss/no-custom-classname` | ~20 | ⚠️ Warn level |
+
+**Tokens Added to `tailwind.config.ts`:**
+- `max-w-auth` → 28rem (448px) for auth card containers
+- `w-4.5`, `h-4.5` → 1.125rem (18px) for icon sizes
+- `min-h-4.5` → 1.125rem (18px) for minimum heights
+- `rounded-xs` → 2px for small corners (checkboxes)
+- Focus shadows: `shadow-focus-primary`, `shadow-focus-success`, `shadow-focus-error`
+- Accent shadows: `shadow-primary-sm`, `shadow-primary-md`, `shadow-success-sm`, `shadow-success-md`
+- Colors: `success-bright` (#10b981)
+- Animations: `animate-slide-up`, `animate-fade-in-up`, `animate-fade-in-up-slow`, `animate-scale-in`, `animate-file-slide-in`
+
+**Remaining Arbitrary Values (acceptable):**
+- Complex animations with delays (e.g., `animate-[fadeInUp_600ms_..._300ms_both]`)
+- Grid layouts with fractional units (`lg:grid-cols-[1.2fr_1fr]`)
+- Letter spacing (`tracking-[0.3em]`)
+- Viewport-relative sizing (`min-w-[72vw]`)
+
+**CI Integration:** ✅ Lint runs on every PR/push via `.github/workflows/ci.yml`
 
 ## Next Steps
 
-1. ✅ Component library expanded (Input, FormField) - COMPLETE
+1. ✅ Component library expanded (Input, FormField, Card, Modal, Toast, Select) - COMPLETE
 2. ✅ Shared form validation utilities created - COMPLETE
-3. Standardize header component (Phase 2)
-4. Update pages to use new Input/FormField components (optional, gradual migration)
-5. ✅ Deprecated patterns removed - COMPLETE
+3. ✅ Standardize header component - COMPLETE (Phase 2)
+4. ✅ Deprecated patterns removed (card classes, button classes) - COMPLETE
+5. ⚠️ Run `pnpm lint --fix` to resolve class ordering warnings
+6. ⚠️ Add missing tokens to `tailwind.config.ts` for arbitrary values
+7. ⚠️ Flip Tailwind lint rules from `warn` to `error` after cleanup
+8. ⚠️ Add lint check to CI pipeline
 
 ## Phase 1 & 2 Completion Summary
 
@@ -416,4 +488,3 @@ All medium priority items from the audit findings resolution plan have been comp
 See completion reports for details:
 - `docs/design/AUDIT_FINDINGS_RESOLUTION_PHASE1_COMPLETE.md`
 - `docs/design/AUDIT_FINDINGS_RESOLUTION_PHASE2_COMPLETE.md`
-

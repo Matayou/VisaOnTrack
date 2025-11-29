@@ -39,12 +39,12 @@ export const ProviderFilters: React.FC<ProviderFiltersProps> = ({ filters, onFil
   };
 
   return (
-    <div className="ios-card p-5 sticky top-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="ios-card sticky top-6 p-5">
+      <div className="mb-4 flex items-center justify-between">
         <h3 className="text-sm font-bold text-gray-900">Filters</h3>
         <button 
           onClick={handleClearAll}
-          className="text-xs text-primary hover:text-indigo-600 font-medium"
+          className="text-xs font-medium text-primary hover:text-indigo-600"
         >
           Clear all
         </button>
@@ -60,13 +60,13 @@ export const ProviderFilters: React.FC<ProviderFiltersProps> = ({ filters, onFil
               onChange={(e) => onFiltersChange({ ...filters, verifiedOnly: e.target.checked })}
               className="rounded border-gray-300 text-primary focus:ring-primary"
             />
-            <span className="text-gray-700 font-medium">Verified providers only</span>
+            <span className="font-medium text-gray-700">Verified providers only</span>
           </label>
         </div>
 
         {/* Specialization */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Specialization
           </label>
           <div className="space-y-2">
@@ -86,7 +86,7 @@ export const ProviderFilters: React.FC<ProviderFiltersProps> = ({ filters, onFil
 
         {/* Rating */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Minimum Rating
           </label>
           <div className="space-y-2">
@@ -109,13 +109,13 @@ export const ProviderFilters: React.FC<ProviderFiltersProps> = ({ filters, onFil
 
         {/* Location */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Location
           </label>
           <select
             value={filters.location}
             onChange={(e) => onFiltersChange({ ...filters, location: e.target.value })}
-            className="w-full rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3"
+            className="w-full rounded-xl border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-primary focus:bg-white focus:ring-primary"
           >
             <option value="">All locations</option>
             <option value="Bangkok">Bangkok</option>
@@ -127,7 +127,7 @@ export const ProviderFilters: React.FC<ProviderFiltersProps> = ({ filters, onFil
 
         {/* Languages */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Languages
           </label>
           <div className="space-y-2">
@@ -147,13 +147,13 @@ export const ProviderFilters: React.FC<ProviderFiltersProps> = ({ filters, onFil
 
         {/* Experience */}
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
             Experience
           </label>
           <select
             value={filters.minExperience}
             onChange={(e) => onFiltersChange({ ...filters, minExperience: e.target.value })}
-            className="w-full rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-gray-900 shadow-sm focus:border-primary focus:ring-primary text-sm py-2 px-3"
+            className="w-full rounded-xl border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-primary focus:bg-white focus:ring-primary"
           >
             <option value="">Any experience</option>
             <option value="5">5+ years</option>

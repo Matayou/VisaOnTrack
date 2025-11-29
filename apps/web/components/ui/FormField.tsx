@@ -105,7 +105,7 @@ export const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
         >
           {label}
           {required && (
-            <span className="text-error ml-1" aria-label="required">
+            <span className="ml-1 text-error" aria-label="required">
               *
             </span>
           )}
@@ -142,7 +142,7 @@ export const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
         {showMessage && (
           <div
             id={`${name}-message`}
-            className={`text-xs flex items-center gap-2 transition-all duration-150 min-h-[1.125rem] ${
+            className={`flex min-h-[1.125rem] items-center gap-2 text-xs transition-all duration-150 ${
               hasError
                 ? 'text-error'
                 : hasSuccess
@@ -152,9 +152,9 @@ export const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
             role={hasError ? 'alert' : undefined}
           >
             {hasError ? (
-              <AlertCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+              <AlertCircle className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
             ) : hasSuccess ? (
-              <CheckCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+              <CheckCircle className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
             ) : null}
             <span>{message}</span>
           </div>

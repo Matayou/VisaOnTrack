@@ -34,4 +34,9 @@ export type Request = {
     location?: string | null;
     status: RequestStatus;
     createdAt: string;
+    updatedAt: string;
+    /**
+     * Raw intake form data captured during request creation
+     */
+    intakeData?: Record<string, any> | null;
 };

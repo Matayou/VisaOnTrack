@@ -84,6 +84,7 @@ export { AuthService } from './services/AuthService';
 export { BillingService } from './services/BillingService';
 export { CheckoutService } from './services/CheckoutService';
 export { ConsultationsService } from './services/ConsultationsService';
+export { CreditsService } from './services/CreditsService';
 export { MessagesService } from './services/MessagesService';
 export { OrdersService } from './services/OrdersService';
 export { PackagesService } from './services/PackagesService';

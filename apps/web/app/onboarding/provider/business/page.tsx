@@ -9,7 +9,6 @@ import {
   CheckCircle,
   CheckCircle2,
   Loader,
-  Info,
   Phone,
   Globe,
   Lightbulb,
@@ -22,7 +21,8 @@ import {
 } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { ProviderHeader } from '@/components/ProviderHeader';
-import { Button, Card } from '@/components/ui';
+import { Button, Card, Footer } from '@/components/ui';
+import { OnboardingProgress } from '@/components/onboarding';
 import { LOADING_SAVING } from '@/lib/loading-messages';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
 
@@ -423,130 +423,29 @@ export default function BusinessDetailsPage() {
     validateAndSetError(field, value);
   };
 
-  const providerSteps = [
-    {
-      id: 'business',
-      title: 'Business',
-      subtitle: 'Company details, location, languages, and expertise. Help seekers find and trust your business.',
-    },
-    {
-      id: 'services',
-      title: 'Services',
-      subtitle: 'Define your service packages with pricing, deliverables, and timelines. What you offer to visa seekers.',
-    },
-    {
-      id: 'credentials',
-      title: 'Credentials',
-      subtitle: 'Upload licenses, certifications, and verification documents. Build trust with proof of qualifications.',
-    },
-    {
-      id: 'payouts',
-      title: 'Payouts',
-      subtitle: 'Connect your Stripe account to receive payments securely. Set up your payment method for earnings.',
-    },
-  ];
-
-  const currentStepIndex = 0; // Business is step 1
-  const progressPercentage = ((currentStepIndex + 1) / providerSteps.length) * 100;
+  const currentStep = 1; // Business is step 1
 
   return (
-    <div className="min-h-screen bg-bg-secondary">
+    <div className="flex min-h-screen flex-col bg-bg-secondary">
       <ProviderHeader />
-      <div className="relative p-6 lg:p-10">
-        <div className="mx-auto max-w-6xl space-y-6">
-          <Card padding="none" elevated className="px-6 py-8 md:px-10 md:py-10">
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-16">
-              {/* Left Column: Heading & Description */}
-              <div className="space-y-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-text-tertiary">
-                  Provider onboarding
-                </p>
-                <h1 className="text-3xl font-semibold leading-[1.15] tracking-tight text-text-primary md:text-4xl lg:text-[2.5rem]">
-                  Set up your provider profile
-                </h1>
-                <p className="max-w-xl text-base leading-relaxed text-text-secondary md:text-lg">
-                  Complete your business details to start receiving requests from visa seekers. Your profile helps seekers find and trust you.
-                </p>
-              </div>
-
-              {/* Right Column: Feature List */}
-              <div className="lg:border-l lg:border-border-light lg:pl-6">
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="mt-0.5 flex-shrink-0">
-                      <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
-                    </div>
-                    <span className="text-sm leading-relaxed text-text-secondary">
-                      Verified providers get priority in search results.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="mt-0.5 flex-shrink-0">
-                      <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
-                    </div>
-                    <span className="text-sm leading-relaxed text-text-secondary">
-                      Complete profiles receive more requests from seekers.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="mt-0.5 flex-shrink-0">
-                      <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
-                    </div>
-                    <span className="text-sm leading-relaxed text-text-secondary">
-                      All changes are saved automatically as you type.
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </div>
+      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl space-y-6">
+          {/* Progress Section */}
+          <Card padding="md" elevated className="animate-fade-in-up">
+            <OnboardingProgress currentStep={currentStep} />
           </Card>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Card as="section" padding="none" elevated className="space-y-6 p-6 md:p-8">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-text-tertiary">
-                  Step {currentStepIndex + 1} of {providerSteps.length}
-                </p>
-                <h2 className="text-2xl font-semibold text-text-primary">Business Details</h2>
-                <p className="text-sm text-text-secondary">Tell us about your business and expertise</p>
-              </div>
-              <div className="bg-border/30 h-2 w-full overflow-hidden rounded-full" aria-hidden="true">
-                <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progressPercentage}%` }} />
-              </div>
-              <ol
-                className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-2 sm:grid sm:snap-none sm:grid-cols-4 sm:overflow-visible"
-                aria-label="Provider onboarding progress"
-              >
-                {providerSteps.map((step, index) => {
-                  const stepComplete = index < currentStepIndex;
-                  const isActive = index === currentStepIndex;
-                  return (
-                    <li key={step.id} className="min-w-[72vw] flex-shrink-0 snap-center sm:w-auto sm:min-w-0">
-                      <div
-                        className={`w-full rounded-2xl border px-4 py-3 text-left text-xs sm:text-sm ${
-                          isActive
-                            ? 'bg-primary/5 border-primary text-text-primary shadow-sm'
-                            : stepComplete
-                            ? 'border-success/50 bg-success/5 text-text-secondary'
-                            : 'bg-bg-secondary/60 border-border-light text-text-tertiary'
-                        }`}
-                        aria-current={isActive ? 'step' : undefined}
-                      >
-                        <div className="flex items-center gap-2 font-semibold text-text-primary">
-                          {stepComplete ? (
-                            <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
-                          ) : (
-                            <span className="text-xs text-text-tertiary">{index + 1}</span>
-                          )}
-                          <span className="truncate">{step.title}</span>
-                        </div>
-                        <p className="mt-1 line-clamp-3 text-[0.7rem] leading-relaxed text-text-tertiary">{step.subtitle}</p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            </Card>
+          {/* Page Header */}
+          <div className="animate-fade-in-up px-1" style={{ animationDelay: '100ms' }}>
+            <h1 className="mb-2 text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+              Business Details
+            </h1>
+            <p className="text-base text-text-secondary">
+              Tell us about your business and expertise to help seekers find you
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="animate-fade-in-up space-y-6" style={{ animationDelay: '200ms' }}>
 
             {/* Form Content */}
             <Card as="section" padding="none" elevated className="space-y-8 p-6 md:p-8">
@@ -951,7 +850,8 @@ export default function BusinessDetailsPage() {
             </div>
           </form>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }

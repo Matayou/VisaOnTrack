@@ -10,10 +10,14 @@ import { OfferConsultationDto } from './dto/offer-consultation.dto';
 import { BookConsultationDto } from './dto/book-consultation.dto';
 import { ConsultationResponseDto } from './dto/consultation-response.dto';
 import { BookConsultationResponseDto } from './dto/book-consultation-response.dto';
+import { EntitlementsService } from '../billing/entitlements.service';
 
 @Injectable()
 export class ConsultationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly entitlements: EntitlementsService,
+  ) {}
 
   /**
    * Offer a consultation (provider only)
@@ -23,6 +27,22 @@ export class ConsultationsService {
     providerId: string,
     dto: OfferConsultationDto,
   ): Promise<ConsultationResponseDto> {
+    // Get provider's userId for entitlement check
+    const provider = await this.prisma.providerProfile.findUnique({
+      where: { id: providerId },
+      select: { userId: true },
+    });
+
+    if (!provider) {
+      throw new NotFoundException('Provider profile not found');
+    }
+
+    // Check if provider has access to consultations feature (premium only)
+    await this.entitlements.requireEntitlement(
+      provider.userId,
+      'consultations.canOffer',
+    );
+
     // Verify request exists
     const request = await this.prisma.request.findUnique({
       where: { id: requestId },

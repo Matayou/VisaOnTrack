@@ -1,6 +1,8 @@
 import React from 'react';
 import { type Request } from '@visaontrack/client';
-import { Bookmark, Unlock } from 'lucide-react';
+import { Bookmark, Unlock, MessageSquare } from 'lucide-react';
+import { FeatureGate } from '@/components/FeatureGate';
+import { useRouter } from 'next/navigation';
 
 interface LeadCardProps {
   request: Request & { unlockStatus?: 'LOCKED' | 'UNLOCKED' };
@@ -15,6 +17,7 @@ const currencyFormatter = new Intl.NumberFormat('th-TH', {
 });
 
 export const LeadCard: React.FC<LeadCardProps> = ({ request, onUnlock, onSave }) => {
+  const router = useRouter();
   const isLocked = request.unlockStatus !== 'UNLOCKED';
   
   // Calculate match score (mock for now - would be calculated by backend)
@@ -101,7 +104,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({ request, onUnlock, onSave })
           <>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Unlock className="h-4 w-4 text-primary" />
-              <span>Unlock with <span className="font-semibold text-gray-900">10 credits</span> to view full details</span>
+              <span>Unlock with <span className="font-semibold text-gray-900">1 credit</span> to view full details</span>
             </div>
             <div className="flex w-full items-center gap-2 sm:w-auto">
               <button 
@@ -128,12 +131,46 @@ export const LeadCard: React.FC<LeadCardProps> = ({ request, onUnlock, onSave })
               </span>
               <span className="text-gray-500">You can now send a proposal</span>
             </div>
-            <button 
-              onClick={() => {/* TODO: Navigate to proposal form */}}
-              className="rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-600"
-            >
-              Send proposal
-            </button>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+              <FeatureGate
+                feature="messaging.enabled"
+                fallback={
+                  <div className="rounded-lg border-2 border-amber-200 bg-amber-50 p-3">
+                    <div className="flex items-start gap-2">
+                      <span className="text-lg">💎</span>
+                      <div>
+                        <p className="text-sm font-medium text-amber-900">
+                          Messaging is a PRO Feature
+                        </p>
+                        <p className="text-xs text-amber-700 mt-1">
+                          Upgrade to communicate directly with this client
+                        </p>
+                        <button
+                          onClick={() => router.push('/pricing')}
+                          className="mt-2 text-xs font-medium text-amber-900 underline hover:text-amber-800"
+                        >
+                          View Plans →
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              >
+                <button
+                  onClick={() => router.push(`/requests/${request.id}/thread`)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-600"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Send Message
+                </button>
+              </FeatureGate>
+              <button
+                onClick={() => {/* TODO: Navigate to proposal form */}}
+                className="rounded-xl border border-gray-300 bg-white px-5 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50"
+              >
+                Send proposal
+              </button>
+            </div>
           </>
         )}
       </div>

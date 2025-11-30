@@ -126,4 +126,33 @@ requestBody: UpdateRequestRequest,
         });
     }
 
+    /**
+     * Unlock request (provider)
+     * Deducts a credit and unlocks the request for the provider
+     * @returns any Request unlocked
+     * @throws ApiError
+     */
+    public static unlockRequest({
+id,
+}: {
+id: string,
+}): CancelablePromise<{
+success: boolean;
+remainingCredits: number;
+proposalId?: string;
+}> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/requests/{id}/unlock',
+            path: {
+                'id': id,
+            },
+            errors: {
+                401: `Authentication required or invalid token`,
+                403: `Insufficient permissions`,
+                404: `Resource not found`,
+            },
+        });
+    }
+
 }

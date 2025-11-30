@@ -1,6 +1,12 @@
-# VisaOnTrack Docs Guide
+# SawadeePass Docs Guide
+
+**🚀 NEW TO THE RECOVERY PLAN? Start here:** [START_HERE.md](./START_HERE.md)
 
 Use this map to find the canonical source for each type of information. When creating new material, append to the source listed here (or add a short pointer back to it) instead of spawning another top-level doc.
+
+## Overview & Scope
+- `docs/overview/PROJECT_BRIEF.md` — canonical one-pager (vision, model, stage).
+- `docs/overview/SCOPE_AND_OBJECTIVES.md` — scope boundaries and current objectives.
 
 ## Status & Coordination
 - `PROJECT_STATUS.md` — single source for milestone + program status.
@@ -9,7 +15,7 @@ Use this map to find the canonical source for each type of information. When cre
 - `docs/coordination/*review*.md` — supplemental review notes only. Start each with a pointer to the task doc.
 
 ## Product Requirements
-- `visaontrack-v2-spec.md` — platform-wide spec.
+- `sawadeepass-v2-spec.md` — platform-wide spec.
 - `docs/user-stories/PROVIDER_DASHBOARD_OVERVIEW.md` — module map.
 - `docs/user-stories/PROVIDER_DASHBOARD_USER_STORIES.md` — acceptance criteria.
 - `docs/user-stories/PROVIDER_DASHBOARD_CHECKLIST.md` — implementation checklist (acts as DoD for the module).

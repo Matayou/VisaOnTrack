@@ -9,7 +9,7 @@ info:
     This API uses JWT tokens stored in HttpOnly cookies. Include credentials with requests.
 
     ## Entitlements & Quotas
-    Provider plans (Free/Pro/Pro+/Enterprise) enforce entitlements at the API middleware level.
+    Provider plans (Free/Pro/Agency) enforce entitlements at the API middleware level.
     Over-quota actions return structured errors (403 EntitlementExceeded, 429 Throttled).
 
     ## Versioning
@@ -478,6 +478,27 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
 
+  /providers/me:
+    get:
+      tags:
+        - providers
+      summary: Get current provider profile
+      description: Get provider profile for the authenticated user
+      operationId: getCurrentProvider
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Provider profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /providers/{id}:
     get:
       tags:
@@ -677,6 +698,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Request'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /requests/{id}/unlock:
+    post:
+      tags:
+        - requests
+      summary: Unlock request (provider)
+      description: Deducts a credit and unlocks the request for the provider, returning remaining credits and created proposal id.
+      operationId: unlockRequest
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Request unlocked
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - remainingCredits
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  remainingCredits:
+                    type: integer
+                    minimum: 0
+                    description: Remaining credit balance after unlock
+                  proposalId:
+                    type: string
+                    format: uuid
+                    nullable: true
+                    description: Draft proposal created during unlock (if applicable)
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1364,6 +1431,123 @@ paths:
           description: Webhook processed (idempotent)
         '400':
           description: Invalid webhook signature or payload
+
+  # ==================== CREDITS ====================
+  /credits/balance:
+    get:
+      tags:
+        - credits
+      summary: Get credit balance
+      description: Get current credit balance for authenticated provider
+      operationId: getBalance
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Credit balance
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - credits
+                properties:
+                  credits:
+                    type: integer
+                    minimum: 0
+                    description: Current credit balance
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /credits/history:
+    get:
+      tags:
+        - credits
+      summary: Get credit transaction history
+      description: Get credit transaction history for authenticated provider
+      operationId: getHistory
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Credit transaction history
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - transactions
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - id
+                        - amount
+                        - type
+                        - createdAt
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        amount:
+                          type: integer
+                          description: Positive (purchase/grant) or negative (spend/refund)
+                        type:
+                          type: string
+                          enum: [PURCHASE, SPEND, REFUND, GRANT]
+                        reason:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /credits/purchase:
+    post:
+      tags:
+        - credits
+      summary: Purchase credits (simulated)
+      description: Simulate credit pack purchase and return new balance (PROVIDER role)
+      operationId: purchaseCredits
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - packId
+              properties:
+                packId:
+                  type: string
+                  description: Credit pack identifier (e.g., pack_small, pack_medium, pack_large)
+      responses:
+        '200':
+          description: Purchase processed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - newBalance
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  newBalance:
+                    type: integer
+                    minimum: 0
+                    description: Updated credit balance after purchase
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
 
   # ==================== ADMIN (Placeholders - M7) ====================
   /admin/providers:
@@ -2063,6 +2247,7 @@ components:
         - description
         - status
         - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2103,6 +2288,14 @@ components:
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        intakeData:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: Raw intake form data captured during request creation
     
     RequestStatus:
       type: string
@@ -2152,6 +2345,11 @@ components:
           type: string
           maxLength: 200
           nullable: true
+        intakeData:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: Raw intake form data captured during request creation
         status:
           $ref: '#/components/schemas/RequestStatus'
           default: DRAFT
@@ -2179,6 +2377,11 @@ components:
         location:
           type: string
           maxLength: 200
+        intakeData:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: Raw intake form data captured during request creation
         status:
           $ref: '#/components/schemas/RequestStatus'
     
@@ -2673,8 +2876,7 @@ components:
       enum:
         - FREE
         - PRO
-        - PRO_PLUS
-        - ENTERPRISE
+        - AGENCY
     
     CheckoutSessionResponse:
       type: object
@@ -2750,11 +2952,19 @@ components:
     
     EntitlementsResponse:
       type: object
-      description: Full entitlements and usage counters per Section 4
+      description: Plan entitlements and usage stats for the authenticated provider
       required:
+        - planCode
+        - planName
         - entitlements
         - usage
       properties:
+        planCode:
+          $ref: '#/components/schemas/PlanCode'
+        planName:
+          type: string
+          description: Human-readable plan name (Free, Pro, Agency)
+          example: 'Pro'
         entitlements:
           type: object
           additionalProperties:
@@ -2762,19 +2972,49 @@ components:
               - type: string
               - type: number
               - type: boolean
-          description: Key-value entitlements per plan (e.g., quotes.monthly.max=50, packages.max=12, visibility.weight=1.2, attachments.maxSizeMB=25)
+          description: Key-value entitlements per plan
           example:
-            quotes.monthly.max: 50
+            consultations.canOffer: true
+            consultations.platformFee: 0.15
+            credits.monthlyFree: 10
             packages.max: 12
-            photos.max: 12
-            attachments.maxSizeMB: 25
-            visibility.weight: 1.2
-            analytics.level: 'advanced'
+            fileUpload.maxSizeMB: 25
+            search.rankingBoost: 2
+            analytics.enabled: true
         usage:
-          type: array
-          items:
-            $ref: '#/components/schemas/UsageCounter'
-          description: Usage counters for current period
+          type: object
+          required:
+            - creditsRemaining
+            - creditsUsedThisMonth
+            - monthlyFreeCredits
+            - packagesCreated
+            - packagesMax
+            - consultationsOffered
+          properties:
+            creditsRemaining:
+              type: number
+              minimum: 0
+              description: Current credits balance
+            creditsUsedThisMonth:
+              type: number
+              minimum: 0
+              description: Credits used in current month
+            monthlyFreeCredits:
+              type: number
+              minimum: 0
+              description: Free credits allocated per month based on plan
+            packagesCreated:
+              type: number
+              minimum: 0
+              description: Number of service packages created
+            packagesMax:
+              type: number
+              minimum: 0
+              description: Maximum service packages allowed by plan
+            consultationsOffered:
+              type: number
+              minimum: 0
+              description: Total consultations offered by provider
     
     UsageCounter:
       type: object

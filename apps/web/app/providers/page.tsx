@@ -158,7 +158,7 @@ export default function ProviderDirectoryPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-32 lg:pb-12">
       <SeekerHeader />
-      <main className="mx-auto max-w-7xl px-4 py-4 lg:px-8 lg:py-6">
+      <main className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:py-6">
         <div className="mb-4 flex items-center justify-between lg:mb-6">
           <button 
             onClick={() => router.push('/dashboard')}

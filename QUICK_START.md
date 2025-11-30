@@ -1,4 +1,4 @@
-# VisaOnTrack v2 — Quick Start Guide
+# SawadeePass v2 — Quick Start Guide
 
 **For:** Tech Lead, Backend Engineer, Frontend Engineer  
 **Status:** Ready to begin M0 work
@@ -19,7 +19,7 @@ mkdir -p apps/web apps/api packages/types packages/client packages/ui infra .git
 ```
 
 **Reference:** `MILESTONE_M0.md` Section 1  
-**Check against:** `visaontrack-v2-spec.md` Section 1 (Repo layout)
+**Check against:** `sawadeepass-v2-spec.md` Section 1 (Repo layout)
 
 ---
 
@@ -39,7 +39,7 @@ touch packages/types/openapi.yaml
 # - Admin endpoints (placeholders)
 ```
 
-**Reference:** `visaontrack-v2-spec.md` Section 5 (API endpoints)  
+**Reference:** `sawadeepass-v2-spec.md` Section 5 (API endpoints)  
 **Version:** `v0.2.0` (semver)
 
 ---
@@ -56,7 +56,7 @@ touch apps/api/prisma/schema.prisma
 # - Admin models (AdminUser, VerificationCase, etc.)
 ```
 
-**Reference:** `visaontrack-v2-spec.md` Section 3 (Data Model)  
+**Reference:** `sawadeepass-v2-spec.md` Section 3 (Data Model)  
 **Generate client:** `npx prisma generate`
 
 ---
@@ -89,7 +89,7 @@ touch .github/workflows/ci.yml
 # 4. Preview (deploy to preview environments)
 ```
 
-**Reference:** `visaontrack-v2-spec.md` Section 14 (CI/CD Pipeline)
+**Reference:** `sawadeepass-v2-spec.md` Section 14 (CI/CD Pipeline)
 
 ---
 
@@ -98,7 +98,7 @@ touch .github/workflows/ci.yml
 Before starting any task:
 
 - [ ] ✅ Task is in `MILESTONE_M0.md`
-- [ ] ✅ Implementation matches `visaontrack-v2-spec.md`
+- [ ] ✅ Implementation matches `sawadeepass-v2-spec.md`
 - [ ] ✅ No "extra" features beyond spec
 - [ ] ✅ RFC created if proposing changes beyond spec
 
@@ -123,7 +123,7 @@ Before starting any task:
 
 ## 🔗 Key Files
 
-- **Spec:** `visaontrack-v2-spec.md` (single source of truth)
+- **Spec:** `sawadeepass-v2-spec.md` (single source of truth)
 - **Milestone:** `MILESTONE_M0.md` (task breakdown)
 - **Status:** `PROJECT_STATUS.md` (progress tracking)
 - **Templates:** `TASK_TEMPLATES.md` (DoR/DoD/RFC)

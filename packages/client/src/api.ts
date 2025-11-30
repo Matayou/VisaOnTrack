@@ -36,7 +36,7 @@ function configureClient() {
   OpenAPI.BASE = baseUrl;
   OpenAPI.WITH_CREDENTIALS = true; // Enable credentials (JWT HttpOnly cookies)
   OpenAPI.CREDENTIALS = 'include'; // Include credentials with all requests
-  OpenAPI.VERSION = '0.2.0';
+  OpenAPI.VERSION = '0.2.5';
 }
 
 // Configure on import

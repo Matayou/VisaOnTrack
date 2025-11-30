@@ -1,6 +1,6 @@
-# VisaOnTrack v2 — Architecture Overview
+# SawadeePass v2 — Architecture Overview
 
-This document provides a high-level overview of the VisaOnTrack v2 architecture. For the complete technical specification, see [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md).
+This document provides a high-level overview of the SawadeePass v2 architecture. For the complete technical specification, see [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md).
 
 ---
 
@@ -36,7 +36,7 @@ Request-centric platform where seekers post requests and providers reply with qu
   .github/workflows/ (CI/CD)
 ```
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 1 for details.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 1 for details.
 
 ---
 
@@ -61,7 +61,7 @@ See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 1 for detai
 5. **Vetting** → Admin reviews → VerificationCase
 6. **Approval** → `ProviderProfile.verifiedAt` set
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 6 for full workflows.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 6 for full workflows.
 
 ---
 
@@ -76,7 +76,7 @@ See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 6 for full 
 **Admin Models (12):**
 - AdminUser, VerificationCase, DisputeCase, Payout, Refund, FeatureFlag, FeeSchedule, Banner, EmailTemplate, AuditLog, InternalNote, Report
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 3 for full data model.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 3 for full data model.
 
 ---
 
@@ -91,7 +91,7 @@ See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 3 for full 
 **Endpoints:**
 - Auth, Providers, Requests, Messages, Quotes, Orders, Reviews, Billing, Admin
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 5 for full API specification.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 5 for full API specification.
 
 ---
 
@@ -107,7 +107,7 @@ See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 5 for full 
 - Funds held in escrow
 - Release/refund per Order/Dispute
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 10 for payment details.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 10 for payment details.
 
 ---
 
@@ -118,7 +118,7 @@ See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 10 for paym
 **Database:** Neon / Supabase (PostgreSQL)  
 **CI/CD:** GitHub Actions
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 14 for CI/CD pipeline.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 14 for CI/CD pipeline.
 
 ---
 
@@ -130,7 +130,7 @@ See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 14 for CI/C
 - **Data Privacy:** PDPA/GDPR compliance
 - **Authentication:** JWT via HttpOnly cookies
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 11 for full security requirements.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 11 for full security requirements.
 
 ---
 
@@ -141,13 +141,13 @@ See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 11 for full
 - **Logging:** Structured logs
 - **Monitoring:** GitHub Actions status, webhook health
 
-See [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md) Section 12 for observability details.
+See [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md) Section 12 for observability details.
 
 ---
 
 ## 📚 Reference Documentation
 
-- **Full Specification:** [`../visaontrack-v2-spec.md`](../visaontrack-v2-spec.md)
+- **Full Specification:** [`../sawadeepass-v2-spec.md`](../sawadeepass-v2-spec.md)
 - **Contributing:** [`../CONTRIBUTING.md`](../CONTRIBUTING.md)
 - **Agent Team:** [`../AGENT_TEAM.md`](../AGENT_TEAM.md)
 - **Scope Guardian:** [`../SCOPE_GUARDIAN.md`](../SCOPE_GUARDIAN.md)

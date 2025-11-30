@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Plus, Trash2, Loader } from 'lucide-react';
+import { Plus, Trash2, Package, DollarSign, Clock, FileText, Sparkles } from 'lucide-react';
 import { api } from '@visaontrack/client';
-import { ProviderHeader } from '@/components/ProviderHeader';
+import { OnboardingLayout } from '@/components/onboarding';
+import { Button, Card, Toast } from '@/components/ui';
 import { LOADING_SAVING } from '@/lib/loading-messages';
-import { Footer } from '@/components/ui';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
 
 interface Service {
@@ -17,22 +17,36 @@ interface Service {
   description: string;
 }
 
+const SUGGESTED_SERVICES = [
+  {
+    name: 'Marriage Visa Application',
+    price: '25000',
+    duration: '4-6 weeks',
+    description: 'Complete application process including document preparation, form filing, and immigration office representation',
+  },
+  {
+    name: 'Retirement Visa Extension',
+    price: '15000',
+    duration: '2-3 weeks',
+    description: 'Annual retirement visa extension with full document preparation and immigration assistance',
+  },
+  {
+    name: 'Business Visa (Non-B)',
+    price: '35000',
+    duration: '6-8 weeks',
+    description: 'Full business visa application including work permit coordination and company documentation',
+  },
+];
+
 export default function ServicesPricingPage() {
   const router = useRouter();
   const [services, setServices] = useState<Service[]>([
     {
       id: '1',
-      name: 'Marriage Visa Application',
-      price: '25000',
-      duration: '4-6 weeks',
-      description: 'Complete application process including document preparation, form filing, and immigration office representation',
-    },
-    {
-      id: '2',
-      name: 'Retirement Visa Extension',
-      price: '15000',
-      duration: '2-3 weeks',
-      description: 'Annual retirement visa extension with full document preparation and immigration assistance',
+      name: '',
+      price: '',
+      duration: '',
+      description: '',
     },
   ]);
 
@@ -60,6 +74,23 @@ export default function ServicesPricingPage() {
     setServices(services.map((service) => (service.id === id ? { ...service, [field]: value } : service)));
   };
 
+  const applySuggestion = (suggestion: typeof SUGGESTED_SERVICES[0]) => {
+    const emptyService = services.find(s => !s.name && !s.price);
+    if (emptyService) {
+      setServices(services.map(s => 
+        s.id === emptyService.id 
+          ? { ...s, ...suggestion }
+          : s
+      ));
+    } else {
+      const newService: Service = {
+        id: Date.now().toString(),
+        ...suggestion,
+      };
+      setServices([...services, newService]);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -75,7 +106,6 @@ export default function ServicesPricingPage() {
 
     try {
       // TODO: Call API to save services when backend is ready
-      // For now, just simulate success
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Mark step 2 (Services) as complete
@@ -83,7 +113,6 @@ export default function ServicesPricingPage() {
         await api.users.markProviderStepComplete({ requestBody: { step: 2 } });
       } catch (stepError) {
         console.error('[ServicesPage] Error marking step 2 complete:', stepError);
-        // Continue even if step marking fails
       }
 
       router.push('/onboarding/provider/credentials');
@@ -93,222 +122,191 @@ export default function ServicesPricingPage() {
     }
   };
 
+  const filledServicesCount = services.filter(s => s.name && s.price).length;
+
   return (
-    <div className="min-h-screen bg-bg-secondary">
-      <ProviderHeader />
-      <div className="p-6">
-        <div className="mx-auto max-w-6xl animate-slide-up rounded-md border border-border-light bg-bg-primary shadow-md">
-        {/* Header */}
-        <div className="border-b border-border-light p-8">
-          <div className="mb-6 flex gap-2">
-            {[1, 2, 3, 4].map((step) => (
-              <div
-                key={step}
-                className={`h-1 flex-1 rounded-sm transition-all duration-150 ${
-                  step <= 3 ? 'bg-primary' : 'bg-border-light'
-                }`}
-              />
+    <OnboardingLayout
+      currentStep={2}
+      title="Services & Pricing"
+      subtitle="Define what you offer and set competitive prices to attract clients"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Error Message */}
+        {error && (
+          <Toast variant="error" title="Error" description={error} />
+        )}
+
+        {/* Quick Add Suggestions */}
+        <Card padding="md" className="border-primary/30 bg-primary/5 border-dashed">
+          <div className="mb-3 flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+            <span className="text-sm font-semibold text-primary">Quick Add Popular Services</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {SUGGESTED_SERVICES.map((suggestion, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => applySuggestion(suggestion)}
+                className="border-primary/30 rounded-full border bg-white px-3 py-1.5 text-xs font-medium text-primary transition-all hover:border-primary hover:bg-primary hover:text-white"
+              >
+                + {suggestion.name}
+              </button>
             ))}
           </div>
-          <h1 className="mb-2 text-2xl font-bold tracking-tight">Services & Pricing</h1>
-          <p className="text-sm text-text-secondary">List the visa services you offer and set your pricing</p>
-        </div>
+        </Card>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8">
-          {/* Error Message */}
-          {error && (
-            <div role="alert" className="mb-6 flex items-center gap-2 text-sm text-error">
-              {error}
-            </div>
-          )}
-
-          {/* Services List */}
-          <div className="mb-6 space-y-4">
-            {services.map((service, index) => (
-              <div
-                key={service.id}
-                className="animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_both] rounded-base border border-border-light bg-bg-secondary p-6 transition-colors duration-150 hover:border-border-medium"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="mb-6 flex items-start justify-between">
-                  <div className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-sm font-semibold text-white">
+        {/* Services List */}
+        <div className="space-y-4">
+          {services.map((service, index) => (
+            <Card
+              key={service.id}
+              padding="md"
+              elevated
+              className="border-l-primary/60 animate-fade-in-up border-l-4"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              {/* Service Header */}
+              <div className="mb-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                     {index + 1}
                   </div>
-                  {services.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeService(service.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          removeService(service.id);
-                        }
-                      }}
-                      aria-label={`Remove service ${index + 1}: ${service.name || 'Unnamed service'}`}
-                      className="cursor-pointer rounded-md border border-error/20 bg-transparent p-2 text-error transition-all duration-150 hover:bg-error/10 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
-                    >
-                      <Trash2 className="h-4 w-4" aria-hidden="true" />
-                    </button>
-                  )}
+                  <span className="text-sm font-medium text-text-secondary">
+                    {service.name || 'New Service'}
+                  </span>
+                </div>
+                {services.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeService(service.id)}
+                    className="text-error hover:bg-error/10"
+                    aria-label={`Remove service ${index + 1}`}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                )}
+              </div>
+
+              <div className="space-y-5">
+                {/* Service Name */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor={`service-name-${service.id}`} className="flex items-center gap-2 text-sm font-medium">
+                    <Package className="h-4 w-4 text-text-tertiary" aria-hidden="true" />
+                    Service Name <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id={`service-name-${service.id}`}
+                    value={service.name}
+                    onChange={(e) => updateService(service.id, 'name', e.target.value)}
+                    className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 text-base text-text-primary outline-none transition-all hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
+                    placeholder="e.g., Marriage Visa Application"
+                    required
+                  />
                 </div>
 
-                <div className="flex flex-col gap-6">
+                {/* Price and Duration Row */}
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor={`service-name-${service.id}`} className="flex items-center gap-1 text-sm font-medium">
-                      Service Name <span className="text-error">*</span>
+                    <label htmlFor={`service-price-${service.id}`} className="flex items-center gap-2 text-sm font-medium">
+                      <DollarSign className="h-4 w-4 text-text-tertiary" aria-hidden="true" />
+                      Base Price (THB) <span className="text-error">*</span>
                     </label>
-                    <input
-                      type="text"
-                      id={`service-name-${service.id}`}
-                      value={service.name}
-                      onChange={(e) => updateService(service.id, 'name', e.target.value)}
-                      className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
-                      placeholder="e.g., Marriage Visa Application"
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-[2fr_1fr]">
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor={`service-price-${service.id}`} className="flex items-center gap-1 text-sm font-medium">
-                        Base Price <span className="text-error">*</span>
-                      </label>
-                      <div className="relative">
-                        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base font-medium text-text-tertiary">
-                          ฿
-                        </span>
-                        <input
-                          type="number"
-                          id={`service-price-${service.id}`}
-                          value={service.price}
-                          onChange={(e) => updateService(service.id, 'price', e.target.value)}
-                          className="h-12 w-full rounded-base border border-border-light bg-bg-primary pl-10 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
-                          placeholder="25,000"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor={`service-duration-${service.id}`} className="text-sm font-medium">
-                        Typical Duration
-                      </label>
+                    <div className="relative">
+                      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base font-medium text-text-tertiary">
+                        ฿
+                      </span>
                       <input
-                        type="text"
-                        id={`service-duration-${service.id}`}
-                        value={service.duration}
-                        onChange={(e) => updateService(service.id, 'duration', e.target.value)}
-                        className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
-                        placeholder="4-6 weeks"
+                        type="number"
+                        id={`service-price-${service.id}`}
+                        value={service.price}
+                        onChange={(e) => updateService(service.id, 'price', e.target.value)}
+                        className="h-12 w-full rounded-base border border-border-light bg-bg-primary pl-10 pr-4 text-base text-text-primary outline-none transition-all hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
+                        placeholder="25,000"
+                        required
                       />
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label htmlFor={`service-description-${service.id}`} className="text-sm font-medium">
-                      Description
+                    <label htmlFor={`service-duration-${service.id}`} className="flex items-center gap-2 text-sm font-medium">
+                      <Clock className="h-4 w-4 text-text-tertiary" aria-hidden="true" />
+                      Typical Duration
                     </label>
-                    <textarea
-                      id={`service-description-${service.id}`}
-                      value={service.description}
-                      onChange={(e) => updateService(service.id, 'description', e.target.value)}
-                      className="min-h-[4rem] w-full resize-y rounded-base border border-border-light bg-bg-primary px-4 py-3 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
-                      placeholder="Describe what's included in this service..."
+                    <input
+                      type="text"
+                      id={`service-duration-${service.id}`}
+                      value={service.duration}
+                      onChange={(e) => updateService(service.id, 'duration', e.target.value)}
+                      className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 text-base text-text-primary outline-none transition-all hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
+                      placeholder="4-6 weeks"
                     />
                   </div>
                 </div>
+
+                {/* Description */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor={`service-description-${service.id}`} className="flex items-center gap-2 text-sm font-medium">
+                    <FileText className="h-4 w-4 text-text-tertiary" aria-hidden="true" />
+                    Description
+                  </label>
+                  <textarea
+                    id={`service-description-${service.id}`}
+                    value={service.description}
+                    onChange={(e) => updateService(service.id, 'description', e.target.value)}
+                    className="min-h-[80px] w-full resize-y rounded-base border border-border-light bg-bg-primary px-4 py-3 text-base text-text-primary outline-none transition-all hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
+                    placeholder="Describe what's included in this service..."
+                  />
+                </div>
               </div>
-            ))}
-          </div>
-
-          {/* Add Service Button */}
-          <button
-            type="button"
-            onClick={addService}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                addService();
-              }
-            }}
-            aria-label="Add another service"
-            className="bg-primary/5 hover:bg-primary/10 inline-flex h-11 w-full animate-[fadeInUp_400ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] cursor-pointer items-center justify-center gap-2 rounded-base border border-dashed border-primary px-6 text-base font-medium text-primary transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-          >
-            <Plus className="h-4.5 w-4.5" aria-hidden="true" />
-            Add another service
-          </button>
-
-          {/* Actions */}
-          <div className="mt-8 flex justify-between gap-4 border-t border-border-light pt-6">
-            <button
-              type="button"
-              onClick={() => router.push('/onboarding/provider/business')}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  router.push('/onboarding/provider/business');
-                }
-              }}
-              aria-label="Go back to business details step"
-              className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-base border border-border-light bg-bg-secondary px-6 text-base font-medium text-text-primary transition-all duration-150 hover:bg-bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              <ArrowLeft className="h-4.5 w-4.5" aria-hidden="true" />
-              Back
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              aria-label={isLoading ? 'Saving services' : 'Continue to next step'}
-              aria-disabled={isLoading}
-              className={`inline-flex h-11 cursor-pointer items-center gap-2 rounded-base px-6 text-base font-medium text-white shadow-xs transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                isLoading
-                  ? 'cursor-not-allowed opacity-60'
-                  : 'bg-gradient-to-b from-primary to-primary-hover'
-              }`}
-            >
-              {isLoading ? (
-                <>
-                  <Loader className="h-4.5 w-4.5 animate-spin" aria-hidden="true" />
-                  <span>{LOADING_SAVING}</span>
-                </>
-              ) : (
-                <>
-                  <span>Continue</span>
-                  <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+            </Card>
+          ))}
         </div>
-      </div>
 
-      <style jsx>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+        {/* Add Service Button */}
+        <button
+          type="button"
+          onClick={addService}
+          className="border-primary/40 bg-primary/5 hover:bg-primary/10 flex h-14 w-full items-center justify-center gap-2 rounded-base border-2 border-dashed text-base font-medium text-primary transition-all hover:border-primary"
+        >
+          <Plus className="h-5 w-5" aria-hidden="true" />
+          Add Another Service
+        </button>
 
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-      <Footer />
-    </div>
+        {/* Summary & Actions */}
+        <Card padding="md" elevated className="bg-bg-primary/95 sticky bottom-4 z-10 backdrop-blur">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-sm text-text-secondary">
+              {filledServicesCount > 0 ? (
+                <span className="font-medium text-success">
+                  ✓ {filledServicesCount} service{filledServicesCount !== 1 ? 's' : ''} configured
+                </span>
+              ) : (
+                <span>Add at least one service to continue</span>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push('/onboarding/provider/business')}
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading || filledServicesCount === 0}
+                loading={isLoading}
+              >
+                {isLoading ? LOADING_SAVING : 'Continue'}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </form>
+    </OnboardingLayout>
   );
 }
-

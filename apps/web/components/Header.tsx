@@ -209,6 +209,14 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                 How it Works
                 <span className="absolute bottom-[-4px] left-0 h-0.5 w-0 bg-primary transition-all duration-150 group-hover:w-full"></span>
               </Link>
+              <Link
+                href="/pricing"
+                className="group relative text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+                aria-label="View pricing plans"
+              >
+                Pricing
+                <span className="absolute bottom-[-4px] left-0 h-0.5 w-0 bg-primary transition-all duration-150 group-hover:w-full"></span>
+              </Link>
               {showLandingActions && (
                 <>
                   <Link
@@ -375,6 +383,13 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                         Profile
                       </Link>
                       <Link
+                        href="/account/billing"
+                        role="menuitem"
+                        className="hover:bg-bg-secondary/60 block px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
+                      >
+                        Billing
+                      </Link>
+                      <Link
                         href="/settings"
                         role="menuitem"
                         className="hover:bg-bg-secondary/60 block px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
@@ -425,6 +440,14 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
               aria-label="How it works"
             >
               How it Works
+            </Link>
+            <Link
+              href="/pricing"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block rounded-lg px-4 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-text-primary"
+              aria-label="View pricing plans"
+            >
+              Pricing
             </Link>
             {showLandingActions && (
               <div className="space-y-2 border-t border-border-light pt-2">
@@ -530,6 +553,13 @@ export function Header({ variant, scrolled = false, onAnchorClick, showLandingAc
                 className="block w-full rounded-lg border border-border-light bg-transparent px-4 py-3 text-center text-base font-medium text-text-primary transition-colors hover:bg-bg-secondary"
               >
                 Profile
+              </Link>
+              <Link
+                href="/account/billing"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full rounded-lg border border-border-light bg-transparent px-4 py-3 text-center text-base font-medium text-text-primary transition-colors hover:bg-bg-secondary"
+              >
+                Billing
               </Link>
               <Link
                 href="/settings"

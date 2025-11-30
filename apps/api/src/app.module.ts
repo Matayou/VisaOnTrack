@@ -6,6 +6,7 @@ import { ProvidersModule } from './providers/providers.module';
 import { MessagesModule } from './messages/messages.module';
 import { RequestsModule } from './requests/requests.module';
 import { ConsultationsModule } from './consultations/consultations.module';
+import { BillingModule } from './billing/billing.module';
 import { CronJobsService } from './config/cron-jobs';
 import { PrismaService } from './common/services/prisma.service';
 import { RateLimitService } from './common/services/rate-limit.service';
@@ -24,6 +25,7 @@ import { CreditsModule } from './credits/credits.module';
     MessagesModule,
     RequestsModule,
     ConsultationsModule,
+    BillingModule,
     ScheduleModule.forRoot(),
     CreditsModule, // Enable cron jobs
   ],

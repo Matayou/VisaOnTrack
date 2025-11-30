@@ -313,7 +313,7 @@ function DashboardContent() {
     <div className="relative min-h-screen overflow-hidden bg-gray-50">
       <PageBackground />
       <SeekerHeader />
-      <div className="relative z-10 mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+      <div className="relative z-10 mx-auto w-full max-w-7xl space-y-6 px-6 py-6 sm:px-8 lg:py-10">
         {/* Header with Metrics */}
         <header className="ios-card relative overflow-hidden px-6 py-6">
           <div className="pointer-events-none absolute right-0 top-0 -mr-20 -mt-20 h-64 w-64 rounded-full bg-gradient-to-br from-indigo-50/40 to-transparent"></div>

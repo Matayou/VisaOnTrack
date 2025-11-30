@@ -1,21 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm run:*)",
-      "Skill(ui-ux-specialist)",
-      "mcp__playwright__browser_navigate",
-      "mcp__playwright__browser_take_screenshot",
-      "mcp__playwright__browser_wait_for",
-      "mcp__playwright__browser_resize",
-      "mcp__playwright__browser_click",
-      "mcp__playwright__browser_snapshot",
-      "mcp__playwright__browser_evaluate",
-      "Bash(Remove-Item -Path \"C:\\Dev\\VOT2\\apps\\web\\app\\how-it-works\" -Recurse -Force)",
-      "Bash(test:*)",
-      "Bash(mkdir:*)",
-      "Bash(npm run build)",
-      "Bash(powershell:*)",
-      "Bash(pnpm generate:client:*)"
+      "Bash(pnpm build:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(pnpm typecheck:*)"
     ],
     "deny": [],
     "ask": []

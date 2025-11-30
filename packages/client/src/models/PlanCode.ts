@@ -6,6 +6,5 @@
 export enum PlanCode {
     FREE = 'FREE',
     PRO = 'PRO',
-    PRO_PLUS = 'PRO_PLUS',
-    ENTERPRISE = 'ENTERPRISE',
+    AGENCY = 'AGENCY',
 }

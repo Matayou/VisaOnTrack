@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProviderHeader } from '@/components/ProviderHeader';
+import { Footer } from '@/components/ui';
 import { api, type Request } from '@visaontrack/client';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
 import { Loader, AlertCircle, ArrowLeft, Search, Filter } from 'lucide-react';
@@ -118,7 +119,7 @@ export default function ProviderMarketplacePage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-32 lg:pb-12">
       <ProviderHeader />
-      <main className="mx-auto max-w-7xl px-4 py-4 lg:px-8 lg:py-6">
+      <main className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:py-6">
         <div className="mb-4 flex items-center justify-between lg:mb-6">
           <button 
             onClick={() => router.push('/providers/dashboard')}
@@ -222,6 +223,8 @@ export default function ProviderMarketplacePage() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

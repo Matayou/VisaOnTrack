@@ -9,7 +9,7 @@ interface MobileActionSheetProps {
 export const MobileActionSheet: React.FC<MobileActionSheetProps> = ({ status, onPublish, onEdit }) => {
   return (
     <div className="safe-bottom fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white/95 pb-[env(safe-area-inset-bottom,20px)] backdrop-blur-xl lg:hidden">
-      <div className="mx-auto max-w-7xl px-4 py-3">
+      <div className="mx-auto max-w-7xl px-6 py-3 sm:px-8">
         <div className="flex items-center gap-3">
           {status === 'DRAFT' ? (
             <>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messaging Upgrade Prompts - VisaOnTrack Design</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#2563eb',
+              hover: '#1d4ed8',
+            },
+            text: {
+              primary: '#0a0a0a',
+              secondary: '#525252',
+              tertiary: '#a3a3a3',
+            },
+            bg: {
+              primary: '#ffffff',
+              secondary: '#fafafa',
+              tertiary: '#f5f5f5',
+            },
+            border: {
+              light: 'rgba(0,0,0,0.06)',
+              medium: 'rgba(0,0,0,0.12)',
+              dark: 'rgba(0,0,0,0.20)',
+            },
+          },
+          borderRadius: {
+            base: '0.5rem',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="mx-auto max-w-7xl">
+
+    <!-- Header -->
+    <div class="mb-8 rounded-xl bg-white p-6 shadow-sm">
+      <h1 class="mb-2 text-3xl font-bold text-gray-900">Messaging Upgrade Prompts</h1>
+      <p class="text-base text-gray-600">Design specification for messaging feature gating</p>
+      <div class="mt-4 flex gap-3">
+        <span class="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">Design Complete</span>
+        <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/10">WCAG AA Compliant</span>
+        <span class="rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700 ring-1 ring-inset ring-purple-600/10">Mobile First</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mb-8 flex gap-3 overflow-x-auto pb-2">
+      <a href="#thread-prompt" class="whitespace-nowrap rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white">Thread Page Prompt</a>
+      <a href="#pro-state" class="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">PRO User State</a>
+      <a href="#free-state" class="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">FREE User State</a>
+      <a href="#comparison" class="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Side-by-Side</a>
+    </div>
+
+    <!-- Design 1: Thread Page Upgrade Prompt -->
+    <section id="thread-prompt" class="mb-12">
+      <div class="mb-4 rounded-xl bg-white p-6 shadow-sm">
+        <h2 class="mb-2 text-2xl font-bold text-gray-900">1. Thread Page Upgrade Prompt</h2>
+        <p class="mb-3 text-sm text-gray-600">
+          <strong>Location:</strong> <code class="rounded bg-gray-100 px-2 py-1 text-xs">/requests/[id]/thread</code> (fallback for FREE users)
+        </p>
+        <p class="text-sm text-gray-600">
+          Full-page centered prompt shown when FREE users try to access messaging thread
+        </p>
+      </div>
+
+      <!-- Desktop View -->
+      <div class="mb-6 overflow-hidden rounded-xl bg-white shadow-lg">
+        <div class="border-b border-gray-200 bg-gray-50 px-4 py-2">
+          <p class="text-xs font-medium text-gray-500">Desktop View (1024px+)</p>
+        </div>
+        <div class="flex min-h-[600px] items-center justify-center bg-gray-50 px-4 py-16">
+          <div class="w-full max-w-lg">
+            <!-- Icon -->
+            <div class="mb-6 flex justify-center">
+              <div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-200/50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Heading -->
+            <h1 class="mb-3 text-center text-3xl font-bold text-text-primary">
+              Messaging is a PRO Feature
+            </h1>
+
+            <!-- Description -->
+            <p class="mb-8 text-center text-base text-text-secondary">
+              Direct messaging helps you close more deals by building trust with clients before sending proposals.
+            </p>
+
+            <!-- Benefits List -->
+            <div class="mb-8 space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-text-tertiary">
+                What you'll unlock
+              </h2>
+
+              <div class="flex items-start gap-3">
+                <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-green-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-medium text-text-primary">Direct client communication</p>
+                  <p class="text-sm text-text-secondary">
+                    Answer questions and build rapport before submitting quotes
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-green-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-medium text-text-primary">Higher conversion rates</p>
+                  <p class="text-sm text-text-secondary">
+                    Providers who message first are 3x more likely to win the job
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-green-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-medium text-text-primary">Real-time notifications</p>
+                  <p class="text-sm text-text-secondary">
+                    Get instant alerts when clients respond to your messages
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pricing Callout -->
+            <div class="mb-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-4 text-center">
+              <p class="mb-1 text-sm font-medium text-blue-900">
+                Included in PRO plan
+              </p>
+              <p class="text-2xl font-bold text-blue-900">
+                1,490 THB<span class="text-base font-normal text-blue-700">/month</span>
+              </p>
+              <p class="mt-1 text-xs text-blue-700">
+                14-day free trial • No credit card required
+              </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <button class="flex h-12 flex-1 items-center justify-center rounded-lg border border-gray-300 bg-white px-6 text-base font-medium text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                Go Back
+              </button>
+              <button class="flex h-12 flex-1 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-white shadow-sm shadow-blue-200 transition-all hover:bg-blue-700 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                View Plans & Pricing
+              </button>
+            </div>
+
+            <!-- Footer Note -->
+            <p class="mt-6 text-center text-sm text-text-tertiary">
+              Already have PRO?
+              <button class="font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:rounded">
+                Check your subscription
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile View -->
+      <div class="mb-6 overflow-hidden rounded-xl bg-white shadow-lg">
+        <div class="border-b border-gray-200 bg-gray-50 px-4 py-2">
+          <p class="text-xs font-medium text-gray-500">Mobile View (375px)</p>
+        </div>
+        <div class="flex justify-center bg-gray-50 p-4">
+          <div class="w-[375px] overflow-hidden rounded-xl border border-gray-300 bg-gray-50 shadow-xl">
+            <div class="flex min-h-[667px] items-center justify-center px-4 py-12">
+              <div class="w-full max-w-lg">
+                <!-- Icon -->
+                <div class="mb-6 flex justify-center">
+                  <div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-200/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Heading -->
+                <h1 class="mb-3 text-center text-2xl font-bold text-text-primary">
+                  Messaging is a PRO Feature
+                </h1>
+
+                <!-- Description -->
+                <p class="mb-6 text-center text-sm text-text-secondary">
+                  Direct messaging helps you close more deals by building trust with clients.
+                </p>
+
+                <!-- Benefits List (Compact) -->
+                <div class="mb-6 space-y-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                  <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-text-tertiary">
+                    What you'll unlock
+                  </h2>
+
+                  <div class="flex items-start gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p class="text-sm font-medium text-text-primary">Direct communication</p>
+                      <p class="text-xs text-text-secondary">Build rapport before quoting</p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <div>
+                      <p class="text-sm font-medium text-text-primary">3x higher conversions</p>
+                      <p class="text-xs text-text-secondary">Message first, win more jobs</p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p class="text-sm font-medium text-text-primary">Real-time alerts</p>
+                      <p class="text-xs text-text-secondary">Never miss a response</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Pricing Callout -->
+                <div class="mb-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-3 text-center">
+                  <p class="mb-1 text-xs font-medium text-blue-900">
+                    Included in PRO plan
+                  </p>
+                  <p class="text-xl font-bold text-blue-900">
+                    1,490 THB<span class="text-sm font-normal text-blue-700">/mo</span>
+                  </p>
+                  <p class="mt-1 text-xs text-blue-700">
+                    14-day free trial
+                  </p>
+                </div>
+
+                <!-- Action Buttons (Stacked) -->
+                <div class="flex flex-col gap-2">
+                  <button class="flex h-12 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-white shadow-sm shadow-blue-200">
+                    View Plans & Pricing
+                  </button>
+                  <button class="flex h-12 items-center justify-center rounded-lg border border-gray-300 bg-white px-6 text-base font-medium text-gray-700">
+                    Go Back
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design 2: PRO User State -->
+    <section id="pro-state" class="mb-12">
+      <div class="mb-4 rounded-xl bg-white p-6 shadow-sm">
+        <h2 class="mb-2 text-2xl font-bold text-gray-900">2. PRO User - Messaging Enabled</h2>
+        <p class="mb-3 text-sm text-gray-600">
+          <strong>Location:</strong> Provider marketplace (unlocked request card)
+        </p>
+        <p class="text-sm text-gray-600">
+          PRO/AGENCY users see "Send Message" button alongside "Send Proposal"
+        </p>
+      </div>
+
+      <div class="overflow-hidden rounded-xl bg-white shadow-lg">
+        <div class="border-b border-gray-200 bg-gray-50 px-4 py-2">
+          <p class="text-xs font-medium text-gray-500">PRO User - Has Access</p>
+        </div>
+        <div class="bg-gray-50 p-8">
+          <div class="mx-auto max-w-2xl rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <!-- Card Header (Existing) -->
+            <div class="mb-3 flex items-start justify-between gap-3">
+              <div class="flex-1">
+                <div class="mb-2 flex flex-wrap items-center gap-2">
+                  <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
+                    95% match
+                  </span>
+                  <span class="text-xs text-gray-500">Posted 2h ago</span>
+                </div>
+                <h3 class="mb-1 text-base font-semibold text-gray-900">
+                  Digital Nomad Visa for Software Developer
+                </h3>
+                <p class="mb-3 line-clamp-2 text-sm text-gray-600">
+                  Looking for assistance with DTV application. I'm a remote software engineer from the US...
+                </p>
+                <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Budget</p>
+                    <p class="font-semibold text-gray-900">฿25,000</p>
+                  </div>
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Nationality</p>
+                    <p class="font-semibold text-gray-900">United States</p>
+                  </div>
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Location</p>
+                    <p class="font-semibold text-gray-900">Bangkok</p>
+                  </div>
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Competition</p>
+                    <p class="font-semibold text-gray-900">2 proposals</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Unlocked State - PRO User -->
+            <div class="flex flex-col items-start justify-between gap-3 border-t border-gray-100 pt-3">
+              <div class="flex items-center gap-2 text-sm">
+                <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
+                  Unlocked
+                </span>
+                <span class="text-gray-500">You can now send a proposal</span>
+              </div>
+
+              <!-- Messaging + Proposal Buttons (PRO) -->
+              <div class="w-full space-y-2">
+                <!-- Send Message - Secondary Style -->
+                <button class="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 text-base font-medium text-primary transition-all hover:bg-primary/10 hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  <span>Send Message</span>
+                </button>
+                <!-- Send Proposal - Primary Style -->
+                <button class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-4 text-base font-semibold text-white shadow-sm shadow-blue-200 transition-all hover:bg-blue-700 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                  Send Proposal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design 3: FREE User State -->
+    <section id="free-state" class="mb-12">
+      <div class="mb-4 rounded-xl bg-white p-6 shadow-sm">
+        <h2 class="mb-2 text-2xl font-bold text-gray-900">3. FREE User - Messaging Locked</h2>
+        <p class="mb-3 text-sm text-gray-600">
+          <strong>Location:</strong> Provider marketplace (unlocked request card)
+        </p>
+        <p class="text-sm text-gray-600">
+          FREE users see amber upgrade prompt for messaging, but can still send proposals
+        </p>
+      </div>
+
+      <div class="overflow-hidden rounded-xl bg-white shadow-lg">
+        <div class="border-b border-gray-200 bg-gray-50 px-4 py-2">
+          <p class="text-xs font-medium text-gray-500">FREE User - Upgrade Needed</p>
+        </div>
+        <div class="bg-gray-50 p-8">
+          <div class="mx-auto max-w-2xl rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <!-- Card Header (Same as PRO) -->
+            <div class="mb-3 flex items-start justify-between gap-3">
+              <div class="flex-1">
+                <div class="mb-2 flex flex-wrap items-center gap-2">
+                  <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
+                    95% match
+                  </span>
+                  <span class="text-xs text-gray-500">Posted 2h ago</span>
+                </div>
+                <h3 class="mb-1 text-base font-semibold text-gray-900">
+                  Digital Nomad Visa for Software Developer
+                </h3>
+                <p class="mb-3 line-clamp-2 text-sm text-gray-600">
+                  Looking for assistance with DTV application. I'm a remote software engineer from the US...
+                </p>
+                <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Budget</p>
+                    <p class="font-semibold text-gray-900">฿25,000</p>
+                  </div>
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Nationality</p>
+                    <p class="font-semibold text-gray-900">United States</p>
+                  </div>
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Location</p>
+                    <p class="font-semibold text-gray-900">Bangkok</p>
+                  </div>
+                  <div>
+                    <p class="mb-0.5 text-xs uppercase tracking-wide text-gray-400">Competition</p>
+                    <p class="font-semibold text-gray-900">2 proposals</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Unlocked State - FREE User -->
+            <div class="flex flex-col items-start justify-between gap-3 border-t border-gray-100 pt-3">
+              <div class="flex items-center gap-2 text-sm">
+                <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
+                  Unlocked
+                </span>
+                <span class="text-gray-500">You can now send a proposal</span>
+              </div>
+
+              <!-- Upgrade Prompt + Proposal Button (FREE) -->
+              <div class="w-full space-y-2">
+                <!-- Amber Upgrade Card -->
+                <div class="rounded-lg border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-4">
+                  <div class="mb-2 flex items-start gap-3">
+                    <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-amber-400/20">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                      </svg>
+                    </div>
+                    <div class="flex-1">
+                      <p class="mb-1 text-sm font-semibold text-amber-900">
+                        Message this client with PRO
+                      </p>
+                      <p class="text-xs text-amber-700">
+                        Build trust and answer questions before sending your proposal
+                      </p>
+                    </div>
+                  </div>
+                  <button class="flex h-10 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2">
+                    Upgrade to PRO
+                  </button>
+                </div>
+
+                <!-- Send Proposal - Primary (Always Available) -->
+                <button class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-4 text-base font-semibold text-white shadow-sm shadow-blue-200 transition-all hover:bg-blue-700 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                  Send Proposal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Side-by-Side Comparison -->
+    <section id="comparison" class="mb-12">
+      <div class="mb-4 rounded-xl bg-white p-6 shadow-sm">
+        <h2 class="mb-2 text-2xl font-bold text-gray-900">4. Side-by-Side Comparison</h2>
+        <p class="text-sm text-gray-600">
+          Visual comparison of PRO vs FREE user experience
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- PRO User -->
+        <div class="overflow-hidden rounded-xl bg-white shadow-lg">
+          <div class="border-b border-gray-200 bg-green-50 px-4 py-2">
+            <p class="text-xs font-semibold text-green-700">✓ PRO USER - Has Access</p>
+          </div>
+          <div class="bg-gray-50 p-4">
+            <div class="space-y-2 rounded-lg border border-gray-200 bg-white p-4">
+              <button class="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 text-base font-medium text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <span>Send Message</span>
+              </button>
+              <button class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-4 text-base font-semibold text-white shadow-sm">
+                Send Proposal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FREE User -->
+        <div class="overflow-hidden rounded-xl bg-white shadow-lg">
+          <div class="border-b border-gray-200 bg-amber-50 px-4 py-2">
+            <p class="text-xs font-semibold text-amber-700">⚠ FREE USER - Upgrade Needed</p>
+          </div>
+          <div class="bg-gray-50 p-4">
+            <div class="space-y-2 rounded-lg border border-gray-200 bg-white p-4">
+              <div class="rounded-lg border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-3">
+                <div class="mb-2 flex items-start gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                  <div class="flex-1">
+                    <p class="mb-0.5 text-xs font-semibold text-amber-900">Message with PRO</p>
+                    <p class="text-xs text-amber-700">Build trust before quoting</p>
+                  </div>
+                </div>
+                <button class="flex h-10 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-semibold text-white">
+                  Upgrade to PRO
+                </button>
+              </div>
+              <button class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-4 text-base font-semibold text-white shadow-sm">
+                Send Proposal
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design System Reference -->
+    <section class="mb-12">
+      <div class="rounded-xl bg-white p-6 shadow-sm">
+        <h2 class="mb-4 text-2xl font-bold text-gray-900">Design System Reference</h2>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <!-- Colors -->
+          <div>
+            <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">Colors</h3>
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded bg-primary"></div>
+                <span class="text-sm">Primary: #2563eb</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded bg-amber-600"></div>
+                <span class="text-sm">Upgrade: #d97706</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded bg-green-600"></div>
+                <span class="text-sm">Success: #16a34a</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Heights -->
+          <div>
+            <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">Heights (WCAG AA)</h3>
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <div class="h-12 w-12 rounded bg-gray-200"></div>
+                <span class="text-sm">Primary Button: h-12 (48px)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded bg-gray-200"></div>
+                <span class="text-sm">Secondary CTA: h-10 (40px)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Border Radius -->
+          <div>
+            <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">Border Radius</h3>
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-16 rounded-base bg-gray-300"></div>
+                <span class="text-sm">rounded-base: 8px (cards)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-16 rounded-lg bg-gray-300"></div>
+                <span class="text-sm">rounded-lg: 16px (buttons)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-16 rounded-2xl bg-gray-300"></div>
+                <span class="text-sm">rounded-2xl: 24px (icons)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spacing -->
+          <div>
+            <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">Spacing (4px Grid)</h3>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2">
+                <div class="h-2 w-2 bg-primary"></div>
+                <span class="text-sm">gap-2: 8px (icon + text)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="h-4 w-4 bg-primary"></div>
+                <span class="text-sm">gap-4: 16px (compact)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="h-6 w-6 bg-primary"></div>
+                <span class="text-sm">gap-6: 24px (standard)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 p-6 text-center text-white shadow-lg">
+      <h3 class="mb-2 text-xl font-bold">Design Complete</h3>
+      <p class="mb-4 text-sm text-blue-100">
+        Ready for implementation by frontend-developer agent
+      </p>
+      <div class="flex flex-wrap justify-center gap-2">
+        <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-medium">WCAG AA</span>
+        <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-medium">Mobile First</span>
+        <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-medium">Design Tokens</span>
+        <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-medium">Lucide Icons</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

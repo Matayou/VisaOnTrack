@@ -22,7 +22,7 @@ export default function GetStartedPage() {
       <PageBackground />
       <Header variant="landing" scrolled={scrolled} />
 
-      <main className="relative z-10 mx-auto max-w-6xl space-y-6 px-4 py-8 sm:space-y-8 sm:px-6 sm:py-12 lg:px-8">
+      <main className="relative z-10 mx-auto max-w-7xl space-y-6 px-6 py-8 sm:space-y-8 sm:px-8 sm:py-12">
         <section className="ios-card relative overflow-hidden p-6 sm:p-8">
           <div className="bg-primary/10 pointer-events-none absolute right-0 top-0 -mr-10 -mt-12 h-40 w-40 rounded-full blur-3xl" aria-hidden="true" />
           <div className="relative">

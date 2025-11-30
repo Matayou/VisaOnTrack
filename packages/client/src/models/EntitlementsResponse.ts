@@ -3,18 +3,45 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { UsageCounter } from './UsageCounter';
+import type { PlanCode } from './PlanCode';
 
 /**
- * Full entitlements and usage counters per Section 4
+ * Plan entitlements and usage stats for the authenticated provider
  */
 export type EntitlementsResponse = {
+    planCode: PlanCode;
     /**
-     * Key-value entitlements per plan (e.g., quotes.monthly.max=50, packages.max=12, visibility.weight=1.2, attachments.maxSizeMB=25)
+     * Human-readable plan name (Free, Pro, Agency)
+     */
+    planName: string;
+    /**
+     * Key-value entitlements per plan
      */
     entitlements: Record<string, (string | number | boolean)>;
-    /**
-     * Usage counters for current period
-     */
-    usage: Array<UsageCounter>;
+    usage: {
+/**
+ * Current credits balance
+ */
+creditsRemaining: number;
+/**
+ * Credits used in current month
+ */
+creditsUsedThisMonth: number;
+/**
+ * Free credits allocated per month based on plan
+ */
+monthlyFreeCredits: number;
+/**
+ * Number of service packages created
+ */
+packagesCreated: number;
+/**
+ * Maximum service packages allowed by plan
+ */
+packagesMax: number;
+/**
+ * Total consultations offered by provider
+ */
+consultationsOffered: number;
+};
 };

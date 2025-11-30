@@ -13,7 +13,7 @@ import { RequestStats } from './components/RequestStats';
 import { NextSteps } from './components/NextSteps';
 import { MobileActionSheet } from './components/MobileActionSheet';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
-import { Loader, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Loader, AlertCircle, ArrowLeft, MessageSquare } from 'lucide-react';
 
 const currencyFormatter = new Intl.NumberFormat('th-TH', {
   style: 'currency',
@@ -93,7 +93,7 @@ export default function RequestDetailPage() {
     }
 
     // Extract info from intakeData if available
-    const intakeData = (request as any).intakeData;
+    const intakeData = request.intakeData;
     
     // Format Date
     let updatedAtLabel = 'recently';
@@ -135,12 +135,12 @@ export default function RequestDetailPage() {
 
       stats: {
         views: null,
-        proposals: (request as any).proposals?.length || 0,
-        messages: (request as any).messages?.length || 0,
+        proposals: 0, // TODO: Fetch from quotes API when available
+        messages: 0, // TODO: Fetch from messages API when available
       },
 
-      auditLogs: (request as any).auditLogs || [], // Fetch audit logs via API when available
-      proposalsList: (request as any).proposals || [],
+      auditLogs: [], // TODO: Fetch audit logs via API when available
+      proposalsList: [], // TODO: Fetch from quotes API when available
     };
   }, [request]);
 
@@ -177,15 +177,25 @@ export default function RequestDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-32 lg:pb-12">
       <SeekerHeader />
-      <main className="mx-auto max-w-7xl px-4 py-4 lg:px-8 lg:py-6">
-        <div className="mb-4 lg:mb-6">
-          <button 
+      <main className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:py-6">
+        <div className="mb-4 flex items-center justify-between lg:mb-6">
+          <button
             onClick={() => router.push('/dashboard')}
             className="-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100/50 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </button>
+
+          {mappedData?.status === 'PUBLISHED' && (
+            <button
+              onClick={() => router.push(`/requests/${requestId}/thread`)}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Messages
+            </button>
+          )}
         </div>
 
         <div className="lg:grid lg:grid-cols-3 lg:gap-6">

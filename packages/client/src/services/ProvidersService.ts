@@ -81,6 +81,23 @@ requestBody: CreateProviderRequest,
     }
 
     /**
+     * Get current provider profile
+     * Get provider profile for the authenticated user
+     * @returns ProviderProfile Provider profile
+     * @throws ApiError
+     */
+    public static getCurrentProvider(): CancelablePromise<ProviderProfile> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/providers/me',
+            errors: {
+                401: `Authentication required or invalid token`,
+                404: `Resource not found`,
+            },
+        });
+    }
+
+    /**
      * Get provider by ID
      * Get provider profile by ID
      * @returns ProviderProfile Provider profile

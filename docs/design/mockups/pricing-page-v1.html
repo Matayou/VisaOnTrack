@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Plans - SawadeePass</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            primary: '#2563eb',
+            'primary-dark': '#1d4ed8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .ios-card {
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .btn-secondary {
+      background: white;
+      color: #374151;
+      font-weight: 500;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #E5E7EB;
+      transition: all 0.15s ease;
+    }
+    .btn-secondary:hover {
+      background: #F9FAFB;
+      border-color: #D1D5DB;
+    }
+    .plan-card-highlight {
+      border: 2px solid #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15), 0 2px 4px rgba(37, 99, 235, 0.1);
+    }
+    .check-icon {
+      color: #10b981;
+    }
+    .x-icon {
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+
+  <!-- Header -->
+  <div class="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-4">
+          <span class="text-xl font-bold text-gray-900">SawadeePass</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="/login" class="text-sm font-medium text-gray-600 hover:text-gray-900">Sign In</a>
+          <button class="btn-primary text-sm px-4 py-2">Get Started</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 text-center">
+      <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+        Choose Your Plan
+      </h1>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+        Start free, upgrade when you're ready. All plans include access to our marketplace and tools to grow your visa services business.
+      </p>
+
+      <!-- Billing Toggle -->
+      <div class="inline-flex items-center gap-3 bg-gray-100 rounded-full p-1 mb-12">
+        <button class="px-6 py-2 rounded-full bg-white shadow-sm font-medium text-gray-900">
+          Monthly
+        </button>
+        <button class="px-6 py-2 rounded-full font-medium text-gray-600 hover:text-gray-900">
+          Annual
+          <span class="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">Save 17%</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-6">
+
+        <!-- FREE Plan -->
+        <div class="ios-card overflow-hidden flex flex-col">
+          <div class="p-8 flex-1">
+            <div class="mb-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-1">Free</h3>
+              <div class="flex items-baseline gap-1 mb-3">
+                <span class="text-4xl font-bold text-gray-900">฿0</span>
+                <span class="text-gray-500">/month</span>
+              </div>
+              <p class="text-sm text-gray-600">For providers trying out the platform</p>
+            </div>
+
+            <button class="w-full btn-secondary mb-6">
+              Get Started Free
+            </button>
+
+            <div class="space-y-3">
+              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">What's included</p>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Create provider profile</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Purchase credits (฿100 each)</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Send unlimited quotes</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Up to 3 service packages</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">2MB file uploads</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Basic messaging</span>
+              </div>
+
+              <div class="flex items-start gap-3 opacity-50">
+                <svg class="w-5 h-5 x-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <span class="text-sm text-gray-500 line-through">Offer consultations</span>
+              </div>
+
+              <div class="flex items-start gap-3 opacity-50">
+                <svg class="w-5 h-5 x-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <span class="text-sm text-gray-500 line-through">Analytics dashboard</span>
+              </div>
+
+              <div class="flex items-start gap-3 opacity-50">
+                <svg class="w-5 h-5 x-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <span class="text-sm text-gray-500 line-through">Priority search ranking</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRO Plan - HIGHLIGHTED -->
+        <div class="ios-card plan-card-highlight overflow-hidden flex flex-col relative">
+          <!-- Popular Badge -->
+          <div class="absolute top-0 right-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-4 py-1.5 rounded-bl-lg">
+            MOST POPULAR
+          </div>
+
+          <div class="p-8 flex-1">
+            <div class="mb-6 mt-4">
+              <h3 class="text-lg font-bold text-gray-900 mb-1">Pro</h3>
+              <div class="flex items-baseline gap-1 mb-3">
+                <span class="text-4xl font-bold text-gray-900">฿1,490</span>
+                <span class="text-gray-500">/month</span>
+              </div>
+              <p class="text-sm text-gray-600">For individual visa experts and consultants</p>
+            </div>
+
+            <button class="w-full btn-primary mb-6">
+              Start Free Trial
+            </button>
+
+            <div class="space-y-3">
+              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Everything in Free, plus</p>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <div>
+                  <span class="text-sm text-gray-900 font-semibold">Offer FREE & PAID consultations</span>
+                  <p class="text-xs text-gray-500 mt-0.5">15% platform fee</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700"><strong>10 free credits</strong> per month</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Up to 12 service packages</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">25MB file uploads</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Analytics dashboard</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700"><strong>2x</strong> priority search ranking</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Priority email support (24h)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AGENCY Plan -->
+        <div class="ios-card overflow-hidden flex flex-col">
+          <div class="p-8 flex-1">
+            <div class="mb-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-1">Agency</h3>
+              <div class="flex items-baseline gap-1 mb-3">
+                <span class="text-4xl font-bold text-gray-900">฿4,990</span>
+                <span class="text-gray-500">/month</span>
+              </div>
+              <p class="text-sm text-gray-600">For agencies and high-volume providers</p>
+            </div>
+
+            <button class="w-full btn-primary mb-6">
+              Contact Sales
+            </button>
+
+            <div class="space-y-3">
+              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Everything in Pro, plus</p>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <div>
+                  <span class="text-sm text-gray-900 font-semibold">Reduced platform fee</span>
+                  <p class="text-xs text-gray-500 mt-0.5">10% vs 15% on consultations</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700"><strong>30 free credits</strong> per month</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Unlimited service packages</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">100MB file uploads</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Advanced analytics + export</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Team collaboration (5 users)</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700"><strong>5x</strong> priority search ranking</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">Premium support (4h response)</span>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 check-icon flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-sm text-gray-700">White-label consultation links</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Feature Comparison Table -->
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 mt-24">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Compare Plans</h2>
+
+      <div class="ios-card overflow-x-auto">
+        <table class="w-full">
+          <thead class="border-b border-gray-200">
+            <tr>
+              <th class="text-left p-4 text-sm font-semibold text-gray-700">Feature</th>
+              <th class="text-center p-4 text-sm font-semibold text-gray-700">Free</th>
+              <th class="text-center p-4 text-sm font-semibold text-gray-700 bg-blue-50">Pro</th>
+              <th class="text-center p-4 text-sm font-semibold text-gray-700">Agency</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr>
+              <td class="p-4 text-sm text-gray-900 font-medium" colspan="4">Consultations</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Offer FREE consultations</td>
+              <td class="p-4 text-center"><span class="text-red-500 font-bold">✗</span></td>
+              <td class="p-4 text-center bg-blue-50"><span class="text-green-600 font-bold">✓</span></td>
+              <td class="p-4 text-center"><span class="text-green-600 font-bold">✓</span></td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Offer PAID consultations</td>
+              <td class="p-4 text-center"><span class="text-red-500 font-bold">✗</span></td>
+              <td class="p-4 text-center bg-blue-50"><span class="text-green-600 font-bold">✓</span></td>
+              <td class="p-4 text-center"><span class="text-green-600 font-bold">✓</span></td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Platform fee on consultations</td>
+              <td class="p-4 text-center text-gray-400">—</td>
+              <td class="p-4 text-center bg-blue-50 text-sm">15%</td>
+              <td class="p-4 text-center text-sm font-semibold text-green-700">10%</td>
+            </tr>
+
+            <tr>
+              <td class="p-4 text-sm text-gray-900 font-medium" colspan="4">Credits & Unlocking</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Monthly free credits</td>
+              <td class="p-4 text-center text-sm">0</td>
+              <td class="p-4 text-center bg-blue-50 text-sm font-semibold">10</td>
+              <td class="p-4 text-center text-sm font-semibold">30</td>
+            </tr>
+
+            <tr>
+              <td class="p-4 text-sm text-gray-900 font-medium" colspan="4">Content Limits</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Service packages</td>
+              <td class="p-4 text-center text-sm">3</td>
+              <td class="p-4 text-center bg-blue-50 text-sm">12</td>
+              <td class="p-4 text-center text-sm">Unlimited</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">File upload size</td>
+              <td class="p-4 text-center text-sm">2MB</td>
+              <td class="p-4 text-center bg-blue-50 text-sm">25MB</td>
+              <td class="p-4 text-center text-sm">100MB</td>
+            </tr>
+
+            <tr>
+              <td class="p-4 text-sm text-gray-900 font-medium" colspan="4">Visibility</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Search ranking boost</td>
+              <td class="p-4 text-center text-sm">1x</td>
+              <td class="p-4 text-center bg-blue-50 text-sm font-semibold">2x</td>
+              <td class="p-4 text-center text-sm font-semibold">5x</td>
+            </tr>
+
+            <tr>
+              <td class="p-4 text-sm text-gray-900 font-medium" colspan="4">Analytics & Insights</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Basic analytics</td>
+              <td class="p-4 text-center"><span class="text-red-500 font-bold">✗</span></td>
+              <td class="p-4 text-center bg-blue-50"><span class="text-green-600 font-bold">✓</span></td>
+              <td class="p-4 text-center"><span class="text-green-600 font-bold">✓</span></td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Advanced analytics</td>
+              <td class="p-4 text-center"><span class="text-red-500 font-bold">✗</span></td>
+              <td class="p-4 text-center bg-blue-50"><span class="text-red-500 font-bold">✗</span></td>
+              <td class="p-4 text-center"><span class="text-green-600 font-bold">✓</span></td>
+            </tr>
+
+            <tr>
+              <td class="p-4 text-sm text-gray-900 font-medium" colspan="4">Support & Collaboration</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Support tier</td>
+              <td class="p-4 text-center text-sm">Standard</td>
+              <td class="p-4 text-center bg-blue-50 text-sm">Priority (24h)</td>
+              <td class="p-4 text-center text-sm">Premium (4h)</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-sm text-gray-600 pl-8">Team members</td>
+              <td class="p-4 text-center text-sm">1</td>
+              <td class="p-4 text-center bg-blue-50 text-sm">1</td>
+              <td class="p-4 text-center text-sm">5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="max-w-3xl mx-auto px-4 lg:px-8 mt-24 mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Frequently Asked Questions</h2>
+
+      <div class="space-y-4">
+        <details class="ios-card p-6">
+          <summary class="font-semibold text-gray-900 cursor-pointer">How do credits work?</summary>
+          <p class="mt-3 text-sm text-gray-600">Credits are used to unlock visa requests. Each credit costs ฿100 and unlocks one request, allowing you to view contact details and send quotes. PRO plans include 10 free credits/month, AGENCY plans include 30 free credits/month.</p>
+        </details>
+
+        <details class="ios-card p-6">
+          <summary class="font-semibold text-gray-900 cursor-pointer">What's the platform fee for consultations?</summary>
+          <p class="mt-3 text-sm text-gray-600">PRO plan: 15% platform fee. AGENCY plan: 10% platform fee. If you charge ฿2,500 for a consultation, you keep ฿2,125 (PRO) or ฿2,250 (AGENCY). FREE plans cannot offer consultations.</p>
+        </details>
+
+        <details class="ios-card p-6">
+          <summary class="font-semibold text-gray-900 cursor-pointer">Can I cancel anytime?</summary>
+          <p class="mt-3 text-sm text-gray-600">Yes! You can cancel your subscription at any time. Your access continues until the end of your current billing period, then you'll be downgraded to the FREE plan.</p>
+        </details>
+
+        <details class="ios-card p-6">
+          <summary class="font-semibold text-gray-900 cursor-pointer">Do monthly credits roll over?</summary>
+          <p class="mt-3 text-sm text-gray-600">No, monthly free credits don't roll over. They reset on the 1st of each month. This "use it or lose it" model encourages active engagement with leads.</p>
+        </details>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

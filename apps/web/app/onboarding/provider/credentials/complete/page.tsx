@@ -1,17 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { api, UserRole } from '@visaontrack/client';
-import { CheckCircle, Clock, ShieldCheck, Info, ArrowRight } from 'lucide-react';
-import { Footer } from '@/components/ui';
-import { getErrorDisplayMessage } from '@/lib/error-handling';
+import { CheckCircle, Clock, ShieldCheck, Sparkles, Mail, ArrowRight, PartyPopper } from 'lucide-react';
+import { ProviderHeader } from '@/components/ProviderHeader';
+import { Footer, Card, Button } from '@/components/ui';
 
 export default function CredentialsCompletePage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
-  // Complete onboarding when page loads
   useEffect(() => {
+    setMounted(true);
     const completeOnboarding = async () => {
       try {
         await api.users.completeOnboarding({
@@ -19,11 +20,8 @@ export default function CredentialsCompletePage() {
             role: UserRole.PROVIDER,
           },
         });
-        // Onboarding completed successfully (silent success)
       } catch (error: unknown) {
-        // Log error but don't block user experience
         console.error('[CredentialsComplete] Error completing onboarding:', error);
-        console.warn(getErrorDisplayMessage(error, 'complete onboarding'));
       }
     };
 
@@ -34,156 +32,164 @@ export default function CredentialsCompletePage() {
     router.push('/');
   };
 
+  const steps = [
+    {
+      icon: CheckCircle,
+      status: 'complete' as const,
+      title: 'Documents Uploaded',
+      description: 'Your credentials have been successfully submitted.',
+    },
+    {
+      icon: Clock,
+      status: 'current' as const,
+      title: 'Under Review',
+      description: 'Our team reviews submissions within 1-2 business days.',
+    },
+    {
+      icon: ShieldCheck,
+      status: 'pending' as const,
+      title: 'Verification Complete',
+      description: 'Once approved, you can start accepting clients immediately.',
+    },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col bg-bg-secondary">
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-6xl animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)] overflow-hidden rounded-lg border border-border-light bg-bg-primary shadow-md">
-        {/* Header */}
-        <div className="from-success/5 to-success/2 bg-gradient-to-br p-12 text-center">
-          <div className="to-success/20 mx-auto mb-8 flex h-20 w-20 animate-[scaleIn_400ms_cubic-bezier(0.16,1,0.3,1)] items-center justify-center rounded-full bg-gradient-to-br from-success-light shadow-[0_8px_32px_rgba(22,163,74,0.2)]">
-            <CheckCircle className="h-10 w-10 animate-[checkDraw_600ms_cubic-bezier(0.16,1,0.3,1)_200ms_both] text-success" aria-hidden="true" />
-          </div>
-          <h1 className="mb-3 animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_300ms_both] text-3xl font-bold tracking-tight">
-            Credentials Submitted!
-          </h1>
-          <p className="animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_400ms_both] text-lg leading-relaxed text-text-secondary">
-            Thank you for submitting your credentials. We&rsquo;ll review them and notify you once approved.
-          </p>
-        </div>
+      <ProviderHeader />
 
-        {/* Content */}
-        <div className="p-12">
-          {/* Timeline */}
-          <div className="mb-8 flex flex-col gap-0">
-            {[
-              {
-                icon: CheckCircle,
-                status: 'complete',
-                title: 'Documents Uploaded',
-                description: 'Your credentials have been successfully submitted to our verification team.',
-                delay: 500,
-              },
-              {
-                icon: Clock,
-                status: 'pending',
-                title: 'Under Review',
-                description: 'Our team typically reviews submissions within 1-2 business days. We&rsquo;ll email you with any questions.',
-                delay: 600,
-              },
-              {
-                icon: ShieldCheck,
-                status: 'pending',
-                title: 'Approval & Activation',
-                description: 'Once approved, you&rsquo;ll receive an email and can start accepting clients immediately.',
-                delay: 700,
-              },
-            ].map((step, index) => (
-              <div
-                key={index}
-                className="relative flex animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_both] gap-4 pb-6"
-                style={{ animationDelay: `${step.delay}ms` }}
+      <main className="flex flex-1 items-center justify-center p-4 sm:p-6">
+        <div className="w-full max-w-2xl">
+          {/* Success Card */}
+          <Card 
+            padding="none" 
+            elevated 
+            className={`overflow-hidden transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
+          >
+            {/* Header with Celebration */}
+            <div className="from-success/10 via-success/5 relative overflow-hidden bg-gradient-to-br to-transparent px-6 py-10 text-center sm:px-10 sm:py-12">
+              {/* Decorative elements */}
+              <div className="bg-success/5 absolute -left-10 -top-10 h-40 w-40 rounded-full" />
+              <div className="bg-success/5 absolute -bottom-10 -right-10 h-40 w-40 rounded-full" />
+              
+              {/* Success Icon */}
+              <div 
+                className={`to-success/80 shadow-success/30 relative mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-success shadow-lg transition-all delay-200 duration-500 ${mounted ? 'scale-100' : 'scale-0'}`}
               >
-                {index < 2 && (
-                  <div className="absolute bottom-0 left-4 top-10 w-0.5 bg-border-light" />
-                )}
-                <div
-                  className={`z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-transform duration-150 ${
-                    step.status === 'complete'
-                      ? 'to-success/80 bg-gradient-to-br from-success shadow-[0_2px_8px_rgba(22,163,74,0.3)]'
-                      : 'border-2 border-border-light bg-bg-secondary'
-                  }`}
-                >
-                  <step.icon
-                    className={`h-4 w-4 ${
-                      step.status === 'complete' ? 'text-white' : 'text-text-tertiary'
-                    }`}
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="flex-1 pt-1">
-                  <h3 className="mb-1 text-sm font-semibold">{step.title}</h3>
-                  <p className="text-sm leading-relaxed text-text-secondary">{step.description}</p>
-                </div>
+                <CheckCircle 
+                  className={`h-10 w-10 text-white transition-all delay-500 duration-300 ${mounted ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`} 
+                  aria-hidden="true" 
+                />
               </div>
-            ))}
-          </div>
 
-          {/* Info Box */}
-          <div className="from-primary/5 to-primary/2 border-primary/10 flex animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_800ms_both] gap-4 rounded-base border bg-gradient-to-br p-5">
-            <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-base">
-              <Info className="h-5 w-5 text-primary" aria-hidden="true" />
-            </div>
-            <div className="flex-1">
-              <h4 className="mb-1.5 text-sm font-semibold">What happens next?</h4>
-              <p className="text-xs leading-relaxed text-text-secondary">
-                You&apos;ll receive an email notification once your credentials are verified. Once approved, you can start accepting clients immediately.
+              {/* Title */}
+              <div className="flex items-center justify-center gap-2">
+                <PartyPopper className="h-5 w-5 text-success" aria-hidden="true" />
+                <h1 
+                  className={`text-2xl font-bold tracking-tight text-text-primary transition-all delay-300 duration-500 sm:text-3xl ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+                >
+                  Credentials Submitted!
+                </h1>
+                <PartyPopper className="h-5 w-5 -scale-x-100 text-success" aria-hidden="true" />
+              </div>
+              
+              <p 
+                className={`delay-400 mt-3 text-base text-text-secondary transition-all duration-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+              >
+                You&apos;re almost there! We&apos;ll review your credentials shortly.
               </p>
             </div>
-          </div>
-        </div>
 
-        {/* Actions */}
-        <div className="flex animate-[fadeInUp_600ms_cubic-bezier(0.16,1,0.3,1)_900ms_both] justify-center p-12 pt-0">
-          <button
-            type="button"
-            onClick={handleGoToDashboard}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleGoToDashboard();
-              }
-            }}
-            aria-label="Go to dashboard"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-base bg-gradient-to-b from-primary to-primary-hover px-8 text-base font-medium text-white shadow-[0_2px_8px_rgba(37,99,235,0.15)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-          >
-            <span>Go to Dashboard</span>
-            <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
-          </button>
+            {/* Timeline */}
+            <div className="px-6 py-8 sm:px-10">
+              <div className="space-y-0">
+                {steps.map((step, index) => (
+                  <div
+                    key={index}
+                    className={`relative flex gap-4 pb-6 transition-all duration-500 ${mounted ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}`}
+                    style={{ transitionDelay: `${500 + index * 100}ms` }}
+                  >
+                    {/* Connecting Line */}
+                    {index < steps.length - 1 && (
+                      <div className="absolute bottom-0 left-4 top-10 w-0.5 bg-border-light" />
+                    )}
+                    
+                    {/* Icon */}
+                    <div
+                      className={`relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-all ${
+                        step.status === 'complete'
+                          ? 'shadow-success/30 bg-success shadow-sm'
+                          : step.status === 'current'
+                          ? 'bg-primary/10 border-2 border-primary'
+                          : 'border-2 border-border-light bg-bg-secondary'
+                      }`}
+                    >
+                      <step.icon
+                        className={`h-4 w-4 ${
+                          step.status === 'complete'
+                            ? 'text-white'
+                            : step.status === 'current'
+                            ? 'text-primary'
+                            : 'text-text-tertiary'
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 pt-0.5">
+                      <h3 
+                        className={`text-sm font-semibold ${
+                          step.status === 'pending' ? 'text-text-tertiary' : 'text-text-primary'
+                        }`}
+                      >
+                        {step.title}
+                      </h3>
+                      <p className="mt-0.5 text-sm text-text-secondary">{step.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Email Notice */}
+              <div 
+                className={`border-primary/20 bg-primary/5 mt-2 flex items-center gap-3 rounded-lg border p-4 transition-all delay-700 duration-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+              >
+                <div className="bg-primary/10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full">
+                  <Mail className="h-4 w-4 text-primary" aria-hidden="true" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-text-primary">Check your email</p>
+                  <p className="text-xs text-text-secondary">
+                    We&apos;ll notify you once your credentials are verified.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action */}
+            <div className="bg-bg-secondary/50 border-t border-border-light px-6 py-5 sm:px-10">
+              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+                <div 
+                  className={`delay-800 flex items-center gap-2 text-sm text-text-secondary transition-all duration-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+                >
+                  <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <span>Explore your dashboard while you wait</span>
+                </div>
+                <Button
+                  onClick={handleGoToDashboard}
+                  icon={<ArrowRight className="h-4 w-4" aria-hidden="true" />}
+                  iconPosition="right"
+                  className={`delay-900 transition-all duration-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+                >
+                  Go to Dashboard
+                </Button>
+              </div>
+            </div>
+          </Card>
         </div>
-        </div>
-      </div>
+      </main>
 
       <Footer />
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(24px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes scaleIn {
-          0% {
-            transform: scale(0);
-            opacity: 0;
-          }
-          50% {
-            transform: scale(1.1);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-
-        @keyframes checkDraw {
-          from {
-            opacity: 0;
-            transform: scale(0) rotate(-45deg);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-          }
-        }
-      `}</style>
     </div>
   );
 }
-

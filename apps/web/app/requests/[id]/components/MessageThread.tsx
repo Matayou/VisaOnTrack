@@ -130,17 +130,16 @@ export function MessageThread({
                 {/* Sender Name (only show when sender changes) */}
                 {showSender && !isOwnMessage && (
                   <p className="px-3 text-xs font-medium text-gray-500">
-                    {message.senderName || 'Provider'}
+                    {(message as any).senderName || 'Provider'}
                   </p>
                 )}
 
                 {/* Message Bubble */}
                 <div
-                  className={`rounded-2xl px-4 py-2.5 ${
-                    isOwnMessage
+                  className={`rounded-2xl px-4 py-2.5 ${isOwnMessage
                       ? 'bg-primary text-white'
                       : 'bg-gray-100 text-gray-900'
-                  }`}
+                    }`}
                 >
                   <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">
                     {message.body}
@@ -153,10 +152,10 @@ export function MessageThread({
                         // Map SDK Attachment to display format (backend may return different shape)
                         const displayAttachment: AttachmentDisplay = {
                           id: attachment.id,
-                          filename: (attachment as any).filename || `file-${attachment.id}`,
-                          mimeType: attachment.mime || (attachment as any).mimeType || 'application/octet-stream',
+                          filename: (attachment as any).filename || (attachment as any).name || `file-${attachment.id}`,
+                          mimeType: attachment.mime,
                           size: attachment.size,
-                          url: (attachment as any).url || `/api/attachments/${attachment.id}`,
+                          url: (attachment as any).url || (attachment as any).signedUrl || `/api/attachments/${attachment.id}`,
                         };
 
                         const Icon = getFileIcon(displayAttachment.mimeType);
@@ -165,11 +164,10 @@ export function MessageThread({
                         return (
                           <div
                             key={displayAttachment.id}
-                            className={`overflow-hidden rounded-lg ${
-                              isOwnMessage
+                            className={`overflow-hidden rounded-lg ${isOwnMessage
                                 ? 'bg-white/10 hover:bg-white/20'
                                 : 'bg-white hover:bg-gray-50'
-                            } transition-colors`}
+                              } transition-colors`}
                           >
                             {isImage ? (
                               // Image Preview

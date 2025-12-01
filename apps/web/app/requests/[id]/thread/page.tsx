@@ -21,6 +21,7 @@ export default function RequestThreadPage() {
   const [request, setRequest] = useState<Request | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string>('');
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [isLoadingRequest, setIsLoadingRequest] = useState(true);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +34,7 @@ export default function RequestThreadPage() {
       try {
         const user = await api.users.getCurrentUser();
         setCurrentUserId(user.id);
+        setUserRole(user.role);
       } catch (err: unknown) {
         const errorObj = err as { status?: number };
         if (errorObj?.status === 401) {
@@ -175,23 +177,85 @@ export default function RequestThreadPage() {
     );
   }
 
+  const isSeeker = userRole === 'SEEKER';
+
+  const threadContent = (
+    <div className="flex h-screen flex-col bg-gray-50">
+      <SeekerHeader />
+
+      {/* Thread Header */}
+      <header className="border-b border-gray-200 bg-white px-6 py-4">
+        <div className="mx-auto flex max-w-7xl items-center gap-4">
+          <button
+            onClick={() => router.push(`/requests/${requestId}`)}
+            className="-ml-2 rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            aria-label="Back to request"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 flex-shrink-0 text-primary" />
+              <h1 className="truncate text-lg font-semibold text-gray-900">
+                {request?.title || 'Request Conversation'}
+              </h1>
+            </div>
+            {request?.visaType && (
+              <p className="mt-0.5 text-sm text-gray-500">{request.visaType}</p>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              {messages.length} message{messages.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* Messages Container */}
+      <main className="mx-auto flex h-0 min-h-0 w-full max-w-7xl flex-1 flex-col overflow-hidden">
+        <div className="flex-1 overflow-hidden bg-white">
+          <MessageThread
+            messages={messages}
+            currentUserId={currentUserId}
+            isLoading={isLoadingMessages && messages.length === 0}
+            onLoadMore={handleLoadMore}
+            hasMore={hasMore}
+          />
+        </div>
+
+        {/* Composer */}
+        <MessageComposer
+          onSend={handleSendMessage}
+          disabled={!currentUserId}
+        />
+      </main>
+    </div>
+  );
+
+  if (isSeeker || userRole === null) {
+    return threadContent;
+  }
+
   return (
     <FeatureGate
       feature="messaging.enabled"
       fallback={
-        <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-50">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-6">
           <div className="max-w-md text-center">
-            <MessageSquare className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <MessageSquare className="mx-auto mb-4 h-16 w-16 text-gray-300" />
+            <h1 className="mb-2 text-2xl font-bold text-gray-900">
               Messaging is a PRO Feature
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 text-gray-600">
               Upgrade to PRO or AGENCY plan to communicate directly with clients
               and close more deals.
             </p>
             <button
               onClick={() => router.push('/pricing')}
-              className="rounded-lg bg-primary px-6 py-3 text-white font-medium hover:bg-primary-hover transition-colors"
+              className="rounded-lg bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-primary-hover"
             >
               View Plans & Pricing
             </button>
@@ -199,59 +263,7 @@ export default function RequestThreadPage() {
         </div>
       }
     >
-      <div className="flex h-screen flex-col bg-gray-50">
-        <SeekerHeader />
-
-        {/* Thread Header */}
-        <header className="border-b border-gray-200 bg-white px-6 py-4">
-          <div className="mx-auto flex max-w-7xl items-center gap-4">
-            <button
-              onClick={() => router.push(`/requests/${requestId}`)}
-              className="-ml-2 rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
-              aria-label="Back to request"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 flex-shrink-0 text-primary" />
-                <h1 className="truncate text-lg font-semibold text-gray-900">
-                  {request?.title || 'Request Conversation'}
-                </h1>
-              </div>
-              {request?.visaType && (
-                <p className="mt-0.5 text-sm text-gray-500">{request.visaType}</p>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                {messages.length} message{messages.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-          </div>
-        </header>
-
-        {/* Messages Container */}
-        <main className="mx-auto flex h-0 min-h-0 w-full max-w-7xl flex-1 flex-col overflow-hidden">
-          <div className="flex-1 overflow-hidden bg-white">
-            <MessageThread
-              messages={messages}
-              currentUserId={currentUserId}
-              isLoading={isLoadingMessages && messages.length === 0}
-              onLoadMore={handleLoadMore}
-              hasMore={hasMore}
-            />
-          </div>
-
-          {/* Composer */}
-          <MessageComposer
-            onSend={handleSendMessage}
-            disabled={!currentUserId}
-          />
-        </main>
-      </div>
+      {threadContent}
     </FeatureGate>
   );
 }

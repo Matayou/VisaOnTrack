@@ -102,10 +102,12 @@ export function AttachmentUploader({
 
       const uploadedFile: UploadedFile = {
         id: attachment.id,
-        name: attachment.filename,
+        name: file.name, // Attachment only has key, so use original file name
         size: attachment.size,
-        mimeType: attachment.mimeType,
-        url: attachment.url,
+        mimeType: attachment.mime,
+        // Attachment type doesn't have url/signedUrl in spec yet, but runtime might return it.
+        // Fallback to a constructed URL if not present.
+        url: (attachment as any).url || (attachment as any).signedUrl || `/api/attachments/${attachment.id}`,
       };
 
       setFiles((prev) => {
@@ -193,13 +195,12 @@ export function AttachmentUploader({
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={`relative rounded-lg border-2 border-dashed transition-colors ${
-          dragActive
+        className={`relative rounded-lg border-2 border-dashed transition-colors ${dragActive
             ? 'border-primary bg-primary/5'
             : disabled
-            ? 'border-gray-200 bg-gray-50'
-            : 'border-gray-300 bg-white hover:border-gray-400'
-        } ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+              ? 'border-gray-200 bg-gray-50'
+              : 'border-gray-300 bg-white hover:border-gray-400'
+          } ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
       >
         <input
           type="file"

@@ -58,7 +58,7 @@ createdAt: string;
 
     /**
      * Purchase credits (simulated)
-     * Simulate credit pack purchase and return new balance
+     * Simulate credit pack purchase and return new balance (PROVIDER role)
      * @returns any Purchase processed
      * @throws ApiError
      */
@@ -66,10 +66,16 @@ createdAt: string;
 requestBody,
 }: {
 requestBody: {
+/**
+ * Credit pack identifier (e.g., pack_small, pack_medium, pack_large)
+ */
 packId: string;
 },
 }): CancelablePromise<{
 success: boolean;
+/**
+ * Updated credit balance after purchase
+ */
 newBalance: number;
 }> {
         return __request(OpenAPI, {

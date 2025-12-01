@@ -128,7 +128,7 @@ requestBody: UpdateRequestRequest,
 
     /**
      * Unlock request (provider)
-     * Deducts a credit and unlocks the request for the provider
+     * Deducts a credit and unlocks the request for the provider, returning remaining credits and created proposal id.
      * @returns any Request unlocked
      * @throws ApiError
      */
@@ -138,8 +138,14 @@ id,
 id: string,
 }): CancelablePromise<{
 success: boolean;
+/**
+ * Remaining credit balance after unlock
+ */
 remainingCredits: number;
-proposalId?: string;
+/**
+ * Draft proposal created during unlock (if applicable)
+ */
+proposalId?: string | null;
 }> {
         return __request(OpenAPI, {
             method: 'POST',

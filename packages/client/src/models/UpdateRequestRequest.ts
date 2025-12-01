@@ -15,9 +15,9 @@ export type UpdateRequestRequest = {
     budgetMin?: number;
     budgetMax?: number;
     location?: string;
-    status?: RequestStatus;
     /**
      * Raw intake form data captured during request creation
      */
     intakeData?: Record<string, any> | null;
+    status?: RequestStatus;
 };

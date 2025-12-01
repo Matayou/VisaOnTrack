@@ -3,15 +3,17 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { SeekerHeader } from '@/components/SeekerHeader';
-import { api, type Request } from '@visaontrack/client';
+import { api, type Request, type Consultation, RequestStatus } from '@visaontrack/client';
 import { mapDurationToTimeline } from '@/lib/eligibilityMapping';
 import { RequestStatusCard } from './components/RequestStatusCard';
 import { RequestOverview } from './components/RequestOverview';
 import { ProposalsList } from './components/ProposalsList';
+import { ConsultationsList } from './components/ConsultationsList';
 import { ActivityTimeline, AuditLogEntry } from './components/ActivityTimeline';
 import { RequestStats } from './components/RequestStats';
 import { NextSteps } from './components/NextSteps';
 import { MobileActionSheet } from './components/MobileActionSheet';
+import { ConsultationBookingModal } from '@/components/ConsultationBookingModal';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
 import { Loader, AlertCircle, ArrowLeft, MessageSquare } from 'lucide-react';
 
@@ -30,6 +32,7 @@ export default function RequestDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [consultationToBook, setConsultationToBook] = useState<Consultation | null>(null);
 
   // Fetch Request Data
   useEffect(() => {
@@ -55,10 +58,9 @@ export default function RequestDetailPage() {
     if (!request) return;
     setIsPublishing(true);
     try {
-      // @ts-ignore - Using 'OPEN' to signify published state
       const updated = await api.requests.updateRequest({
         id: request.id,
-        requestBody: { status: 'OPEN' },
+        requestBody: { status: RequestStatus.OPEN },
       });
       setRequest(updated);
     } catch (err) {
@@ -80,7 +82,7 @@ export default function RequestDetailPage() {
 
     const isDraft = request.status === 'DRAFT';
     // Map OPEN/CLOSED/HIRED to PUBLISHED for UI logic
-    const uiStatus = isDraft ? 'DRAFT' : 'PUBLISHED';
+    const uiStatus: 'DRAFT' | 'PUBLISHED' = isDraft ? 'DRAFT' : 'PUBLISHED';
 
     // Format Budget
     let budgetLabel = 'Not provided';
@@ -99,9 +101,11 @@ export default function RequestDetailPage() {
     let updatedAtLabel = 'recently';
     try {
       const lastUpdate = request.updatedAt ? new Date(request.updatedAt) : new Date(request.createdAt);
-      const diffDays = -Math.round((Date.now() - lastUpdate.getTime()) / (1000 * 60 * 60 * 24));
-      if (!isNaN(diffDays)) {
-         updatedAtLabel = new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(diffDays, 'day');
+      const diffDays = Math.round((lastUpdate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      if (!Number.isNaN(diffDays)) {
+        updatedAtLabel = diffDays === 0
+          ? 'today'
+          : new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(diffDays, 'day');
       }
     } catch (e) {
       console.warn('Error formatting date', e);
@@ -220,10 +224,20 @@ export default function RequestDetailPage() {
             />
 
             <ProposalsList 
-              proposals={mappedData.proposalsList}
+              requestId={requestId!}
               status={mappedData.status}
+              userRole="SEEKER"
               onPublish={handlePublish}
             />
+
+            {/* Consultations - only show for published requests */}
+            {mappedData.status === 'PUBLISHED' && (
+              <ConsultationsList
+                requestId={requestId!}
+                userRole="SEEKER"
+                onBookConsultation={(consultation) => setConsultationToBook(consultation)}
+              />
+            )}
 
           </div>
 
@@ -263,6 +277,18 @@ export default function RequestDetailPage() {
         onPublish={handlePublish}
         onEdit={handleEdit}
       />
+
+      {/* Consultation Booking Modal */}
+      {consultationToBook && (
+        <ConsultationBookingModal
+          consultation={consultationToBook}
+          onSuccess={() => {
+            setConsultationToBook(null);
+            // Optionally refresh data
+          }}
+          onCancel={() => setConsultationToBook(null)}
+        />
+      )}
     </div>
   );
 }

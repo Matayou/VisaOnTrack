@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Compass, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { Compass, Eye, EyeOff } from 'lucide-react';
 import { api } from '@visaontrack/client';
 import { getNextProviderOnboardingStep } from '@/lib/onboarding';
-import { Button, GradientText } from '@/components/ui';
+import { Button, GradientText, FormField } from '@/components/ui';
 import { AuthPageShell } from '@/components/AuthPageShell';
 import { validateEmail, type ValidationResult } from '@/lib/validation';
 import { LOADING_SIGNING_IN } from '@/lib/loading-messages';
@@ -115,82 +115,45 @@ export default function LoginPage() {
 
         <div className="px-1 sm:px-2 md:px-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="flex items-center gap-2 text-sm font-medium tracking-normal">
-                Email address
-              </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`h-12 w-full rounded-base border bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 ${
-                    emailValidation.status === 'success'
-                      ? 'border-success bg-success-light/5 focus:shadow-focus-success'
-                      : emailValidation.status === 'error'
-                      ? 'border-error bg-error-light/5 focus:shadow-focus-error'
-                      : 'border-border-light hover:border-border-medium focus:border-primary focus:shadow-focus-primary'
-                  }`}
-                  placeholder="you@example.com"
-                  required
-                  autoComplete="email"
-                  aria-invalid={emailValidation.status === 'error'}
-                  aria-describedby={emailValidation.status !== 'empty' ? 'email-message' : undefined}
-                />
-                {(emailValidation.status === 'success' || emailValidation.status === 'error') && (
-                  <div className="pointer-events-none absolute right-4 top-1/2 flex -translate-y-1/2 items-center opacity-100 transition-opacity duration-150">
-                    {emailValidation.status === 'success' ? (
-                      <CheckCircle className="h-4.5 w-4.5 text-success" aria-hidden="true" />
-                    ) : (
-                      <AlertCircle className="h-4.5 w-4.5 text-error" aria-hidden="true" />
-                    )}
-                  </div>
-                )}
-              </div>
-              {emailValidation.status !== 'empty' && (
-                <div
-                  id="email-message"
-                  className={`flex min-h-4.5 items-center gap-2 text-xs transition-all duration-150 ${
-                    emailValidation.status === 'success'
-                      ? 'translate-y-0 text-success opacity-100'
-                      : emailValidation.status === 'error'
-                      ? 'translate-y-0 text-error opacity-100'
-                      : '-translate-y-1 opacity-0'
-                  }`}
-                >
-                  {emailValidation.message}
-                </div>
-              )}
-            </div>
+            <FormField
+              label="Email address"
+              name="email"
+              type="email"
+              value={email}
+              onChange={(e) => handleEmailChange(e.target.value)}
+              placeholder="you@example.com"
+              required
+              autoComplete="email"
+              validationStatus={emailValidation.status === 'empty' ? undefined : emailValidation.status}
+              error={emailValidation.status === 'error' ? emailValidation.message : undefined}
+              success={emailValidation.status === 'success' ? emailValidation.message : undefined}
+            />
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="password" className="text-sm font-medium tracking-normal">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setError(null);
-                  }}
-                  className="h-12 w-full rounded-base border border-border-light bg-bg-primary px-4 pr-11 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:border-primary focus:shadow-focus-primary"
-                  placeholder="Enter your password"
-                  required
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 flex -translate-y-1/2 cursor-pointer items-center rounded-sm border-none bg-transparent p-2 text-text-tertiary transition-all duration-150 hover:bg-bg-secondary hover:text-text-secondary"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className="h-4.5 w-4.5" aria-hidden="true" /> : <Eye className="h-4.5 w-4.5" aria-hidden="true" />}
-                </button>
-              </div>
+              <FormField
+                label="Password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError(null);
+                }}
+                placeholder="Enter your password"
+                required
+                autoComplete="current-password"
+                className="pr-12"
+                rightIcon={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-text-tertiary transition-colors hover:bg-bg-secondary hover:text-text-secondary"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="h-4.5 w-4.5" aria-hidden="true" /> : <Eye className="h-4.5 w-4.5" aria-hidden="true" />}
+                  </button>
+                }
+              />
             </div>
 
             <div className="flex items-center justify-between">

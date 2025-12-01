@@ -13,6 +13,31 @@ import { request as __request } from '../core/request';
 export class QuotesService {
 
     /**
+     * List quotes for request
+     * Get all quotes/proposals for a request (seeker sees all, provider sees own)
+     * @returns Quote Quote list
+     * @throws ApiError
+     */
+    public static listQuotesForRequest({
+id,
+}: {
+id: string,
+}): CancelablePromise<Array<Quote>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/requests/{id}/quotes',
+            path: {
+                'id': id,
+            },
+            errors: {
+                401: `Authentication required or invalid token`,
+                403: `Insufficient permissions`,
+                404: `Resource not found`,
+            },
+        });
+    }
+
+    /**
      * Submit quote
      * Submit quote for request (PROVIDER role, entitlement check: quotes.monthly.max)
      * @returns Quote Quote submitted

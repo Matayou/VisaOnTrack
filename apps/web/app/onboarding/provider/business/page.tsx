@@ -70,19 +70,19 @@ export default function BusinessDetailsPage() {
       try {
         // We don't set full page loading state to avoid flashing, just populate fields if data exists
         const profile = await api.providers.getCurrentProvider();
-        
+
         if (profile) {
           if (profile.businessName) setBusinessName(profile.businessName);
           if (profile.location) setCity(profile.location);
           if (profile.description) setDescription(profile.description);
           if (profile.languages && profile.languages.length > 0) setLanguages(profile.languages);
-          
-          if (profile.contactPhone) setPhone(profile.contactPhone);
-          if (profile.website) setWebsite(profile.website);
-          if (profile.yearsExperience !== undefined && profile.yearsExperience !== null) {
-             setYearsExperience(profile.yearsExperience.toString());
+
+          if ((profile as any).contactPhone) setPhone((profile as any).contactPhone);
+          if ((profile as any).website) setWebsite((profile as any).website);
+          if ((profile as any).yearsExperience !== undefined && (profile as any).yearsExperience !== null) {
+            setYearsExperience((profile as any).yearsExperience.toString());
           }
-          
+
           // Note: Registration number is not in the schema yet, ignoring for now
         }
       } catch (error: any) {
@@ -93,7 +93,7 @@ export default function BusinessDetailsPage() {
         }
       }
     };
-    
+
     fetchProfile();
   }, []);
 
@@ -156,18 +156,18 @@ export default function BusinessDetailsPage() {
         // Optional field - only validate if user has entered something
         if (value && typeof value === 'string' && value.trim().length > 0) {
           const urlValue = value.trim();
-          
+
           // Must start with http:// or https://
           if (!/^https?:\/\//i.test(urlValue)) {
             return 'Please enter a valid URL starting with http:// or https://';
           }
-          
+
           // Must have at least a domain name (not just protocol)
           // Pattern: https:// + at least one character that's not a slash
           if (!/^https?:\/\/[^\/\s]+/i.test(urlValue)) {
             return 'Please enter a complete URL with a domain name';
           }
-          
+
           // Use URL constructor for strict validation
           try {
             const url = new URL(urlValue);
@@ -238,7 +238,7 @@ export default function BusinessDetailsPage() {
           return null; // Don't show success if there's actually an error
         }
       }
-      
+
       return (
         <p className="mt-2 flex items-center gap-2 text-sm text-success">
           <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
@@ -322,11 +322,11 @@ export default function BusinessDetailsPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-    
+
     // Mark all required fields as touched
     const requiredFields: FieldName[] = ['businessName', 'city', 'languages', 'yearsExperience', 'description', 'phone'];
     requiredFields.forEach((field) => markFieldTouched(field));
-    
+
     // Validate all fields
     const validationResults = requiredFields.map((field) => {
       let value: string | string[] | number;
@@ -354,13 +354,13 @@ export default function BusinessDetailsPage() {
       }
       return validateAndSetError(field, value);
     });
-    
+
     // If any validation fails, stop submission
     if (!validationResults.every((result) => result)) {
       setError('Please fix the errors in the form before continuing.');
       return;
     }
-    
+
     setIsLoading(true);
 
     try {
@@ -373,7 +373,7 @@ export default function BusinessDetailsPage() {
         contactPhone: phone,
         yearsExperience,
       });
-      
+
       const updateData = {
         businessName,
         description: description || null,
@@ -386,7 +386,7 @@ export default function BusinessDetailsPage() {
 
       // Create or update provider profile (backend handles upsert automatically)
       const result = await api.providers.createProvider({
-        requestBody: updateData,
+        requestBody: updateData as any,
       });
       console.log('[BusinessDetailsPage] Provider profile saved successfully:', result);
       router.push('/onboarding/provider/services');
@@ -453,15 +453,13 @@ export default function BusinessDetailsPage() {
               <div
                 aria-live="polite"
                 aria-atomic="true"
-                className={`inline-flex items-center gap-2 text-xs transition-opacity duration-150 ${
-                  autoSaveStatus === 'idle' ? 'opacity-0' : 'opacity-100'
-                } ${
-                  autoSaveStatus === 'saving'
+                className={`inline-flex items-center gap-2 text-xs transition-opacity duration-150 ${autoSaveStatus === 'idle' ? 'opacity-0' : 'opacity-100'
+                  } ${autoSaveStatus === 'saving'
                     ? 'text-primary'
                     : autoSaveStatus === 'saved'
-                    ? 'text-success'
-                    : 'text-text-tertiary'
-                }`}
+                      ? 'text-success'
+                      : 'text-text-tertiary'
+                  }`}
               >
                 {autoSaveStatus === 'saving' ? (
                   <>
@@ -606,8 +604,8 @@ export default function BusinessDetailsPage() {
                       Languages Spoken <span className="text-error">*</span>
                     </label>
                     <p className="text-xs text-text-tertiary">Click to select all languages you can communicate in with clients</p>
-                    <div 
-                      role="group" 
+                    <div
+                      role="group"
                       aria-labelledby="languages-label"
                       className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4"
                     >
@@ -639,11 +637,10 @@ export default function BusinessDetailsPage() {
                               triggerAutoSave();
                             }}
                             onBlur={() => handleBlur('languages', languages)}
-                            className={`focus-visible:ring-primary/40 group relative flex h-12 items-center justify-center gap-2 rounded-lg border-2 px-4 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                              isSelected
+                            className={`focus-visible:ring-primary/40 group relative flex h-12 items-center justify-center gap-2 rounded-lg border-2 px-4 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${isSelected
                                 ? 'border-primary bg-primary text-white shadow-sm hover:border-primary-hover hover:bg-primary-hover'
                                 : 'hover:border-primary/60 hover:bg-primary/5 border-border-light bg-bg-primary text-text-secondary hover:text-primary'
-                            }`}
+                              }`}
                             aria-pressed={isSelected}
                             aria-label={`${isSelected ? 'Deselect' : 'Select'} ${lang.label}`}
                           >
@@ -731,13 +728,12 @@ export default function BusinessDetailsPage() {
                     />
                     <div className="flex items-center justify-between">
                       <span
-                        className={`flex items-center gap-1.5 text-xs ${
-                          descriptionLength >= 200
+                        className={`flex items-center gap-1.5 text-xs ${descriptionLength >= 200
                             ? 'text-success'
                             : descriptionLength >= 100
-                            ? 'text-primary'
-                            : 'text-text-tertiary'
-                        }`}
+                              ? 'text-primary'
+                              : 'text-text-tertiary'
+                          }`}
                       >
                         {descriptionLength >= 200 ? (
                           <CheckCircle className="h-3.5 w-3.5" aria-hidden="true" />
@@ -749,9 +745,8 @@ export default function BusinessDetailsPage() {
                         <span>{descriptionHint}</span>
                       </span>
                       <div
-                        className={`text-right text-xs transition-colors duration-150 ${
-                          descriptionLength > 450 ? 'text-error' : descriptionLength >= 150 ? 'text-success' : 'text-text-tertiary'
-                        }`}
+                        className={`text-right text-xs transition-colors duration-150 ${descriptionLength > 450 ? 'text-error' : descriptionLength >= 150 ? 'text-success' : 'text-text-tertiary'
+                          }`}
                       >
                         {descriptionLength} / 500
                       </div>
@@ -761,62 +756,62 @@ export default function BusinessDetailsPage() {
                 </div>
               </div>
 
-            {/* Contact Information */}
-            <div className="space-y-6">
-              <div className="mb-2 flex items-center gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
-                  <MessageCircle className="h-6 w-6" aria-hidden="true" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-text-primary">Contact Information</h2>
-                  <p className="text-sm text-text-secondary">How seekers can reach you</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="phone" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <span className="h-3 w-1 rounded-full bg-primary" aria-hidden="true" />
-                    Phone Number <span className="text-error">*</span>
-                  </label>
-                  <div className="relative">
-                    <Phone className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-tertiary" aria-hidden="true" />
-                    <input
-                      type="tel"
-                      id="phone"
-                      value={phone}
-                      onChange={(e) => handlePhoneChange(e.target.value)}
-                      onBlur={() => handleBlur('phone', phone)}
-                      className={`h-12 w-full rounded-base border bg-bg-primary pl-11 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('phone')}`}
-                      placeholder="02-123-4567"
-                      required
-                    />
+              {/* Contact Information */}
+              <div className="space-y-6">
+                <div className="mb-2 flex items-center gap-4">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-base bg-gradient-to-br from-primary to-primary-hover text-white">
+                    <MessageCircle className="h-6 w-6" aria-hidden="true" />
                   </div>
-                  <span className="text-xs text-text-tertiary">Thai phone number (auto-formatted)</span>
-                  {renderValidationFeedback('phone', 'Phone number looks valid.')}
+                  <div>
+                    <h2 className="text-lg font-semibold text-text-primary">Contact Information</h2>
+                    <p className="text-sm text-text-secondary">How seekers can reach you</p>
+                  </div>
                 </div>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="phone" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
+                      <span className="h-3 w-1 rounded-full bg-primary" aria-hidden="true" />
+                      Phone Number <span className="text-error">*</span>
+                    </label>
+                    <div className="relative">
+                      <Phone className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-tertiary" aria-hidden="true" />
+                      <input
+                        type="tel"
+                        id="phone"
+                        value={phone}
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                        onBlur={() => handleBlur('phone', phone)}
+                        className={`h-12 w-full rounded-base border bg-bg-primary pl-11 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('phone')}`}
+                        placeholder="02-123-4567"
+                        required
+                      />
+                    </div>
+                    <span className="text-xs text-text-tertiary">Thai phone number (auto-formatted)</span>
+                    {renderValidationFeedback('phone', 'Phone number looks valid.')}
+                  </div>
 
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="website" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <span className="bg-text-tertiary/30 h-3 w-1 rounded-full" aria-hidden="true" />
-                    Website
-                  </label>
-                  <div className="relative">
-                    <Globe className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-tertiary" aria-hidden="true" />
-                    <input
-                      type="url"
-                      id="website"
-                      value={website}
-                      onChange={handleInputChange(setWebsite, 'website')}
-                      onBlur={() => handleBlur('website', website)}
-                      className={`h-12 w-full rounded-base border bg-bg-primary pl-11 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('website')}`}
-                      placeholder="https://yourwebsite.com"
-                    />
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="website" className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary">
+                      <span className="bg-text-tertiary/30 h-3 w-1 rounded-full" aria-hidden="true" />
+                      Website
+                    </label>
+                    <div className="relative">
+                      <Globe className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-tertiary" aria-hidden="true" />
+                      <input
+                        type="url"
+                        id="website"
+                        value={website}
+                        onChange={handleInputChange(setWebsite, 'website')}
+                        onBlur={() => handleBlur('website', website)}
+                        className={`h-12 w-full rounded-base border bg-bg-primary pl-11 pr-4 font-sans text-base text-text-primary outline-none transition-all duration-150 hover:border-border-medium focus:outline-none focus:ring-2 ${getInputClasses('website')}`}
+                        placeholder="https://yourwebsite.com"
+                      />
+                    </div>
+                    <span className="text-xs text-text-tertiary">Optional: Your business website</span>
+                    {renderValidationFeedback('website', website.trim().length > 0 ? 'Website URL looks valid.' : undefined)}
                   </div>
-                  <span className="text-xs text-text-tertiary">Optional: Your business website</span>
-                  {renderValidationFeedback('website', website.trim().length > 0 ? 'Website URL looks valid.' : undefined)}
                 </div>
               </div>
-            </div>
             </Card>
 
             <div className="sticky bottom-4 z-10">

@@ -58,6 +58,7 @@ export const api = {
   requests: Services.RequestsService,
   messages: Services.MessagesService,
   quotes: Services.QuotesService,
+  consultations: Services.ConsultationsService,
   checkout: Services.CheckoutService,
   orders: Services.OrdersService,
   reviews: Services.ReviewsService,
@@ -72,3 +73,6 @@ export type * from './index';
 // Re-export enums as values (not types)
 export { UserRole } from './models/UserRole';
 export { RequestStatus } from './models/RequestStatus';
+export { QuoteStatus } from './models/QuoteStatus';
+export { ConsultationType } from './models/ConsultationType';
+export { ConsultationStatus } from './models/ConsultationStatus';

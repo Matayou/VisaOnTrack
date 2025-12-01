@@ -15,9 +15,9 @@ export type CreateRequestRequest = {
     budgetMin?: number | null;
     budgetMax?: number | null;
     location?: string | null;
-    status?: RequestStatus;
     /**
      * Raw intake form data captured during request creation
      */
     intakeData?: Record<string, any> | null;
+    status?: RequestStatus;
 };

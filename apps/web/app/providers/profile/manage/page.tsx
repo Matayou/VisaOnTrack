@@ -46,16 +46,16 @@ export default function ProviderProfileManagePage() {
       try {
         setIsLoading(true);
         const data = await api.providers.getCurrentProvider();
-        setProvider(data);
-        
+        setProvider(data as unknown as ProviderProfile);
+
         // Populate form
         setFormData({
           businessName: data.businessName || '',
           description: data.description || '',
           location: data.location || '',
-          yearsExperience: data.yearsExperience?.toString() || '',
-          website: data.website || '',
-          contactPhone: data.contactPhone || '',
+          yearsExperience: (data as any).yearsExperience?.toString() || '',
+          website: (data as any).website || '',
+          contactPhone: (data as any).contactPhone || '',
         });
         setLanguages(data.languages || []);
       } catch (err: any) {
@@ -104,7 +104,7 @@ export default function ProviderProfileManagePage() {
 
       await api.providers.updateProvider({
         id: provider.id,
-        requestBody: updateData,
+        requestBody: updateData as any,
       });
 
       alert('Profile updated successfully!');
@@ -135,7 +135,7 @@ export default function ProviderProfileManagePage() {
           <AlertCircle className="mx-auto mb-4 h-10 w-10 text-red-500" />
           <h2 className="mb-2 text-lg font-bold text-gray-900">Unable to load profile</h2>
           <p className="mb-6 text-gray-600">{error}</p>
-          <button 
+          <button
             onClick={() => router.push('/providers/dashboard')}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
@@ -152,7 +152,7 @@ export default function ProviderProfileManagePage() {
       <ProviderHeader />
       <main className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:py-6">
         <div className="mb-4 lg:mb-6">
-          <button 
+          <button
             onClick={() => router.push('/providers/dashboard')}
             className="-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100/50 hover:text-gray-900"
           >
@@ -164,11 +164,11 @@ export default function ProviderProfileManagePage() {
         <div className="lg:grid lg:grid-cols-3 lg:gap-6">
           {/* Main Column */}
           <div className="mb-4 space-y-4 lg:col-span-2 lg:mb-0">
-            
+
             <div className="ios-card p-5 lg:p-6">
               <div className="mb-6 flex items-center justify-between">
                 <h1 className="text-base font-bold text-gray-900 lg:text-lg">My Profile</h1>
-                <a 
+                <a
                   href={`/providers/${provider?.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -483,7 +483,7 @@ export default function ProviderProfileManagePage() {
 
           {/* Sidebar */}
           <aside className="hidden space-y-6 lg:block">
-            
+
             {/* Profile Completion */}
             <div className="ios-card p-5">
               <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-400">Profile Strength</h3>

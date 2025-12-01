@@ -1071,6 +1071,37 @@ paths:
 
   # ==================== QUOTES ====================
   /requests/{id}/quotes:
+    get:
+      tags:
+        - quotes
+      summary: List quotes for request
+      description: Get all quotes/proposals for a request (seeker sees all, provider sees own)
+      operationId: listQuotesForRequest
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Quote list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quote'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
     post:
       tags:
         - quotes
@@ -2521,6 +2552,32 @@ components:
           format: date-time
           nullable: true
           description: Quote expiration timestamp
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        provider:
+          type: object
+          description: Provider information (included in list/get responses)
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            businessName:
+              type: string
+            businessType:
+              type: string
+              nullable: true
+            yearsExperience:
+              type: integer
+              nullable: true
+            verifiedAt:
+              type: string
+              format: date-time
+              nullable: true
     
     QuoteItem:
       type: object

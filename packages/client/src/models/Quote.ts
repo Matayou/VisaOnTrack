@@ -40,4 +40,16 @@ export type Quote = {
      * Quote expiration timestamp
      */
     validUntil?: string | null;
+    createdAt?: string;
+    updatedAt?: string;
+    /**
+     * Provider information (included in list/get responses)
+     */
+    provider?: {
+id?: string;
+businessName?: string;
+businessType?: string | null;
+yearsExperience?: number | null;
+verifiedAt?: string | null;
+} | null;
 };

@@ -21,7 +21,7 @@ import {
   Briefcase,
 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { api, type Request, type RequestStatus } from '@visaontrack/client';
+import { api, type Request, RequestStatus } from '@visaontrack/client';
 import { Button, Spinner, PageBackground, GradientText, Footer } from '@/components/ui';
 import { LOADING_GENERIC } from '@/lib/loading-messages';
 import { getErrorDisplayMessage } from '@/lib/error-handling';
@@ -222,11 +222,11 @@ function DashboardContent() {
           setIsProcessingIntake(true);
           try {
             const intakeData = JSON.parse(intakeDataJson);
-            
+
             // Convert intake data to request payload
             const budget = estimateBudgetFromSavings(intakeData.savings);
             const locationLabel = intakeData.location === 'Inside Thailand' ? 'Inside Thailand' : 'Outside Thailand';
-            
+
             const requestPayload = {
               title: `Visa application for ${mapEligibilityCodeToVisaType(intakeData.selectedCode)}`,
               description: intakeData.fields?.join(', ') || 'None', // Use simpler description
@@ -244,7 +244,7 @@ function DashboardContent() {
 
             // Clear intake data so we don't re-create
             localStorage.removeItem(INTAKE_DATA_KEY);
-            
+
             // Redirect to the new request
             router.push(`/requests/${newRequest.id}`);
             return;
@@ -358,59 +358,54 @@ function DashboardContent() {
               <button
                 type="button"
                 onClick={() => setStatusFilter('ALL')}
-                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
-                  statusFilter === 'ALL'
-                    ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
-                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
-                }`}
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${statusFilter === 'ALL'
+                  ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
+                  : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
+                  }`}
               >
                 All
                 {requests.length > 0 && <span className="text-xs font-semibold text-gray-500">({requests.length})</span>}
               </button>
               <button
                 type="button"
-                onClick={() => setStatusFilter('OPEN')}
-                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
-                  statusFilter === 'OPEN'
+                onClick={() => setStatusFilter(RequestStatus.OPEN)}
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${statusFilter === RequestStatus.OPEN
                     ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
                     : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
-                }`}
+                  }`}
               >
                 Active
                 {metrics.active > 0 && <span className="text-xs font-semibold text-gray-500">({metrics.active})</span>}
               </button>
               <button
                 type="button"
-                onClick={() => setStatusFilter('DRAFT')}
-                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
-                  statusFilter === 'DRAFT'
+                onClick={() => setStatusFilter(RequestStatus.DRAFT)}
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${statusFilter === RequestStatus.DRAFT
                     ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
                     : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
-                }`}
+                  }`}
               >
                 Draft
                 {metrics.draft > 0 && <span className="text-xs font-semibold text-gray-500">({metrics.draft})</span>}
               </button>
               <button
                 type="button"
-                onClick={() => setStatusFilter('HIRED')}
-                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
-                  statusFilter === 'HIRED'
+                onClick={() => setStatusFilter(RequestStatus.HIRED)}
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${statusFilter === RequestStatus.HIRED
                     ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
                     : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
-                }`}
+                  }`}
               >
                 Hired
                 {metrics.hired > 0 && <span className="text-xs font-semibold text-gray-500">({metrics.hired})</span>}
               </button>
               <button
                 type="button"
-                onClick={() => setStatusFilter('CLOSED')}
-                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${
-                  statusFilter === 'CLOSED'
+                onClick={() => setStatusFilter(RequestStatus.CLOSED)}
+                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all ${statusFilter === RequestStatus.CLOSED
                     ? 'bg-primary/10 border-primary/20 text-primary shadow-sm'
                     : 'border-transparent bg-white text-gray-600 hover:border-gray-200'
-                }`}
+                  }`}
               >
                 Completed
               </button>
@@ -448,7 +443,7 @@ function DashboardContent() {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Check className="h-4 w-4 flex-shrink-0 text-emerald-500" />
-                  Secure payments
+                  No escrow — pay providers directly
                 </span>
               </div>
               <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
@@ -658,11 +653,10 @@ function DashboardContent() {
                     setActiveTab(category.id);
                     setExpandedQuestions(new Set());
                   }}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                    activeTab === category.id
-                      ? 'bg-white text-gray-900 shadow-sm ring-1 ring-black/5'
-                      : 'text-gray-500 hover:bg-gray-100/50 hover:text-gray-700'
-                  }`}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${activeTab === category.id
+                    ? 'bg-white text-gray-900 shadow-sm ring-1 ring-black/5'
+                    : 'text-gray-500 hover:bg-gray-100/50 hover:text-gray-700'
+                    }`}
                 >
                   {category.label}
                 </button>

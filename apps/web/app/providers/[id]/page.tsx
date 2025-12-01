@@ -119,7 +119,7 @@ export default function ProviderPublicProfilePage() {
     const loadProvider = async () => {
       try {
         setIsLoading(true);
-        
+
         // Mock data for demo providers (matching the directory)
         const mockProviders: Record<string, ProviderProfile> = {
           '1': {
@@ -161,7 +161,7 @@ export default function ProviderPublicProfilePage() {
         } else {
           // Try to fetch from API for real providers
           const data = await api.providers.getProvider({ id: providerId });
-          setProvider(data);
+          setProvider(data as unknown as ProviderProfile);
         }
       } catch (err: any) {
         console.error('[ProviderProfile] load error', err);
@@ -220,7 +220,7 @@ export default function ProviderPublicProfilePage() {
           <AlertCircle className="mx-auto mb-4 h-10 w-10 text-red-500" />
           <h2 className="mb-2 text-lg font-bold text-gray-900">Unable to load provider</h2>
           <p className="mb-6 text-gray-600">{error || 'Provider not found'}</p>
-          <button 
+          <button
             onClick={() => router.push('/providers')}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
@@ -256,7 +256,7 @@ export default function ProviderPublicProfilePage() {
 
       <main className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:py-6">
         <div className="mb-4 lg:mb-6">
-          <button 
+          <button
             onClick={() => router.push('/providers')}
             className="-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100/50 hover:text-gray-900"
           >
@@ -268,7 +268,7 @@ export default function ProviderPublicProfilePage() {
         <div className="lg:grid lg:grid-cols-3 lg:gap-6">
           {/* Main Column */}
           <div className="mb-4 space-y-4 lg:col-span-2 lg:mb-0">
-            
+
             {/* Provider Header Card */}
             <div className="ios-card relative overflow-hidden p-5 lg:p-6">
               <div className="pointer-events-none absolute right-0 top-0 -mr-20 -mt-20 h-64 w-64 rounded-full bg-gradient-to-br from-indigo-50/40 to-transparent"></div>
@@ -293,7 +293,7 @@ export default function ProviderPublicProfilePage() {
                       </span>
                     )}
                   </div>
-                  
+
                   <p className="mb-4 text-sm leading-relaxed text-gray-600">
                     {provider.description || 'No description provided'}
                   </p>
@@ -368,7 +368,7 @@ export default function ProviderPublicProfilePage() {
                         <p className="text-xs text-gray-500">~{pkg.etaDays} days</p>
                       </div>
                     </div>
-                    
+
                     <p className="mb-4 text-sm leading-relaxed text-gray-600">
                       {pkg.description}
                     </p>
@@ -399,7 +399,7 @@ export default function ProviderPublicProfilePage() {
             {/* Reviews Section */}
             <div className="ios-card p-5 lg:p-6">
               <h2 className="mb-6 text-base font-bold text-gray-900 lg:text-lg">Reviews</h2>
-              
+
               <div className="space-y-4">
                 {reviews.map((review) => (
                   <div key={review.id} className="rounded-xl border border-gray-100 bg-white p-4">
@@ -429,7 +429,7 @@ export default function ProviderPublicProfilePage() {
 
           {/* Sidebar */}
           <aside className="hidden space-y-6 lg:block">
-            
+
             {/* Contact Card */}
             <div className="ios-card p-5">
               <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-400">Contact Provider</h3>

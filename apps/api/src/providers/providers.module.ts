@@ -1,19 +1,29 @@
-import { Module } from '@nestjs/common';
+﻿import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
 import { ProvidersController } from './providers.controller';
 import { ProvidersService } from './providers.service';
+import { VerificationController } from './verification.controller';
+import { VerificationDocumentsService } from './verification-documents.service';
+import { ProviderVerifiedGuard } from './guards/provider-verified.guard';
 import { AuditLogService } from '../common/services/audit-log.service';
-import { AuthModule } from '../auth/auth.module'; // Import AuthModule to use JwtAuthGuard
-// PrismaService is provided globally in AppModule
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [AuthModule], // Import AuthModule to access JwtAuthGuard
-  controllers: [ProvidersController],
+  imports: [
+    AuthModule,
+    MulterModule.register({
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+      },
+    }),
+  ],
+  controllers: [ProvidersController, VerificationController],
   providers: [
     ProvidersService,
+    VerificationDocumentsService,
+    ProviderVerifiedGuard,
     AuditLogService,
-    // PrismaService is provided globally in AppModule
   ],
-  exports: [ProvidersService],
+  exports: [ProvidersService, VerificationDocumentsService, ProviderVerifiedGuard],
 })
 export class ProvidersModule {}
-

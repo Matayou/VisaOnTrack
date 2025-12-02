@@ -2,6 +2,8 @@
 
 **🚀 NEW TO THE RECOVERY PLAN? Start here:** [START_HERE.md](./START_HERE.md)
 
+> **📊 Project Status:** See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for current blockers, feature matrix, and implementation status.
+
 Use this map to find the canonical source for each type of information. When creating new material, append to the source listed here (or add a short pointer back to it) instead of spawning another top-level doc.
 
 ## Overview & Scope
@@ -9,7 +11,7 @@ Use this map to find the canonical source for each type of information. When cre
 - `docs/overview/SCOPE_AND_OBJECTIVES.md` — scope boundaries and current objectives.
 
 ## Status & Coordination
-- `PROJECT_STATUS.md` — single source for milestone + program status.
+- **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** — **single source of truth** for project status, blockers, feature matrix.
 - `docs/tasks/` — **one task file per RFC/feature** is the live status. Example: `docs/tasks/TASK_RFC_004_FE_ONBOARDING_COMPLETION.md`.
 - `docs/coordination/COORDINATION_HUB.md` — index of who’s doing what; each entry should point back to its task file.
 - `docs/coordination/*review*.md` — supplemental review notes only. Start each with a pointer to the task doc.
